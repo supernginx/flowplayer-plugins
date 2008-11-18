@@ -1,0 +1,28 @@
+<project name="Flowplayer Rtmp Bandwidth Check" default="deploy">
+
+	<property name="devkit-dir" value="../flowplayer.devkit" />
+	<property name="flowplayer_lib" value="${devkit-dir}/flowplayer.swc" />
+	<property name="plugin-libs" value="libs/flowplayer.rtmp.cluster.swc"/>
+	
+	<property file="${devkit-dir}/plugin-build.properties" />
+	<import file="${devkit-dir}/plugin-build.xml"/>
+	
+	<property name="version" value="3.0.0-alpha1" />
+	<property name="basename" value="flowplayer.rtmp.bwcheck" />
+	<property name="plugin-binary" value="${basename}.swf" />
+	<property name="plugin-swc" value="${basename}.swc" />
+	<property name="plugin-binary-versioned" value="${basename}-${version}.swf" />
+	
+	<property name="plugin-main-class" value="org/flowplayer/rtmp/bwcheck/RTMPStreaming.as" />
+
+	<target name="release" description="makes a release" depends="build">
+		<copyrelease targetdir="flowplayer.rtmp.bwcheck">
+			<releasefiles>
+				<fileset dir="${build-dir}">
+				    <include name="${plugin-binary-versioned}"/>
+				</fileset>
+			</releasefiles>
+		</copyrelease>
+	</target>
+
+</project>
