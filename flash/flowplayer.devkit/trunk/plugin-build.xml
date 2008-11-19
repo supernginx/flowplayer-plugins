@@ -45,7 +45,6 @@
 				<srcfiles dir="${basedir}">
 					<include name="build.xml" />
 				</srcfiles>
-				<srcfiles file="${flowplayer_lib}" />
 			</uptodate>
 			<echo message="main up-to-date: ${uptodate.main}" />
 		</sequential>
