@@ -109,7 +109,7 @@ package org.flowplayer.controls.slider {
 			drawBars();
 		}
 		
-		override protected function dragEventDispatched():void {
+		override protected function onDispatchDrag():void {
 			drawBars();
 			_seekInProgress = true;
 		}
@@ -128,10 +128,12 @@ package org.flowplayer.controls.slider {
 		}
 
 		private function onSeekDone(event:ClipEvent):void {
-			_seekInProgress = false;;
+			log.debug("seek done!");
+			_seekInProgress = false;
 		}
 
 		override protected function get allowSetValue():Boolean {
+			log.debug("seekInProgress " + _seekInProgress);
 			return ! _seekInProgress;
 		}
 		

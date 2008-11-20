@@ -4,6 +4,7 @@ beta7
 -----
 - tweaking autoHide
 - added hideDelay config option
+- fixed scrubber to work with images that have a duration in the playlist
 
 beta6
 -----

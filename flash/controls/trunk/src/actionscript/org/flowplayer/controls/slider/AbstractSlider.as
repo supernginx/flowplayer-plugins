@@ -112,13 +112,13 @@ package org.flowplayer.controls.slider {
 
 		private function dispatchDragEvent():void {
 			log.debug("dispatching drag event");
+			onDispatchDrag();
 			dispatchEvent(new Event(DRAG_EVENT));
-			dragEventDispatched();
 		}
 		
 		protected function get dispatchOnDrag():Boolean {
 			return true;		}
-		protected function dragEventDispatched():void {
+		protected function onDispatchDrag():void {
 			// can be overridden in subclasses
 		}
 
