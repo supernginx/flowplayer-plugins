@@ -9,7 +9,7 @@
  */
 
 package org.flowplayer.controls {
-	import org.flowplayer.controls.button.AbstractButton;	import org.flowplayer.controls.button.AbstractToggleButton;	import org.flowplayer.controls.button.ButtonEvent;	import org.flowplayer.controls.button.NextButton;	import org.flowplayer.controls.button.PrevButton;	import org.flowplayer.controls.button.StopButton;	import org.flowplayer.controls.button.ToggleFullScreenButton;	import org.flowplayer.controls.button.TogglePlayButton;	import org.flowplayer.controls.button.ToggleVolumeMuteButton;	import org.flowplayer.controls.slider.AbstractSlider;	import org.flowplayer.controls.slider.Scrubber;	import org.flowplayer.controls.slider.VolumeSlider;	import org.flowplayer.model.Clip;	import org.flowplayer.model.ClipEvent;	import org.flowplayer.model.DisplayPluginModel;	import org.flowplayer.model.PlayerEvent;	import org.flowplayer.model.PlayerEventType;	import org.flowplayer.model.Playlist;	import org.flowplayer.model.Plugin;	import org.flowplayer.model.PluginModel;	import org.flowplayer.model.Status;	import org.flowplayer.util.Arrange;	import org.flowplayer.util.PropertyBinder;	import org.flowplayer.view.AbstractSprite;	import org.flowplayer.view.Flowplayer;	import org.flowplayer.view.StyleableSprite;		import flash.display.DisplayObject;	import flash.events.Event;	import flash.events.MouseEvent;	import flash.events.TimerEvent;	import flash.utils.Timer;	
+	import org.flowplayer.model.ClipEventType;		import org.flowplayer.controls.button.AbstractButton;	import org.flowplayer.controls.button.AbstractToggleButton;	import org.flowplayer.controls.button.ButtonEvent;	import org.flowplayer.controls.button.NextButton;	import org.flowplayer.controls.button.PrevButton;	import org.flowplayer.controls.button.StopButton;	import org.flowplayer.controls.button.ToggleFullScreenButton;	import org.flowplayer.controls.button.TogglePlayButton;	import org.flowplayer.controls.button.ToggleVolumeMuteButton;	import org.flowplayer.controls.slider.AbstractSlider;	import org.flowplayer.controls.slider.Scrubber;	import org.flowplayer.controls.slider.VolumeSlider;	import org.flowplayer.model.Clip;	import org.flowplayer.model.ClipEvent;	import org.flowplayer.model.DisplayPluginModel;	import org.flowplayer.model.PlayerEvent;	import org.flowplayer.model.PlayerEventType;	import org.flowplayer.model.Playlist;	import org.flowplayer.model.Plugin;	import org.flowplayer.model.PluginModel;	import org.flowplayer.model.Status;	import org.flowplayer.util.Arrange;	import org.flowplayer.util.PropertyBinder;	import org.flowplayer.view.AbstractSprite;	import org.flowplayer.view.Flowplayer;	import org.flowplayer.view.StyleableSprite;		import flash.display.DisplayObject;	import flash.events.Event;	import flash.events.MouseEvent;	import flash.events.TimerEvent;	import flash.utils.Timer;	
 	/**
 	 * @author anssi
 	 */
@@ -310,7 +310,6 @@ package org.flowplayer.controls {
 			playlist.onConnect(onPlayStarted);
 			playlist.onBeforeStart(onPlayStarted);
 			playlist.onStart(onPlayStarted);
-			playlist.onMetaData(onMetaData);
 			playlist.onPause(onPlayPaused);
 			playlist.onResume(onPlayResumed);
 			playlist.onStop(onPlayStopped);
@@ -387,8 +386,7 @@ package org.flowplayer.controls {
 		private function onPlayClicked(event:ButtonEvent):void {
 			_player.toggle();
 		}
-		
-		private function onStopClicked(event:MouseEvent):void {
+		private function onStopClicked(event:MouseEvent):void {
 			_player.stop();
 		}
 
