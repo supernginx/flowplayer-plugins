@@ -37,7 +37,7 @@
 			// configure clip to use "rtmp" plugin for providing video data 
 		    clip: {  
 		        url: 'metacafe',  
-		        provider: 'rtmpCluster',
+		        provider: 'rtmpBWCheck',
 		        autoPlay: true,
 			    start: 0,
 			    duration: 0,
@@ -49,7 +49,7 @@
 			// streaming plugins are configured under the plugins node 
 			plugins:  {
 				// here is our rtpm plugin configuration
-				rtmpCluster: {  
+				rtmpBWCheck: {  
 		            url: '@MAIN_PLAYER_SWF@',  
 		            serverType: 'wowza',
 		            netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
@@ -74,7 +74,7 @@
 		            	100,300,500,700
 		            ],
 		            //{0} is filename, {1} is bitrate, {2} is extension
-		            fileNameString: '{0}-{1}.{2}' 
+		            fileNameString: '{0}-{1}' 
 		        }
 			
 			}, 
@@ -85,9 +85,14 @@
 				},
 			
 		});
-		</script>
-	
 		
+		function detect()
+		{
+			$f().getPlugin("rtmpBWCheck").checkBandwidth();
+		}
+		</script>
+		
+		<a href="#" onclick="detect();">Detect Bandwidth</a>
 		
 		<!-- 
 			after this line is purely informational stuff. 

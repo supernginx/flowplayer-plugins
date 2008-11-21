@@ -14,14 +14,14 @@ package org.flowplayer.rtmp.bwcheck.event
 	
 	public class BWDetectEventType extends EventType
 	{
-		public static const DETECT_FAILED:BWDetectEventType = new BWDetectEventType("onDetectFailed", 17);
-		public static const DETECT_COMPLETE:BWDetectEventType = new BWDetectEventType("onDetectComplete", 18);
-		public static const DETECT_STATUS:BWDetectEventType = new BWDetectEventType("onDetectStatus", 19);
-		public static const DETECT_START:BWDetectEventType = new BWDetectEventType("onDetectStart", 20);
+		public static const DETECT_FAILED:BWDetectEventType = new BWDetectEventType("onDetectFailed");
+		public static const DETECT_COMPLETE:BWDetectEventType = new BWDetectEventType("onDetectComplete");
+		public static const DETECT_STATUS:BWDetectEventType = new BWDetectEventType("onDetectStatus");
+		public static const DETECT_START:BWDetectEventType = new BWDetectEventType("onDetectStart");
 		
-		public function BWDetectEventType(name:String, code:Number)
+		public function BWDetectEventType(name:String)
 		{
-			super(name,code);
+			super(name);
 		}
 
 	}
