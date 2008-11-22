@@ -133,7 +133,6 @@ package org.flowplayer.controls.slider {
 		}
 
 		override protected function get allowSetValue():Boolean {
-			log.debug("seekInProgress " + _seekInProgress);
 			return ! _seekInProgress;
 		}
 		
