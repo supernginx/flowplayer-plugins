@@ -58,10 +58,15 @@ package org.flowplayer.controls {
 				_config.resetVisibilities();
 			}
 			new PropertyBinder(_config).copyProperties(enabledWidgets);
-			_immediatePositioning = false;
+			immediatePositioning = false;
 			createChildren();
 			onResize();
-			_immediatePositioning = true;
+			immediatePositioning = true;
+		}
+		
+		private function set immediatePositioning(enable:Boolean):void {
+			_immediatePositioning = enable;
+			if (! enable) return;
 			_animationTimer = new Timer(500, 1);
 			_animationTimer.start();
 		}
@@ -290,7 +295,7 @@ package org.flowplayer.controls {
 				}
 			}
 			if (_timeView) {
-				_timeView.duration = duration;
+				_timeView.duration = status.clip.live ? -1 : duration;
 				_timeView.time = status.time;
 			}
 		}

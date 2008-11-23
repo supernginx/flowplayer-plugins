@@ -1,5 +1,9 @@
 Version history:
 
+3.0.0
+-----
+- does not show the duration for live feeds
+
 beta7
 -----
 - tweaking autoHide
