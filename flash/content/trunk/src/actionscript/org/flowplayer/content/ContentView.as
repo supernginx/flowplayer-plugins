@@ -8,9 +8,8 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 package org.flowplayer.content {
-	import org.flowplayer.model.DisplayPluginModel;	
-	
-	import flash.display.BlendMode;	import flash.display.DisplayObject;	import flash.display.Sprite;	import flash.events.MouseEvent;	import flash.text.AntiAliasType;	import flash.text.TextField;	import flash.text.TextFieldAutoSize;	import flash.text.TextFormat;		import org.flowplayer.view.FlowStyleSheet;	import org.flowplayer.view.Flowplayer;	import org.flowplayer.view.StyleableSprite;		/**
+	import org.flowplayer.model.DisplayPluginModel;	import org.flowplayer.view.FlowStyleSheet;	import org.flowplayer.view.Flowplayer;	import org.flowplayer.view.StyleableSprite;		import flash.display.BlendMode;	import flash.display.DisplayObject;	import flash.display.Sprite;	import flash.events.MouseEvent;	import flash.text.AntiAliasType;	import flash.text.TextField;	import flash.text.TextFieldAutoSize;		
+	/**
 	 * @author api
 	 */
 	internal class ContentView extends StyleableSprite {
@@ -23,7 +22,7 @@ package org.flowplayer.content {
 		private var _originalAlpha:Number;
 
 		public function ContentView(plugin:DisplayPluginModel, player:Flowplayer, closeButton:Boolean) {
-			super(null, player);
+			super(null, player, player.createLoader());
 			_plugin = plugin;
 			_player = player;
 			if (closeButton) {
