@@ -314,10 +314,10 @@ package org.flowplayer.controls {
 		private function addListeners(playlist:Playlist):void {
 			playlist.onConnect(onPlayStarted);
 			playlist.onBeforeBegin(onPlayStarted);
-			playlist.onStart(onPlayStarted);
 			playlist.onPause(onPlayPaused);
 			playlist.onResume(onPlayResumed);
 			playlist.onStop(onPlayStopped);
+			playlist.onBufferStop(onPlayStopped);
 			playlist.onFinish(onPlayStopped);
 			_player.onFullscreen(onPlayerFullscreenEvent);
 			_player.onFullscreenExit(onPlayerFullscreenEvent);
@@ -337,6 +337,7 @@ package org.flowplayer.controls {
 		}
 
 		private function onPlayStarted(event:ClipEvent):void {
+			log.debug("received " + event);
 			if (_playButton) {
 				_playButton.down = ! event.isDefaultPrevented();
 			}
@@ -372,7 +373,9 @@ package org.flowplayer.controls {
 		}
 
 		private function onPlayStopped(event:ClipEvent):void {
+			log.debug("received " + event);
 			if (!_playButton) return;
+			log.debug("setting playButton to up state");
 			_playButton.down = false;
 		}
 

@@ -61,9 +61,7 @@ package org.flowplayer.controls.button {
 			removeChild(down ? _upStateFace : _downStateFace);
 			addChild(down ? _downStateFace : _upStateFace);
 			arrange();
-		}
-
-		protected function arrange():void {
+		}		protected function arrange():void {
 		}
 
 		protected function onClicked(event:MouseEvent):void {
