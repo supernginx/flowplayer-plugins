@@ -3,6 +3,7 @@ Version history:
 3.0.0
 -----
 - does not show the duration for live feeds
+- pause button goes to play mode when closeBuffering() was called in the player
 
 beta7
 -----
