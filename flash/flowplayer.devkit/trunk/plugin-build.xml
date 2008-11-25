@@ -173,6 +173,7 @@
 		<echo message="deploying plugin to ${deploy_dir}" />
 		<copy file="${build-dir}/${plugin-binary}" todir="${deploy_dir}/${build-dir}" overwrite="true" />
 		<copy file="${build-dir}/${plugin-binary-versioned}" todir="${deploy_dir}/${build-dir}" overwrite="true" />
+		<copy file="${build-dir}/${plugin-binary-versioned}" todir="${deploy_dir}/${dist-dir}" overwrite="true" />
 	</target>
 
 
