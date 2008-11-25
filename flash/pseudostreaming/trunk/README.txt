@@ -1,5 +1,9 @@
 Version history:
 
+3.0.0
+-----
+- 3.0.0-final release
+
 beta3
 ----
 - Fixed the typo in the configuration variable queryString

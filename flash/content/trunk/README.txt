@@ -1,5 +1,9 @@
 Version history:
 
+3.0.0
+-----
+- 3.0.0-final release
+
 beta3
 -----
 - does not change the text format initialized by the player
