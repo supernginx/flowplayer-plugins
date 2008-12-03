@@ -1,5 +1,9 @@
 Version history:
 
+3.0.1
+-----
+- mute volume button shows the muted state correctly initially when it has been loaded
+
 3.0.0
 -----
 - does not show the duration for live feeds

@@ -171,6 +171,9 @@ package org.flowplayer.controls {
 			if (_scrubber) {
 				_scrubber.animationEngine = player.animationEngine;
 			}
+			if (_muteVolumeButton) {
+				_muteVolumeButton.down = player.muted;
+			}
 		}
 
 		public function onConfig(model:PluginModel):void {
@@ -332,6 +335,7 @@ package org.flowplayer.controls {
 		}
 
 		private function onPlayerMuteEvent(event:PlayerEvent):void {
+			log.info("onPlayerMuteEvent, _muteButton " + _muteVolumeButton);
 			if (! _muteVolumeButton) return;
 			_muteVolumeButton.down = event.eventType == PlayerEventType.MUTE;
 		}
