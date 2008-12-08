@@ -1,0 +1,294 @@
+
+<%-- :mode=jsp: --%>
+<c:set var="version" value="0.10"/>
+
+<h1>
+	<strong>Streaming plugin</strong> RTMP Cluster
+	<em>Setup high availability and scalability for your videos</em>
+</h1>
+
+<h2>Features</h2>
+
+<p>
+	This plugin offers you following features
+</p>
+
+<ol>
+	<li>
+		<strong>high availability</strong> setup multiple RTMP servers in a cluster so that you have many streaming servers serving your video file. If one server fails another server can still provide video streaming
+	</li>
+	<li>
+		<strong>scalability</strong> if your site begins to grow and more and more videos are requested you can plugin new streaming servers to your architecture. This plugin will "load balance" those servers so you can distribute the video streaming load evenly to each of those servers.
+	</li>
+	<li>
+		<strong>bandwidth check</strong>. You can serve video files for clients based on the available downloading bandwidth. Users with good internet connection are served with a larger and higher quality video and poor connections are served with smaller file. We also have a stripped version of this plugin that <em>only does this job</em>.
+	</li>
+</ol>
+
+<p>
+	Clustering is currenlty implemented only for RTMP servers but we are on the works to make this feature available for other streams too.
+</p>
+
+<h2>Minimal setup for <em>clustering</em></h2>
+
+<p>
+	Here is a minimal JavaScript code clustering setup. This example tries to stream a video file named <samp>Extremists.flv</samp> in sequence from the servers specified in <samp>hosts</samp> array. 	
+</p>
+
+<pii:code>
+$f("player1", "/swf/flowplayer-${v.core}.swf", {
+	
+	// configure clip to use "cluster" plugin for providing video data
+	clip: {
+		url: 'Extremists.flv', 
+		provider: 'cluster'
+	},
+	
+	// cluster plugin setup
+	plugins: {
+		cluster: {  
+			url: '/swf/flowplayer.cluster-${version}.swf',  
+	
+			// two servers in a cluster. you can have as many as you want
+			hosts: [
+				'rtmp://server1.rtmphost.org',
+				'rtmp://server2.rtmphost.org'			
+			]
+		}			
+	}
+	
+});
+</pii:code>
+						
+<h2>Minimal setup for <em>bandwidth check</em></h2>
+
+<p>
+	Here is a minimal configuration for enabling bandwidth check. When bitrate is lower than 500 bytes / second then a file called <samp>Extremists-100.flv</samp> is served and when bitrate is between 500 and 900 bytes / second then <samp>Extremists-500.flv</samp> is served and when user's internet connection can reach more then 900 bytes / second then <samp>Extremists-900.flv</samp> is served. 
+</p>
+
+<pii:code>
+$f("player2", "/swf/flowplayer-${v.core}.swf", {
+
+	// configure clip to use "cluster" plugin for providing video data
+	clip: {
+		url: 'Extremists.flv', 
+		provider: 'bwcheck'
+	},
+	
+	plugins: {
+				
+		bwcheck:  {
+			
+			// use bwcheck plugin which has no clustering support
+			url: '/swf/flowplayer.bwcheck-${version}.swf',
+			
+			// this URL is used for checking connection speeds
+			checkUrl: 'rtmp://mydomain.org/bwcheck', 
+
+			// different streams that can be served. bytes/sec. 			
+			bitrates: [100, 500, 900],
+			
+			//	{0} is filename, {1} is bitrate, {2} is extension
+			fileNamePattern: '{0}-{1}.{2}'				
+		}
+	} 
+});
+</pii:code>		
+		
+
+<h2>Minimal setup for <em>both features</em></h2>
+
+<p>
+	In previous examples we used two different plugins <samp>flowplayer.cluster-${version}.swf</samp> and <samp>flowplayer.bwcheck-${version}.swf</samp>. The former can handle both clustering and bandwidth checking. Here is an example of minimal combined setup.
+</p>
+
+<pii:code>
+$f("player1", "/swf/flowplayer-${v.core}.swf", {
+	
+	// configure clip to use "cluster" plugin for providing video data
+	clip: {
+		url: 'Extremists.flv', 
+		provider: 'cluster'
+	},
+	
+	// cluster plugin setup
+	plugins: {
+		
+		cluster: {  
+			
+			url: '/swf/flowplayer.cluster-${version}.swf',  
+	
+			// servers in a cluster
+			hosts: [
+				'rtmp://server1.rtmphost.org',
+				'rtmp://server2.rtmphost.org'			
+			],
+			
+			// bandwidth check configuration
+			checkUrl: 'rtmp://mydomain.org/bwcheck',  			
+			bitrates: [100, 500, 900],
+			fileNamePattern: '{0}-{1}.{2}'	   
+		}
+	} 
+});
+</pii:code>
+
+<h2>Configuration variables</h2>
+
+<p>
+	Here are all configuration variables that are supported by these plugins. 
+</p>
+
+<h3>Clustering</h3>
+
+<table class="listing">
+	<thead>
+		<tr>
+			<th style="width:150px">property</th>
+			<th style="width:90px">default</th>
+			<th>description</th>
+		</tr>
+	</thead>
+	<tr>
+		<td><samp><strong>hosts</strong></samp></td>
+		<td><code></code></td>
+		<td>one or more hosts working in a cluster</td>
+	</tr>
+	<tr>
+		<td><samp>failureExpiry</samp></td>
+		<td><code>3000</code></td>
+		<td>
+			the time how long a previously failed server is left out of the live server list before allowing connection attempts again
+		</td>
+	</tr>
+	<tr>
+		<td><samp>loadBalance</samp></td>
+		<td><code>false</code></td>
+		<td>
+			when this is set to "true" then server is picked at random so that there will be even load for each server. otherwise servers will be picked at sequence. In latter case the first servers is usually the best performing server and other servers are setup just for failure purposes. When load balancing is enabled then typically all servers are equal in performance.
+		</td>
+	</tr>
+	<tr>
+		<td><samp>connectTimeout</samp></td>
+		<td><code>5000</code></td>
+		<td>time in milliseconds between each connection reattempt</td>
+	</tr>
+	<tr>
+		<td><samp>connectCount</samp></td>
+		<td><code>3</code></td>
+		<td>ammount of times connection reattmps will occur before giving up</td>
+	</tr>
+	<tr>
+		<td><samp>encoding</samp></td>
+		<td><code>0</code></td>
+		<td>encoding is the AMF encoding version either 0 or 3 for AMF3</td>
+	</tr>
+	
+	<tr><td colspan="3" class="blank">&nbsp;</td></tr>
+	
+	<tr>
+		<td><samp>onReconnect</samp></td>
+		<td><code></code></td>
+		<td>a callback function to be called when one of the servers fails and another is connected</td>
+	</tr>
+	<tr>
+		<td><samp>onFailed</samp></td>
+		<td><code></code></td>
+		<td>a callback function to be called when all of the servers failed</td>
+	</tr>	
+</table>
+
+
+<h3>Bandwidth check</h3>
+
+<table class="listing">
+	<thead>
+		<tr>
+			<th style="width:150px">property</th>
+			<th style="width:90px">default</th>
+			<th>description</th>
+		</tr>
+	</thead>
+	<tr>
+		<td><samp><strong>checkUrl</strong></samp></td>
+		<td><code></code></td>
+		<td>server URL that is requested when testing client's connection speed</td>
+	</tr>
+	<tr>
+		<td><samp>serverType</samp></td>
+		<td><code>red5</code></td>
+		<td>type of server the plugin is handling the detection for and which implementation to choose. allowed values are: red5, wowza or fms</td>
+	</tr>
+	<tr>
+		<td><samp>bitrates</samp></td>
+		<td><code>[300]</code></td>
+		<td>a list of available bitrates to choose from</td>
+	</tr>
+	<tr>
+		<td><samp>defaultBitrate</samp></td>
+		<td><code>300</code></td>
+		<td>this bitrate is used if the bitrate choosing fails</td>
+	</tr>
+	<tr>
+		<td><samp>fileNamePattern</samp></td>
+		<td><code>{0}-{1}.{2}</code></td>
+		<td>determines the file naming convention format</td>
+	</tr>
+	<tr>
+		<td><samp>closestRateInterval</samp></td>
+		<td><code>100</code></td>
+		<td>determines which nearest rate will use the highest rate (ie detected bandwidth is 600 will choose the highest rate of 700)</td>
+	</tr>
+	<tr>
+		<td><samp>rememberBitrate</samp></td>
+		<td><code>true</code></td>
+		<td>enables or disables storing the chosen bitrate to enabled bandwidth detection on each request</td>
+	</tr>
+	
+	<tr><td colspan="3" class="blank">&nbsp;</td></tr>
+	
+	
+	<tr>
+		<td><samp>onDetectStart</samp></td>
+		<td><code></code></td>
+		<td>this function is called when bandwidth detection starts</td>
+	</tr>
+	<tr>
+		<td><samp>onDetectComplete</samp></td>
+		<td><code></code></td>
+		<td>this function is called when bandwidth detection was successfull</td>
+	</tr>
+	<tr>
+		<td><samp>onDetectFailed</samp></td>
+		<td><code></code></td>
+		<td>this function is called when bandwidth detection failed</td>
+	</tr>
+	<tr>
+		<td><samp>onDetectStatus</samp></td>
+		<td><code></code></td>
+		<td>this function is called when bandwidth ...</td>
+	</tr>
+	
+</table>
+
+
+  
+
+
+<h2>Download</h2>
+
+
+
+<!--
+	- make a commit
+	- test environment?
+	- syntax changes
+	- how bwHost is configured?
+	- 
+		Possible options are {0}-{1}, {0}_{1}, {1}-{0}, {1}_{0}, {0}-{1}.{2}, {0}_{1}.{2} (why fixed?),
+		could this be a regular expression?
+		
+	- callback arguments?
+	- building?, do you have releases: swf, zip, sources
+	- onDetectStatus ? 
+-->
