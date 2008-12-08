@@ -96,6 +96,8 @@ package org.flowplayer.controls.slider {
 			if (value && _clickListener != null) {
 				this.addEventListener(MouseEvent.MOUSE_DOWN, _clickListener);
 			}
+			this.buttonMode = _allowRandomSeek;
+			_bufferBar.buttonMode = _progressBar.buttonMode = ! _allowRandomSeek;
 		}
 
 		override protected function get maxDrag():Number {
@@ -109,6 +111,11 @@ package org.flowplayer.controls.slider {
 			drawBars();
 		}
 		
+		override protected function canDragTo(xPos:Number):Boolean {
+			if (_allowRandomSeek) return true;
+			return xPos < _bufferBar.x + _bufferBar.width;
+		}
+
 		override protected function onDispatchDrag():void {
 			drawBars();
 			_seekInProgress = true;

@@ -68,6 +68,7 @@ package org.flowplayer.controls.slider {
 		
 		private function onMouseUp(event:MouseEvent = null):void {
 			if (event && event.target != this) return;
+			if (! canDragTo(mouseX)) return;
 			_dragTimer.stop();
 			onDrag();
 			updateCurrentPosFromDragger();
@@ -75,9 +76,9 @@ package org.flowplayer.controls.slider {
 			if (! dispatchOnDrag) {
 				dispatchDragEvent();
 			}
-		}
-		
-		private function updateCurrentPosFromDragger():void {
+		}				protected function canDragTo(xPos:Number):Boolean {
+			return true;		}
+		private function updateCurrentPosFromDragger():void {
 			_currentPos = (_dragger.x / (width - _dragger.width)) * 100;
 		}
 

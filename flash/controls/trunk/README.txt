@@ -1,5 +1,10 @@
 Version history:
 
+3.0.2
+-----
+- improved scrubbing: Cannot click on unbuffered areas when random seeking is not enabled (streaming server not used).
+  The scrubber now has hand cursor enabled on areas where seeking can be done.
+
 3.0.1
 -----
 - mute volume button shows the muted state correctly initially when it has been loaded
