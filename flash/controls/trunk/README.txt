@@ -4,6 +4,7 @@ Version history:
 -----
 - improved scrubbing: Cannot click on unbuffered areas when random seeking is not enabled (streaming server not used).
   The scrubber now has hand cursor enabled on areas where seeking can be done.
+- No longer hides the controlbar when mouse is over it (when autoHide is used)
 
 3.0.1
 -----
