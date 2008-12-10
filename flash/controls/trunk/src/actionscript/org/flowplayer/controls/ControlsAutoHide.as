@@ -98,7 +98,8 @@ package org.flowplayer.controls {
 		}
 		
 		private function onMouseMove(event:MouseEvent):void {
-			if (isShowing() && _hideTimer) { 
+			if (isShowing() && _hideTimer) {
+				log.debug("controlbar already showing"); 
 				_hideTimer.stop();
 				_hideTimer.start();
 				return;
@@ -130,6 +131,7 @@ package org.flowplayer.controls {
 		}
 
 		private function hideControlBar(event:TimerEvent = null):void {
+			if (_controlBar.hitTestPoint(_stage.mouseX, _stage.mouseY)) return;
 			_player.animationEngine.animate(_controlBar, hiddenPos, 1000);
 			_hideTimer.stop();
 		}
