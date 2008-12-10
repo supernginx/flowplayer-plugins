@@ -131,7 +131,8 @@ package org.flowplayer.controls {
 		}
 
 		private function hideControlBar(event:TimerEvent = null):void {
-			if (_controlBar.hitTestPoint(_stage.mouseX, _stage.mouseY)) return;
+			log.debug("mouse pos " + _stage.mouseX + "x" + _stage.mouseY);
+			if (_stage.mouseX < _stage.width && _stage.mouseY < _stage.height && _controlBar.hitTestPoint(_stage.mouseX, _stage.mouseY)) return;
 			_player.animationEngine.animate(_controlBar, hiddenPos, 1000);
 			_hideTimer.stop();
 		}
