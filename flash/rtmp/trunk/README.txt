@@ -1,5 +1,9 @@
 Version history:
 
+3.0.1
+-----
+- dispatches the LOAD event when initialized (needed for flowplayer 3.0.2 compatibility)
+
 3.0.0
 ---
 - 3.0.0 final
