@@ -5,6 +5,8 @@ Version history:
 - improved scrubbing: Cannot click on unbuffered areas when random seeking is not enabled (streaming server not used).
   The scrubber now has hand cursor enabled on areas where seeking can be done.
 - No longer hides the controlbar when mouse is over it (when autoHide is used)
+- Fixed the controlbar disappearing and not appearing again when autoHide is used
+- dispatches the LOAD event when initialized (needed for flowplayer 3.0.2 compatibility)
 
 3.0.1
 -----
