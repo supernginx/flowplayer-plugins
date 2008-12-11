@@ -9,6 +9,7 @@
  */
 
 package org.flowplayer.controls {
+	import org.flowplayer.model.PluginEventType;	
 	import org.flowplayer.controls.button.AbstractButton;	import org.flowplayer.controls.button.AbstractToggleButton;	import org.flowplayer.controls.button.ButtonEvent;	import org.flowplayer.controls.button.NextButton;	import org.flowplayer.controls.button.PrevButton;	import org.flowplayer.controls.button.StopButton;	import org.flowplayer.controls.button.ToggleFullScreenButton;	import org.flowplayer.controls.button.TogglePlayButton;	import org.flowplayer.controls.button.ToggleVolumeMuteButton;	import org.flowplayer.controls.slider.AbstractSlider;	import org.flowplayer.controls.slider.Scrubber;	import org.flowplayer.controls.slider.VolumeSlider;	import org.flowplayer.model.Clip;	import org.flowplayer.model.ClipEvent;	import org.flowplayer.model.PlayerEvent;	import org.flowplayer.model.PlayerEventType;	import org.flowplayer.model.Playlist;	import org.flowplayer.model.Plugin;	import org.flowplayer.model.PluginModel;	import org.flowplayer.model.Status;	import org.flowplayer.util.Arrange;	import org.flowplayer.util.PropertyBinder;	import org.flowplayer.view.AbstractSprite;	import org.flowplayer.view.Flowplayer;	import org.flowplayer.view.StyleableSprite;		import flash.display.DisplayObject;	import flash.events.Event;	import flash.events.MouseEvent;	import flash.events.TimerEvent;	import flash.utils.Timer;			/**
 	 * @author anssi
 	 */
@@ -163,9 +164,6 @@ package org.flowplayer.controls {
 				_scrubber.playlist = player.playlist;
 			}
 			enableFullscreenButton(player.playlist.current);
-			if (_playButton) {
-				_playButton.down = player.isPlaying();
-			}
 			log.debug("setting root style to " + _config.style.bgStyle);
 			rootStyle = _config.style.bgStyle;
 			if (_scrubber) {
@@ -174,9 +172,9 @@ package org.flowplayer.controls {
 			if (_muteVolumeButton) {
 				_muteVolumeButton.down = player.muted;
 			}
+			_pluginModel.dispatchOnLoad();
 		}
-
-		public function onConfig(model:PluginModel):void {
+		public function onConfig(model:PluginModel):void {
 			log.info("received my plugin config ", model.config);
 			_pluginModel = model;
 			log.debug("-");
