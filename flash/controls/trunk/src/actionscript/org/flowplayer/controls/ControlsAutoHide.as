@@ -109,7 +109,7 @@ package org.flowplayer.controls {
 		}
 		
 		private function isShowing():Boolean {
-			return _controlBar.alpha == 1 && _controlBar.y < getControlBarHiddenTopPosition();
+			return _controlBar.alpha > 0 && _controlBar.y < getControlBarHiddenTopPosition();
 		}
 
 		private function onStageResize(event:Event):void {
@@ -131,6 +131,8 @@ package org.flowplayer.controls {
 		}
 
 		private function hideControlBar(event:TimerEvent = null):void {
+			if (! isShowing()) return;
+			
 			log.debug("mouse pos " + _stage.mouseX + "x" + _stage.mouseY);
 			if (_stage.mouseX < _stage.width && _stage.mouseY < _stage.height && _controlBar.hitTestPoint(_stage.mouseX, _stage.mouseY)) return;
 			_player.animationEngine.animate(_controlBar, hiddenPos, 1000);
@@ -138,7 +140,7 @@ package org.flowplayer.controls {
 		}
 
 		private function showControlBar():void {
-			// fetch teh current props, they might have changed because of some
+			// fetch the current props, they might have changed because of some
 			var currentProps:DisplayProperties = _player.pluginRegistry.getPlugin("controls") as DisplayProperties;
 			log.debug("currentProps " + currentProps);
 			if (!_originalPos) {

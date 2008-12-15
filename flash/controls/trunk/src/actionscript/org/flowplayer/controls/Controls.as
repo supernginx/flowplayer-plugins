@@ -164,6 +164,9 @@ package org.flowplayer.controls {
 				_scrubber.playlist = player.playlist;
 			}
 			enableFullscreenButton(player.playlist.current);
+			if (_playButton) {
+				_playButton.down = player.isPlaying();
+			}
 			log.debug("setting root style to " + _config.style.bgStyle);
 			rootStyle = _config.style.bgStyle;
 			if (_scrubber) {
@@ -315,6 +318,7 @@ package org.flowplayer.controls {
 		private function addListeners(playlist:Playlist):void {
 			playlist.onConnect(onPlayStarted);
 			playlist.onBeforeBegin(onPlayStarted);
+			playlist.onMetaData(onPlayStarted);
 			playlist.onPause(onPlayPaused);
 			playlist.onResume(onPlayResumed);
 			playlist.onStop(onPlayStopped);
