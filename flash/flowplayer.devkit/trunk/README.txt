@@ -7,6 +7,11 @@ module contains a 'recent' library version only.
 
 Version history:
 
+3.0.2
+-----
+- Introduced new plugin event types PluginEventType#LOAD and PluginEventType#ERROR
+  The PluginModel interface has new methods for dispatching these events. 
+
 rc3
 ---
 - renamed configureLog() to logging()
