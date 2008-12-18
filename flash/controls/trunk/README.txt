@@ -1,5 +1,9 @@
 Version history:
 
+3.0.3
+-----
+- fixed outHide hide to hide when moving the mouse out of the controlbar area
+
 3.0.2
 -----
 - improved scrubbing: Cannot click on unbuffered areas when random seeking is not enabled (streaming server not used).
