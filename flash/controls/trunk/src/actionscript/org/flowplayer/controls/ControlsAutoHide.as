@@ -9,6 +9,13 @@
  */
 
 package org.flowplayer.controls {
+	import org.flowplayer.model.DisplayProperties;
+	import org.flowplayer.model.Playlist;
+	import org.flowplayer.util.Assert;
+	import org.flowplayer.util.Log;
+	import org.flowplayer.view.AnimationEngine;
+	import org.flowplayer.view.Flowplayer;
+	
 	import flash.display.DisplayObject;
 	import flash.display.Stage;
 	import flash.display.StageDisplayState;
@@ -17,15 +24,7 @@ package org.flowplayer.controls {
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.geom.Rectangle;
-	import flash.utils.Timer;
-	
-	import org.flowplayer.model.DisplayProperties;
-	import org.flowplayer.model.Playlist;
-	import org.flowplayer.util.Assert;
-	import org.flowplayer.util.Log;
-	import org.flowplayer.view.AnimationEngine;
-	import org.flowplayer.view.Flowplayer;		
-
+	import flash.utils.Timer;		
 	/**
 	 * @author api
 	 */
@@ -39,6 +38,7 @@ package org.flowplayer.controls {
 		private var _config:Config;
 		private var _player:Flowplayer;
 		private var _originalPos:DisplayProperties;
+		private var _mouseOver:Boolean = true;
 
 		public function ControlsAutoHide(config:Config, player:Flowplayer, stage:Stage, controlBar:DisplayObject) {
 			Assert.notNull(config, "config cannot be null");
@@ -95,8 +95,18 @@ package org.flowplayer.controls {
 			createHideTimer();
 			_stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 			_stage.addEventListener(Event.RESIZE, onStageResize);
+			_controlBar.addEventListener(MouseEvent.ROLL_OVER, onMouseOver);
+			_controlBar.addEventListener(MouseEvent.ROLL_OUT, onMouseOut);
 		}
 		
+		private function onMouseOver(event:MouseEvent):void {
+			_mouseOver = true;
+		}
+
+		private function onMouseOut(event:MouseEvent):void {
+			_mouseOver = false;
+		}
+
 		private function onMouseMove(event:MouseEvent):void {
 			if (isShowing() && _hideTimer) {
 				log.debug("controlbar already showing"); 
@@ -133,8 +143,8 @@ package org.flowplayer.controls {
 		private function hideControlBar(event:TimerEvent = null):void {
 			if (! isShowing()) return;
 			
-			log.debug("mouse pos " + _stage.mouseX + "x" + _stage.mouseY);
-			if (_stage.mouseX < _stage.width && _stage.mouseY < _stage.height && _controlBar.hitTestPoint(_stage.mouseX, _stage.mouseY)) return;
+			log.debug("mouse pos " + _stage.mouseX + "x" + _stage.mouseY + " mouse on stage " + _mouseOver);
+			if (_mouseOver) return;
 			_player.animationEngine.animate(_controlBar, hiddenPos, 1000);
 			_hideTimer.stop();
 		}
