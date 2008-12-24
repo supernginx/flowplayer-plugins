@@ -3,6 +3,8 @@ Version history:
 3.0.3
 -----
 - fixed outHide hide to hide when moving the mouse out of the controlbar area
+- enable() method was renamed to setVisible()
+- new enable() method to set the buttons' and widgets' enabled state
 
 3.0.2
 -----

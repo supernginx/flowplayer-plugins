@@ -48,20 +48,48 @@ package org.flowplayer.controls {
 		
 
 		/**
-		 * Enables and disabled buttons and other widgets.
+		 * Makes buttons and other widgets visible/hidden.
 		 * @param enabledWidgets the buttons visibilies, for example { all: true, volume: false, time: false }		 */		
 		[External]
-		public function enable(enabledWidgets:Object):void {
+		public function widgets(visibleWidgets:Object):void {
 			log.debug("enable()");
 			if (_animationTimer && _animationTimer.running) return;
-			if (enabledWidgets.hasOwnProperty("all")) {
-				_config.resetVisibilities();
-			}
-			new PropertyBinder(_config).copyProperties(enabledWidgets);
+			setConfigBooleanStates("visible", visibleWidgets);
 			immediatePositioning = false;
 			createChildren();
 			onResize();
 			immediatePositioning = true;
+		}
+
+		/**
+		 * Enables and disables buttons and other widgets.
+		 */
+		[External]
+		 public function enable(enabledWidgets:Object):void {
+			log.debug("enable()");
+			if (_animationTimer && _animationTimer.running) return;
+			setConfigBooleanStates("enabled", enabledWidgets);
+			enableWidgets();
+		}
+		
+		private function enableWidgets():void {
+			var index:int = 0;
+			while (index < numChildren) {
+				var child:DisplayObject = getChildAt(index);
+				log.debug("enabledWidget " + child.name + ":");
+				if (child.hasOwnProperty("enabled") && _config.enabled.hasOwnProperty(child.name)) {
+					log.debug("enabled " + _config.enabled[child.name]);
+					child["enabled"] = _config.enabled[child.name];
+				}
+				index++;
+			}
+		}
+
+		private function setConfigBooleanStates(propertyName:String, values:Object):void {
+			if (values.hasOwnProperty("all")) {
+				_config[propertyName].reset();
+			}
+			new PropertyBinder(_config[propertyName]).copyProperties(values);
 		}
 		
 		private function set immediatePositioning(enable:Boolean):void {
@@ -199,16 +227,16 @@ package org.flowplayer.controls {
 
 		private function createChildren():void {
 			log.debug("creating fullscren ", _config );
-			_fullScreenButton = addChildWidget(createWidget(_fullScreenButton, _config.fullscreen, ToggleFullScreenButton, _config)) as AbstractToggleButton;
+			_fullScreenButton = addChildWidget(createWidget(_fullScreenButton, "fullscreen", ToggleFullScreenButton, _config)) as AbstractToggleButton;
 			log.debug("creating play");
-			_playButton = addChildWidget(createWidget(_playButton, _config.play, TogglePlayButton, _config), ButtonEvent.CLICK, onPlayClicked) as AbstractToggleButton;
+			_playButton = addChildWidget(createWidget(_playButton, "play", TogglePlayButton, _config), ButtonEvent.CLICK, onPlayClicked) as AbstractToggleButton;
 			log.debug("creating stop");
-			_stopButton = addChildWidget(createWidget(_stopButton, _config.stop, StopButton, _config), MouseEvent.CLICK, onStopClicked);
-			_nextButton = addChildWidget(createWidget(_nextButton, _config.playlist, NextButton, _config), MouseEvent.CLICK, "next");
-			_prevButton = addChildWidget(createWidget(_prevButton, _config.playlist, PrevButton, _config), MouseEvent.CLICK, "previous");
-			_muteVolumeButton = addChildWidget(createWidget(_muteVolumeButton, _config.mute, ToggleVolumeMuteButton, _config), ButtonEvent.CLICK, onMuteVolumeClicked) as AbstractToggleButton;
-			_volumeSlider = addChildWidget(createWidget(_volumeSlider, _config.volume, VolumeSlider, _config), VolumeSlider.DRAG_EVENT, onVolumeSlider, 1) as VolumeSlider;
-			_scrubber = addChildWidget(createWidget(_scrubber, _config.scrubber, Scrubber, _config), Scrubber.DRAG_EVENT, onScrubbed, 1) as Scrubber;
+			_stopButton = addChildWidget(createWidget(_stopButton, "stop", StopButton, _config), MouseEvent.CLICK, onStopClicked);
+			_nextButton = addChildWidget(createWidget(_nextButton, "playlist", NextButton, _config), MouseEvent.CLICK, "next");
+			_prevButton = addChildWidget(createWidget(_prevButton, "playlist", PrevButton, _config), MouseEvent.CLICK, "previous");
+			_muteVolumeButton = addChildWidget(createWidget(_muteVolumeButton, "mute", ToggleVolumeMuteButton, _config), ButtonEvent.CLICK, onMuteVolumeClicked) as AbstractToggleButton;
+			_volumeSlider = addChildWidget(createWidget(_volumeSlider, "volume", VolumeSlider, _config), VolumeSlider.DRAG_EVENT, onVolumeSlider, 1) as VolumeSlider;
+			_scrubber = addChildWidget(createWidget(_scrubber, "scrubber", Scrubber, _config), Scrubber.DRAG_EVENT, onScrubbed, 1) as Scrubber;
 			createTimeView();
 			createScrubberUpdateTimer();
 			log.debug("created all buttons");
@@ -217,7 +245,7 @@ package org.flowplayer.controls {
 		
 		private function createTimeView():void {
 			if (! _player) return;
-			if (_config.time) {
+			if (_config.visible.time) {
 				if (_timeView) return;
 				_timeView = addChildWidget(new TimeView(_config, _player), TimeView.EVENT_REARRANGE, onTimeViewRearranged, 1) as TimeView;
 				_timeView.visible = false;
@@ -231,7 +259,8 @@ package org.flowplayer.controls {
 			onResize();
 		}
 
-		private function createWidget(existing:DisplayObject, doAdd:Boolean, Widget:Class, constructorArg:Object):DisplayObject {
+		private function createWidget(existing:DisplayObject, name:String, Widget:Class, constructorArg:Object):DisplayObject {
+			var doAdd:Boolean = _config.visible[name];
 			if (!doAdd) {
 				log.debug("not showing widget " + Widget);
 				if (existing) {
@@ -243,6 +272,7 @@ package org.flowplayer.controls {
 			log.debug("creating " + Widget);
 			var widget:DisplayObject = constructorArg ? new Widget(constructorArg) : new Widget();
 			widget.visible = false;
+			widget.name = name;
 			return widget;
 		}
 
@@ -357,13 +387,13 @@ package org.flowplayer.controls {
 			var enabled:Boolean = clip && (clip.originalWidth > 0 || ! clip.accelerated);
 			_fullScreenButton.enabled = enabled;
 			if (enabled) {
-				_fullScreenButton.addEventListener(MouseEvent.CLICK, toggleFullscreen);
+				_fullScreenButton.addEventListener(ButtonEvent.CLICK, toggleFullscreen);
 			} else {
-				_fullScreenButton.removeEventListener(MouseEvent.CLICK, toggleFullscreen);
+				_fullScreenButton.removeEventListener(ButtonEvent.CLICK, toggleFullscreen);
 			}
 		}
 		
-		private function toggleFullscreen(event:MouseEvent):void  {
+		private function toggleFullscreen(event:ButtonEvent):void  {
 			_player.toggleFullscreen();
 		}
 
@@ -425,14 +455,14 @@ package org.flowplayer.controls {
 		}
 
 		private function arrangeRightEdgeControls(leftEdge:Number):void {
-			var edge:Number =  _config.scrubber ? (width - _margins[1]) : leftEdge;
+			var edge:Number =  _config.visible.scrubber ? (width - _margins[1]) : leftEdge;
 			var rightControls:Array;
 
 			// set volume slider width first so that we know how to arrange the other controls
 			if (_volumeSlider) {
 				_volumeSlider.width = 40;
 			}
-			if (_config.scrubber) {
+			if (_config.visible.scrubber) {
 				// arrange from right to left (scrubber takes the remaining space)
 				rightControls = [_fullScreenButton, _volumeSlider, _muteVolumeButton, _timeView];
 				edge = arrangeControls(edge, rightControls, arrangeToRightEdge);
@@ -459,20 +489,20 @@ package org.flowplayer.controls {
 		}
 
 		private function arrangeVolumeControl():void {
-			if (! _config.volume) return;
+			if (! _config.visible.volume) return;
 			_volumeSlider.height = height/3;
 			_volumeSlider.y = height/2 - height/6;;
 //			Arrange.center(_volumeSlider, 0, height);
 		}
 
 		private function arrangeMuteVolumeButton():void {
-			if (! _config.mute) return;
+			if (! _config.visible.mute) return;
 			Arrange.center(_muteVolumeButton, 0, height);
 			return;
 		}
 		
 		private function arrangeScrubber(leftEdge:Number, rightEdge:Number):Number {
-			if (! _config.scrubber) return rightEdge;
+			if (! _config.visible.scrubber) return rightEdge;
 			arrangeX(_scrubber, leftEdge);
 			var scrubberWidth:Number = rightEdge - leftEdge - 2 * getSpaceAfterWidget(_scrubber); 
 			if (! _player || _immediatePositioning) { 
