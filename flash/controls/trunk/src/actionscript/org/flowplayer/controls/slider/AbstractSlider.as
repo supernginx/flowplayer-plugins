@@ -37,25 +37,37 @@ package org.flowplayer.controls.slider {
 		public function AbstractSlider(config:Config) {
 			_config = config;
 			_dragTimer = new Timer(50);
-			_dragTimer.addEventListener(TimerEvent.TIMER, onDrag);
 			createDragger();
-			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+		}
+
+		public function set enabled(value:Boolean) :void {
+			_dragTimer.addEventListener(TimerEvent.TIMER, onDrag);
+			var func:String = value ? "addEventListener" : "removeEventListener";
+
+			this[func](Event.ADDED_TO_STAGE, onAddedToStage);
+			this[func](MouseEvent.MOUSE_UP, onMouseUp);
+			_dragger[func](MouseEvent.MOUSE_DOWN, onMouseDown);
+			_dragger[func](MouseEvent.MOUSE_UP, onMouseUp);
+			stage[func](MouseEvent.MOUSE_UP, onMouseUpStage);
+			toggleClickListeners(MouseEvent.MOUSE_DOWN, onMouseDown, value);
+
+			alpha = value ? 1 : 0.5;
 		}
 		
 		private function onAddedToStage(event:Event):void {
-			registerClickListeners(MouseEvent.MOUSE_DOWN, onMouseDown);
-			addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
-			stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUpStage);
+			enabled = true;
 		}
 
-		protected function registerClickListeners(event:String, listener:Function):void {
-			addEventListener(event, listener);
+		protected function toggleClickListeners(event:String, listener:Function, add:Boolean):void {
+			if (add) {
+				addEventListener(event, listener);
+			} else {
+				removeEventListener(event, listener);
+			}
 		}
 
 		private function createDragger():void {
 			_dragger = new Dragger();
-			_dragger.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-			_dragger.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 			_dragger.buttonMode = true;
 			addChild(_dragger);
 		}

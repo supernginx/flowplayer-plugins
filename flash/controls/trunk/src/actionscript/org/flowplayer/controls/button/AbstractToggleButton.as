@@ -33,6 +33,7 @@ package org.flowplayer.controls.button {
 			if (enabled) {
 				addEventListener(MouseEvent.CLICK, onClicked);
 			} else {
+				log.debug("removing click listener");
 				removeEventListener(MouseEvent.CLICK, onClicked);
 			}
 		}
@@ -65,6 +66,7 @@ package org.flowplayer.controls.button {
 		}
 
 		protected function onClicked(event:MouseEvent):void {
+			log.debug("clicked!");
 			dispatchEvent(new ButtonEvent(ButtonEvent.CLICK));
 		}
 

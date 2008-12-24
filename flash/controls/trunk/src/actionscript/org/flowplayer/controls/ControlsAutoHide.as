@@ -152,11 +152,9 @@ package org.flowplayer.controls {
 		private function showControlBar():void {
 			// fetch the current props, they might have changed because of some
 			var currentProps:DisplayProperties = _player.pluginRegistry.getPlugin("controls") as DisplayProperties;
-			log.debug("currentProps " + currentProps);
 			if (!_originalPos) {
 				_originalPos = DisplayProperties(_player.pluginRegistry.getPlugin("controls")).clone() as DisplayProperties;
 			}
-			log.debug("originalProps " + _originalPos);
 			
 			if (isHardwareScaledFullsreen()) {
 				currentProps.alpha = _originalPos.alpha;

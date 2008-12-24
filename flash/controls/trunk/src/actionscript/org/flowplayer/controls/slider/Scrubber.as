@@ -45,12 +45,14 @@ package org.flowplayer.controls.slider {
 			return false;
 		}
 
-		override protected function registerClickListeners(event:String, listener:Function):void {
-			_bufferBar.addEventListener(event, listener);
-			_progressBar.addEventListener(event, listener);
+		override protected function toggleClickListeners(event:String, listener:Function, add:Boolean):void {
+			var func:String = add ? "addEventListener" : "removeEventListener";
+			
+			_bufferBar[func](event, listener);
+			_progressBar[func](event, listener);
 			_clickListener = listener;
 			if (_allowRandomSeek) {
-				this.addEventListener(MouseEvent.MOUSE_DOWN, _clickListener);
+				this[func](MouseEvent.MOUSE_DOWN, _clickListener);
 			}
 		}
 
