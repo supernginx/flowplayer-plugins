@@ -28,7 +28,6 @@ package org.flowplayer.controls.slider {
 		private var _bufferEnd:Number;
 		private var _bufferBar:Sprite;
 		private var _allowRandomSeek:Boolean;
-		private var _clickListener:Function;
 		private var _seekInProgress:Boolean;
 		private var _progressBar:Sprite;		private var _bufferStart:Number;
 		public function Scrubber(config:Config) {
@@ -45,15 +44,12 @@ package org.flowplayer.controls.slider {
 			return false;
 		}
 
-		override protected function toggleClickListeners(event:String, listener:Function, add:Boolean):void {
-			var func:String = add ? "addEventListener" : "removeEventListener";
-			
-			_bufferBar[func](event, listener);
-			_progressBar[func](event, listener);
-			_clickListener = listener;
+		override protected function getClickTargets():Array {
+			var targets:Array = [_bufferBar, _progressBar];
 			if (_allowRandomSeek) {
-				this[func](MouseEvent.MOUSE_DOWN, _clickListener);
+				targets.push(this);
 			}
+			return targets;
 		}
 
 		private function drawBufferBar(leftEdge:Number, rightEdge:Number):void {
@@ -95,8 +91,10 @@ package org.flowplayer.controls.slider {
 
 		public function set allowRandomSeek(value:Boolean):void {
 			_allowRandomSeek = value;
-			if (value && _clickListener != null) {
-				this.addEventListener(MouseEvent.MOUSE_DOWN, _clickListener);
+			if (value) {
+				this.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+			} else {
+				this.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 			}
 			this.buttonMode = _allowRandomSeek;
 			_bufferBar.buttonMode = _progressBar.buttonMode = ! _allowRandomSeek;
