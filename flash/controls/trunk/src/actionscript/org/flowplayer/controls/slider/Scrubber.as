@@ -30,7 +30,9 @@ package org.flowplayer.controls.slider {
 		private var _allowRandomSeek:Boolean;
 		private var _seekInProgress:Boolean;
 		private var _progressBar:Sprite;		private var _bufferStart:Number;
-		public function Scrubber(config:Config) {
+		private var _enabled:Boolean = true;
+
+		public function Scrubber(config:Config) {
 			super(config);
 			createBars();
 		}
@@ -44,9 +46,10 @@ package org.flowplayer.controls.slider {
 			return false;
 		}
 
-		override protected function getClickTargets():Array {
+		override protected function getClickTargets(enabled:Boolean):Array {
+			_enabled = enabled;
 			var targets:Array = [_bufferBar, _progressBar];
-			if (_allowRandomSeek) {
+			if (! enabled || _allowRandomSeek) {
 				targets.push(this);
 			}
 			return targets;
@@ -91,13 +94,14 @@ package org.flowplayer.controls.slider {
 
 		public function set allowRandomSeek(value:Boolean):void {
 			_allowRandomSeek = value;
-			if (value) {
-				this.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-			} else {
-				this.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+			if (_enabled) {
+				if (value) {
+					addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+				} else {
+					removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+				}
+				buttonMode = _allowRandomSeek;
 			}
-			this.buttonMode = _allowRandomSeek;
-			_bufferBar.buttonMode = _progressBar.buttonMode = ! _allowRandomSeek;
 		}
 
 		override protected function get maxDrag():Number {
