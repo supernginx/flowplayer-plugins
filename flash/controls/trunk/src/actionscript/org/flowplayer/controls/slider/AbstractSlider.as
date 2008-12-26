@@ -63,7 +63,7 @@ package org.flowplayer.controls.slider {
 		}
 
 		private function toggleClickListeners(add:Boolean):void {
-			var targets:Array = getClickTargets();
+			var targets:Array = getClickTargets(add);
 			log.debug("click targets", targets);
 			for (var i:Number = 0; i < targets.length; i++) {
 				if (add) {
@@ -75,7 +75,7 @@ package org.flowplayer.controls.slider {
 					targets[i]["buttonMode"] = add;
 				}
 			}
-		}				protected function getClickTargets():Array {
+		}				protected function getClickTargets(enabled:Boolean):Array {
 			return [this];		}
 		private function createDragger():void {
 			_dragger = new Dragger();
