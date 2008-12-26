@@ -3,6 +3,7 @@ Version history:
 3.0.2
 -----
 - compatible with flowplayer 3.0.3 provider API
+- made it possible to specify a full rtmp URL in clip's url. In this case the netConnectionUrl variable is not needed in the provider config.
 
 3.0.1
 -----
