@@ -217,6 +217,8 @@ package org.flowplayer.controls {
 		
 		private function createConfig(plugin:PluginModel):Config {
 			var config:Config = new PropertyBinder(new Config()).copyProperties(plugin.config) as Config;
+			new PropertyBinder(config.visible).copyProperties(plugin.config);
+			new PropertyBinder(config.enabled).copyProperties(plugin.config.enabled);
 			config.addStyleProps(plugin.config);
 			return config;
 		}

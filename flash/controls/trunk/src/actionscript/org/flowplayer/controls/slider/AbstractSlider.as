@@ -9,6 +9,8 @@
  */
 
 package org.flowplayer.controls.slider {
+	import flash.events.EventDispatcher;	
+	
 	import org.flowplayer.view.AnimationEngine;	
 	import org.flowplayer.util.GraphicsUtil;			import flash.display.DisplayObject;
 	import flash.display.Sprite;
@@ -38,35 +40,44 @@ package org.flowplayer.controls.slider {
 			_config = config;
 			_dragTimer = new Timer(50);
 			createDragger();
+			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
 
 		public function set enabled(value:Boolean) :void {
+			log.debug("setting enabled to " + value);
 			_dragTimer.addEventListener(TimerEvent.TIMER, onDrag);
 			var func:String = value ? "addEventListener" : "removeEventListener";
 
-			this[func](Event.ADDED_TO_STAGE, onAddedToStage);
 			this[func](MouseEvent.MOUSE_UP, onMouseUp);
 			_dragger[func](MouseEvent.MOUSE_DOWN, onMouseDown);
 			_dragger[func](MouseEvent.MOUSE_UP, onMouseUp);
 			stage[func](MouseEvent.MOUSE_UP, onMouseUpStage);
-			toggleClickListeners(MouseEvent.MOUSE_DOWN, onMouseDown, value);
+			toggleClickListeners(value);
 
 			alpha = value ? 1 : 0.5;
+			_dragger.buttonMode = value;
 		}
 		
 		private function onAddedToStage(event:Event):void {
 			enabled = true;
 		}
 
-		protected function toggleClickListeners(event:String, listener:Function, add:Boolean):void {
-			if (add) {
-				addEventListener(event, listener);
-			} else {
-				removeEventListener(event, listener);
+		private function toggleClickListeners(add:Boolean):void {
+			var targets:Array = getClickTargets();
+			log.debug("click targets", targets);
+			for (var i:Number = 0; i < targets.length; i++) {
+				if (add) {
+					EventDispatcher(targets[i]).addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+				} else {
+					EventDispatcher(targets[i]).removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+				}
+				if (targets[i].hasOwnProperty("buttonMode")) {
+					targets[i]["buttonMode"] = add;
+				}
 			}
-		}
-
-		private function createDragger():void {
+		}				protected function getClickTargets():Array {
+			return [this];		}
+		private function createDragger():void {
 			_dragger = new Dragger();
 			_dragger.buttonMode = true;
 			addChild(_dragger);
@@ -98,7 +109,7 @@ package org.flowplayer.controls.slider {
 			return _dragTimer.running;
 		}
 
-		private function onMouseDown(event:MouseEvent):void {
+		protected function onMouseDown(event:MouseEvent):void {
 			if (! event.target == this) return;
 			_dragTimer.start();
 		}
