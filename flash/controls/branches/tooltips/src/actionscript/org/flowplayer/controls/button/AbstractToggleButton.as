@@ -8,6 +8,8 @@
  */
 
 package org.flowplayer.controls.button {
+	import org.flowplayer.view.AnimationEngine;	
+	
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.events.MouseEvent;
@@ -21,11 +23,11 @@ package org.flowplayer.controls.button {
 		protected var _upStateFace:DisplayObjectContainer;
 		protected var _downStateFace:DisplayObjectContainer;
 
-		public function AbstractToggleButton(config:Config) {
+		public function AbstractToggleButton(config:Config, animationEngine:AnimationEngine) {
 			_upStateFace = createUpStateFace();
 			_downStateFace = createDownStateFace(); 
 			addChild(_upStateFace);
-			super(config);
+			super(config, animationEngine);
 			clickListenerEnabled = true;
 		}
 		
@@ -46,11 +48,13 @@ package org.flowplayer.controls.button {
 		protected override function onMouseOut(event:MouseEvent = null):void {
 			resetDispColor(_upStateFace.getChildByName(BACK_INSTANCE_NAME));
 			resetDispColor(_downStateFace.getChildByName(BACK_INSTANCE_NAME));
+			hideTooltip();
 		}
 
 		protected override function onMouseOver(event:MouseEvent):void {
 			transformDispColor(_upStateFace.getChildByName(BACK_INSTANCE_NAME));
 			transformDispColor(_downStateFace.getChildByName(BACK_INSTANCE_NAME));
+			showTooltip();
 		}
 		
 		public function get isDown():Boolean {
@@ -68,6 +72,7 @@ package org.flowplayer.controls.button {
 		protected function onClicked(event:MouseEvent):void {
 			log.debug("clicked!");
 			dispatchEvent(new ButtonEvent(ButtonEvent.CLICK));
+			showTooltip();
 		}
 
 		protected function createUpStateFace():DisplayObjectContainer {

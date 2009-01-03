@@ -22,6 +22,7 @@ package org.flowplayer.controls {
 		private var _hideDelay:Number = 4000;
 		private var _visible:WidgetBooleanStates = new WidgetBooleanStates();
 		private var _enabled:WidgetBooleanStates = new WidgetBooleanStates();
+		private var _tooltips:ToolTips = new ToolTips();
 
 		public function get autoHide():String {
 			return _autoHide;
@@ -55,5 +56,7 @@ package org.flowplayer.controls {
 		
 		public function set enabled(enabled:WidgetBooleanStates):void {
 			_enabled = enabled;
-		}	}
+		}				public function get tooltips():ToolTips {
+			return _tooltips;		}				public function set tooltips(tooltips:ToolTips):void {
+			_tooltips = tooltips;		}	}
 }

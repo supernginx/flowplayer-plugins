@@ -9,6 +9,7 @@
  */
 
 package org.flowplayer.controls.slider {
+	import org.flowplayer.view.AnimationEngine;	
 	import org.flowplayer.controls.Config;
 	import org.flowplayer.controls.slider.AbstractSlider;	
 
@@ -18,8 +19,15 @@ package org.flowplayer.controls.slider {
 	public class VolumeSlider extends AbstractSlider {
 		public static const DRAG_EVENT:String = AbstractSlider.DRAG_EVENT;
 		
-		public function VolumeSlider(config:Config) {
-			super(config);
+		public function VolumeSlider(config:Config, animationEngine:AnimationEngine) {
+			super(config, animationEngine);
+			tooltipTextFunc = function(percentage:Number):String {
+				return Math.round(percentage) + "%";
+			};
+		}
+		
+		override protected function isToolTipEnabled():Boolean {
+			return _config.tooltips.volume;
 		}
 	}
 }
