@@ -107,14 +107,13 @@ package org.flowplayer.controls {
 			var result:Object = super.css(styleProps);
 			var newStyleProps:Object = _config.style.addStyleProps(result);
 			
-			new PropertyBinder(_config.tooltips).copyProperties(styleProps["tooltips"]);
+			initTooltipConfig(_config, styleProps);
 			newStyleProps["tooltips"] = _config.tooltips.props;
 			
 			redraw(styleProps);
 			return newStyleProps;
 		}
 		
-
 		/**
 		 * @inheritDoc
 		 */
@@ -163,6 +162,10 @@ package org.flowplayer.controls {
 					bufferGradient: "none",
 					tooltipColor: "#5F747C",
 					tooltipTextColor: "#ffffff" };
+		}
+		
+		private function initTooltipConfig(config:Config, styleProps:Object):void {
+			new PropertyBinder(config.tooltips).copyProperties(styleProps["tooltips"]);
 		}
 		
 		private function redraw(styleProps:Object):void {
@@ -224,6 +227,7 @@ package org.flowplayer.controls {
 			new PropertyBinder(config.visible).copyProperties(plugin.config);
 			new PropertyBinder(config.enabled).copyProperties(plugin.config.enabled);
 			config.addStyleProps(plugin.config);
+			initTooltipConfig(config, plugin.config);
 			return config;
 		}
 		
