@@ -1,5 +1,10 @@
 Version history:
 
+3.0.3
+-----
+- the progress bar now moves to the latest seek position
+- bufferbar now shows how much data has been buffered ahead of the current playhead position
+
 3.0.2
 -----
 - compatible with flowplayer 3.0.3 provider API
