@@ -39,6 +39,7 @@ package org.flowplayer.controls {
 		private var _player:Flowplayer;
 		private var _originalPos:DisplayProperties;
 		private var _mouseOver:Boolean = true;
+		private var _hwFullScreen:Boolean;
 
 		public function ControlsAutoHide(config:Config, player:Flowplayer, stage:Stage, controlBar:DisplayObject) {
 			Assert.notNull(config, "config cannot be null");
@@ -60,8 +61,10 @@ package org.flowplayer.controls {
 			_originalPos = DisplayProperties(_player.pluginRegistry.getPlugin("controls")).clone() as DisplayProperties;
 			var hiddenPos:DisplayProperties = _originalPos.clone() as DisplayProperties;
 			if (isHardwareScaledFullsreen()) {
+				_hwFullScreen = true;
 				hiddenPos.alpha = 0;
 			} else {
+				_hwFullScreen = false;
 				hiddenPos.top = getControlBarHiddenTopPosition();
 			}
 			return hiddenPos;			
@@ -156,7 +159,7 @@ package org.flowplayer.controls {
 				_originalPos = DisplayProperties(_player.pluginRegistry.getPlugin("controls")).clone() as DisplayProperties;
 			}
 			
-			if (isHardwareScaledFullsreen()) {
+			if (_hwFullScreen) {
 				currentProps.alpha = _originalPos.alpha;
 			} else {
 				// restore top or bottom from our pre-hide position

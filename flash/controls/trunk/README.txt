@@ -5,6 +5,7 @@ Version history:
 - fixed outHide hide to hide when moving the mouse out of the controlbar area
 - enable() method was renamed to setVisible()
 - new enable() method to set the buttons' and widgets' enabled state
+- Fixed: controlbar went hidden when exiting from hardware scaled fullscreen
 
 3.0.2
 -----
