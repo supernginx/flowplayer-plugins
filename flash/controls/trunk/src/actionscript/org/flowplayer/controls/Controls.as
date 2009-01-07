@@ -177,7 +177,7 @@ package org.flowplayer.controls {
 		}
 		private function onAddedToStage(event:Event):void {
 			log.debug("addedToStage, config is " + _config);
-			if (_config.autoHide != 'never' && ! _controlBarMover) {
+			if (_pluginModel.name == "controls" && _config.autoHide != 'never' && ! _controlBarMover) {
 				_controlBarMover = new ControlsAutoHide(_config, _player, stage, this);
 			}
 		}
@@ -233,12 +233,12 @@ package org.flowplayer.controls {
 			log.debug("creating play");
 			_playButton = addChildWidget(createWidget(_playButton, "play", TogglePlayButton, _config), ButtonEvent.CLICK, onPlayClicked) as AbstractToggleButton;
 			log.debug("creating stop");
-			_stopButton = addChildWidget(createWidget(_stopButton, "stop", StopButton, _config), MouseEvent.CLICK, onStopClicked);
-			_nextButton = addChildWidget(createWidget(_nextButton, "playlist", NextButton, _config), MouseEvent.CLICK, "next");
-			_prevButton = addChildWidget(createWidget(_prevButton, "playlist", PrevButton, _config), MouseEvent.CLICK, "previous");
+			_stopButton = addChildWidget(createWidget(_stopButton, "stop", StopButton, _config), ButtonEvent.CLICK, onStopClicked);
+			_nextButton = addChildWidget(createWidget(_nextButton, "playlist", NextButton, _config), ButtonEvent.CLICK, "next");
+			_prevButton = addChildWidget(createWidget(_prevButton, "playlist", PrevButton, _config), ButtonEvent.CLICK, "previous");
 			_muteVolumeButton = addChildWidget(createWidget(_muteVolumeButton, "mute", ToggleVolumeMuteButton, _config), ButtonEvent.CLICK, onMuteVolumeClicked) as AbstractToggleButton;
-			_volumeSlider = addChildWidget(createWidget(_volumeSlider, "volume", VolumeSlider, _config), VolumeSlider.DRAG_EVENT, onVolumeSlider, 1) as VolumeSlider;
-			_scrubber = addChildWidget(createWidget(_scrubber, "scrubber", Scrubber, _config), Scrubber.DRAG_EVENT, onScrubbed, 1) as Scrubber;
+			_volumeSlider = addChildWidget(createWidget(_volumeSlider, "volume", VolumeSlider, _config), VolumeSlider.DRAG_EVENT, onVolumeSlider) as VolumeSlider;
+			_scrubber = addChildWidget(createWidget(_scrubber, "scrubber", Scrubber, _config), Scrubber.DRAG_EVENT, onScrubbed) as Scrubber;
 			createTimeView();
 			createScrubberUpdateTimer();
 			log.debug("created all buttons");
@@ -249,7 +249,7 @@ package org.flowplayer.controls {
 			if (! _player) return;
 			if (_config.visible.time) {
 				if (_timeView) return;
-				_timeView = addChildWidget(new TimeView(_config, _player), TimeView.EVENT_REARRANGE, onTimeViewRearranged, 1) as TimeView;
+				_timeView = addChildWidget(new TimeView(_config, _player), TimeView.EVENT_REARRANGE, onTimeViewRearranged) as TimeView;
 				_timeView.visible = false;
 			} else if (_timeView) {
 				removeChildAnimate(_timeView);
@@ -288,14 +288,13 @@ package org.flowplayer.controls {
 			return child;
 		}
 
-		private function addChildWidget(widget:DisplayObject, eventType:String = null, listener:Object = null, alpha:Number = 1):DisplayObject {
+		private function addChildWidget(widget:DisplayObject, eventType:String = null, listener:Object = null):DisplayObject {
 			if (!widget) return null;
-			widget.alpha = alpha;
 			addChild(widget as DisplayObject);
 			if (eventType) {
 				widget.addEventListener(eventType, listener is Function ? listener as Function : function():void { _player[listener](); });
 			}
-			log.debug("created control bar child widget  " + widget);
+			log.debug("added control bar child widget  " + widget);
 			return widget;
 		}
 		
@@ -432,7 +431,7 @@ package org.flowplayer.controls {
 		private function onPlayClicked(event:ButtonEvent):void {
 			_player.toggle();
 		}
-		private function onStopClicked(event:MouseEvent):void {
+		private function onStopClicked(event:ButtonEvent):void {
 			_player.stop();
 		}
 

@@ -29,20 +29,6 @@ package org.flowplayer.controls.button {
 			clickListenerEnabled = true;
 		}
 		
-		protected override function set clickListenerEnabled(enabled:Boolean):void {
-			if (enabled) {
-				addEventListener(MouseEvent.CLICK, onClicked);
-			} else {
-				log.debug("removing click listener");
-				removeEventListener(MouseEvent.CLICK, onClicked);
-			}
-		}
-//		
-//		public override function set brightness(value:Number):void {
-//			setChildColor(_upStateFace, BACK_INSTANCE_NAME, value);
-//			setChildColor(_downStateFace, BACK_INSTANCE_NAME, value);
-//		}
-		
 		protected override function onMouseOut(event:MouseEvent = null):void {
 			resetDispColor(_upStateFace.getChildByName(BACK_INSTANCE_NAME));
 			resetDispColor(_downStateFace.getChildByName(BACK_INSTANCE_NAME));
@@ -63,11 +49,6 @@ package org.flowplayer.controls.button {
 			addChild(down ? _downStateFace : _upStateFace);
 			arrange();
 		}		protected function arrange():void {
-		}
-
-		protected function onClicked(event:MouseEvent):void {
-			log.debug("clicked!");
-			dispatchEvent(new ButtonEvent(ButtonEvent.CLICK));
 		}
 
 		protected function createUpStateFace():DisplayObjectContainer {
