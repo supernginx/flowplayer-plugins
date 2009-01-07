@@ -38,7 +38,7 @@ package org.flowplayer.controls {
 		private var _config:Config;
 		private var _player:Flowplayer;
 		private var _originalPos:DisplayProperties;
-		private var _mouseOver:Boolean = true;
+		private var _mouseOver:Boolean = false;
 		private var _hwFullScreen:Boolean;
 
 		public function ControlsAutoHide(config:Config, player:Flowplayer, stage:Stage, controlBar:DisplayObject) {
