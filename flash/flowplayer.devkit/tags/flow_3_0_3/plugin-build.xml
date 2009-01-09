@@ -1,0 +1,254 @@
+<project name="Flowplayer plugin base build file (included in the actual plugin specific build.xml files)">
+
+	<import file="remotecopy.xml" />
+	<property file="plugin-build.properties" />
+	<property name="src" value="src" />
+	<property name="src-as" value="${src}/actionscript" />
+	<property name="src-js" value="${src}/javascript" />
+	<property name="build-dir" value="build" />
+	<property name="dist-dir" value="dist" />
+	<property name="lib-dir" value="lib" />
+	<property name="libs-path" value="${flex3libsdir}" />
+	<property name="src-flash" value="${src}/flash" />
+	<property name="flowplayer-js-version-info" value="3.0.0-rc3" />
+	<property name="src-flowplayer" value="../flowplayer" />
+	<property name="plugin-libs" value="" />
+
+	<condition property="extra.libs" value="" else="${plugin-libs}">
+		<equals arg1="${plugin-libs}" arg2="" />
+	</condition>
+
+	<macrodef name="build-plugin">
+		<attribute name="plugin-main-class" />
+		<attribute name="plugin-binary" />
+		<sequential>
+			<echo message="++ @{plugin-binary} +++">
+			</echo>
+			<check-uptodate plugin-binary="@{plugin-binary}" />
+			<antcall target="prepare" />
+			<antcall target="compile">
+				<param name="plugin-binary" value="@{plugin-binary}" />
+				<param name="plugin-main-class" value="@{plugin-main-class}" />
+			</antcall>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="check-uptodate">
+		<attribute name="plugin-binary" />
+		<sequential>
+			<echo message="checking if @{plugin-binary} is uptodate" />
+			<uptodate property="uptodate.main" targetfile="${build-dir}/@{plugin-binary}">
+				<srcfiles dir="${src}">
+					<include name="**/*.as" />
+					<include name="**/*.swf" />
+				</srcfiles>
+				<srcfiles dir="${basedir}">
+					<include name="build.xml" />
+				</srcfiles>
+			</uptodate>
+			<echo message="main up-to-date: ${uptodate.main}" />
+		</sequential>
+	</macrodef>
+
+	<target name="clean">
+		<echo message="cleaning ${basename}" />
+		<delete>
+			<fileset dir="${build-dir}">
+				<include name="*swf" />
+				<include name="*swc" />
+			</fileset>
+		</delete>
+	</target>
+
+
+	<target name="check-compile-dirs">
+		<available file="${src-flash}" property="flash-libs" value="${src-flash}" type="dir" />
+	</target>
+
+	<target name="check-compile-dirs2" unless="flash-libs">
+		<property name="flash-libs" value="" />
+	</target>
+
+	<macrodef name="mxmlc.compile">
+		<attribute name="src" default="${src-as}" />
+		<attribute name="plugin-main-class" default="${plugin-main-class}" />
+		<attribute name="out" default="${plugin-binary}" />
+		<attribute name="libs" default="" />
+
+		<sequential>
+			<condition property="libs" value="" else="-include-libraries @{libs}">
+				<equals arg1="@{libs}" arg2="" />
+			</condition>
+
+			<exec executable="${mxmlc_bin}">
+				<arg line="-source-path @{src}" />
+				<arg line="${libs}" />
+				<arg line="-library-path ${libs-path} ${flash-libs}" />
+				<arg line="-runtime-shared-library-path=${flowplayer_lib},library.swf" />
+				<arg line="-default-frame-rate=${framerate}" />
+				<arg line="-default-background-color=${bgcolor}" />
+				<arg line="-strict=true" />
+				<arg line="-keep-as3-metadata=Value,External" />
+				<arg line="'${src-as}/@{plugin-main-class}'" />
+				<arg line="-output '${build-dir}/@{out}'" />
+			</exec>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="compc.compile">
+		<attribute name="src" default="${src-as}" />
+		<attribute name="sources" default="." />
+		<attribute name="out" default="${plugin-binary}" />
+		<attribute name="libs" default="" />
+
+		<sequential>
+			<condition property="libs" value="" else="-external-library-path @{libs}">
+				<equals arg1="@{libs}" arg2="" />
+			</condition>
+			<exec executable="${compc_bin}">
+				<arg line="-source-path @{src}" />
+				<arg line="${libs}" />
+				<arg line="-library-path ${libs-path} ${flash-libs} ${flowplayer_lib}" />
+				<arg line="-include-sources @{sources}" />
+				<arg line="-strict=true" />
+				<arg line="-keep-as3-metadata=External" />
+				<arg line="-output '${build-dir}/@{out}'" />
+			</exec>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="example">
+		<attribute name="player-swf" />
+		<attribute name="main-swf" />
+		<sequential>
+			<copy todir="${build-dir}/example" overwrite="true">
+				<fileset dir="example">
+					<include name="*.tmpl" />
+				</fileset>
+				<mapper type="glob" from="*.tmpl" to="*" />
+				<filterset begintoken="@" endtoken="@">
+					<filter token="FLOWPLAYER_JS_VERSION_INFO" value="${flowplayer-js-version-info}" />
+					<filter token="PLAYER_SWF" value="../@{player-swf}" />
+					<filter token="MAIN_PLAYER_SWF" value="../@{main-swf}" />
+				</filterset>
+			</copy>
+
+			<copy todir="${build-dir}/example">
+				<fileset dir="example">
+					<include name="*.js" />
+					<include name="*.html" />
+					<include name="*.css" />
+					<include name="*.png" />
+					<include name="*.jpg" />
+				</fileset>
+			</copy>
+			<copy todir="${build-dir}">
+				<fileset dir="${src-flowplayer}/build">
+					<include name="*.swf" />
+				</fileset>
+			</copy>
+		</sequential>
+	</macrodef>
+
+	<target name="compile" unless="uptodate.main" depends="check-compile-dirs, check-compile-dirs2">
+		<mxmlc.compile src="${src-as}" libs="${extra.libs}" out="${plugin-binary}" plugin-main-class="${plugin-main-class}" />
+	</target>
+
+	<target name="library" depends="check-compile-dirs, check-compile-dirs2, compile">
+		<compc.compile src="${src-as}" libs="${extra.libs}" sources="." out="${plugin-swc}" />
+	</target>
+
+	<target name="build" description="builds all" unless="uptodate.main">
+		<build-plugin plugin-binary="${plugin-binary}" plugin-main-class="${plugin-main-class}" />
+		<copy file="${build-dir}/${plugin-binary}" tofile="${build-dir}/${plugin-binary-versioned}">
+		</copy>
+	</target>
+
+	<target name="deploy" description="Deploys the plugin into the target dir" depends="build">
+		<available file="${deploy_dir}" property="deploy.dir.exists" />
+		<antcall target="_deploy" />
+	</target>
+
+	<target name="_deploy" if="deploy.dir.exists">
+		<echo message="deploying plugin to ${deploy_dir}" />
+		<copy file="${build-dir}/${plugin-binary}" todir="${deploy_dir}/${build-dir}" overwrite="true" />
+		<copy file="${build-dir}/${plugin-binary-versioned}" todir="${deploy_dir}/${build-dir}" overwrite="true" />
+		<copy file="${build-dir}/${plugin-binary-versioned}" todir="${deploy_dir}/${dist-dir}" overwrite="true" />
+	</target>
+
+
+	<target name="dist" description="Copies the distributaion packages into a target dir" depends="zip, source-zip">
+		<echo message="Copying dist zip to ${deploy-dir}" />
+		<copy file="${dist-dir}/${basename}-${version}.zip" todir="${deploy_dir}/${dist-dir}" overwrite="true" />
+		<copy file="${dist-dir}/${basename}-${version}-src.zip" todir="${deploy_dir}/${dist-dir}" overwrite="true" />
+		<copy file="${build-dir}/${plugin-binary-versioned}" todir="${deploy_dir}/${dist-dir}" overwrite="true" />
+	</target>
+
+
+	<target name="prepare" unless="uptodate.main">
+		<mkdir dir="${build-dir}" />
+		<mkdir dir="${dist-dir}" />
+		<copy file="${flowplayer_lib}" todir="${build-dir}" />
+
+		<unzip dest="${build-dir}">
+			<fileset file="${flowplayer_lib}" />
+		</unzip>
+	</target>
+
+	<target name="zip" depends="prepare, build">
+		<zip destfile="${dist-dir}/${basename}-${version}.zip">
+			<zipfileset prefix="${basename}" dir=".">
+				<include name="LICENSE.txt" />
+				<include name="README.txt" />
+			</zipfileset>
+			<zipfileset prefix="${basename}" dir="${build-dir}">
+				<include name="${plugin-binary-versioned}" />
+			</zipfileset>
+		</zip>
+	</target>
+
+	<target name="source-zip" depends="prepare">
+		<zip destfile="${dist-dir}/${basename}-${version}-src.zip">
+			<zipfileset prefix="${basename}" dir=".">
+				<include name="LICENSE.txt" />
+				<include name="README.txt" />
+				<include name="build.xml" />
+				<include name="build.properties" />
+			</zipfileset>
+			<zipfileset prefix="${basename}/${src}" dir="${src}">
+				<include name="**/*" />
+			</zipfileset>
+		</zip>
+	</target>
+
+	<target name="release-remote" depends="release-swfs">
+		<remotecopy remotedir="${remotedir}/${basename}" keyfile="${keyfile}" pass="${pass}">
+			<releasefiles>
+				<fileset dir="${dist-dir}">
+					<include name="${basename}-${version}.zip" />
+					<include name="${basename}-${version}-src.zip" />
+					<include name="${plugin-binary-versioned}" />
+				</fileset>
+				<fileset dir="${build-dir}">
+					<include name="${plugin-binary-versioned}" />
+				</fileset>
+			</releasefiles>
+		</remotecopy>
+	</target>
+	
+	<target name="release-swfs">
+		<remotecopy remotedir="${swfremotedir}" keyfile="${keyfile}" pass="${pass}">
+			<releasefiles>
+				<fileset dir="${build-dir}">
+					<include name="${plugin-binary-versioned}" />
+					<include name="${plugin-binary}" />
+				</fileset>
+			</releasefiles>
+		</remotecopy>
+	</target>
+
+	<target name="echo-name">
+		<echo message="${plugin-binary-versioned}" />
+	</target>
+
+</project>
