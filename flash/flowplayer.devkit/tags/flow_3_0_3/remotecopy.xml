@@ -1,0 +1,16 @@
+<project name="Macro for copying files with scp, can be included in different build files">
+	
+	<macrodef name="remotecopy">
+        <attribute name="remotedir" />
+        <attribute name="keyfile" />
+        <attribute name="pass" />
+        <element name="releasefiles" />
+		<sequential>
+			<echo message="releasing to @{remotedir}" />
+			<scp todir="@{remotedir}" keyfile="@{keyfile}" passphrase="@{pass}" verbose="true">
+				<releasefiles />
+			</scp>
+		</sequential>
+	</macrodef>
+	
+</project>
