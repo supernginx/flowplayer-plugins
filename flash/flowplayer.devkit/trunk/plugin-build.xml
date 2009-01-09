@@ -88,7 +88,7 @@
 				<arg line="-default-frame-rate=${framerate}" />
 				<arg line="-default-background-color=${bgcolor}" />
 				<arg line="-strict=true" />
-				<arg line="-keep-as3-metadata=External" />
+				<arg line="-keep-as3-metadata=Value,External" />
 				<arg line="'${src-as}/@{plugin-main-class}'" />
 				<arg line="-output '${build-dir}/@{out}'" />
 			</exec>
@@ -221,7 +221,7 @@
 		</zip>
 	</target>
 
-	<target name="release-remote">
+	<target name="release-remote" depends="release-swfs">
 		<remotecopy remotedir="${remotedir}/${basename}" keyfile="${keyfile}" pass="${pass}">
 			<releasefiles>
 				<fileset dir="${dist-dir}">
@@ -235,6 +235,20 @@
 			</releasefiles>
 		</remotecopy>
 	</target>
+	
+	<target name="release-swfs">
+		<remotecopy remotedir="${swfremotedir}" keyfile="${keyfile}" pass="${pass}">
+			<releasefiles>
+				<fileset dir="${build-dir}">
+					<include name="${plugin-binary-versioned}" />
+					<include name="${plugin-binary}" />
+				</fileset>
+			</releasefiles>
+		</remotecopy>
+	</target>
 
+	<target name="echo-name">
+		<echo message="${plugin-binary-versioned}" />
+	</target>
 
 </project>
