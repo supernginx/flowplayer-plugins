@@ -1,0 +1,15 @@
+<project name="Flowplayer content" default="deploy">
+
+	<property name="devkit-dir" value="../flowplayer.devkit" />
+	
+	<property file="${devkit-dir}/plugin-build.properties" />
+	<import file="${devkit-dir}/plugin-build.xml"/>
+	<property name="flowplayer_lib" value="${devkit-dir}/flowplayer.swc" />
+	
+	<property name="version" value="3.0.1" />
+	<property name="basename" value="flowplayer.content" />
+	<property name="plugin-binary" value="${basename}.swf" />
+	<property name="plugin-binary-versioned" value="${basename}-${version}.swf" />
+	<property name="plugin-main-class" value="org/flowplayer/content/Content.as" />
+
+</project>
