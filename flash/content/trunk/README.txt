@@ -1,5 +1,13 @@
 Version history:
 
+3.1
+---
+Changes:
+- added public get and set functions for accessing the content view style property
+
+Fixes:
+
+
 3.0.1
 -----
 - dispatches the LOAD event when initialized (needed for flowplayer 3.0.2 compatibility)
