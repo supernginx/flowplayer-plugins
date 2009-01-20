@@ -1,13 +1,5 @@
 Version history:
 
-beta3
+3.0.0
 -----
-- does not change the text format initialized by the player
-
-beta2
------
-- no changes, just practicing plugin versioning
-
-beta1
------
-- First public beta release
+- the first release

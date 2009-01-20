@@ -4,7 +4,7 @@
  * This file is part of Flowplayer, http://flowplayer.org
  *
  * Author: Tero Piirainen, <support@flowplayer.org>
- * Copyright (c) 2008 Flowplayer Ltd
+ * Copyright (c) 2009 Flowplayer Ltd
  *
  * Dual licensed under MIT and GPL 2+ licenses
  * SEE: http://www.opensource.org/licenses
