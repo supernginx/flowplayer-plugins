@@ -4,7 +4,7 @@
  * Subrip Parsing thanks to the as3subtitle Project http://code.google.com/p/as3subtitle/
  *
  * By: Daniel Rossi, <electroteque@gmail.com>
- * Copyright (c) 2008 Electroteque Multimedia
+ * Copyright (c) 2009 Electroteque Multimedia
  *
  * Released under the MIT License:
  * http://www.opensource.org/licenses/mit-license.php
