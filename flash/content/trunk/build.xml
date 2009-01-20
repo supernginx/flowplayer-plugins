@@ -6,10 +6,20 @@
 	<import file="${devkit-dir}/plugin-build.xml"/>
 	<property name="flowplayer_lib" value="${devkit-dir}/flowplayer.swc" />
 	
-	<property name="version" value="3.0.1" />
+	<property name="version" value="3.0.2" />
 	<property name="basename" value="flowplayer.content" />
 	<property name="plugin-binary" value="${basename}.swf" />
 	<property name="plugin-binary-versioned" value="${basename}-${version}.swf" />
 	<property name="plugin-main-class" value="org/flowplayer/content/Content.as" />
+
+	<target name="release" description="makes a release" depends="build">
+		<copyrelease targetdir="flowplayer.content">
+			<releasefiles>
+				<fileset dir="${build-dir}">
+				    <include name="${plugin-binary-versioned}"/>
+				</fileset>
+			</releasefiles>
+		</copyrelease>
+	</target>
 
 </project>
