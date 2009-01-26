@@ -17,6 +17,7 @@ package org.flowplayer.controls {
 	 */
 	public class Config {
 		private var log:Log = new Log(this);
+		private var _skin:String;
 		private var _style:Style;
 		private var _autoHide:String = "fullscreen"; // never | fullscreen | always
 		private var _hideDelay:Number = 4000;
@@ -55,5 +56,7 @@ package org.flowplayer.controls {
 		
 		public function set enabled(enabled:WidgetBooleanStates):void {
 			_enabled = enabled;
-		}	}
+		}				public function get skin():String {
+			return _skin;		}				public function set skin(skin:String):void {
+			_skin = skin;		}	}
 }

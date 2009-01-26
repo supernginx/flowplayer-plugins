@@ -27,6 +27,7 @@ package org.flowplayer.controls.button {
 			addChild(_upStateFace);
 			super(config);
 			clickListenerEnabled = true;
+			arrange();
 		}
 		
 		protected override function onMouseOut(event:MouseEvent = null):void {

@@ -27,7 +27,9 @@ package org.flowplayer.controls {
 		private var _stopButton:DisplayObject;
 		private var _scrubber:Scrubber;
 		private var _timeView:TimeView;
+		private var _tallestWidget:DisplayObject;
 
+		private var _widgetMaxHeight:Number = 0;
 		private var _margins:Array = [2, 6, 2, 6];
 		private var _config:Config;
 		private var _timeUpdateTimer:Timer;
@@ -48,8 +50,8 @@ package org.flowplayer.controls {
 		
 
 		/**
-		 * Makes buttons and other widgets visible/hidden.
-		 * @param enabledWidgets the buttons visibilies, for example { all: true, volume: false, time: false }		 */		
+		 * Makes buttons and other widgets visible/hidden.		 * @param enabledWidgets the buttons visibilies, for example { all: true, volume: false, time: false }
+		 */		
 		[External]
 		public function widgets(visibleWidgets:Object):void {
 			log.debug("enable()");
@@ -123,10 +125,15 @@ package org.flowplayer.controls {
 		override protected function onResize():void {
 			if (! _initialized) return;
 			log.debug("arranging, width is " + width);
+			resizeTallestWidget();
 			var leftEdge:Number = arrangeLeftEdgeControls();
 			arrangeRightEdgeControls(leftEdge);		
 			initializeVolume();
 			log.debug("arranged to x " + this.x + ", y " + this.y);
+		}
+		
+		private function resizeTallestWidget():void {
+			_tallestWidget.height = height - _margins[0] - _margins[2];
 		}
 
 		/**
@@ -184,6 +191,7 @@ package org.flowplayer.controls {
 
 		public function onLoad(player:Flowplayer):void {
 			log.info("received player API! autohide == " + _config.autoHide);
+			createChildren();
 			loader = player.createLoader();
 			_player = player;
 			createTimeView();
@@ -211,8 +219,6 @@ package org.flowplayer.controls {
 			log.debug("-");
 			_config = createConfig(model);
 			log.debug("config created");
-			// set style properties to superclass, the properties can be given in the top level of config
-			createChildren();
 		}
 		
 		private function createConfig(plugin:PluginModel):Config {
@@ -273,12 +279,15 @@ package org.flowplayer.controls {
 			if (existing) return existing;
 			log.debug("creating " + Widget);
 			var widget:DisplayObject = constructorArg ? new Widget(constructorArg) : new Widget();
+			
+			_widgetMaxHeight = Math.max(_widgetMaxHeight, widget.height);
+			if (widget.height == _widgetMaxHeight) {
+				_tallestWidget = widget;
+			}
+			
 			widget.visible = false;
 			widget.name = name;
-			return widget;
-		}
-
-		private function removeChildAnimate(child:DisplayObject):DisplayObject {
+			return widget;		}		private function removeChildAnimate(child:DisplayObject):DisplayObject {
 			if (! _player || _immediatePositioning) {
 				removeChild(child);
 				return child;
@@ -475,7 +484,6 @@ package org.flowplayer.controls {
 			}
 
 			arrangeVolumeControl();
-			arrangeMuteVolumeButton();
 		}
 		
 		private function arrangeControls(edge:Number, controls:Array, arrangeFunc:Function):Number {
@@ -496,11 +504,11 @@ package org.flowplayer.controls {
 //			Arrange.center(_volumeSlider, 0, height);
 		}
 
-		private function arrangeMuteVolumeButton():void {
-			if (! _config.visible.mute) return;
-			Arrange.center(_muteVolumeButton, 0, height);
-			return;
-		}
+//		private function arrangeMuteVolumeButton():void {
+//			if (! _config.visible.mute) return;
+//			Arrange.center(_muteVolumeButton, 0, height);
+//			return;
+//		}
 		
 		private function arrangeScrubber(leftEdge:Number, rightEdge:Number):Number {
 			if (! _config.visible.scrubber) return rightEdge;
@@ -552,8 +560,16 @@ package org.flowplayer.controls {
 		
 		private function arrangeYCentered(clip:DisplayObject):void {
 			clip.y = _margins[0];
-			clip.height = getHeight(clip);
+
+			if (clip == _timeView) {
+				clip.height = height/1.7;
+			} else if (clip == _tallestWidget) {
+				clip.height = height - _margins[0] - _margins[2];
+			} else {
+				clip.scaleY = _tallestWidget.scaleY;
+			}
 			clip.scaleX = clip.scaleY;
+
 			Arrange.center(clip, 0, height);
 		}
 	
@@ -579,7 +595,7 @@ package org.flowplayer.controls {
 			return null;
 		}
 
-		private function getHeight(widget:DisplayObject):int {
+		private function setWidgetHeight(widget:DisplayObject):int {
 			if (widget == _timeView)
 				return height/1.7;
 			if (widget == _muteVolumeButton)
