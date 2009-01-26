@@ -1,5 +1,10 @@
 Version history:
 
+3.0.3
+-----
+- changed to recalculate the duration until the end of the file has been reached,
+  this is needed to correctly estimate the duration of variable bitrate MP3's 
+
 3.0.2
 -----
 - dispatches the LOAD event when initialized (needed for flowplayer 3.0.2 compatibility)
