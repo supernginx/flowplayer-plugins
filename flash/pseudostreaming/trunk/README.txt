@@ -1,7 +1,7 @@
 Version history:
 
-3.x
----
+3.0.3
+-----
 - now uses the queryString also in the initial request, the start param has value zero in it
 
 3.0.2
