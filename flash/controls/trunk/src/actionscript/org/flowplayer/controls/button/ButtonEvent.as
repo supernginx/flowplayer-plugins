@@ -1,7 +1,7 @@
 /*
  * This file is part of Flowplayer, http://flowplayer.org
  *
- * Copyright (c) 2008 Flowplayer Ltd
+ *Copyright (c) 2008, 2009 Flowplayer Oy
  *
  * Released under the MIT License:
  * http://www.opensource.org/licenses/mit-license.php
