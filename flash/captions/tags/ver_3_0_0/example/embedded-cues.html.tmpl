@@ -1,0 +1,203 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<!-- A minimal Flowplayer setup to get you started -->
+  
+
+	<!-- 
+		include flowplayer JavaScript file that does  
+		Flash embedding and provides the Flowplayer API.
+	-->
+	<script type="text/javascript" src="jquery-1.2.6.min.js"></script>
+	<script type="text/javascript" src="flowplayer-@FLOWPLAYER_JS_VERSION_INFO@.min.js"></script>
+	
+	<!-- some minimal styling, can be removed -->
+	<link rel="stylesheet" type="text/css" href="style.css">
+	
+	<!-- page title -->
+	<title>Minimal Flowplayer setup</title>
+
+</head><body>
+
+	<div id="page">
+		
+		<h1>Minimal Flowplayer setup</h1>
+	
+		<p>View commented source code to get familiar with Flowplayer installation.</p>
+		
+		<!--{{{ initial content for the plugin -->
+<div id="content1" style="display:none">
+	<p><b>Here is a content plugin</b></p><br />
+	
+	<p>The content plugin supports minimalistic HTML and it can be styled with CSS.</p>	
+	<p><a href="javascript:actions.linkAction()">Links</a> and images are supported too.</p>
+	<br />
+	
+	<p><b>Click on the buttons below to see how things can be scripted</b>.</p>
+	
+	<img src="/img/title/screens_medium.png" />	
+</div>
+
+		<!-- this A tag is where your Flowplayer will be placed. it can be anywhere -->
+		<a  
+			 href="cuepoints.flv"  
+			 style="display:block;width:400px;height:300px"  
+			 id="controls"> 
+		</a> 
+		
+	
+		<!-- this will install flowplayer inside previous A- tag. -->
+
+		
+		<script>
+		$f("controls", {src:"@PLAYER_SWF@",bgcolor:'#333333'}, {
+			screen: {
+				top:0	
+			},
+			
+			log:  {         
+			     
+				     // other levels are: 'info', 'warning', 'error' which will cause less output 
+				     level: 'info' 
+				},
+			plugins:  {
+			    content: {
+					url:'../flowplayer.content.swf',
+					bottom: 25,
+					width: 300,
+					height:40,
+					opacity:0.97,
+					alpha: 0,
+					backgroundGradient:'low',
+					style: {
+						backgroundColor:'295c72', 
+						border:0, 
+						color:'FFFFFF'
+					}
+				},
+		
+				controls: {
+					autoHide:'always'		
+				},
+				
+				captions: {
+					url:'@MAIN_PLAYER_SWF@',
+					captionUrl: 'timedtext.ttxt',
+					//captionUrl: 'subrip.srt',
+					captionText: '{textinfo}',
+					//captionType: 'embedded',
+					captionType: 'external',
+					captionTarget: 'content',
+					bottom: 25,
+					width: 300,
+					height:40,
+					opacity:0.97,
+					backgroundGradient:'low',
+					style: {
+						backgroundColor:'295c72', 
+						border:0, 
+						color:'FFFFFF'
+					}
+				}
+			},
+		
+		
+		});
+		
+		
+		//{{{ actions 
+		
+		var actions = { 
+			
+			toggleStyle: function() {
+				var css = (this.css && this.css.border === 0) ?  
+					{backgroundColor:'333333', border:'1px solid #ffffff'} : 
+					{backgroundColor:'295c72', border:0}
+				;
+				$f().getPlugin("captions").css(css);
+				this.css = css;
+			},
+		
+			toggleHTML: function() {					
+				var contentId = (this.contentId == "#content2") ? "#content1" : "#content2";				
+				$f().getPlugin("captions").setHtml($(contentId).html());
+				this.contentId = contentId;
+			},	
+			
+			linkAction: function() {
+				alert("You can trigger JavaScript from content plugin");
+			},
+			
+			linkAction2: function() {
+				$f().getPlugin('captions').animate('left', '+20')	
+			},
+			
+			togglePlugin: function(c) {
+				$f().getPlugin(c).toggle();	
+			},
+			
+			toggleAnimate: function() {
+				var css = (this.top == 30) ?	
+					{top:10, left:10, width: 240, height:260, opacity:0.95} :		
+					{width:'85%', height:'85%', top:30, left:30, opacity:1}
+				;
+				$f().getPlugin("captions").animate(css, 3000);
+				this.top = css.top;		
+			}
+			
+		};
+		//}}}
+		</script>
+	
+		<p id="actions" style="text-align:center;opacity:0.5">
+			<button type="button" class="custom low xlarge" disabled onClick="actions.togglePlugin('captions')">
+				Toggle visibility
+			</button>
+			<button type="button" class="custom low large" disabled onClick="actions.toggleStyle()">
+				Toggle style
+			</button>
+			<button type="button" class="custom low large" disabled onClick="actions.toggleHTML()">
+				Toggle content
+			</button>
+			<button type="button" class="custom low medium" disabled onClick="actions.toggleAnimate()">
+				Animate
+			</button>
+			<button type="button" class="custom low large" disabled onClick="actions.togglePlugin('c2')">
+				Toggle another
+			</button>
+		</p>
+		
+		<!-- 
+			after this line is purely informational stuff. 
+			does not affect on Flowplayer functionality 
+		-->
+
+		<p>		
+			If you are running these examples <strong>locally</strong> and not on some webserver you must edit your 
+			<a href="http://www.macromedia.com/support/documentation/en/flashplayer/help/settings_manager04.html">
+				Flash security settings</a>. 
+		</p>
+		
+		<p class="less">
+			Select "Edit locations" &gt; "Add location" &gt; "Browse for files" and select
+			flowplayer-x.x.x.swf you just downloaded.
+		</p>
+		
+		
+		<h2>Documentation</h2>
+		
+		<p>
+			<a href="http://beta.flowplayer.org/documentation/installation.html">Flowplayer installation</a>
+		</p>
+
+		<p>
+			<a href="http://beta.flowplayer.org/documentation/configuration.html">Flowplayer configuration</a>
+		</p>
+
+		<p>
+			See this identical page on <a href="http://beta.flowplayer.org/demos/example/index.htm">Flowplayer website</a> 
+		</p>
+		
+	</div>
+	
+	
+</body></html>
