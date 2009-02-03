@@ -1,4 +1,4 @@
-<project name="Flowplayer mp3" default="deploy">
+<project name="Flowplayer audio" default="deploy">
 
 	<property name="devkit-dir" value="../flowplayer.devkit" />
 	
