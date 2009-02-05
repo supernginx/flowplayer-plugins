@@ -1,5 +1,9 @@
 Version history:
 
+3.1
+---
+- fixed setting button enabled states in config
+
 3.0.3
 -----
 - fixed outHide hide to hide when moving the mouse out of the controlbar area
