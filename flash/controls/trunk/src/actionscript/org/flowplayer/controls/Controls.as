@@ -72,9 +72,9 @@ package org.flowplayer.controls {
 			if (_animationTimer && _animationTimer.running) return;
 			setConfigBooleanStates("enabled", enabledWidgets);
 			enableWidgets();
+			enableFullscreenButton(_player.playlist.current);
 		}
-		
-		private function enableWidgets():void {
+		private function enableWidgets():void {
 			var index:int = 0;
 			while (index < numChildren) {
 				var child:DisplayObject = getChildAt(index);
@@ -187,6 +187,7 @@ package org.flowplayer.controls {
 			if (_pluginModel.name == "controls" && _config.autoHide != 'never' && ! _controlBarMover) {
 				_controlBarMover = new ControlsAutoHide(_config, _player, stage, this);
 			}
+			enableWidgets();
 		}
 
 		public function onLoad(player:Flowplayer):void {
@@ -387,14 +388,12 @@ package org.flowplayer.controls {
 			if (_playButton) {
 				_playButton.down = ! event.isDefaultPrevented();
 			}
-			if (_fullScreenButton) {
-				enableFullscreenButton(event.target as Clip);
-			}
+			enableFullscreenButton(event.target as Clip);
 		}
 		
 		private function enableFullscreenButton(clip:Clip):void {
 			if (!_fullScreenButton) return;
-			var enabled:Boolean = clip && (clip.originalWidth > 0 || ! clip.accelerated);
+			var enabled:Boolean = clip && (clip.originalWidth > 0 || ! clip.accelerated) && _config.enabled.fullscreen;
 			_fullScreenButton.enabled = enabled;
 			if (enabled) {
 				_fullScreenButton.addEventListener(ButtonEvent.CLICK, toggleFullscreen);
