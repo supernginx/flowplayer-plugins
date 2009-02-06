@@ -14,12 +14,13 @@ package org.flowplayer.controls.slider {
 	import org.flowplayer.model.ClipEvent;
 	import org.flowplayer.model.Playlist;
 	import org.flowplayer.util.GraphicsUtil;
+	import org.flowplayer.view.AnimationEngine;
 	
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;	
 
-		/**
+	/**
 	 * @author api
 	 */
 	public class Scrubber extends AbstractSlider {
@@ -32,11 +33,11 @@ package org.flowplayer.controls.slider {
 		private var _progressBar:Sprite;		private var _bufferStart:Number;
 		private var _enabled:Boolean = true;
 
-		public function Scrubber(config:Config) {
-			super(config);
+		public function Scrubber(config:Config, animationEngine:AnimationEngine) {
+			super(config, animationEngine);
 			createBars();
 		}
-		
+
 		public function set playlist(playlist:Playlist):void {
 			playlist.onStart(onSeekDone);
 			playlist.onSeek(onSeekDone);
@@ -53,6 +54,10 @@ package org.flowplayer.controls.slider {
 				targets.push(this);
 			}
 			return targets;
+		}
+		
+		override protected function isToolTipEnabled():Boolean {
+			return _config.tooltips.scrubber;
 		}
 
 		private function drawBufferBar(leftEdge:Number, rightEdge:Number):void {
