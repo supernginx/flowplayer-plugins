@@ -9,21 +9,7 @@
  */
 
 package org.flowplayer.controls.slider {
-	import flash.events.EventDispatcher;	
-	
-	import org.flowplayer.view.AnimationEngine;	
-	import org.flowplayer.util.GraphicsUtil;			import flash.display.DisplayObject;
-	import flash.display.Sprite;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.events.TimerEvent;
-	import flash.utils.Timer;
-	
-	import org.flowplayer.controls.Config;
-	import org.flowplayer.controls.flash.Dragger;
-	import org.flowplayer.view.AbstractSprite;	
-
-	/**
+	import org.flowplayer.controls.NullToolTip;		import org.flowplayer.controls.Config;	import org.flowplayer.controls.DefaultToolTip;	import org.flowplayer.controls.ToolTip;	import org.flowplayer.controls.flash.Dragger;	import org.flowplayer.util.GraphicsUtil;	import org.flowplayer.view.AbstractSprite;	import org.flowplayer.view.AnimationEngine;		import flash.display.DisplayObject;	import flash.display.Sprite;	import flash.events.Event;	import flash.events.EventDispatcher;	import flash.events.MouseEvent;	import flash.events.TimerEvent;	import flash.utils.Timer;		/**
 	 * @author api
 	 */
 	public class AbstractSlider extends AbstractSprite {
@@ -35,12 +21,31 @@ package org.flowplayer.controls.slider {
 		protected var _config:Config;
 		private var _animationEngine:AnimationEngine;
 		private var _currentPos:Number;
+		private var _tooltip:ToolTip;
+		private var _tooltipTextFunc:Function;
 
-		public function AbstractSlider(config:Config) {
+		public function AbstractSlider(config:Config, animationEngine:AnimationEngine) {
 			_config = config;
+			_animationEngine = animationEngine;
 			_dragTimer = new Timer(50);
 			createDragger();
+			toggleTooltip();
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+		}
+		
+		private function toggleTooltip():void {
+			if (isToolTipEnabled()) {
+				if (_tooltip && _tooltip is DefaultToolTip) return;
+				log.debug("enabling tooltip");
+				_tooltip = new DefaultToolTip(_config, _animationEngine);
+			} else {
+				log.debug("tooltip disabled");
+				_tooltip = new NullToolTip();
+			}
+		}
+		
+		protected function isToolTipEnabled():Boolean {
+			return false;
 		}
 
 		public function set enabled(value:Boolean) :void {
@@ -90,8 +95,10 @@ package org.flowplayer.controls.slider {
 		}
 		
 		private function onMouseUp(event:MouseEvent = null):void {
+			log.debug("onMouseUp");
+			_tooltip.hide();
 			if (event && event.target != this) return;
-			if (! canDragTo(mouseX)) return;
+			if (! canDragTo(mouseX) && _dragger.x > 0) return;
 			_dragTimer.stop();
 			onDrag();
 			updateCurrentPosFromDragger();
@@ -99,7 +106,8 @@ package org.flowplayer.controls.slider {
 			if (! dispatchOnDrag) {
 				dispatchDragEvent();
 			}
-		}				protected function canDragTo(xPos:Number):Boolean {
+		}
+		protected function canDragTo(xPos:Number):Boolean {
 			return true;		}
 		private function updateCurrentPosFromDragger():void {
 			_currentPos = (_dragger.x / (width - _dragger.width)) * 100;
@@ -112,6 +120,9 @@ package org.flowplayer.controls.slider {
 		protected function onMouseDown(event:MouseEvent):void {
 			if (! event.target == this) return;
 			_dragTimer.start();
+			if (_tooltipTextFunc != null) { 
+				_tooltip.show(_dragger, _tooltipTextFunc(value), true);
+			}
 		}
 
 		private function onDrag(event:TimerEvent = null):void {
@@ -123,6 +134,7 @@ package org.flowplayer.controls.slider {
 			}
 			
 			_dragger.x = pos;
+			_tooltip.text = _tooltipTextFunc((_dragger.x / (width - _dragger.width)) * 100);
 
 			// do not dispatch several times from almost the same pos
 			if (Math.abs(_previousDragEventPos - _dragger.x) < 1) return;
@@ -206,10 +218,12 @@ package org.flowplayer.controls.slider {
 		public function redraw(config:Config):void {
 			_config = config;
 			drawBackground();
+			toggleTooltip();
+			_tooltip.redraw(config);
 		}
-		
-		public function set animationEngine(animationEngine:AnimationEngine):void {
-			_animationEngine = animationEngine;
+
+		public function set tooltipTextFunc(tooltipTextFunc:Function):void {
+			_tooltipTextFunc=tooltipTextFunc;
 		}
 	}
 }

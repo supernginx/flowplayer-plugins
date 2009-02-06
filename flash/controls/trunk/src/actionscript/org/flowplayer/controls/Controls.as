@@ -9,6 +9,7 @@
  */
 
 package org.flowplayer.controls {
+	import org.flowplayer.view.AnimationEngine;	
 	import org.flowplayer.model.PluginEventType;	
 	import org.flowplayer.controls.button.AbstractButton;	import org.flowplayer.controls.button.AbstractToggleButton;	import org.flowplayer.controls.button.ButtonEvent;	import org.flowplayer.controls.button.NextButton;	import org.flowplayer.controls.button.PrevButton;	import org.flowplayer.controls.button.StopButton;	import org.flowplayer.controls.button.ToggleFullScreenButton;	import org.flowplayer.controls.button.TogglePlayButton;	import org.flowplayer.controls.button.ToggleVolumeMuteButton;	import org.flowplayer.controls.slider.AbstractSlider;	import org.flowplayer.controls.slider.Scrubber;	import org.flowplayer.controls.slider.VolumeSlider;	import org.flowplayer.model.Clip;	import org.flowplayer.model.ClipEvent;	import org.flowplayer.model.PlayerEvent;	import org.flowplayer.model.PlayerEventType;	import org.flowplayer.model.Playlist;	import org.flowplayer.model.Plugin;	import org.flowplayer.model.PluginModel;	import org.flowplayer.model.Status;	import org.flowplayer.util.Arrange;	import org.flowplayer.util.PropertyBinder;	import org.flowplayer.view.AbstractSprite;	import org.flowplayer.view.Flowplayer;	import org.flowplayer.view.StyleableSprite;		import flash.display.DisplayObject;	import flash.events.Event;	import flash.events.MouseEvent;	import flash.events.TimerEvent;	import flash.utils.Timer;			/**
 	 * @author anssi
@@ -106,11 +107,15 @@ package org.flowplayer.controls {
 		 */
 		override public function css(styleProps:Object = null):Object {
 			var result:Object = super.css(styleProps);
+			var newStyleProps:Object = _config.style.addStyleProps(result);
+			
+			initTooltipConfig(_config, styleProps);
+			newStyleProps["tooltips"] = _config.tooltips.props;
+			
 			redraw(styleProps);
-			return _config.style.addStyleProps(result);
+			return newStyleProps;
 		}
 		
-
 		/**
 		 * @inheritDoc
 		 */
@@ -161,7 +166,13 @@ package org.flowplayer.controls {
 					progressColor: "#015B7A",
 					progressGradient: "medium", 
 					bufferColor: "#6c9cbc",
-					bufferGradient: "none" };
+					bufferGradient: "none",
+					tooltipColor: "#5F747C",
+					tooltipTextColor: "#ffffff" };
+		}
+		
+		private function initTooltipConfig(config:Config, styleProps:Object):void {
+			new PropertyBinder(config.tooltips).copyProperties(styleProps["tooltips"]);
 		}
 		
 		private function redraw(styleProps:Object):void {
@@ -192,9 +203,9 @@ package org.flowplayer.controls {
 
 		public function onLoad(player:Flowplayer):void {
 			log.info("received player API! autohide == " + _config.autoHide);
+			_player = player;
 			createChildren();
 			loader = player.createLoader();
-			_player = player;
 			createTimeView();
 			addListeners(player.playlist);
 			if (_scrubber) {
@@ -206,9 +217,6 @@ package org.flowplayer.controls {
 			}
 			log.debug("setting root style to " + _config.style.bgStyle);
 			rootStyle = _config.style.bgStyle;
-			if (_scrubber) {
-				_scrubber.animationEngine = player.animationEngine;
-			}
 			if (_muteVolumeButton) {
 				_muteVolumeButton.down = player.muted;
 			}
@@ -227,6 +235,7 @@ package org.flowplayer.controls {
 			new PropertyBinder(config.visible).copyProperties(plugin.config);
 			new PropertyBinder(config.enabled).copyProperties(plugin.config.enabled);
 			config.addStyleProps(plugin.config);
+			initTooltipConfig(config, plugin.config);
 			return config;
 		}
 		
@@ -236,16 +245,17 @@ package org.flowplayer.controls {
 
 		private function createChildren():void {
 			log.debug("creating fullscren ", _config );
-			_fullScreenButton = addChildWidget(createWidget(_fullScreenButton, "fullscreen", ToggleFullScreenButton, _config)) as AbstractToggleButton;
+			var animationEngine:AnimationEngine = _player.animationEngine;
+			_fullScreenButton = addChildWidget(createWidget(_fullScreenButton, "fullscreen", ToggleFullScreenButton, _config, animationEngine)) as AbstractToggleButton;
 			log.debug("creating play");
-			_playButton = addChildWidget(createWidget(_playButton, "play", TogglePlayButton, _config), ButtonEvent.CLICK, onPlayClicked) as AbstractToggleButton;
+			_playButton = addChildWidget(createWidget(_playButton, "play", TogglePlayButton, _config, animationEngine), ButtonEvent.CLICK, onPlayClicked) as AbstractToggleButton;
 			log.debug("creating stop");
-			_stopButton = addChildWidget(createWidget(_stopButton, "stop", StopButton, _config), ButtonEvent.CLICK, onStopClicked);
-			_nextButton = addChildWidget(createWidget(_nextButton, "playlist", NextButton, _config), ButtonEvent.CLICK, "next");
-			_prevButton = addChildWidget(createWidget(_prevButton, "playlist", PrevButton, _config), ButtonEvent.CLICK, "previous");
-			_muteVolumeButton = addChildWidget(createWidget(_muteVolumeButton, "mute", ToggleVolumeMuteButton, _config), ButtonEvent.CLICK, onMuteVolumeClicked) as AbstractToggleButton;
-			_volumeSlider = addChildWidget(createWidget(_volumeSlider, "volume", VolumeSlider, _config), VolumeSlider.DRAG_EVENT, onVolumeSlider) as VolumeSlider;
-			_scrubber = addChildWidget(createWidget(_scrubber, "scrubber", Scrubber, _config), Scrubber.DRAG_EVENT, onScrubbed) as Scrubber;
+			_stopButton = addChildWidget(createWidget(_stopButton, "stop", StopButton, _config, animationEngine), MouseEvent.CLICK, onStopClicked);
+			_nextButton = addChildWidget(createWidget(_nextButton, "playlist", NextButton, _config, animationEngine), MouseEvent.CLICK, "next");
+			_prevButton = addChildWidget(createWidget(_prevButton, "playlist", PrevButton, _config, animationEngine), MouseEvent.CLICK, "previous");
+			_muteVolumeButton = addChildWidget(createWidget(_muteVolumeButton, "mute", ToggleVolumeMuteButton, _config, animationEngine), ButtonEvent.CLICK, onMuteVolumeClicked) as AbstractToggleButton;
+			_volumeSlider = addChildWidget(createWidget(_volumeSlider, "volume", VolumeSlider, _config, animationEngine), VolumeSlider.DRAG_EVENT, onVolumeSlider) as VolumeSlider;
+			_scrubber = addChildWidget(createWidget(_scrubber, "scrubber", Scrubber, _config, animationEngine), Scrubber.DRAG_EVENT, onScrubbed) as Scrubber;
 			createTimeView();
 			createScrubberUpdateTimer();
 			log.debug("created all buttons");
@@ -268,7 +278,7 @@ package org.flowplayer.controls {
 			onResize();
 		}
 
-		private function createWidget(existing:DisplayObject, name:String, Widget:Class, constructorArg:Object):DisplayObject {
+		private function createWidget(existing:DisplayObject, name:String, Widget:Class, constructorArg:Object, constructorArg2:Object = null):DisplayObject {
 			var doAdd:Boolean = _config.visible[name];
 			if (!doAdd) {
 				log.debug("not showing widget " + Widget);
@@ -279,7 +289,13 @@ package org.flowplayer.controls {
 			}
 			if (existing) return existing;
 			log.debug("creating " + Widget);
-			var widget:DisplayObject = constructorArg ? new Widget(constructorArg) : new Widget();
+			var widget:DisplayObject;
+			
+			if (constructorArg2) {
+				widget = new Widget(constructorArg, constructorArg2);
+			} else {
+				widget = constructorArg ? new Widget(constructorArg) : new Widget();
+			}
 			
 			_widgetMaxHeight = Math.max(_widgetMaxHeight, widget.height);
 			if (widget.height == _widgetMaxHeight) {
@@ -337,6 +353,11 @@ package org.flowplayer.controls {
 					_scrubber.value = 0;
 					_scrubber.setBufferRange(0, 0);
 					_scrubber.allowRandomSeek = false;
+				}
+				if (status.clip) {
+					_scrubber.tooltipTextFunc = function(percentage:Number):String {
+						return TimeUtil.formatSeconds(percentage / 100 * duration);
+					};
 				}
 			}
 			if (_timeView) {
