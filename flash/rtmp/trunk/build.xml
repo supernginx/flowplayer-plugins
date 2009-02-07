@@ -1,4 +1,4 @@
-<project name="Flowplayer pseudostreaming" default="controls">
+<project name="Flowplayer RTMP" default="deploy">
 
 	<property name="devkit-dir" value="../flowplayer.devkit" />
 	
@@ -13,8 +13,6 @@
 	<property name="plugin-swc" value="${basename}.swc" />
 	
 	<property name="plugin-main-class" value="org/flowplayer/rtmp/RTMPStreaming.as" />
-	
-	<target name="controls" description="builds and deploys the swf and compiles the swc library" depends="deploy, library" />
 
 	<target name="release" description="makes a release" depends="build">
 		<copyrelease targetdir="flowplayer.rtmp">
