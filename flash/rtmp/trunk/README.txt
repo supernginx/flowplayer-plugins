@@ -1,5 +1,9 @@
 Version history:
 
+3.1
+---
+- Subscribing connection establishment for Akamai and Limelight. Enabled by setting subscribe: true in the plugin config.
+
 3.0.2
 -----
 - the progress bar now moves to the latest seek position
