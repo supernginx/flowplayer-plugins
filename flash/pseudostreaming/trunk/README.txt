@@ -1,5 +1,9 @@
 Version history:
 
+3.1.0
+-----
+- integrated h.264 streaming support, contributed by Arjen Wagenaar, CodeShop B.V.
+
 3.0.3
 -----
 - now uses the queryString also in the initial request, the start param has value zero in it
