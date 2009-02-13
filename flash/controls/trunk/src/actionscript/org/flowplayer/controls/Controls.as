@@ -11,7 +11,39 @@
 package org.flowplayer.controls {
 	import org.flowplayer.view.AnimationEngine;	
 	import org.flowplayer.model.PluginEventType;	
-	import org.flowplayer.controls.button.AbstractButton;	import org.flowplayer.controls.button.AbstractToggleButton;	import org.flowplayer.controls.button.ButtonEvent;	import org.flowplayer.controls.button.NextButton;	import org.flowplayer.controls.button.PrevButton;	import org.flowplayer.controls.button.StopButton;	import org.flowplayer.controls.button.ToggleFullScreenButton;	import org.flowplayer.controls.button.TogglePlayButton;	import org.flowplayer.controls.button.ToggleVolumeMuteButton;	import org.flowplayer.controls.slider.AbstractSlider;	import org.flowplayer.controls.slider.Scrubber;	import org.flowplayer.controls.slider.VolumeSlider;	import org.flowplayer.model.Clip;	import org.flowplayer.model.ClipEvent;	import org.flowplayer.model.PlayerEvent;	import org.flowplayer.model.PlayerEventType;	import org.flowplayer.model.Playlist;	import org.flowplayer.model.Plugin;	import org.flowplayer.model.PluginModel;	import org.flowplayer.model.Status;	import org.flowplayer.util.Arrange;	import org.flowplayer.util.PropertyBinder;	import org.flowplayer.view.AbstractSprite;	import org.flowplayer.view.Flowplayer;	import org.flowplayer.view.StyleableSprite;		import flash.display.DisplayObject;	import flash.events.Event;	import flash.events.MouseEvent;	import flash.events.TimerEvent;	import flash.utils.Timer;			/**
+	import org.flowplayer.controls.button.AbstractButton;
+	import org.flowplayer.controls.button.AbstractToggleButton;
+	import org.flowplayer.controls.button.ButtonEvent;
+	import org.flowplayer.controls.button.NextButton;
+	import org.flowplayer.controls.button.PrevButton;
+	import org.flowplayer.controls.button.StopButton;
+	import org.flowplayer.controls.button.ToggleFullScreenButton;
+	import org.flowplayer.controls.button.TogglePlayButton;
+	import org.flowplayer.controls.button.ToggleVolumeMuteButton;
+	import org.flowplayer.controls.slider.AbstractSlider;
+	import org.flowplayer.controls.slider.Scrubber;
+	import org.flowplayer.controls.slider.VolumeSlider;
+	import org.flowplayer.model.Clip;
+	import org.flowplayer.model.ClipEvent;
+	import org.flowplayer.model.PlayerEvent;
+	import org.flowplayer.model.PlayerEventType;
+	import org.flowplayer.model.Playlist;
+	import org.flowplayer.model.Plugin;
+	import org.flowplayer.model.PluginModel;
+	import org.flowplayer.model.Status;
+	import org.flowplayer.util.Arrange;
+	import org.flowplayer.util.PropertyBinder;
+	import org.flowplayer.view.AbstractSprite;
+	import org.flowplayer.view.Flowplayer;
+	import org.flowplayer.view.StyleableSprite;
+	
+	import flash.display.DisplayObject;
+	import flash.events.Event;
+	import flash.events.MouseEvent;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;		
+
+	/**
 	 * @author anssi
 	 */
 	public class Controls extends StyleableSprite implements Plugin {
@@ -51,7 +83,8 @@ package org.flowplayer.controls {
 		
 
 		/**
-		 * Makes buttons and other widgets visible/hidden.		 * @param enabledWidgets the buttons visibilies, for example { all: true, volume: false, time: false }
+		 * Makes buttons and other widgets visible/hidden.
+		 * @param enabledWidgets the buttons visibilies, for example { all: true, volume: false, time: false }
 		 */		
 		[External]
 		public function widgets(visibleWidgets:Object):void {
@@ -75,7 +108,8 @@ package org.flowplayer.controls {
 			enableWidgets();
 			enableFullscreenButton(_player.playlist.current);
 		}
-		private function enableWidgets():void {
+
+		private function enableWidgets():void {
 			var index:int = 0;
 			while (index < numChildren) {
 				var child:DisplayObject = getChildAt(index);
@@ -222,7 +256,8 @@ package org.flowplayer.controls {
 			}
 			_pluginModel.dispatchOnLoad();
 		}
-		public function onConfig(model:PluginModel):void {
+
+		public function onConfig(model:PluginModel):void {
 			log.info("received my plugin config ", model.config);
 			_pluginModel = model;
 			log.debug("-");
@@ -250,9 +285,9 @@ package org.flowplayer.controls {
 			log.debug("creating play");
 			_playButton = addChildWidget(createWidget(_playButton, "play", TogglePlayButton, _config, animationEngine), ButtonEvent.CLICK, onPlayClicked) as AbstractToggleButton;
 			log.debug("creating stop");
-			_stopButton = addChildWidget(createWidget(_stopButton, "stop", StopButton, _config, animationEngine), MouseEvent.CLICK, onStopClicked);
-			_nextButton = addChildWidget(createWidget(_nextButton, "playlist", NextButton, _config, animationEngine), MouseEvent.CLICK, "next");
-			_prevButton = addChildWidget(createWidget(_prevButton, "playlist", PrevButton, _config, animationEngine), MouseEvent.CLICK, "previous");
+			_stopButton = addChildWidget(createWidget(_stopButton, "stop", StopButton, _config, animationEngine), ButtonEvent.CLICK, onStopClicked);
+			_nextButton = addChildWidget(createWidget(_nextButton, "playlist", NextButton, _config, animationEngine), ButtonEvent.CLICK, "next");
+			_prevButton = addChildWidget(createWidget(_prevButton, "playlist", PrevButton, _config, animationEngine), ButtonEvent.CLICK, "previous");
 			_muteVolumeButton = addChildWidget(createWidget(_muteVolumeButton, "mute", ToggleVolumeMuteButton, _config, animationEngine), ButtonEvent.CLICK, onMuteVolumeClicked) as AbstractToggleButton;
 			_volumeSlider = addChildWidget(createWidget(_volumeSlider, "volume", VolumeSlider, _config, animationEngine), VolumeSlider.DRAG_EVENT, onVolumeSlider) as VolumeSlider;
 			_scrubber = addChildWidget(createWidget(_scrubber, "scrubber", Scrubber, _config, animationEngine), Scrubber.DRAG_EVENT, onScrubbed) as Scrubber;
@@ -304,7 +339,10 @@ package org.flowplayer.controls {
 			
 			widget.visible = false;
 			widget.name = name;
-			return widget;		}		private function removeChildAnimate(child:DisplayObject):DisplayObject {
+			return widget;
+		}
+
+		private function removeChildAnimate(child:DisplayObject):DisplayObject {
 			if (! _player || _immediatePositioning) {
 				removeChild(child);
 				return child;
@@ -460,7 +498,8 @@ package org.flowplayer.controls {
 		private function onPlayClicked(event:ButtonEvent):void {
 			_player.toggle();
 		}
-		private function onStopClicked(event:ButtonEvent):void {
+
+		private function onStopClicked(event:ButtonEvent):void {
 			_player.stop();
 		}
 
