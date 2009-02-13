@@ -1,5 +1,9 @@
 Version history:
 
+3.0.4
+-----
+- fixed to stop audio when stop() is called
+
 3.0.3
 -----
 - changed to recalculate the duration until the end of the file has been reached,
