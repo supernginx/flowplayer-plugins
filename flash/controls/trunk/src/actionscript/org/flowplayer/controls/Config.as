@@ -25,16 +25,27 @@ package org.flowplayer.controls {
 		private var _enabled:WidgetBooleanStates = new WidgetBooleanStates();
 		private var _tooltips:ToolTips = new ToolTips();
 
-		public function get autoHide():String {
+
+        public function Config() {
+            _enabled.stop = true;
+        }
+
+        public function get autoHide():String {
 			return _autoHide;
 		}
 		
 		public function set autoHide(autoHide:String):void {
 			_autoHide = autoHide;
 		}
-				public function get style():Style {
-			return _style || new Style();		}				public function addStyleProps(styleProps:Object):void {
-			_style = new PropertyBinder(style, "bgStyle").copyProperties(styleProps) as Style;		}		
+		
+		public function get style():Style {
+			return _style || new Style();
+		}
+		
+		public function addStyleProps(styleProps:Object):void {
+			_style = new PropertyBinder(style, "bgStyle").copyProperties(styleProps) as Style;
+		}
+		
 		public function get hideDelay():Number {
 			return _hideDelay;
 		}
@@ -57,9 +68,22 @@ package org.flowplayer.controls {
 		
 		public function set enabled(enabled:WidgetBooleanStates):void {
 			_enabled = enabled;
-		}				public function get skin():String {
-			return _skin;		}				public function set skin(skin:String):void {
-			_skin = skin;		}				public function get tooltips():ToolTips {
-			return _tooltips;		}				public function set tooltips(tooltips:ToolTips):void {
-			_tooltips = tooltips;		}	}
+		}
+		
+		public function get skin():String {
+			return _skin;
+		}
+		
+		public function set skin(skin:String):void {
+			_skin = skin;
+		}
+		
+		public function get tooltips():ToolTips {
+			return _tooltips;
+		}
+		
+		public function set tooltips(tooltips:ToolTips):void {
+			_tooltips = tooltips;
+		}
+	}
 }
