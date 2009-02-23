@@ -12,5 +12,5 @@
 	<property name="plugin-binary-versioned" value="${basename}-${version}.swf" />
 	<property name="plugin-main-class" value="org/flowplayer/controls/Controls.as" />
 	<property name="library-path" value="src/flash" />
-
+    <property name="compiler-define" value="CONFIG::skin,'true'" />
 </project>

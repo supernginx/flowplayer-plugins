@@ -6,12 +6,12 @@
 	<property name="src-as" value="${src}/actionscript" />
 	<property name="src-js" value="${src}/javascript" />
 	<property name="build-dir" value="build" />
+	<property name="example-dir" value="example" />
 	<property name="dist-dir" value="dist" />
 	<property name="lib-dir" value="lib" />
-	<property name="libs-path" value="${flex3libsdir}" />
-	<property name="src-flash" value="${src}/flash" />
-	<property name="flowplayer-js-version-info" value="3.0.0-rc3" />
-	<property name="src-flowplayer" value="../flowplayer" />
+	<property name="flex-libs-path" value="${flex3libsdir}" />
+	<property name="flowplayer-js-version-info" value="3.0.3" />
+	<property name="src-flowplayer" value="../core" />
 	<property name="plugin-libs" value="" />
 
 	<condition property="extra.libs" value="" else="${plugin-libs}">
@@ -43,7 +43,7 @@
 					<include name="**/*.swf" />
 				</srcfiles>
 				<srcfiles dir="${basedir}">
-					<include name="build.xml" />
+					<include name="build*.xml" />
 				</srcfiles>
 			</uptodate>
 			<echo message="main up-to-date: ${uptodate.main}" />
@@ -60,15 +60,6 @@
 		</delete>
 	</target>
 
-
-	<target name="check-compile-dirs">
-		<available file="${src-flash}" property="flash-libs" value="${src-flash}" type="dir" />
-	</target>
-
-	<target name="check-compile-dirs2" unless="flash-libs">
-		<property name="flash-libs" value="" />
-	</target>
-
 	<macrodef name="mxmlc.compile">
 		<attribute name="src" default="${src-as}" />
 		<attribute name="plugin-main-class" default="${plugin-main-class}" />
@@ -79,15 +70,29 @@
 			<condition property="libs" value="" else="-include-libraries @{libs}">
 				<equals arg1="@{libs}" arg2="" />
 			</condition>
+			<condition property="pluginruntimelibs" value="-runtime-shared-library-path+=${plugin-runtime-lib-swc},library.swf" else="">
+				<isset property="plugin-runtime-lib-swc" />
+			</condition>
+            <condition property="mxmlc-library-path" value="${library-path}" else="">
+                <isset property="library-path" />
+            </condition>
+            <condition property="mxmlc-define" value="-define=${compiler-define}" else="">
+                <isset property="compiler-define" />
+            </condition>
 
+            <echo message="compiling with  ${mxmlc-library-path}" />
+            <echo message="compiling with  ${mxmlc-define}" />
+            
 			<exec executable="${mxmlc_bin}">
 				<arg line="-source-path @{src}" />
+                <arg line="${mxmlc-define}" />
 				<arg line="${libs}" />
-				<arg line="-library-path ${libs-path} ${flash-libs}" />
+				<arg line="-library-path ${flex-libs-path} ${mxmlc-library-path}" />
 				<arg line="-runtime-shared-library-path=${flowplayer_lib},library.swf" />
+				<arg line="${pluginruntimelibs}" />
 				<arg line="-default-frame-rate=${framerate}" />
 				<arg line="-default-background-color=${bgcolor}" />
-				<arg line="-strict=true" />
+                <arg line="-strict=true" />
 				<arg line="-keep-as3-metadata=Value,External" />
 				<arg line="'${src-as}/@{plugin-main-class}'" />
 				<arg line="-output '${build-dir}/@{out}'" />
@@ -95,29 +100,7 @@
 		</sequential>
 	</macrodef>
 
-	<macrodef name="compc.compile">
-		<attribute name="src" default="${src-as}" />
-		<attribute name="sources" default="." />
-		<attribute name="out" default="${plugin-binary}" />
-		<attribute name="libs" default="" />
-
-		<sequential>
-			<condition property="libs" value="" else="-external-library-path @{libs}">
-				<equals arg1="@{libs}" arg2="" />
-			</condition>
-			<exec executable="${compc_bin}">
-				<arg line="-source-path @{src}" />
-				<arg line="${libs}" />
-				<arg line="-library-path ${libs-path} ${flash-libs} ${flowplayer_lib}" />
-				<arg line="-include-sources @{sources}" />
-				<arg line="-strict=true" />
-				<arg line="-keep-as3-metadata=External" />
-				<arg line="-output '${build-dir}/@{out}'" />
-			</exec>
-		</sequential>
-	</macrodef>
-
-	<macrodef name="example">
+	<macrodef name="prepare-example">
 		<attribute name="player-swf" />
 		<attribute name="main-swf" />
 		<sequential>
@@ -150,14 +133,15 @@
 		</sequential>
 	</macrodef>
 
-	<target name="compile" unless="uptodate.main" depends="check-compile-dirs, check-compile-dirs2">
+	<target name="compile" unless="uptodate.main">
 		<mxmlc.compile src="${src-as}" libs="${extra.libs}" out="${plugin-binary}" plugin-main-class="${plugin-main-class}" />
+		<antcall target="example" />
 	</target>
 
-	<target name="library" depends="check-compile-dirs, check-compile-dirs2, compile">
-		<compc.compile src="${src-as}" libs="${extra.libs}" sources="." out="${plugin-swc}" />
+	<target name="example">
+		<prepare-example player-swf="flowplayer.swf" main-swf="${plugin-binary-versioned}"/>
 	</target>
-
+	
 	<target name="build" description="builds all" unless="uptodate.main">
 		<build-plugin plugin-binary="${plugin-binary}" plugin-main-class="${plugin-main-class}" />
 		<copy file="${build-dir}/${plugin-binary}" tofile="${build-dir}/${plugin-binary-versioned}">
@@ -186,6 +170,7 @@
 
 
 	<target name="prepare" unless="uptodate.main">
+		<mkdir dir="${example-dir}" />
 		<mkdir dir="${build-dir}" />
 		<mkdir dir="${dist-dir}" />
 		<copy file="${flowplayer_lib}" todir="${build-dir}" />
