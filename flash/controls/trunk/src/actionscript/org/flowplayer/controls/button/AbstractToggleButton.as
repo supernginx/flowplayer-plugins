@@ -24,10 +24,10 @@ package org.flowplayer.controls.button {
 		protected var _downStateFace:DisplayObjectContainer;
 
 		public function AbstractToggleButton(config:Config, animationEngine:AnimationEngine) {
+            super(config, animationEngine);
+            _downStateFace = createDownStateFace();
 			_upStateFace = createUpStateFace();
-			_downStateFace = createDownStateFace(); 
 			addChild(_upStateFace);
-			super(config, animationEngine);
 			clickListenerEnabled = true;
 			arrange();
 		}
@@ -53,22 +53,36 @@ package org.flowplayer.controls.button {
 			removeChild(down ? _upStateFace : _downStateFace);
 			addChild(down ? _downStateFace : _upStateFace);
 			arrange();
-		}		protected function arrange():void {
 		}
 
-		protected function createUpStateFace():DisplayObjectContainer {
-			log.error("createUpStateFace not overridden");
-			return null;
+		protected function arrange():void {
 		}
-		
-		protected function createDownStateFace():DisplayObjectContainer {
-			log.error("createDownStateFace not overridden");
-			return null;
+
+		private function createUpStateFace():DisplayObjectContainer {
+            var className:String = getUpStateFaceClassName();
+            log.debug("creating skin from " + className);
+            var Face:Class = getClass(className);
+			return new Face();
 		}
-		
-		protected override function createFace():DisplayObjectContainer {
-			return null;
+
+		private function createDownStateFace():DisplayObjectContainer {
+            var Face:Class = getClass(getDownStateFaceClassName());
+			return new Face();
 		}
+
+        protected function getUpStateFaceClassName():String {
+            throw new Error("getUpStateFaceClassName must be overridden in a subclass");
+            return null;
+        }
+
+        protected function getDownStateFaceClassName():String {
+            throw new Error("getDownStateFaceClassName must be overridden in a subclass");
+            return null;
+        }
 		
+        override protected function createFace():DisplayObjectContainer {
+            return null;
+        }
+
 	}
 }

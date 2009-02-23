@@ -13,5 +13,5 @@
 	<property name="plugin-main-class" value="org/flowplayer/controls/Controls.as" />
 	<property name="plugin-runtime-lib-swc" value="src/flash/buttons.swc" />
 	<property name="library-path" value="src/flash" />
-
+    <property name="compiler-define" value="CONFIG::skin,'false'" />
 </project>
