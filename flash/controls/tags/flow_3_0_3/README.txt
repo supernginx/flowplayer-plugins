@@ -1,5 +1,10 @@
 Version history:
 
+3.0.4
+-----
+Fixes:
+- rewinds the scrubber back to it's original position if seek was canceled in JS: http://flowplayer.org/forum/2/15301
+
 3.0.3
 -----
 - fixed outHide hide to hide when moving the mouse out of the controlbar area
