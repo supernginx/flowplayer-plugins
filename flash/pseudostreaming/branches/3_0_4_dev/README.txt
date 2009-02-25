@@ -1,5 +1,12 @@
 Version history:
 
+3.1.1
+-----
+Fixes:
+- random seeking did not work when looping through the same video for the 2nd time
+- the time indicator stayed at value 00:00
+- random seeking after stop did not work
+
 3.1.0
 -----
 - integrated h.264 streaming support, contributed by Arjen Wagenaar, CodeShop B.V.

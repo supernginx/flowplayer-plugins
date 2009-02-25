@@ -20,7 +20,7 @@ public class DefaultSeekDataStore {
     protected var log:Log = new Log(this);
     protected var _keyFrameTimes:Array;
     protected var _keyFrameFilePositions:Array;
-    private var _prevSeekTime:Number;
+    private var _prevSeekTime:Number = 0;
 
     private function init(clip:Clip, metaData:Object):void {
         if (! metaData) return;
