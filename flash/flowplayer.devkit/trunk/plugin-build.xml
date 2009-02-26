@@ -9,8 +9,10 @@
 	<property name="example-dir" value="example" />
 	<property name="dist-dir" value="dist" />
 	<property name="lib-dir" value="lib" />
-	<property name="flex-libs-path" value="${flex3libsdir}" />
-	<property name="flowplayer-js-version-info" value="3.0.3" />
+    <property name="flex-libs-path" value="${flex3libsdir}" />
+	<property name="libs-path" value="${flex3libsdir}" />
+	<property name="src-flash" value="${src}/flash" />
+	<property name="flowplayer-js-version-info" value="3.0.6" />
 	<property name="src-flowplayer" value="../core" />
 	<property name="plugin-libs" value="" />
 
@@ -206,7 +208,7 @@
 		</zip>
 	</target>
 
-	<target name="release-remote" depends="release-swfs">
+	<target name="release-remote">
 		<remotecopy remotedir="${remotedir}/${basename}" keyfile="${keyfile}" pass="${pass}">
 			<releasefiles>
 				<fileset dir="${dist-dir}">
