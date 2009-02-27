@@ -30,7 +30,8 @@ package org.flowplayer.controls.slider {
 		private var _bufferBar:Sprite;
 		private var _allowRandomSeek:Boolean;
 		private var _seekInProgress:Boolean;
-		private var _progressBar:Sprite;		private var _bufferStart:Number;
+		private var _progressBar:Sprite;
+		private var _bufferStart:Number;
 		private var _enabled:Boolean = true;
 
 		public function Scrubber(config:Config, animationEngine:AnimationEngine) {
@@ -40,6 +41,7 @@ package org.flowplayer.controls.slider {
 
 		public function set playlist(playlist:Playlist):void {
 			playlist.onStart(onSeekDone);
+            playlist.onBeforeSeek(onBeforeSeek);
 			playlist.onSeek(onSeekDone);
 		}
 		
@@ -142,6 +144,11 @@ package org.flowplayer.controls.slider {
 				GraphicsUtil.removeGradient(_progressBar);
 			}
 		}
+
+        private function onBeforeSeek(event:ClipEvent):void {
+            log.debug("onBeforeSeek");
+            _seekInProgress = ! event.isDefaultPrevented();
+        }
 
 		private function onSeekDone(event:ClipEvent):void {
 			log.debug("seek done!");
