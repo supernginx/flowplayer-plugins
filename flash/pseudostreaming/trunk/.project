@@ -16,29 +16,14 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>servicemonitor.swc</name>
+			<name>FLOWPLAYER_3_0_3.swc</name>
 			<type>1</type>
-			<locationURI>Flex_3_SDK_with_AIR_0/frameworks/libs/air/servicemonitor.swc</locationURI>
+			<locationURI>FLOWPLAYER_3_0_3</locationURI>
 		</link>
 		<link>
-			<name>rpc.swc</name>
+			<name>airframework.swc</name>
 			<type>1</type>
-			<locationURI>Flex_3_SDK_with_AIR_0/frameworks/libs/rpc.swc</locationURI>
-		</link>
-		<link>
-			<name>utilities.swc</name>
-			<type>1</type>
-			<locationURI>Flex_3_SDK_with_AIR_0/frameworks/libs/utilities.swc</locationURI>
-		</link>
-		<link>
-			<name>flex.swc</name>
-			<type>1</type>
-			<locationURI>Flex_3_SDK_with_AIR_0/frameworks/libs/flex.swc</locationURI>
-		</link>
-		<link>
-			<name>FLOWPLAYER.swc</name>
-			<type>1</type>
-			<locationURI>FLOWPLAYER</locationURI>
+			<locationURI>Flex_3_SDK_with_AIR_0/frameworks/libs/air/airframework.swc</locationURI>
 		</link>
 		<link>
 			<name>airglobal.swc</name>
@@ -46,14 +31,29 @@
 			<locationURI>Flex_3_SDK_with_AIR_0/frameworks/libs/air/airglobal.swc</locationURI>
 		</link>
 		<link>
+			<name>flex.swc</name>
+			<type>1</type>
+			<locationURI>Flex_3_SDK_with_AIR_0/frameworks/libs/flex.swc</locationURI>
+		</link>
+		<link>
 			<name>framework.swc</name>
 			<type>1</type>
 			<locationURI>Flex_3_SDK_with_AIR_0/frameworks/libs/framework.swc</locationURI>
 		</link>
 		<link>
-			<name>airframework.swc</name>
+			<name>rpc.swc</name>
 			<type>1</type>
-			<locationURI>Flex_3_SDK_with_AIR_0/frameworks/libs/air/airframework.swc</locationURI>
+			<locationURI>Flex_3_SDK_with_AIR_0/frameworks/libs/rpc.swc</locationURI>
+		</link>
+		<link>
+			<name>servicemonitor.swc</name>
+			<type>1</type>
+			<locationURI>Flex_3_SDK_with_AIR_0/frameworks/libs/air/servicemonitor.swc</locationURI>
+		</link>
+		<link>
+			<name>utilities.swc</name>
+			<type>1</type>
+			<locationURI>Flex_3_SDK_with_AIR_0/frameworks/libs/utilities.swc</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

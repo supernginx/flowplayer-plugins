@@ -8,5 +8,5 @@
 <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">airframework.swc</AS3Classpath>
 <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">servicemonitor.swc</AS3Classpath>
 <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">src/actionscript</AS3Classpath>
-<AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">FLOWPLAYER.swc</AS3Classpath>
+<AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">FLOWPLAYER_3_0_3.swc</AS3Classpath>
 </AS3Classpath>
