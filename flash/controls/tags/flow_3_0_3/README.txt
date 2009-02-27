@@ -1,4 +1,4 @@
-Version history:
+ Version history:
 
 3.0.4
 -----
