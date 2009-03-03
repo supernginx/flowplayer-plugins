@@ -1,4 +1,4 @@
-<project name="Flowplayer controlbar" default="deploy">
+<project name="'tube' controlbar for Flowplayer" default="deploy">
 
 	<property name="devkit-dir" value="../flowplayer.devkit" />
 	
@@ -7,10 +7,10 @@
 	<property name="flowplayer_lib" value="${devkit-dir}/flowplayer.swc" />
 	
 	<property name="version" value="3.1.0-dev" />
-	<property name="basename" value="flowplayer.controls" />
+	<property name="basename" value="flowplayer.controls-tube" />
 	<property name="plugin-binary" value="${basename}.swf" />
 	<property name="plugin-binary-versioned" value="${basename}-${version}.swf" />
 	<property name="plugin-main-class" value="org/flowplayer/controls/Controls.as" />
-	<property name="library-path" value="src/flash/default" />
+	<property name="library-path" value="src/flash/tube" />
     <property name="compiler-define" value="CONFIG::skin,'true'" />
 </project>
