@@ -33,15 +33,19 @@ package org.flowplayer.controls.button {
 		}
 		
 		protected override function onMouseOut(event:MouseEvent = null):void {
-			resetDispColor(_upStateFace.getChildByName(BACK_INSTANCE_NAME));
-			resetDispColor(_downStateFace.getChildByName(BACK_INSTANCE_NAME));
+			resetDispColor(_upStateFace.getChildByName(HIGHLIGHT_INSTANCE_NAME));
+			resetDispColor(_downStateFace.getChildByName(HIGHLIGHT_INSTANCE_NAME));
 			hideTooltip();
+            showMouseOutState(_upStateFace);
+            showMouseOutState(_downStateFace);
 		}
 
 		protected override function onMouseOver(event:MouseEvent):void {
-			transformDispColor(_upStateFace.getChildByName(BACK_INSTANCE_NAME));
-			transformDispColor(_downStateFace.getChildByName(BACK_INSTANCE_NAME));
+			transformDispColor(_upStateFace.getChildByName(HIGHLIGHT_INSTANCE_NAME));
+			transformDispColor(_downStateFace.getChildByName(HIGHLIGHT_INSTANCE_NAME));
 			showTooltip();
+            showMouseOverState(_upStateFace);
+            showMouseOverState(_downStateFace);
 		}
 		
 		public function get isDown():Boolean {
