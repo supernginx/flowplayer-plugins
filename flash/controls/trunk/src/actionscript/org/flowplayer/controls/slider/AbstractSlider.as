@@ -9,7 +9,24 @@
  */
 
 package org.flowplayer.controls.slider {
-	import org.flowplayer.controls.NullToolTip;		import org.flowplayer.controls.Config;	import org.flowplayer.controls.DefaultToolTip;	import org.flowplayer.controls.ToolTip;	import org.flowplayer.controls.flash.Dragger;	import org.flowplayer.util.GraphicsUtil;	import org.flowplayer.view.AbstractSprite;	import org.flowplayer.view.AnimationEngine;		import flash.display.DisplayObject;	import flash.display.Sprite;	import flash.events.Event;	import flash.events.EventDispatcher;	import flash.events.MouseEvent;	import flash.events.TimerEvent;	import flash.utils.Timer;		/**
+	import org.flowplayer.controls.NullToolTip;	
+	import org.flowplayer.controls.Config;
+	import org.flowplayer.controls.DefaultToolTip;
+	import org.flowplayer.controls.ToolTip;
+	import org.flowplayer.controls.flash.Dragger;
+	import org.flowplayer.util.GraphicsUtil;
+	import org.flowplayer.view.AbstractSprite;
+	import org.flowplayer.view.AnimationEngine;
+	
+	import flash.display.DisplayObject;
+	import flash.display.Sprite;
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	import flash.events.MouseEvent;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;	
+
+	/**
 	 * @author api
 	 */
 	public class AbstractSlider extends AbstractSprite {
@@ -80,9 +97,13 @@ package org.flowplayer.controls.slider {
 					targets[i]["buttonMode"] = add;
 				}
 			}
-		}				protected function getClickTargets(enabled:Boolean):Array {
-			return [this];		}
-		private function createDragger():void {
+		}
+		
+		protected function getClickTargets(enabled:Boolean):Array {
+			return [this];
+		}
+
+		private function createDragger():void {
 			_dragger = new Dragger();
 			_dragger.buttonMode = true;
 			addChild(_dragger);
@@ -108,8 +129,10 @@ package org.flowplayer.controls.slider {
 			}
 		}
 		protected function canDragTo(xPos:Number):Boolean {
-			return true;		}
-		private function updateCurrentPosFromDragger():void {
+			return true;
+		}
+
+		private function updateCurrentPosFromDragger():void {
 			_currentPos = (_dragger.x / (width - _dragger.width)) * 100;
 		}
 
@@ -153,8 +176,10 @@ package org.flowplayer.controls.slider {
 		}
 		
 		protected function get dispatchOnDrag():Boolean {
-			return true;		}
-		protected function onDispatchDrag():void {
+			return true;
+		}
+
+		protected function onDispatchDrag():void {
 			// can be overridden in subclasses
 		}
 
@@ -198,7 +223,7 @@ package org.flowplayer.controls.slider {
 
 		protected override function onResize():void {
 			drawBackground();
-			_dragger.height = height;
+			_dragger.height = parent.height * _config.style.scrubberHeightRatio;
 			_dragger.scaleX = _dragger.scaleY;
 			_dragger.y = height / 2 - _dragger.height / 2;
 		}

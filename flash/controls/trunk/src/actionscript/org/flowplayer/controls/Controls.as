@@ -187,24 +187,7 @@ package org.flowplayer.controls {
 		 * Default properties for the controls.
 		 */		
 		public function getDefaultConfig():Object {
-			return { bottom: 0, left: 0, height: 24, width: "100%", zIndex: 2, 
-					backgroundColor: "#25353C", 
-					backgroundGradient: [.6, 0.3, 0, 0, 0], 
-					border: "0px", borderRadius: "0px", 
-					timeColor: "#01DAFF",
-					durationColor: "#ffffff", 
-					sliderColor: "#000000",
-					sliderGradient: "none", 
-                buttonColor: "#555555",
-                buttonOverColor: "#FF0000",
-//                buttonColor: "#5F747C",
-//                buttonOverColor: "#728B94",
-					progressColor: "#015B7A",
-					progressGradient: "medium", 
-					bufferColor: "#6c9cbc",
-					bufferGradient: "none",
-					tooltipColor: "#5F747C",
-					tooltipTextColor: "#ffffff" };
+            return SkinDefaults.values;
 		}
 		
 		private function initTooltipConfig(config:Config, styleProps:Object):void {
@@ -580,7 +563,7 @@ package org.flowplayer.controls {
 			} else {
 				_player.animationEngine.animateProperty(_scrubber, "width", scrubberWidth);
 			}
-			_scrubber.height = height/3;
+			_scrubber.height = height * _config.style.scrubberBarHeightRatio;
 			Arrange.center(_scrubber, 0, height);
 			return rightEdge - getSpaceAfterWidget(_scrubber) - scrubberWidth;
 		}
