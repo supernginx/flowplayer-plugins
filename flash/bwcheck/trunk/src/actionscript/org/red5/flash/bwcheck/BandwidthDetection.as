@@ -2,7 +2,8 @@ package org.red5.flash.bwcheck
 {
 	import flash.events.EventDispatcher;
 	import flash.net.NetConnection;
-	import org.red5.flash.bwcheck.events.BandwidthDetectEvent;
+    import org.flowplayer.util.Log;
+import org.red5.flash.bwcheck.events.BandwidthDetectEvent;
 	import org.red5.flash.bwcheck.IBandwidthDetection;
 	
 	[Event(name=BandwidthDetectEvent.DETECT_STATUS, type="org.red5.flash.bwcheck.events.BandwidthDetectEvent")]
@@ -10,6 +11,7 @@ package org.red5.flash.bwcheck
 	
 	public class BandwidthDetection extends EventDispatcher implements IBandwidthDetection
 	{
+        protected var log:Log = new Log(this);
 		protected var nc:NetConnection;
 		protected var _service:String;
 		

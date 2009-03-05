@@ -36,7 +36,7 @@
 
 			// configure clip to use "rtmp" plugin for providing video data 
 		    clip: {  
-		        url: 'metacafe',  
+		        url: 'Extremists.flv',  
 		        provider: 'rtmp',
 		        urlResolver: 'bwcheck',
 		        autoPlay: true,
@@ -52,17 +52,17 @@
 				// here is our rtpm plugin configuration
 				rtmp: {
 					 url: 'flowplayer.rtmp.swf',
-					 netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
+					 netConnectionUrl: 'rtmp://flowplayer.org:1935/fastplay'
      				 
 				},
 				bwcheck: {  
 		            url: '@MAIN_PLAYER_SWF@',  
 		            serverType: 'wowza',
-		            netBWConnectionUrl: 'rtmp://localhost/bwcheck',
+		            netBWConnectionUrl: 'rtmp://flowplayer.org:1935/bwcheck',
 		            bwHosts: [
-		            	'rtmp://localhostt/bwcheck',
-		            	'rtmp://localhos/bwcheck',
-		            	'rtmp://localhost/bwcheck',
+		            	'rtmp://flowplayer.org:1935/bwcheck',
+		            	'rtmp://flowplayer.org:1935/bwcheck',
+		            	'rtmp://flowplayer.org:1935/bwcheck',
 		            ],
 		            defaultBitrate: 300,
 		            bitrates: [
@@ -77,7 +77,7 @@
 			log:  {         
 			     
 				     // other levels are: 'info', 'warning', 'error' which will cause less output 
-				     level: 'info' 
+				     level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.rtmp.*' 
 				},
 			
 		});
