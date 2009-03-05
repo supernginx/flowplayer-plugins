@@ -51,18 +51,18 @@
 			plugins:  {
 				// here is our rtpm plugin configuration
 				rtmp: {
-					 url: 'flowplayer.rtmp.swf',
+					 url: '../flowplayer.rtmp.swf',
 					 netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
      				 
 				},
 				bwcheck: {  
 		            url: '@MAIN_PLAYER_SWF@',  
 		            serverType: 'red5',
-		            netBWConnectionUrl: 'rtmp://localhost/bwcheck',
+		            netBWConnectionUrl: 'rtmp://electroteque.org/bwcheck',
 		            bwHosts: [
-		            	'rtmp://localhostt/bwcheck',
-		            	'rtmp://localhos/bwcheck',
-		            	'rtmp://localhost/bwcheck',
+                        'rtmp://electroteque.org/bwcheck',
+                        'rtmp://electroteque.org/bwcheck',
+                        'rtmp://electroteque.org/bwcheck'
 		            ],
 		            defaultBitrate: 300,
 		            bitrates: [
@@ -71,14 +71,10 @@
 		            //{0} is filename, {1} is bitrate, {2} is extension
 		            fileNameString: '{0}-{1}.{2}' 
 		            
-		        },
+		        }
 			
 			}, 
-			log:  {         
-			     
-				     // other levels are: 'info', 'warning', 'error' which will cause less output 
-				     level: 'info' 
-				},
+			log: { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.rtmp.*' }
 			
 		});
 		</script>
@@ -135,35 +131,36 @@
 	 	       'rtmp://server3.host.com/myapp',
 	 	      ]
 	  
-	  <p>
+	  </p>
+      <p>
 	  To enable the fallback feature to store (client side) failed servers to prevent reattempting those connections the failureExpiry config property is required like so:
 	  failureExpiry: 3000,
-	  
-	  <p> This tells the feature to wait for 3000 milliseconds before allowing connection attempts again. 
+	  </p>
+	  <p> This tells the feature to wait for 3000 milliseconds before allowing connection attempts again.</p>
 	  
 	  <p>
 	  To enable round robin connections the loadBalanceServers config property requires to be enabled like so:
 	  
 	  loadBalanceServers: true
-	  
+      </p>
 	  <p>
 	  Advanced configurations for the fallback feature can be enabled like so:
 	  
 	  connectTimeout: 5000,
 	  connectCount: 3
 	  encoding: 0
+        </p>
 	  
 	  <p> connectTimeout is the time in milliseconds before each reconnection attempt.
 	  connectCount is the ammount of times connection reattmps will occur before giving up.
 	  encoding is the AMF encoding version either 0 or 3 for AMF3.
-	  
-	  <p> Two custom events a fired during connection attempts and fallback, these are:
+	  </p>
+	  <p> Two custom events a fired during connection attempts and fallback, these are:</p>
 	  
 	  <ul>
 	  <li>RTMPEventType.RECONNECTED - onReconnect</li>
 	  <li>RTMPEventType.FAILED - onFailed</li>
 	  </ul>
-	  </p>
 		<p>
 			<a href="http://beta.flowplayer.org/documentation/installation.html">Flowplayer installation</a>
 		</p>
