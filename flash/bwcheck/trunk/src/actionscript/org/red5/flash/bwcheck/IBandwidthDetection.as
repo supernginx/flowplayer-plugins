@@ -11,6 +11,6 @@ package org.red5.flash.bwcheck
 		function start():void;
 		function set service(service:String):void;
 		function set connection(connect:NetConnection):void;
-
+        function addEventListener(type:String,listener:Function,useCapture:Boolean = false,priority:int = 0,useWeakReference:Boolean = false):void;
 	}
 }

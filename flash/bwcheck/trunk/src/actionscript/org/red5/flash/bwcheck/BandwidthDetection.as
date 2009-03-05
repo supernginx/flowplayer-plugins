@@ -13,7 +13,7 @@ import org.red5.flash.bwcheck.events.BandwidthDetectEvent;
 	{
         protected var log:Log = new Log(this);
 		protected var nc:NetConnection;
-		protected var _service:String;
+		protected var _service:String = "checkBandwidth";
 		
 		public function BandwidthDetection()
 		{
