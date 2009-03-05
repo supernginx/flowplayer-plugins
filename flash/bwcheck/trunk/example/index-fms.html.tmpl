@@ -52,13 +52,13 @@
 				// here is our rtpm plugin configuration
 				rtmp: {
 					 url: 'flowplayer.rtmp.swf',
-					 netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
+					 netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer'
      				 
 				},
 				bwcheck: {  
 		            url: '@MAIN_PLAYER_SWF@',  
 		            serverType: 'fms',
-		            netBWConnectionUrl: 'rtmp://localhost/bwcheck',
+		            netBWConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
 		            bwHosts: [
 		            	'rtmp://localhostt/bwcheck',
 		            	'rtmp://localhos/bwcheck',
@@ -77,7 +77,7 @@
 			log:  {         
 			     
 				     // other levels are: 'info', 'warning', 'error' which will cause less output 
-				     level: 'info' 
+				     level: 'debug', filter: 'org.flowplayer.bwcheck.*' 
 				},
 			
 		});

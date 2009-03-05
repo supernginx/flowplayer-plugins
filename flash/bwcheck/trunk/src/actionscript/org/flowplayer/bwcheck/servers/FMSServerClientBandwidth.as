@@ -28,8 +28,8 @@ package org.flowplayer.bwcheck.servers
 
 		public function onBWCheck(... rest):Number
 		{
-				dispatchStatus(rest);
-				return 0;
+            dispatchStatus(rest);
+            return 0;
 		}
 			
 		public function onBWDone(... rest):void 
@@ -43,6 +43,7 @@ package org.flowplayer.bwcheck.servers
 		override public function start():void
 		{
 			nc.client = this;
+            nc.call(_service, null);
 		}
 	}
 }
