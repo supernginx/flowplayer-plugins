@@ -1,0 +1,329 @@
+<html><head>
+<script type="text/javascript" src="jquery-1.2.6.pack.js"></script>          
+<script type="text/javascript" src="aqLayer.js"></script>
+<link rel="stylesheet" type="text/css" href="jx.css" />
+
+<style>
+.panel {
+	width: 200px,
+	height: 200px
+}
+</style>
+
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<!-- A minimal Flowplayer setup to get you started -->
+  
+
+	<!-- 
+		include flowplayer JavaScript file that does  
+		Flash embedding and provides the Flowplayer API.
+	-->
+	<script type="text/javascript" src="flowplayer-@FLOWPLAYER_JS_VERSION_INFO@.min.js"></script>
+	
+	<!-- some minimal styling, can be removed -->
+	<link rel="stylesheet" type="text/css" href="style.css">
+	
+	<!-- page title -->
+	<title>Minimal Flowplayer setup</title>
+
+</head><body>
+
+	<div id="page">
+		
+		<h1>Bandwidth Detection Flowplayer setup</h1>
+	
+		<p>View commented source code to get familiar with Flowplayer installation.</p>
+		
+		<!-- this A tag is where your Flowplayer will be placed. it can be anywhere -->
+		<div  
+			 style="display:block;width:400px;height:300px"  
+			 id="fms"> 
+			 
+			 
+		</div> 
+	<div id="panel"> </div>
+		<!-- this will install flowplayer inside previous A- tag. -->
+		
+		
+		<a href="#" id="popme">Open</a>
+		<script>
+
+		var arr = $('#fms').position();
+		$('#panel').aqLayer({ attach: 'nw', position: {top: arr.top + 20, left: arr.left + 20}, closeBtn: true, show:false, opacity:0.8, 
+		layerCss: { 
+            zIndex: 2, display: 'none', width: '330px', height: '200px', position: 'absolute',
+            backgroundColor: '#000000', color: '#FFFFFF' },
+        
+        topCss: { 
+            height: '10px', 
+            backgroundColor: '#CCCCCC'},
+         botCss: { 
+            height: '10px', 
+            background: '#CCCCCC'},
+            
+         midCss: { 
+            height: '100%', 
+            valign: 'middle',
+            align: 'centre'
+     	}
+                                         
+		});
+		
+		
+
+     	$('#popme').click(function() { 
+     		$f().pause();
+     		var bitrates = $f('fms').getConfig().plugins.rtmpBWCheck.bitrates;
+     		var form = "";
+			jQuery.each( bitrates, function(index, item){
+				form += '<label><input type="radio" name="bitrate" value="' + item + '" class="bitrateBtn" onclick="changeBitrate(this);"/>' + item + ' K</label><br>';
+			});
+     		$('#panel').aqLayer(form);
+     	});
+     	
+     	
+     	
+     
+     	
+		$f("fms", {src:"@PLAYER_SWF@",bgcolor:'#333333'}, {
+
+			// configure clip to use "rtmp" plugin for providing video data 
+		    clip: {  
+		        url: 'earth_stood_still.flv',  
+		        provider: 'rtmpBWCheck',
+		        autoPlay: true,
+			    start: 0,
+			    duration: 0,
+			    accelerated: true,
+			    bufferLength: 8
+		    }, 
+			
+			
+			// streaming plugins are configured under the plugins node 
+			plugins:  {
+				// here is our rtpm plugin configuration
+				rtmpBWCheck: {  
+		            url: '@MAIN_PLAYER_SWF@',  
+		            serverType: 'red5',
+		           // netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
+		            netConnectionUrl: 'rtmp://localhost/oflaDemo',
+		            netBWConnectionUrl: 'rtmp://localhost/bwcheck',
+		            /*
+		            hosts: [
+		            	'rtmp://cyzy7r959.badhost1.com/flowplayer',
+		            	'rtmp://cyzy7r959.badhost2.com/flowplayer',
+		            	'rtmp://cyzy7r959.rtmphost.com/flowplayer'
+		            ],
+		            bwHosts: [
+		            	'rtmp://localhostt/bwcheck',
+		            	'rtmp://localhos/bwcheck',
+		            	'rtmp://localhost/bwcheck',
+		            ],*/
+		            encoding: 0,
+		            connectCount: 2,
+		            connectTimeout: 5000,
+		            failureExpiry: 3000,
+		            loadBalanceServers: false,
+		            defaultBitrate: 300,
+		            bitrates: [
+		            	100,300,500,700
+		            ],
+		            switchCurrentPosition: true,
+		            //{0} is filename, {1} is bitrate, {2} is extension
+		            fileNameString: '{0}-{1}.{2}' 
+		        }
+			
+			}, 
+			log:  {         
+			     
+				     // other levels are: 'info', 'warning', 'error' which will cause less output 
+				     level: 'info' 
+				},
+			
+		});
+		
+		
+		
+		function changeBitrate(btn)
+     	{
+     		$f().getPlugin("rtmpBWCheck").changeBitrate(btn.value);
+     	}
+		
+		function detect()
+		{
+			$f().getPlugin("rtmpBWCheck").checkBandwidth();
+		}
+		</script>
+		
+		<a href="#" onclick="detect();">Detect Bandwidth</a>
+		
+		
+		<!-- 
+			after this line is purely informational stuff. 
+			does not affect on Flowplayer functionality 
+		-->
+
+		<p>		
+			If you are running these examples <strong>locally</strong> and not on some webserver you must edit your 
+			<a href="http://www.macromedia.com/support/documentation/en/flashplayer/help/settings_manager04.html">
+				Flash security settings</a>. 
+		</p>
+		
+		<p class="less">
+			Select "Edit locations" &gt; "Add location" &gt; "Browse for files" and select
+			flowplayer-x.x.x.swf you just downloaded.
+		</p>
+		
+		
+		<h2>Documentation</h2>
+		
+		<p>
+			Configuration:
+		</p>
+		<pre>
+			plugins:  {
+				// here is our rtpm plugin configuration
+				rtmpBWcheck: {  
+		            url: '../flowplayer.rtmp.cluster-3.0.0-alpha1.swf',  
+		            serverType: 'red5',
+		            netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
+		            netBWConnectionUrl: 'rtmp://localhost/bwcheck',
+		            hosts: [
+		            	'rtmp://cyzy7r959.badhost1.com/flowplayer',
+		            	'rtmp://cyzy7r959.badhost2.com/flowplayer',
+		            	'rtmp://cyzy7r959.rtmphost.com/flowplayer'
+		            ],
+		            bwHosts: [
+		            	'rtmp://localhostt/bwcheck',
+		            	'rtmp://localhos/bwcheck',
+		            	'rtmp://localhost/bwcheck',
+		            ],
+		            encoding: 0,
+		            connectCount: 2,
+		            connectTimeout: 5000,
+		            failureExpiry: 3000,
+		            loadBalanceServers: false,
+		            defaultBitrate: 300,
+		            bitrates: [
+		            	100,300,500,700
+		            ],
+		            //{0} is filename, {1} is bitrate, {2} is extension
+		            fileNameString: '{0}-{1}.{2}' 
+		        }
+			
+		</pre>
+		<p>Bandiwdth Detection Mode:</p>
+	  <p>
+	  A netBWConnectionUrl config property is required to give the url of the bitrate detection server application location like so:
+	  
+	  netBWConnectionUrl: 'rtmp://localhost/bwcheck'
+	  
+	  <p> 
+	  To enable server fallback for the bitrate detection hosts a bwHosts config property is required in the plugins config like this:
+	  
+	  bwHosts: [
+	 	       'rtmp://server1.host.com/bwcheck',
+	 	       'rtmp://server2.host.com/bwcheck',
+	 	       'rtmp://server3.host.com/bwcheck',
+	 	      ]
+	  
+	  <p>
+	  To determine which server the plugin is handling the detection for and which implementation to choose a serverType config is required like so:
+	  
+	  serverType: 'red5' (red5, wowza or fms)
+	  
+	  <p>
+	  The bitrate detection feature requires a list of available bitrates to choose from like so:
+	  
+	  bitrates: [
+  	  	           100,300,500,700
+	 	         ],
+	  
+	  <p> A defaultBitrate config property is also required as a fallback if the bitrate choosing fails like so:
+	  
+	  defaultBitrate: 300
+	  
+	  <p> A fileNameString config property is also required to determine the file naming convention format like so:
+	  
+	  fileNameString: '{0}-{1}.{2}' Where {0} is the filename, {1} is the bitrate and {2} is the file extension
+	  
+	  <p>
+	  
+	  Possible options are {0}-{1}, {0}_{1}, {1}-{0}, {1}_{0}, {0}-{1}.{2}, {0}_{1}.{2}
+	  
+	 <p>
+	  Advanced configurations for the bandwidth detection feature can be enabled like so:
+	  
+	  closestRateInterval: 100,
+	  rememberBitrate: false (default: true)
+	  
+	  <p>
+	  closestRateInterval determines which nearest rate will use the highest rate (ie detected bandwidth is 600 will choose the highest rate of 700).
+	  rememberBitrate enables or disables storing the chosen bitrate to enabled bandwidth detection on each request.
+	  
+	  <p> Four custom events a fired during connection attempts and fallback, these are:
+	  
+	  <ul>
+	  <li>BWDetectEventType.DETECT_COMPLETE - onDetectComplete</li>
+	  <li>BWDetectEventType.DETECT_FAILED - onDetectFailed</li>
+	  <li>BWDetectEventType.DETECT_START - onDetectStart</li>
+	  <li>BWDetectEventType.DETECT_STATUS - onDetectStatus</li>
+	  </ul>
+	  </p>
+	  
+	 
+		<p>Clustering Mode:</p>
+		<p> 
+	 	To enable server fallback a hosts config property is required in the plugins config like this:
+	  
+	 	hosts: [
+	 	       'rtmp://server1.host.com/myapp',
+	 	       'rtmp://server2.host.com/myapp',
+	 	       'rtmp://server3.host.com/myapp',
+	 	      ]
+	  
+	  <p>
+	  To enable the fallback feature to store (client side) failed servers to prevent reattempting those connections the failureExpiry config property is required like so:
+	  failureExpiry: 3000,
+	  
+	  <p> This tells the feature to wait for 3000 milliseconds before allowing connection attempts again. 
+	  
+	  <p>
+	  To enable round robin connections the loadBalanceServers config property requires to be enabled like so:
+	  
+	  loadBalanceServers: true
+	  
+	  <p>
+	  Advanced configurations for the fallback feature can be enabled like so:
+	  
+	  connectTimeout: 5000,
+	  connectCount: 3
+	  encoding: 0
+	  
+	  <p> connectTimeout is the time in milliseconds before each reconnection attempt.
+	  connectCount is the ammount of times connection reattmps will occur before giving up.
+	  encoding is the AMF encoding version either 0 or 3 for AMF3.
+	  
+	  <p> Two custom events a fired during connection attempts and fallback, these are:
+	  
+	  <ul>
+	  <li>RTMPEventType.RECONNECTED - onReconnect</li>
+	  <li>RTMPEventType.FAILED - onFailed</li>
+	  </ul>
+	  </p>
+		<p>
+			<a href="http://beta.flowplayer.org/documentation/installation.html">Flowplayer installation</a>
+		</p>
+
+		<p>
+			<a href="http://beta.flowplayer.org/documentation/configuration.html">Flowplayer configuration</a>
+		</p>
+
+		<p>
+			See this identical page on <a href="http://beta.flowplayer.org/demos/example/index.htm">Flowplayer website</a> 
+		</p>
+		
+	</div>
+	
+	
+</body></html>

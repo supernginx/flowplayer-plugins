@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module relativePaths="false" type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="flex" name="Flex">
+      <configuration home="/Users/api/flex_sdk_3" libraryName="" />
+    </facet>
+  </component>
+  <component name="Flex.Build.Configuration">
+    <option name="APPLICATION_ENTRY_POINT" value="$MODULE_DIR$/src/main.mxml" />
+    <option name="VERSION" value="2" />
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src/actionscript" isTestSource="false" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="core" />
+    <orderEntry type="library" name="" level="application" />
+  </component>
+</module>
+
