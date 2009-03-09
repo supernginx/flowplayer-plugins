@@ -12,9 +12,9 @@ package org.flowplayer.bwcheck.servers
 {
 
 	import flash.net.Responder;
-	
+
 	import org.red5.flash.bwcheck.BandwidthDetection;
-	
+
 	public class WowzaServerClientBandwidth extends BandwidthDetection
 	{
 		private var info:Object = new Object();
@@ -25,15 +25,30 @@ package org.flowplayer.bwcheck.servers
 		{
 			res = new Responder(onResult, onStatus);
 		}
-		
-		public function onBWCheck(obj:Object):Boolean
+//
+//        public function onBWCheck(... rest):Number
+//        {
+//            dispatchStatus(rest);
+//            return 0;
+//        }
+
+        public function onBwCheck(obj:Object):Boolean
+        {
+            log.debug("onBwCheck");
+            dispatchStatus(obj);
+            return true;
+        }
+
+        public function onBWCheck(obj:Object):Boolean
+        {
+            log.debug("onBWCheck");
+            dispatchStatus(obj);
+            return true;
+        }
+
+        public function onBWDone(kbitDown:int, deltaDown:int, deltaTime:int, latency:int):void
 		{
-			dispatchStatus(obj);
-			return true;
-		}
-			
-		public function onBWDone(kbitDown:int, deltaDown:int, deltaTime:int, latency:int):void 
-		{ 
+            log.debug("onBWDone");
 			var obj:Object = new Object();
 			obj.kbitDown = kbitDown;
 			obj.delatDown = deltaDown;
