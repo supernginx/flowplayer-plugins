@@ -5,7 +5,7 @@ package org.red5.flash.bwcheck
     import org.flowplayer.util.Log;
 import org.red5.flash.bwcheck.events.BandwidthDetectEvent;
 	import org.red5.flash.bwcheck.IBandwidthDetection;
-	
+
 	[Event(name=BandwidthDetectEvent.DETECT_STATUS, type="org.red5.flash.bwcheck.events.BandwidthDetectEvent")]
 	[Event(name=BandwidthDetectEvent.DETECT_COMPLETE, type="org.red5.flash.bwcheck.events.BandwidthDetectEvent")]
 	
