@@ -69,15 +69,20 @@
 		            	100,300,500,700
 		            ],
 		            //{0} is filename, {1} is bitrate, {2} is extension
-		            fileNameString: '{0}-{1}.{2}' 
-		            
+//                    fileNameString: '{0}-{1}.{2}'
+                    fileNameString: '{0}.{2}',
+
+                    onBwDone: function(url, chosenBitrate, bitrate) {
+                        console.info("Bandwidth detected " + bitrate + ", mapped to " + chosenBitrate + ", url is " + url);
+                    }
+
 		        }
 			
 			}, 
 			log:  {         
 			     
 				     // other levels are: 'info', 'warning', 'error' which will cause less output 
-				     level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.rtmp.*' 
+				     level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.model.PluginEvent, org.flowplayer.model.PluginModelImpl' 
 				},
 			
 		});
