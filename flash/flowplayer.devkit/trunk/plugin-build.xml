@@ -9,9 +9,7 @@
 	<property name="example-dir" value="example" />
 	<property name="dist-dir" value="dist" />
 	<property name="lib-dir" value="lib" />
-    <property name="flex-libs-path" value="${flex3libsdir}" />
-	<property name="libs-path" value="${flex3libsdir}" />
-	<property name="src-flash" value="${src}/flash" />
+	<property name="flex-libs-path" value="${flex3libsdir}" />
 	<property name="flowplayer-js-version-info" value="3.0.6" />
 	<property name="src-flowplayer" value="../core" />
 	<property name="plugin-libs" value="" />
@@ -86,7 +84,7 @@
             <echo message="compiling with  ${mxmlc-define}" />
             
 			<exec executable="${mxmlc_bin}">
-				<arg line="-source-path @{src}" />
+				<arg line="-source-path @{src} ${mxmlc-library-path}" />
                 <arg line="${mxmlc-define}" />
 				<arg line="${libs}" />
 				<arg line="-library-path ${flex-libs-path} ${mxmlc-library-path}" />
@@ -140,7 +138,7 @@
 		<antcall target="example" />
 	</target>
 
-	<target name="example">
+	<target name="example" depends="build" description="prepare the plugin example html files">
 		<prepare-example player-swf="flowplayer.swf" main-swf="${plugin-binary-versioned}"/>
 	</target>
 	
@@ -208,7 +206,7 @@
 		</zip>
 	</target>
 
-	<target name="release-remote">
+	<target name="release-remote" depends="release-swfs">
 		<remotecopy remotedir="${remotedir}/${basename}" keyfile="${keyfile}" pass="${pass}">
 			<releasefiles>
 				<fileset dir="${dist-dir}">
