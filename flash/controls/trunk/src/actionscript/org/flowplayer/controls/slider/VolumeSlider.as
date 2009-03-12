@@ -18,7 +18,11 @@ package org.flowplayer.controls.slider {
 	 */
 	public class VolumeSlider extends AbstractSlider {
 		public static const DRAG_EVENT:String = AbstractSlider.DRAG_EVENT;
-		
+
+        override public function get name():String {
+            return "volume";
+        }
+
 		public function VolumeSlider(config:Config, animationEngine:AnimationEngine) {
 			super(config, animationEngine);
 			tooltipTextFunc = function(percentage:Number):String {
