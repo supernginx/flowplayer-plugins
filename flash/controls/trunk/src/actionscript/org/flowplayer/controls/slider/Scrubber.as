@@ -39,6 +39,10 @@ package org.flowplayer.controls.slider {
 			createBars();
 		}
 
+        override public function get name():String {
+            return "scrubber";
+        }
+
 		public function set playlist(playlist:Playlist):void {
 			playlist.onStart(onSeekDone);
             playlist.onBeforeSeek(onBeforeSeek);

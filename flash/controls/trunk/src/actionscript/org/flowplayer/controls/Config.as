@@ -25,11 +25,6 @@ package org.flowplayer.controls {
 		private var _enabled:WidgetBooleanStates = new WidgetBooleanStates();
 		private var _tooltips:ToolTips = new ToolTips();
 
-
-        public function Config() {
-            _enabled.stop = true;
-        }
-
         public function get autoHide():String {
 			return _autoHide;
 		}
