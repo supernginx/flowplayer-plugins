@@ -11,7 +11,7 @@
 	<property name="lib-dir" value="lib" />
 	<property name="flex-libs-path" value="${flex3libsdir}" />
 	<property name="flowplayer-js-version-info" value="3.0.6" />
-	<property name="src-flowplayer" value="../core" />
+	<property name="src-flowplayer" value="../flowplayer" />
 	<property name="plugin-libs" value="" />
 
 	<condition property="extra.libs" value="" else="${plugin-libs}">
@@ -99,6 +99,29 @@
 			</exec>
 		</sequential>
 	</macrodef>
+	
+	<macrodef name="compc.compile">
+            <attribute name="src" default="${src-as}" />
+            <attribute name="sources" default="." />
+            <attribute name="out" default="${plugin-binary}" />
+            <attribute name="libs" default="" />
+
+            <sequential>
+                    <condition property="libs" value="" else="-external-library-path @{libs}">
+                            <equals arg1="@{libs}" arg2="" />
+                    </condition>
+                    <exec executable="${compc_bin}">
+                            <arg line="-source-path @{src}" />
+                            <arg line="${libs}" />
+                            <arg line="-library-path ${flex3dir}/frameworks/locale/en_US ${flex-libs-path} ${flowplayer_lib}" />
+                            <arg line="-include-sources @{sources}" />
+            
+                            <arg line="-strict=true" />
+                            <arg line="-keep-as3-metadata=External" />
+                            <arg line="-output '${build-dir}/@{out}'" />
+                    </exec>
+            </sequential>
+    </macrodef>
 
 	<macrodef name="prepare-example">
 		<attribute name="player-swf" />
@@ -132,6 +155,10 @@
 			</copy>
 		</sequential>
 	</macrodef>
+	
+	<target name="library" depends="compile">
+		<compc.compile src="${src-as}" libs="${extra.libs}" sources="." out="${plugin-swc}" />
+	</target>
 
 	<target name="compile" unless="uptodate.main">
 		<mxmlc.compile src="${src-as}" libs="${extra.libs}" out="${plugin-binary}" plugin-main-class="${plugin-main-class}" />
