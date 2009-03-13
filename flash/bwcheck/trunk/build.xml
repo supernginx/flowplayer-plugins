@@ -2,7 +2,7 @@
 
 	<property name="devkit-dir" value="../flowplayer.devkit" />
 	<property name="flowplayer_lib" value="${devkit-dir}/flowplayer.swc" />
-	<property name="plugin-libs" value=""/>
+	<property name="plugin-libs" value="../flowplayer.cluster/build/flowplayer.cluster.swc"/>
 	
 	<property file="${devkit-dir}/plugin-build.properties" />
 	<import file="${devkit-dir}/plugin-build.xml"/>
