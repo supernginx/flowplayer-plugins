@@ -86,7 +86,7 @@ import org.flowplayer.model.Plugin;
 
         public function onLoad(player:Flowplayer):void {
             _player = player;
-            _httpResolver = new HttpSecureUrlResolver(player, _config, _failureListener);
+            _httpResolver = new SecureHttpUrlResolver(player, _config, _failureListener);
             _connectionProvider = new SecureRTMPConnectionProvider(_config.token || SECRET);
             _connectionProvider.connectionClient = _connectionClient;
         }
