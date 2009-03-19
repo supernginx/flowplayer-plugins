@@ -6,8 +6,6 @@ package org.flowplayer.cluster
 	
 	import mx.utils.URLUtil;
 	
-	import com.as3collections.collections.ArrayCollection;
-	
 	import org.flowplayer.flow_internal;
 	import org.flowplayer.model.ClipEvent;
 	import org.flowplayer.model.ClipEventDispatcher;
@@ -41,8 +39,7 @@ package org.flowplayer.cluster
 			_connectCount = config.connectCount;
 			_connectTimeout = config.connectTimeout;
 			_failureExpiry = config.failureExpiry;
-			
-			//_provider = provider
+
 		}
 		
 		public function onReconnected(listener:Function):void {
@@ -52,18 +49,6 @@ package org.flowplayer.cluster
 		public function onFailed(listener:Function):void {
 			setListener(RTMPEventType.FAILED, listener);
 		}
-		
-		/*
-		public function set netConnectionUrl(url:*):void
-		{
-			_netConnectionUrl = url;
-		}
-		
-		public function get netConnectionUrl():*
-		{
-			return _netConnectionUrl;
-		}
-		*/
 		
 		public function set hosts(hosts:Array):void
 		{
@@ -79,33 +64,20 @@ package org.flowplayer.cluster
 		public function get hosts():Array
 		{
 			return _hosts;
-			//return _hosts.filter(_checkLiveHost);
 		}
-		
-		public function set loadBalanceServers(loadBalanceServers:Boolean):void
-		{
-			_loadBalanceServers	= loadBalanceServers;
-		}
-		
-		/*
-		public function set connectTimeout(timeout:Number):void
-		{
-			_connectTimeout = timeout;
-		}*/
+	
 		
 		public function get host():*
 		{
-			if (_loadBalanceServers && hasMultipleHosts())
+			if (_config.loadBalanceServers && hasMultipleHosts())
 			{
 				var index:uint = getRandomIndex();
 				_hostIndex = index;
 				return _liveServers[_hostIndex];
-				//return getHost(index);
 			} else if (hasMultipleHosts()) {
-				//_hostIndex = 0;
+				_hostIndex = 0;
 				// If we have multiple live hosts
 				return _liveServers[_hostIndex];
-				//return getHost(_hostIndex);
 			}
 			
 			return _netConnectionUrl;
@@ -213,12 +185,6 @@ package org.flowplayer.cluster
 		protected function tryFallBack(e:TimerEvent):void
 		{
 
-
-			//netConnection.proxyType = "none";
-			//log.info("Failed connection to " + netConnection.uri);
-			
-			// Set this server as failed to prevent reconnections to it
-			//setFailedServer(netConnection.uri);
 			
 			// Check if there is more hosts to attempt reconnection to
 			if (hasMoreHosts())
