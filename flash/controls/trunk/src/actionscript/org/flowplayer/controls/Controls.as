@@ -609,17 +609,7 @@ import org.flowplayer.controls.button.StopButton;
 		
 		private function arrangeYCentered(clip:DisplayObject):void {
 			clip.y = _margins[0];
-
-            if (clip == _timeView) {
-                clip.height = height/1.7;
-            } else {
-                clip.height = height - _margins[0] - _margins[2];
-            }
-//        } else if (clip == _tallestWidget) {
-//            clip.height = height - _margins[0] - _margins[2];
-//        } else {
-//            clip.scaleY = _tallestWidget.scaleY;
-//        }
+            clip.height = height - _margins[0] - _margins[2];
 			clip.scaleX = clip.scaleY;
 
 			Arrange.center(clip, 0, height);
