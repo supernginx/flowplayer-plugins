@@ -28,10 +28,40 @@ package org.flowplayer.controls.button {
             _downStateFace = createDownStateFace();
 			_upStateFace = createUpStateFace();
 			addChild(_upStateFace);
-			clickListenerEnabled = true;
-			arrange();
+            this.scale9Grid = _upStateFace.scale9Grid;
+            clickListenerEnabled = true;
 		}
-		
+
+        override protected function resizeFace():void {
+            resize(_downStateFace);
+            resize(_upStateFace);
+        }
+
+        override protected function get faceWidth():Number {
+            return _upStateFace.width;
+        }
+
+        override protected function get faceHeight():Number {
+            return _upStateFace.height;
+        }
+
+        private function resize(disp:DisplayObject):void {
+            disp.x = leftEdge;
+            disp.y = topEdge;
+            disp.height = height - topEdge - bottomEdge;
+            disp.scaleX = disp.scaleY;
+        }
+//
+//        override public function set scaleX(value:Number):void {
+//            _upStateFace.scaleX = value;
+//            _downStateFace.scaleX = value;
+//        }
+//
+//        override public function set scaleY(value:Number):void {
+//            _upStateFace.scaleY = value;
+//            _downStateFace.scaleY = value;
+//        }
+
 		protected override function onMouseOut(event:MouseEvent = null):void {
 			resetDispColor(_upStateFace.getChildByName(HIGHLIGHT_INSTANCE_NAME));
 			resetDispColor(_downStateFace.getChildByName(HIGHLIGHT_INSTANCE_NAME));
@@ -56,33 +86,20 @@ package org.flowplayer.controls.button {
 			if (isDown == down) return;
 			removeChild(down ? _upStateFace : _downStateFace);
 			addChild(down ? _downStateFace : _upStateFace);
-			arrange();
+            if (down) {
+                log.error("downstateface grid " + _downStateFace.scale9Grid);
+            } else {
+                log.error("upStateFace grid " + _upStateFace.scale9Grid);                
+            }
 		}
 
-		protected function arrange():void {
-		}
-
-		private function createUpStateFace():DisplayObjectContainer {
-            var className:String = getUpStateFaceClassName();
-            log.debug("creating skin from " + className);
-            var Face:Class = getClass(className);
-			return new Face();
-		}
-
-		private function createDownStateFace():DisplayObjectContainer {
-            var Face:Class = getClass(getDownStateFaceClassName());
-			return new Face();
-		}
-
-        protected function getUpStateFaceClassName():String {
-            throw new Error("getUpStateFaceClassName must be overridden in a subclass");
+		protected function createUpStateFace():DisplayObjectContainer {
             return null;
-        }
+		}
 
-        protected function getDownStateFaceClassName():String {
-            throw new Error("getDownStateFaceClassName must be overridden in a subclass");
+		protected function createDownStateFace():DisplayObjectContainer {
             return null;
-        }
+		}
 		
         override protected function createFace():DisplayObjectContainer {
             return null;

@@ -14,7 +14,8 @@ package org.flowplayer.controls.slider {
 	import org.flowplayer.controls.DefaultToolTip;
 	import org.flowplayer.controls.ToolTip;
 	import org.flowplayer.controls.flash.Dragger;
-	import org.flowplayer.util.GraphicsUtil;
+    import org.flowplayer.util.Arrange;
+import org.flowplayer.util.GraphicsUtil;
 	import org.flowplayer.view.AbstractSprite;
 	import org.flowplayer.view.AnimationEngine;
 	
@@ -40,16 +41,19 @@ package org.flowplayer.controls.slider {
 		private var _currentPos:Number;
 		private var _tooltip:ToolTip;
 		private var _tooltipTextFunc:Function;
+        private var _controlbar:DisplayObject;
 
-		public function AbstractSlider(config:Config, animationEngine:AnimationEngine) {
-			_config = config;
-			_animationEngine = animationEngine;
-			_dragTimer = new Timer(50);
-			createDragger();
-			toggleTooltip();
-			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
-		}
-		
+        public function AbstractSlider(config:Config, animationEngine:AnimationEngine, controlbar:DisplayObject) {
+            _config = config;
+            _animationEngine = animationEngine;
+            _controlbar = controlbar;
+            _dragTimer = new Timer(50);
+            createDragger();
+            toggleTooltip();
+            addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+        }
+
+
 		private function toggleTooltip():void {
 			if (isToolTipEnabled()) {
 				if (_tooltip && _tooltip is DefaultToolTip) return;
@@ -144,7 +148,7 @@ package org.flowplayer.controls.slider {
 			if (! event.target == this) return;
 			_dragTimer.start();
 			if (_tooltipTextFunc != null) { 
-				_tooltip.show(_dragger, _tooltipTextFunc(value), true);
+				_tooltip.show(_dragger, _tooltipTextFunc(value) as String, true);
 			}
 		}
 
@@ -157,7 +161,7 @@ package org.flowplayer.controls.slider {
 			}
 			
 			_dragger.x = pos;
-			_tooltip.text = _tooltipTextFunc((_dragger.x / (width - _dragger.width)) * 100);
+			_tooltip.text = _tooltipTextFunc((_dragger.x / (width - _dragger.width)) * 100) as String;
 
 			// do not dispatch several times from almost the same pos
 			if (Math.abs(_previousDragEventPos - _dragger.x) < 1) return;
@@ -222,24 +226,39 @@ package org.flowplayer.controls.slider {
 		}
 
 		protected override function onResize():void {
-			drawBackground();
-			_dragger.height = parent.height * _config.style.scrubberHeightRatio;
-			_dragger.scaleX = _dragger.scaleY;
-			_dragger.y = height / 2 - _dragger.height / 2;
-		}
+			_dragger.height = height;
+            _dragger.scaleX = _dragger.scaleY;
+            drawBackground();
+        }
 
 		private function drawBackground():void {
 			graphics.clear();
-			graphics.beginFill(_config.style.sliderColor, 1);
-			var radius:Number = height/1.5;
-			graphics.drawRoundRect(0, 0, width, height, radius, radius);
-			graphics.endFill();
-			
-			if (_config.style.sliderGradient) {
-				GraphicsUtil.addGradient(this, 0, _config.style.sliderGradient, radius);
-			}
-		}
-		
+			graphics.beginFill(sliderColor, 1);
+			graphics.drawRoundRect(0, height/2 - barHeight/2, width, barHeight, barCornerRadius, barCornerRadius);
+            graphics.endFill();
+                                                                                                                     
+            if (sliderGradient) {
+                GraphicsUtil.addGradient(this, 0, sliderGradient, barCornerRadius);
+            }
+        }
+
+        protected function get barCornerRadius():Number {
+            return barHeight/1.5;
+        }
+
+        protected function get sliderGradient():Array {
+            return null;
+        }
+
+        protected function get sliderColor():Number {
+            return 0x000000;
+        }
+
+        protected function get barHeight():Number {
+            return height * 0.4;
+
+        }
+
 		public function redraw(config:Config):void {
 			_config = config;
 			drawBackground();

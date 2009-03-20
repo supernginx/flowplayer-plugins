@@ -22,7 +22,7 @@ package org.flowplayer.controls {
 		private var _autoHide:String = "fullscreen"; // never | fullscreen | always
 		private var _hideDelay:Number = 4000;
 		private var _visible:WidgetBooleanStates = new WidgetBooleanStates();
-		private var _enabled:WidgetBooleanStates = new WidgetBooleanStates();
+		private var _enabled:WidgetBooleanStates = new WidgetEnabledStates();
 		private var _tooltips:ToolTips = new ToolTips();
 
         public function get autoHide():String {
