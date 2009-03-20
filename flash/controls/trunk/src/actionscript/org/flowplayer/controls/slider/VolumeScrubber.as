@@ -11,23 +11,20 @@ package org.flowplayer.controls.slider {
 
     import flash.display.DisplayObject;
 import org.flowplayer.controls.Config;
-    import org.flowplayer.controls.button.SkinClasses;
-import org.flowplayer.controls.flash.ScrubberBottomEdge;
+    import org.flowplayer.controls.flash.ScrubberBottomEdge;
 import org.flowplayer.controls.flash.ScrubberLeftEdge;
 import org.flowplayer.model.Playlist;
     import org.flowplayer.util.Arrange;
 import org.flowplayer.view.AbstractSprite;
     import org.flowplayer.view.AnimationEngine;
 
-    public class Scrubber extends AbstractSprite{
+    public class VolumeScrubber extends AbstractSprite{
         public static const DRAG_EVENT:String = AbstractSlider.DRAG_EVENT;
         private var _scrubber:ScrubberSlider;
+        private var _leftEdge:DisplayObject;
         private var _controlbar:DisplayObject;
         private var _config:Config;
-        private var _leftEdge:DisplayObject;
-        private var _bottomEdge:DisplayObject;
-        private var _rightEdge:DisplayObject;
-        private var _topEdge:DisplayObject;
+        private var _bottomEdge:ScrubberBottomEdge;
 
         /**
          * Scrubber widget holds the actual ScrubberSlider instance plus some graphics around it.
@@ -36,15 +33,12 @@ import org.flowplayer.view.AbstractSprite;
          * @param animationEngine
          * @param controlbar
          */
-        public function Scrubber(config:Config, animationEngine:AnimationEngine, controlbar:DisplayObject) {
+        public function VolumeScrubber(config:Config, animationEngine:AnimationEngine, controlbar:DisplayObject) {
             _config = config;
             _controlbar = controlbar;
-
-            _leftEdge = addChild(SkinClasses.getScrubberLeftEdge());
-            _bottomEdge = addChild(SkinClasses.getScrubberBottomEdge());
-            _topEdge = addChild(SkinClasses.getScrubberTopEdge());
-            _rightEdge = addChild(SkinClasses.getScrubberRightEdge());
-
+            _leftEdge = new ScrubberLeftEdge();
+            addChild(_leftEdge);
+            _bottomEdge = new ScrubberBottomEdge();
             addChild(_bottomEdge);
             _scrubber = new ScrubberSlider(config, animationEngine, controlbar);
             addChild(_scrubber);
@@ -65,13 +59,11 @@ import org.flowplayer.view.AbstractSprite;
         protected override function onResize():void {
             _leftEdge.height = height;
             _leftEdge.x = 0;
-            _leftEdge.y = 0;
-
             _scrubber.x = _leftEdge.width;
             _scrubber.setSize(width - _leftEdge.width, (height-_bottomEdge.height) * _config.style.scrubberHeightRatio);
             Arrange.center(_scrubber, 0, height);
-
-            _bottomEdge.y = height - _bottomEdge.height - 1;
+            _leftEdge.y = 0;
+            _bottomEdge.y = height - _bottomEdge.height;
             _bottomEdge.width = width;
         }
 

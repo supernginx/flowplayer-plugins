@@ -9,41 +9,40 @@
  */
 
 package org.flowplayer.controls {
-	import org.flowplayer.view.AnimationEngine;	
-	import org.flowplayer.model.PluginEventType;	
-	import org.flowplayer.controls.button.AbstractButton;
-	import org.flowplayer.controls.button.AbstractToggleButton;
-	import org.flowplayer.controls.button.ButtonEvent;
-	import org.flowplayer.controls.button.NextButton;
-	import org.flowplayer.controls.button.PrevButton;
-	import org.flowplayer.controls.button.StopButton;
-	import org.flowplayer.controls.button.ToggleFullScreenButton;
-	import org.flowplayer.controls.button.TogglePlayButton;
-	import org.flowplayer.controls.button.ToggleVolumeMuteButton;
-	import org.flowplayer.controls.slider.AbstractSlider;
-	import org.flowplayer.controls.slider.Scrubber;
-	import org.flowplayer.controls.slider.VolumeSlider;
-	import org.flowplayer.model.Clip;
-	import org.flowplayer.model.ClipEvent;
-	import org.flowplayer.model.PlayerEvent;
-	import org.flowplayer.model.PlayerEventType;
-	import org.flowplayer.model.Playlist;
-	import org.flowplayer.model.Plugin;
-	import org.flowplayer.model.PluginModel;
-	import org.flowplayer.model.Status;
-	import org.flowplayer.util.Arrange;
-	import org.flowplayer.util.PropertyBinder;
-	import org.flowplayer.view.AbstractSprite;
-	import org.flowplayer.view.Flowplayer;
-	import org.flowplayer.view.StyleableSprite;
-	
-	import flash.display.DisplayObject;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.events.TimerEvent;
-	import flash.utils.Timer;		
+    import flash.display.DisplayObject;
+    import flash.events.Event;
+    import flash.events.TimerEvent;
+    import flash.system.ApplicationDomain;
+import flash.utils.Timer;
 
-	/**
+    import org.flowplayer.controls.button.AbstractButton;
+    import org.flowplayer.controls.button.AbstractToggleButton;
+    import org.flowplayer.controls.button.ButtonEvent;
+    import org.flowplayer.controls.button.NextButton;
+    import org.flowplayer.controls.button.PrevButton;
+    import org.flowplayer.controls.button.SkinClasses;
+import org.flowplayer.controls.button.StopButton;
+    import org.flowplayer.controls.button.ToggleFullScreenButton;
+    import org.flowplayer.controls.button.TogglePlayButton;
+    import org.flowplayer.controls.button.ToggleVolumeMuteButton;
+    import org.flowplayer.controls.slider.Scrubber;
+    import org.flowplayer.controls.slider.ScrubberSlider;
+    import org.flowplayer.controls.slider.VolumeSlider;
+    import org.flowplayer.model.Clip;
+    import org.flowplayer.model.ClipEvent;
+    import org.flowplayer.model.PlayerEvent;
+    import org.flowplayer.model.PlayerEventType;
+    import org.flowplayer.model.Playlist;
+    import org.flowplayer.model.Plugin;
+    import org.flowplayer.model.PluginModel;
+    import org.flowplayer.model.Status;
+    import org.flowplayer.util.Arrange;
+    import org.flowplayer.util.PropertyBinder;
+    import org.flowplayer.view.AnimationEngine;
+    import org.flowplayer.view.Flowplayer;
+    import org.flowplayer.view.StyleableSprite;
+
+    /**
 	 * @author anssi
 	 */
 	public class Controls extends StyleableSprite implements Plugin {
@@ -60,10 +59,11 @@ package org.flowplayer.controls {
 		private var _stopButton:DisplayObject;
 		private var _scrubber:Scrubber;
 		private var _timeView:TimeView;
-		private var _tallestWidget:DisplayObject;
+//		private var _tallestWidget:DisplayObject;
 
 		private var _widgetMaxHeight:Number = 0;
-		private var _margins:Array = [2, 6, 2, 6];
+        private var _margins:Array = SkinDefaults.margins;
+//        private var _margins:Array = [2, 6, 2, 6];
 		private var _config:Config;
 		private var _timeUpdateTimer:Timer;
 		private var _floating:Boolean = false;
@@ -164,16 +164,16 @@ package org.flowplayer.controls {
 		override protected function onResize():void {
 			if (! _initialized) return;
 			log.debug("arranging, width is " + width);
-			resizeTallestWidget();
+//			resizeTallestWidget();
 			var leftEdge:Number = arrangeLeftEdgeControls();
 			arrangeRightEdgeControls(leftEdge);		
 			initializeVolume();
 			log.debug("arranged to x " + this.x + ", y " + this.y);
 		}
-		
-		private function resizeTallestWidget():void {
-			_tallestWidget.height = height - _margins[0] - _margins[2];
-		}
+//
+//		private function resizeTallestWidget():void {
+//			_tallestWidget.height = height - _margins[0] - _margins[2];
+//		}
 
 		/**
 		 * Makes this visible when the superclass has been drawn.
@@ -239,6 +239,10 @@ package org.flowplayer.controls {
 			if (_muteVolumeButton) {
 				_muteVolumeButton.down = player.muted;
 			}
+            if (_config.skin) {
+                var skin:PluginModel = player.pluginRegistry.getPlugin(_config.skin) as PluginModel;
+                SkinClasses.skinClasses = skin.pluginObject as ApplicationDomain;
+            }
 			_pluginModel.dispatchOnLoad();
 		}
 
@@ -274,8 +278,8 @@ package org.flowplayer.controls {
 			_nextButton = addChildWidget(createWidget(_nextButton, "playlist", NextButton, _config, animationEngine), ButtonEvent.CLICK, "next");
 			_prevButton = addChildWidget(createWidget(_prevButton, "playlist", PrevButton, _config, animationEngine), ButtonEvent.CLICK, "previous");
 			_muteVolumeButton = addChildWidget(createWidget(_muteVolumeButton, "mute", ToggleVolumeMuteButton, _config, animationEngine), ButtonEvent.CLICK, onMuteVolumeClicked) as AbstractToggleButton;
-			_volumeSlider = addChildWidget(createWidget(_volumeSlider, "volume", VolumeSlider, _config, animationEngine), VolumeSlider.DRAG_EVENT, onVolumeSlider) as VolumeSlider;
-			_scrubber = addChildWidget(createWidget(_scrubber, "scrubber", Scrubber, _config, animationEngine), Scrubber.DRAG_EVENT, onScrubbed) as Scrubber;
+			_volumeSlider = addChildWidget(createWidget(_volumeSlider, "volume", VolumeSlider, _config, animationEngine, this), VolumeSlider.DRAG_EVENT, onVolumeSlider) as VolumeSlider;
+			_scrubber = addChildWidget(createWidget(_scrubber, "scrubber", Scrubber, _config, animationEngine, this), Scrubber.DRAG_EVENT, onScrubbed) as Scrubber;
 			createTimeView();
 			createScrubberUpdateTimer();
 			log.debug("created all buttons");
@@ -298,7 +302,7 @@ package org.flowplayer.controls {
 			onResize();
 		}
 
-		private function createWidget(existing:DisplayObject, name:String, Widget:Class, constructorArg:Object, constructorArg2:Object = null):DisplayObject {
+		private function createWidget(existing:DisplayObject, name:String, Widget:Class, constructorArg:Object, constructorArg2:Object = null, constructorArg3:Object = null):DisplayObject {
 			var doAdd:Boolean = _config.visible[name];
 			if (!doAdd) {
 				log.debug("not showing widget " + Widget);
@@ -310,17 +314,19 @@ package org.flowplayer.controls {
 			if (existing) return existing;
 			log.debug("creating " + Widget);
 			var widget:DisplayObject;
-			
-			if (constructorArg2) {
+
+            if (constructorArg3) {
+                widget = new Widget(constructorArg, constructorArg2, constructorArg3);			
+            } else if (constructorArg2) {
 				widget = new Widget(constructorArg, constructorArg2);
 			} else {
 				widget = constructorArg ? new Widget(constructorArg) : new Widget();
 			}
 			
 			_widgetMaxHeight = Math.max(_widgetMaxHeight, widget.height);
-			if (widget.height == _widgetMaxHeight) {
-				_tallestWidget = widget;
-			}
+//			if (widget.height == _widgetMaxHeight) {
+//				_tallestWidget = widget;
+//			}
 			
 			widget.visible = false;
 			widget.name = name;
@@ -498,7 +504,7 @@ package org.flowplayer.controls {
 		}
 		
 		private function onScrubbed(event:Event):void {
-			_player.seekRelative(Scrubber(event.target).value);
+			_player.seekRelative(ScrubberSlider(event.target).value);
 		}
 
 		private function arrangeLeftEdgeControls():Number {
@@ -535,7 +541,7 @@ package org.flowplayer.controls {
 				if (controls[i]) {
 					var control:DisplayObject = controls[i] as DisplayObject;
 					arrangeYCentered(control);
-					edge = arrangeFunc(edge, getSpaceAfterWidget(control), control);
+					edge = arrangeFunc(edge, getSpaceAfterWidget(control), control) as Number;
 				}
 			}
 			return edge;
@@ -543,9 +549,8 @@ package org.flowplayer.controls {
 
 		private function arrangeVolumeControl():void {
 			if (! _config.visible.volume) return;
-			_volumeSlider.height = height/3;
-			_volumeSlider.y = height/2 - height/6;;
-//			Arrange.center(_volumeSlider, 0, height);
+			_volumeSlider.height = height * _config.style.volumeSliderHeightRatio;
+			Arrange.center(_volumeSlider, 0, height);
 		}
 
 //		private function arrangeMuteVolumeButton():void {
@@ -563,8 +568,8 @@ package org.flowplayer.controls {
 			} else {
 				_player.animationEngine.animateProperty(_scrubber, "width", scrubberWidth);
 			}
-			_scrubber.height = height * _config.style.scrubberBarHeightRatio;
-			Arrange.center(_scrubber, 0, height);
+            _scrubber.height = height;
+            _scrubber.y = 0;
 			return rightEdge - getSpaceAfterWidget(_scrubber) - scrubberWidth;
 		}
 	
@@ -605,30 +610,23 @@ package org.flowplayer.controls {
 		private function arrangeYCentered(clip:DisplayObject):void {
 			clip.y = _margins[0];
 
-			if (clip == _timeView) {
-				clip.height = height/1.7;
-			} else if (clip == _tallestWidget) {
-				clip.height = height - _margins[0] - _margins[2];
-			} else {
-				clip.scaleY = _tallestWidget.scaleY;
-			}
+            if (clip == _timeView) {
+                clip.height = height/1.7;
+            } else {
+                clip.height = height - _margins[0] - _margins[2];
+            }
+//        } else if (clip == _tallestWidget) {
+//            clip.height = height - _margins[0] - _margins[2];
+//        } else {
+//            clip.scaleY = _tallestWidget.scaleY;
+//        }
 			clip.scaleX = clip.scaleY;
 
 			Arrange.center(clip, 0, height);
 		}
 	
 		private function getSpaceAfterWidget(widget:DisplayObject):int {
-			var space:int = 4;
-			
-			if (widget == lastOnRight)
-				space = 0;
-			else if (widget == _volumeSlider)
-				space = 8;
-			else if (widget == _progressTracker)
-				space = 8;
-			else if (widget == _timeView)
-				space = 8;
-			return space;
+            return SkinDefaults.getSpaceAfterWidget(widget, widget == lastOnRight);
 		}
 		
 		private function get lastOnRight():DisplayObject {

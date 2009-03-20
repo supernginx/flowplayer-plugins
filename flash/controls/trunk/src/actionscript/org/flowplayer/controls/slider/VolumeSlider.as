@@ -9,7 +9,8 @@
  */
 
 package org.flowplayer.controls.slider {
-	import org.flowplayer.view.AnimationEngine;	
+    import flash.display.DisplayObject;
+import org.flowplayer.view.AnimationEngine;
 	import org.flowplayer.controls.Config;
 	import org.flowplayer.controls.slider.AbstractSlider;	
 
@@ -23,8 +24,8 @@ package org.flowplayer.controls.slider {
             return "volume";
         }
 
-		public function VolumeSlider(config:Config, animationEngine:AnimationEngine) {
-			super(config, animationEngine);
+		public function VolumeSlider(config:Config, animationEngine:AnimationEngine, controlbar:DisplayObject) {
+			super(config, animationEngine, controlbar);
 			tooltipTextFunc = function(percentage:Number):String {
 				return Math.round(percentage) + "%";
 			};
@@ -33,5 +34,23 @@ package org.flowplayer.controls.slider {
 		override protected function isToolTipEnabled():Boolean {
 			return _config.tooltips.volume;
 		}
+
+        override protected function get barHeight():Number {
+            return height * _config.style.volumeBarHeightRatio;
+
+        }
+
+        override protected function get sliderGradient():Array {
+            return _config.style.volumeSliderGradient;
+        }
+
+        override protected function get sliderColor():Number {
+            return _config.style.volumeSliderColor;
+        }
+
+        override protected function get barCornerRadius():Number {
+            if (isNaN(_config.style.volumeBorderRadius)) return super.barCornerRadius;
+            return _config.style.volumeBorderRadius;
+        }
 	}
 }
