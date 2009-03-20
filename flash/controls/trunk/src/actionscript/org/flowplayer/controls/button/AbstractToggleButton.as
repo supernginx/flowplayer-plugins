@@ -28,7 +28,6 @@ package org.flowplayer.controls.button {
             _downStateFace = createDownStateFace();
 			_upStateFace = createUpStateFace();
 			addChild(_upStateFace);
-            this.scale9Grid = _upStateFace.scale9Grid;
             clickListenerEnabled = true;
 		}
 

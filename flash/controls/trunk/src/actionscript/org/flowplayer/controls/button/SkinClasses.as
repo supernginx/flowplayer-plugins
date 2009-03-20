@@ -45,6 +45,10 @@ import org.flowplayer.controls.flash.FullScreenOnButton;
             private var buttomRight:org.flowplayer.controls.flash.ButtonRightEdge;
             private var buttomTop:org.flowplayer.controls.flash.ButtonTopEdge;
             private var buttonBottom:org.flowplayer.controls.flash.ButtonBottomEdge;
+            private var timeLeft:org.flowplayer.controls.flash.TimeLeftEdge;
+            private var timeRight:org.flowplayer.controls.flash.TimeRightEdge;
+            private var timeTop:org.flowplayer.controls.flash.TimeTopEdge;
+            private var timeBottom:org.flowplayer.controls.flash.TimeBottomEdge;
         }
 
         public static function getDisplayObject(name:String):DisplayObject {
@@ -131,6 +135,22 @@ import org.flowplayer.controls.flash.FullScreenOnButton;
 
         public static function getButtonBottom():DisplayObject {
             return getDisplayObject("org.flowplayer.controls.flash.ButtonBottomEdge");
+        }
+
+        public static function getTimeLeft():DisplayObject {
+            return getDisplayObject("org.flowplayer.controls.flash.TimeLeftEdge");
+        }
+
+        public static function getTimeRight():DisplayObject {
+            return getDisplayObject("org.flowplayer.controls.flash.TimeRightEdge");
+        }
+
+        public static function getTimeTop():DisplayObject {
+            return getDisplayObject("org.flowplayer.controls.flash.TimeTopEdge");
+        }
+
+        public static function getTimeBottom():DisplayObject {
+            return getDisplayObject("org.flowplayer.controls.flash.TimeBottomEdge");
         }
     }
 }
