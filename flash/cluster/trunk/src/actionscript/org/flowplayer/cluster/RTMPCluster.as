@@ -126,7 +126,7 @@ package org.flowplayer.cluster
 		
 		public function setFailedServer(host:String):void
 		{
-			 log.error("Setting Failed Server: " + host);
+			 log.debug("Setting Failed Server: " + host);
 			 var server:SharedObject = _getFailedServerSO(host);
 			 server.data.failureTimestamp = new Date();
 		}
@@ -148,11 +148,11 @@ package org.flowplayer.cluster
 				_reConnectCount++;
 				if (_reConnectCount < _connectCount) 
 				{
-					log.error("Restarting Connection Attempts");
+					log.debug("Restarting Connection Attempts");
 					_hostIndex = 0;
 				}
 			}
-			log.error("Host Index: " + _hostIndex + " LiveServers: " + _liveServers.length);
+			log.debug("Host Index: " + _hostIndex + " LiveServers: " + _liveServers.length);
 			return (_hostIndex <= _liveServers.length && _liveServers[_hostIndex]);
 		}
 		
@@ -168,12 +168,12 @@ package org.flowplayer.cluster
 				// Determine the failure offset
 				var offset:int = (date.getTime() - server.data.failureTimestamp.getTime()) / 60; 
 				
-				log.error("Failed Server Remaining Expiry: " + offset + " Start Time: " + server.data.failureTimestamp.getTime() + " Current Time: " + date.getTime());
+				log.debug("Failed Server Remaining Expiry: " + offset + " Start Time: " + server.data.failureTimestamp.getTime() + " Current Time: " + date.getTime());
 				
 				// Failure offset has reached the failureExpiry setting, clear it from the list to allow a connection
 				if (offset >= _config.failureExpiry)
 				{
-					log.error("Clearing Failure Period " + _config.failureExpiry);
+					log.debug("Clearing Failure Period " + _config.failureExpiry);
 					server.clear();
 					return true;
 				} 
