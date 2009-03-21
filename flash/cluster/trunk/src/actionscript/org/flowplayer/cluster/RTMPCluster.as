@@ -76,6 +76,7 @@ package org.flowplayer.cluster
 				return _liveServers[_hostIndex];
 			} else if (hasMultipleHosts()) {
 				_hostIndex = 0;
+				log.error(_liveServers.length.toString());
 				// If we have multiple live hosts
 				return _liveServers[_hostIndex];
 			}
