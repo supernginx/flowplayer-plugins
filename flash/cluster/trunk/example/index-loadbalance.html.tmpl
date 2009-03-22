@@ -36,10 +36,9 @@
 
 			// configure clip to use "rtmp" plugin for providing video data 
 		    clip: {  
-		        url: 'KimAronson-TwentySeconds73213.flv',  
-		        baseUrl: 'http://blip.tv/file/get/',
-		        provider: 'http',
-		        urlResolvers: 'clustering',
+		        url: 'honda_accord',  
+		        provider: 'rtmp',
+		        connectionProvider: 'clustering',
 		        autoPlay: true,
 			    start: 0,
 			    duration: 0,
@@ -48,24 +47,26 @@
 		    }, 
 			
 			
-			
-			
 			// streaming plugins are configured under the plugins node 
 			plugins:  {
 				// here is our rtpm plugin configuration
-		
+				rtmp: {
+					 url: 'flowplayer.rtmp.swf'
+				},
 				clustering: {  
 		            url: '@MAIN_PLAYER_SWF@',  
+		            netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
 		            hosts: [
-		            	{host:'http://blippppp.tv1/file/get/'},
-		            	{host:'http://blippppppp.tv2/file/get/'},
-		            	{host:'http://blip.tv/file/get/'}
+		            	{host:'rtmp://cyzy7r959.badhost1.com/flowplayer'},
+		            	{host:'rtmp://cyzy7r959.badhost2.com/flowplayer'},
+		            	{host:'rtmp://cyzy7r959.rtmphost.com/flowplayer'},
+		            	{host:'rtmp://cyzy7r959.rtmphost.com/flowplayer'}
 		            ],
 		            encoding: 0,
 		            connectCount: 2,
 		            connectTimeout: 5000,
-		            failureExpiry: 100000,
-		            loadBalanceServers: false,
+		            failureExpiry: 10000,
+		            loadBalanceServers: true,
 		            connectCount: 2
 		        }
 			

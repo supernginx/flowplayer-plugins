@@ -57,9 +57,9 @@
 		            url: '@MAIN_PLAYER_SWF@',  
 		            netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
 		            hosts: [
-		            	'rtmp://cyzy7r959.badhost1.com/flowplayer',
-		            	'rtmp://cyzy7r959.badhost2.com/flowplayer',
-		            	'rtmp://cyzy7r959.rtmphost.com/flowplayer'
+		            	{host:'rtmp://cyzy7r959.badhost1.com/flowplayer'},
+		            	{host:'rtmp://cyzy7r959.badhost2.com/flowplayer'},
+		            	{host:'rtmp://cyzy7r959.rtmphost.com/flowplayer'}
 		            ],
 		            encoding: 0,
 		            connectCount: 2,
@@ -73,7 +73,7 @@
 			log:  {         
 			     
 				     // other levels are: 'info', 'warning', 'error' which will cause less output 
-				     level: 'info' 
+				     level: 'debug', filter: 'org.flowplayer.cluster.*, org.flowplayer.rtmp.*' 
 				},
 			
 		});

@@ -6,10 +6,10 @@ package org.flowplayer.cluster
 	
 	import mx.utils.URLUtil;
 	
+	import org.flowplayer.cluster.event.RTMPEventType;
 	import org.flowplayer.flow_internal;
 	import org.flowplayer.model.ClipEvent;
 	import org.flowplayer.model.ClipEventDispatcher;
-	import org.flowplayer.cluster.event.RTMPEventType;
 	
 	use namespace flow_internal;
 	
@@ -39,6 +39,7 @@ package org.flowplayer.cluster
 			_connectCount = config.connectCount;
 			_connectTimeout = config.connectTimeout;
 			_failureExpiry = config.failureExpiry;
+			
 
 		}
 		
@@ -69,16 +70,19 @@ package org.flowplayer.cluster
 		
 		public function get host():*
 		{
-			if (_config.loadBalanceServers && hasMultipleHosts())
+			
+			if (hasMultipleHosts())
 			{
-				var index:uint = getRandomIndex();
-				_hostIndex = index;
-				return _liveServers[_hostIndex];
-			} else if (hasMultipleHosts()) {
-				_hostIndex = 0;
-				log.error(_liveServers.length.toString());
-				// If we have multiple live hosts
-				return _liveServers[_hostIndex];
+				_liveServers = currentHosts;
+				
+				if (_config.loadBalanceServers)
+				{
+					_hostIndex = getRandomIndex();
+					
+					log.debug("Load balanced index " + _hostIndex);
+				}
+				
+				return _liveServers[_hostIndex].host;
 			}
 			
 			return _netConnectionUrl;
@@ -139,9 +143,12 @@ package org.flowplayer.cluster
 		
 		protected function hasMoreHosts():Boolean
 		{
-			_hostIndex++;
-			_liveServers = currentHosts;
+			if (_failureExpiry == 0) 
+				_hostIndex++ 
+			else 
+				_hostIndex = 0;
 			
+			_liveServers = currentHosts;
 	
 			if (_hostIndex >= _liveServers.length)
 			{ 
@@ -157,9 +164,9 @@ package org.flowplayer.cluster
 			return (_hostIndex <= _liveServers.length && _liveServers[_hostIndex]);
 		}
 		
-		private function _isLiveServer(host:String):Boolean
+		private function _isLiveServer(element:*):Boolean
 		{
-
+			var host:String = element.host;
 			var server:SharedObject = _getFailedServerSO(host);
 			// Server is failed, determine if the failure expiry interval has been reached and clear it
 			if (server.data.failureTimestamp)
