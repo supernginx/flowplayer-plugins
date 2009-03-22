@@ -39,7 +39,7 @@
 		        url: 'KimAronson-TwentySeconds73213.flv',  
 		        baseUrl: 'http://blip.tv/file/get/',
 		        provider: 'http',
-		        urlResolvers: 'bwcheck',
+		        urlResolvers: ['bwcheck','clustering'],
 		        autoPlay: true,
 			    start: 0,
 			    duration: 0,
@@ -65,9 +65,25 @@
 		            	100,300,500,700
 		            ],
 		            //{0} is filename, {1} is bitrate, {2} is extension
-		            fileNameString: '{0}-{1}.{2}' 
+		            fileNameString: '{0}-{1}.{2}',
+		            failureExpiry: 0
 		            
 		        },
+		        
+		        clustering: {  
+		            url: '../flowplayer.cluster.swf',  
+		            hosts: [
+		            	{host:'http://blippppp.tv1/file/get/'},
+		            	{host:'http://blippppppp.tv2/file/get/'},
+		            	{host:'http://blip.tv/file/get/'}
+		            ],
+		            encoding: 0,
+		            connectCount: 2,
+		            connectTimeout: 5000,
+		            failureExpiry: 0,
+		            loadBalanceServers: false,
+		            connectCount: 2
+		        }
 			
 			}, 
 			log:  {         
