@@ -39,7 +39,7 @@
 		        url: 'Extremists.flv',  
 		        baseUrl: 'http://examples-s3.simplecdn.net/videos/',
 		        provider: 'lighttpd',
-		        urlResolver: 'clustering',
+		        urlResolvers: 'clustering',
 		        autoPlay: true,
 			    start: 0,
 			    duration: 0,
@@ -59,9 +59,9 @@
 				clustering: {  
 		            url: '@MAIN_PLAYER_SWF@',  
 		            hosts: [
-		            	'http://examples22-s3.simplecdn.net/videos/',
-		            	'http://examples222-s3.simplecdn.net/videos/',
-		            	'http://examples-s3.simplecdn.net/videos/'
+		            	{host:'http://examples22-s3.simplecdn.net/videos/'},
+		            	{host:'http://examples222-s3.simplecdn.net/videos/'},
+		            	{host:'http://examples-s3.simplecdn.net/videos/'}
 		            ],
 		            encoding: 0,
 		            connectCount: 2,
