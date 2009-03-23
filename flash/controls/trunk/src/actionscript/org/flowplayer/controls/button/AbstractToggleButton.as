@@ -62,14 +62,15 @@ package org.flowplayer.controls.button {
 //        }
 
 		protected override function onMouseOut(event:MouseEvent = null):void {
-			resetDispColor(_upStateFace.getChildByName(HIGHLIGHT_INSTANCE_NAME));
-			resetDispColor(_downStateFace.getChildByName(HIGHLIGHT_INSTANCE_NAME));
-			hideTooltip();
+//            if (event && isParent(event.relatedObject as DisplayObject, this)) return;
+            resetDispColor(_upStateFace.getChildByName(HIGHLIGHT_INSTANCE_NAME));
+            resetDispColor(_downStateFace.getChildByName(HIGHLIGHT_INSTANCE_NAME));
+            hideTooltip();
             showMouseOutState(_upStateFace);
             showMouseOutState(_downStateFace);
-		}
+        }
 
-		protected override function onMouseOver(event:MouseEvent):void {
+        protected override function onMouseOver(event:MouseEvent):void {
 			transformDispColor(_upStateFace.getChildByName(HIGHLIGHT_INSTANCE_NAME));
 			transformDispColor(_downStateFace.getChildByName(HIGHLIGHT_INSTANCE_NAME));
 			showTooltip();
