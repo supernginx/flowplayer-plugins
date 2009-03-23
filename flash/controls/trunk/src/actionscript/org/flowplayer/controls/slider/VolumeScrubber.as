@@ -11,7 +11,8 @@ package org.flowplayer.controls.slider {
 
     import flash.display.DisplayObject;
 import org.flowplayer.controls.Config;
-    import org.flowplayer.controls.flash.ScrubberBottomEdge;
+    import org.flowplayer.controls.button.SkinClasses;
+import org.flowplayer.controls.flash.ScrubberBottomEdge;
 import org.flowplayer.controls.flash.ScrubberLeftEdge;
 import org.flowplayer.model.Playlist;
     import org.flowplayer.util.Arrange;
@@ -20,11 +21,13 @@ import org.flowplayer.view.AbstractSprite;
 
     public class VolumeScrubber extends AbstractSprite{
         public static const DRAG_EVENT:String = AbstractSlider.DRAG_EVENT;
-        private var _scrubber:ScrubberSlider;
+        private var _scrubber:VolumeSlider;
         private var _leftEdge:DisplayObject;
         private var _controlbar:DisplayObject;
         private var _config:Config;
-        private var _bottomEdge:ScrubberBottomEdge;
+        private var _bottomEdge:DisplayObject;
+        private var _topEdge:DisplayObject;
+        private var _rightEdge:DisplayObject;
 
         /**
          * Scrubber widget holds the actual ScrubberSlider instance plus some graphics around it.
@@ -34,19 +37,18 @@ import org.flowplayer.view.AbstractSprite;
          * @param controlbar
          */
         public function VolumeScrubber(config:Config, animationEngine:AnimationEngine, controlbar:DisplayObject) {
+            log.debug("creating VolumeScrubber");
             _config = config;
             _controlbar = controlbar;
-            _leftEdge = new ScrubberLeftEdge();
-            addChild(_leftEdge);
-            _bottomEdge = new ScrubberBottomEdge();
-            addChild(_bottomEdge);
-            _scrubber = new ScrubberSlider(config, animationEngine, controlbar);
+
+            _leftEdge = addChild(SkinClasses.getVolumeLeft());
+            _bottomEdge = addChild(SkinClasses.getVolumeBottom());
+            _topEdge = addChild(SkinClasses.getVolumeTop());
+            _rightEdge = addChild(SkinClasses.getVolumeRight());
+
+            _scrubber = new VolumeSlider(config, animationEngine, controlbar);
             addChild(_scrubber);
         }
-
-
-
-
 
         override public function addEventListener(type:String,listener:Function,useCapture:Boolean = false,priority:int = 0,useWeakReference:Boolean = false):void {
             if (type == DRAG_EVENT) {
@@ -59,28 +61,21 @@ import org.flowplayer.view.AbstractSprite;
         protected override function onResize():void {
             _leftEdge.height = height;
             _leftEdge.x = 0;
-            _scrubber.x = _leftEdge.width;
-            _scrubber.setSize(width - _leftEdge.width, (height-_bottomEdge.height) * _config.style.scrubberHeightRatio);
-            Arrange.center(_scrubber, 0, height);
             _leftEdge.y = 0;
-            _bottomEdge.y = height - _bottomEdge.height;
+
+            _scrubber.x = _leftEdge.width;
+            _scrubber.setSize(width - _leftEdge.width - _rightEdge.width, height * _config.style.volumeSliderHeightRatio);
+            Arrange.center(_scrubber, 0, height);
+            
+            _bottomEdge.y = height - _bottomEdge.height - 1;
             _bottomEdge.width = width;
+            _topEdge.width = width;
+            _rightEdge.x = width - _rightEdge.width;
+            _rightEdge.height = height;
         }
 
         override public function get name():String {
-            return "scrubber";
-        }
-
-        public function set playlist(playlist:Playlist):void {
-            _scrubber.playlist = playlist;
-        }
-
-        public function set allowRandomSeek(value:Boolean):void {
-            _scrubber.allowRandomSeek = value;
-        }
-
-        public function setBufferRange(start:Number, end:Number):void {
-            _scrubber.setBufferRange(start, end);
+            return "volume";
         }
 
         public function redraw(config:Config):void {

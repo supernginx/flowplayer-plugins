@@ -11,8 +11,8 @@ import org.flowplayer.controls.flash.FullScreenOnButton;
     import org.flowplayer.controls.flash.PlayButton;
     import org.flowplayer.controls.flash.PrevButton;
     import org.flowplayer.controls.flash.StopButton;
-    import org.flowplayer.controls.flash.VolumeIcon;
-    import org.flowplayer.controls.flash.VolumeOffIcon;
+    import org.flowplayer.controls.flash.MuteButton;
+    import org.flowplayer.controls.flash.UnMuteButton;
     import org.flowplayer.controls.flash.ScrubberLeftEdge;
     import org.flowplayer.util.Log;
 
@@ -35,8 +35,8 @@ import org.flowplayer.controls.flash.FullScreenOnButton;
             private var pause:org.flowplayer.controls.flash.PauseButton;
             private var play:org.flowplayer.controls.flash.PlayButton;
             private var stop:org.flowplayer.controls.flash.StopButton;
-            private var vol:org.flowplayer.controls.flash.VolumeIcon;
-            private var volOff:org.flowplayer.controls.flash.VolumeOffIcon;
+            private var vol:org.flowplayer.controls.flash.MuteButton;
+            private var volOff:org.flowplayer.controls.flash.UnMuteButton;
             private var scrubberLeft:org.flowplayer.controls.flash.ScrubberLeftEdge;
             private var scrubberRight:org.flowplayer.controls.flash.ScrubberRightEdge;
             private var scrubberTop:org.flowplayer.controls.flash.ScrubberTopEdge;
@@ -49,6 +49,10 @@ import org.flowplayer.controls.flash.FullScreenOnButton;
             private var timeRight:org.flowplayer.controls.flash.TimeRightEdge;
             private var timeTop:org.flowplayer.controls.flash.TimeTopEdge;
             private var timeBottom:org.flowplayer.controls.flash.TimeBottomEdge;
+            private var volumeLeft:org.flowplayer.controls.flash.VolumeLeftEdge;
+            private var volumeRight:org.flowplayer.controls.flash.VolumeRightEdge;
+            private var volumeTop:org.flowplayer.controls.flash.VolumeTopEdge;
+            private var volumeBottom:org.flowplayer.controls.flash.VolumeBottomEdge;
         }
 
         public static function getDisplayObject(name:String):DisplayObject {
@@ -102,11 +106,11 @@ import org.flowplayer.controls.flash.FullScreenOnButton;
         }
 
         public static function getMuteButton():DisplayObject {
-            return getDisplayObject("org.flowplayer.controls.flash.VolumeOffIcon");
+            return getDisplayObject("org.flowplayer.controls.flash.MuteButton");
         }
 
         public static function getUnmuteButton():DisplayObject {
-            return getDisplayObject("org.flowplayer.controls.flash.VolumeIcon");
+            return getDisplayObject("org.flowplayer.controls.flash.UnMuteButton");
         }
 
         public static function getNextButton():DisplayObjectContainer {
@@ -151,6 +155,22 @@ import org.flowplayer.controls.flash.FullScreenOnButton;
 
         public static function getTimeBottom():DisplayObject {
             return getDisplayObject("org.flowplayer.controls.flash.TimeBottomEdge");
+        }
+
+        public static function getVolumeLeft():DisplayObject {
+            return getDisplayObject("org.flowplayer.controls.flash.VolumeLeftEdge");
+        }
+
+        public static function getVolumeRight():DisplayObject {
+            return getDisplayObject("org.flowplayer.controls.flash.VolumeRightEdge");
+        }
+
+        public static function getVolumeTop():DisplayObject {
+            return getDisplayObject("org.flowplayer.controls.flash.VolumeTopEdge");
+        }
+
+        public static function getVolumeBottom():DisplayObject {
+            return getDisplayObject("org.flowplayer.controls.flash.VolumeBottomEdge");
         }
     }
 }
