@@ -63,16 +63,23 @@ import org.flowplayer.view.AbstractSprite;
         }
 
         protected override function onResize():void {
-            _leftEdge.height = height;
+            _leftEdge.height = height - _topEdge.height - _bottomEdge.height;
             _leftEdge.x = 0;
-            _leftEdge.y = 0;
+            _leftEdge.y = _topEdge.height;
+
+            _rightEdge.height = height - _topEdge.height - _bottomEdge.height;
+            _rightEdge.x = width - _rightEdge.width;
+            _rightEdge.y = _topEdge.height;
 
             _scrubber.x = _leftEdge.width;
             _scrubber.setSize(width - _leftEdge.width, (height-_bottomEdge.height) * _config.style.scrubberHeightRatio);
             Arrange.center(_scrubber, 0, height);
 
-            _bottomEdge.y = height - _bottomEdge.height - 1;
+            _bottomEdge.y = height - _bottomEdge.height;
             _bottomEdge.width = width;
+
+            _topEdge.y = 0;
+            _topEdge.width = width;
         }
 
         override public function get name():String {

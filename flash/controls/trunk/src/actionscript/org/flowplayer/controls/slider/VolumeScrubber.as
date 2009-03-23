@@ -67,7 +67,7 @@ import org.flowplayer.view.AbstractSprite;
             _scrubber.setSize(width - _leftEdge.width - _rightEdge.width, height * _config.style.volumeSliderHeightRatio);
             Arrange.center(_scrubber, 0, height);
             
-            _bottomEdge.y = height - _bottomEdge.height - 1;
+            _bottomEdge.y = height - _bottomEdge.height;
             _bottomEdge.width = width;
             _topEdge.width = width;
             _rightEdge.x = width - _rightEdge.width;
