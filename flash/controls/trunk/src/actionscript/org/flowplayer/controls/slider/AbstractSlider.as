@@ -255,7 +255,7 @@ import org.flowplayer.util.GraphicsUtil;
         }
 
         protected function get barHeight():Number {
-            return height * 0.4;
+            return height;
 
         }
 

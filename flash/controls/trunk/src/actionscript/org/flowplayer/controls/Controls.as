@@ -27,7 +27,8 @@ import org.flowplayer.controls.button.StopButton;
     import org.flowplayer.controls.button.ToggleVolumeMuteButton;
     import org.flowplayer.controls.slider.Scrubber;
     import org.flowplayer.controls.slider.ScrubberSlider;
-    import org.flowplayer.controls.slider.VolumeSlider;
+    import org.flowplayer.controls.slider.VolumeScrubber;
+import org.flowplayer.controls.slider.VolumeSlider;
     import org.flowplayer.model.Clip;
     import org.flowplayer.model.ClipEvent;
     import org.flowplayer.model.PlayerEvent;
@@ -52,7 +53,7 @@ import org.flowplayer.controls.button.StopButton;
 		private var _playButton:AbstractToggleButton;
 		private var _fullScreenButton:AbstractToggleButton;
 		private var _muteVolumeButton:AbstractToggleButton;
-		private var _volumeSlider:VolumeSlider;
+		private var _volumeSlider:VolumeScrubber;
 		private var _progressTracker:DisplayObject;
 		private var _prevButton:DisplayObject;
 		private var _nextButton:DisplayObject;
@@ -278,7 +279,7 @@ import org.flowplayer.controls.button.StopButton;
 			_nextButton = addChildWidget(createWidget(_nextButton, "playlist", NextButton, _config, animationEngine), ButtonEvent.CLICK, "next");
 			_prevButton = addChildWidget(createWidget(_prevButton, "playlist", PrevButton, _config, animationEngine), ButtonEvent.CLICK, "previous");
 			_muteVolumeButton = addChildWidget(createWidget(_muteVolumeButton, "mute", ToggleVolumeMuteButton, _config, animationEngine), ButtonEvent.CLICK, onMuteVolumeClicked) as AbstractToggleButton;
-			_volumeSlider = addChildWidget(createWidget(_volumeSlider, "volume", VolumeSlider, _config, animationEngine, this), VolumeSlider.DRAG_EVENT, onVolumeSlider) as VolumeSlider;
+			_volumeSlider = addChildWidget(createWidget(_volumeSlider, "volume", VolumeScrubber, _config, animationEngine, this), VolumeSlider.DRAG_EVENT, onVolumeSlider) as VolumeScrubber;
 			_scrubber = addChildWidget(createWidget(_scrubber, "scrubber", Scrubber, _config, animationEngine, this), Scrubber.DRAG_EVENT, onScrubbed) as Scrubber;
 			createTimeView();
 			createScrubberUpdateTimer();
@@ -549,7 +550,7 @@ import org.flowplayer.controls.button.StopButton;
 
 		private function arrangeVolumeControl():void {
 			if (! _config.visible.volume) return;
-			_volumeSlider.height = height * _config.style.volumeSliderHeightRatio;
+			_volumeSlider.height = height;
 			Arrange.center(_volumeSlider, 0, height);
 		}
 

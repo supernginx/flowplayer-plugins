@@ -36,6 +36,7 @@ import org.flowplayer.view.AnimationEngine;
 		}
 
         override protected function get barHeight():Number {
+            log.debug("bar height ratio is " + _config.style.volumeSliderHeightRatio);
             return height * _config.style.volumeBarHeightRatio;
 
         }
