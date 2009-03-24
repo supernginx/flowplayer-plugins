@@ -550,8 +550,8 @@ import org.flowplayer.controls.slider.VolumeSlider;
 
 		private function arrangeVolumeControl():void {
 			if (! _config.visible.volume) return;
-			_volumeSlider.height = height;
-			Arrange.center(_volumeSlider, 0, height);
+			_volumeSlider.height = height - _margins[0] - _margins[2];
+            _volumeSlider.y = _margins[0];
 		}
 
 //		private function arrangeMuteVolumeButton():void {
@@ -569,8 +569,8 @@ import org.flowplayer.controls.slider.VolumeSlider;
 			} else {
 				_player.animationEngine.animateProperty(_scrubber, "width", scrubberWidth);
 			}
-            _scrubber.height = height;
-            _scrubber.y = 0;
+            _scrubber.height = height - _margins[0] - _margins[2];
+            _scrubber.y = _height - _margins[2] - _scrubber.height;
 			return rightEdge - getSpaceAfterWidget(_scrubber) - scrubberWidth;
 		}
 	
@@ -628,14 +628,14 @@ import org.flowplayer.controls.slider.VolumeSlider;
 			return null;
 		}
 
-		private function setWidgetHeight(widget:DisplayObject):int {
-			if (widget == _timeView)
-				return height/1.7;
-			if (widget == _muteVolumeButton)
-				return height/3;
-			if (widget == _fullScreenButton)
-				return height - _margins[0] - _margins[2] - height/6;
-			return height - _margins[0] - _margins[2];
-		}
+//		private function setWidgetHeight(widget:DisplayObject):int {
+//			if (widget == _timeView)
+//				return height/1.7;
+//			if (widget == _muteVolumeButton)
+//				return height/3;
+//			if (widget == _fullScreenButton)
+//				return height - _margins[0] - _margins[2] - height/6;
+//			return height - _margins[0] - _margins[2];
+//		}
 	}
 }
