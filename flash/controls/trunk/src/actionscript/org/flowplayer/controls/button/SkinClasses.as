@@ -1,6 +1,7 @@
 package org.flowplayer.controls.button {
     import flash.display.DisplayObject;
     import flash.display.DisplayObjectContainer;
+    import flash.display.Sprite;
 import flash.system.ApplicationDomain;
 import flash.utils.getDefinitionByName;
 import org.flowplayer.controls.flash.FullScreenOnButton;
