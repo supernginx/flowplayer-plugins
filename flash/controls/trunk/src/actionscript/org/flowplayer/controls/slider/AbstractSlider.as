@@ -107,7 +107,7 @@ import org.flowplayer.util.GraphicsUtil;
 			return [this];
 		}
 
-		private function createDragger():void {
+		protected function createDragger():void {
 			_dragger = new Dragger();
 			_dragger.buttonMode = true;
 			addChild(_dragger);

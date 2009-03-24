@@ -165,7 +165,7 @@ package org.flowplayer.controls.slider {
 		}
 
         override protected function get barHeight():Number {
-            return height * _config.style.scrubberBarHeightRatio;
+            return Math.ceil(height * _config.style.scrubberBarHeightRatio);
 
         }
 
