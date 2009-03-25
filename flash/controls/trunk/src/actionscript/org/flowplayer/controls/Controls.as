@@ -31,7 +31,9 @@ import org.flowplayer.controls.button.StopButton;
 import org.flowplayer.controls.slider.VolumeSlider;
     import org.flowplayer.model.Clip;
     import org.flowplayer.model.ClipEvent;
-    import org.flowplayer.model.PlayerEvent;
+    import org.flowplayer.model.DisplayPluginModel;
+import org.flowplayer.model.DisplayProperties;
+import org.flowplayer.model.PlayerEvent;
     import org.flowplayer.model.PlayerEventType;
     import org.flowplayer.model.Playlist;
     import org.flowplayer.model.Plugin;
@@ -63,7 +65,6 @@ import org.flowplayer.controls.slider.VolumeSlider;
 //		private var _tallestWidget:DisplayObject;
 
 		private var _widgetMaxHeight:Number = 0;
-        private var _margins:Array = SkinDefaults.margins;
 //        private var _margins:Array = [2, 6, 2, 6];
 		private var _config:Config;
 		private var _timeUpdateTimer:Timer;
@@ -188,7 +189,9 @@ import org.flowplayer.controls.slider.VolumeSlider;
 		 * Default properties for the controls.
 		 */		
 		public function getDefaultConfig():Object {
-            return SkinDefaults.values;
+            // skinless controlbar does not have defaults
+            if (! SkinClasses.defaults) return null;
+            return SkinClasses.defaults;
 		}
 		
 		private function initTooltipConfig(config:Config, styleProps:Object):void {
@@ -224,28 +227,46 @@ import org.flowplayer.controls.slider.VolumeSlider;
 		public function onLoad(player:Flowplayer):void {
 			log.info("received player API! autohide == " + _config.autoHide);
 			_player = player;
-			createChildren();
-			loader = player.createLoader();
-			createTimeView();
-			addListeners(player.playlist);
-			if (_scrubber) {
-				_scrubber.playlist = player.playlist;
-			}
-			enableFullscreenButton(player.playlist.current);
-			if (_playButton) {
-				_playButton.down = player.isPlaying();
-			}
-			log.debug("setting root style to " + _config.style.bgStyle);
-			rootStyle = _config.style.bgStyle;
-			if (_muteVolumeButton) {
-				_muteVolumeButton.down = player.muted;
-			}
             if (_config.skin) {
                 var skin:PluginModel = player.pluginRegistry.getPlugin(_config.skin) as PluginModel;
+                log.debug("using skin " + skin);
                 SkinClasses.skinClasses = skin.pluginObject as ApplicationDomain;
+                log.debug("skin has defaults", SkinClasses.defaults);
+                fixPositionSettings(_pluginModel as DisplayPluginModel, SkinClasses.defaults);
+                new PropertyBinder(_pluginModel, "config").copyProperties(SkinClasses.defaults, false);
+                _config = createConfig(_pluginModel);
+            }
+            createChildren();
+            loader = player.createLoader();
+            createTimeView();
+            addListeners(player.playlist);
+            if (_scrubber) {
+                _scrubber.playlist = player.playlist;
+            }
+            enableFullscreenButton(player.playlist.current);
+            if (_playButton) {
+                _playButton.down = player.isPlaying();
+            }
+            log.debug("setting root style to " + _config.style.bgStyle);
+            rootStyle = _config.style.bgStyle;
+            if (_muteVolumeButton) {
+                _muteVolumeButton.down = player.muted;
             }
 			_pluginModel.dispatchOnLoad();
 		}
+
+        private function fixPositionSettings(props:DisplayProperties, defaults:Object):void {
+            clearOpposite("bottom", "top", props, defaults);
+            clearOpposite("left", "right", props, defaults);
+        }
+
+        private function clearOpposite(prop1:String, prop2:String, props:DisplayProperties, defaults:Object):void {
+            if (props.position[prop1].hasValue() && defaults.hasOwnProperty(prop2)) {
+                delete defaults[prop2];
+            } else if (props.position[prop2].hasValue() && defaults.hasOwnProperty(prop1)) {
+                delete defaults[prop1];
+            }
+        }
 
 		public function onConfig(model:PluginModel):void {
 			log.info("received my plugin config ", model.config);
@@ -509,14 +530,14 @@ import org.flowplayer.controls.slider.VolumeSlider;
 		}
 
 		private function arrangeLeftEdgeControls():Number {
-			var leftEdge:Number = _margins[3];
+			var leftEdge:Number = margins[3];
 			var leftControls:Array = [_stopButton, _playButton, _prevButton, _nextButton];
 			leftEdge = arrangeControls(leftEdge, leftControls, arrangeToLeftEdge);
 			return leftEdge;
 		}
 
 		private function arrangeRightEdgeControls(leftEdge:Number):void {
-			var edge:Number =  _config.visible.scrubber ? (width - _margins[1]) : leftEdge;
+			var edge:Number =  _config.visible.scrubber ? (width - margins[1]) : leftEdge;
 			var rightControls:Array;
 
 			// set volume slider width first so that we know how to arrange the other controls
@@ -548,10 +569,14 @@ import org.flowplayer.controls.slider.VolumeSlider;
 			return edge;
 		}
 
+        private function get margins():Array {
+            return SkinClasses.margins;
+        }
+
 		private function arrangeVolumeControl():void {
 			if (! _config.visible.volume) return;
-			_volumeSlider.height = height - _margins[0] - _margins[2];
-            _volumeSlider.y = _margins[0];
+			_volumeSlider.height = height - margins[0] - margins[2];
+            _volumeSlider.y = margins[0];
 		}
 
 //		private function arrangeMuteVolumeButton():void {
@@ -569,8 +594,8 @@ import org.flowplayer.controls.slider.VolumeSlider;
 			} else {
 				_player.animationEngine.animateProperty(_scrubber, "width", scrubberWidth);
 			}
-            _scrubber.height = height - _margins[0] - _margins[2];
-            _scrubber.y = _height - _margins[2] - _scrubber.height;
+            _scrubber.height = height - margins[0] - margins[2];
+            _scrubber.y = _height - margins[2] - _scrubber.height;
 			return rightEdge - getSpaceAfterWidget(_scrubber) - scrubberWidth;
 		}
 	
@@ -609,15 +634,15 @@ import org.flowplayer.controls.slider.VolumeSlider;
 		}
 		
 		private function arrangeYCentered(clip:DisplayObject):void {
-			clip.y = _margins[0];
-            clip.height = height - _margins[0] - _margins[2];
+			clip.y = margins[0];
+            clip.height = height - margins[0] - margins[2];
 			clip.scaleX = clip.scaleY;
 
 			Arrange.center(clip, 0, height);
 		}
 	
 		private function getSpaceAfterWidget(widget:DisplayObject):int {
-            return SkinDefaults.getSpaceAfterWidget(widget, widget == lastOnRight);
+            return SkinClasses.getSpaceAfterWidget(widget, widget == lastOnRight);
 		}
 		
 		private function get lastOnRight():DisplayObject {

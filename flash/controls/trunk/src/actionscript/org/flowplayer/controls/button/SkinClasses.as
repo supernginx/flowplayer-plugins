@@ -54,6 +54,7 @@ import org.flowplayer.controls.flash.FullScreenOnButton;
             private var volumeRight:org.flowplayer.controls.flash.VolumeRightEdge;
             private var volumeTop:org.flowplayer.controls.flash.VolumeTopEdge;
             private var volumeBottom:org.flowplayer.controls.flash.VolumeBottomEdge;
+            private var defaults:SkinDefaults;
         }
 
         public static function getDisplayObject(name:String):DisplayObject {
@@ -62,15 +63,42 @@ import org.flowplayer.controls.flash.FullScreenOnButton;
         }
 
         public static function getClass(name:String):Class {
-            log.debug("creating skin class " + name);
+            log.debug("creating skin class " + name + (_skinClasses ? "from skin swf" : ""));
             if (_skinClasses) {
                 return _skinClasses.getDefinition(name) as Class;
             }
             return getDefinitionByName(name) as Class;
         }
 
+        public static function get defaults():Object {
+            try {
+                var clazz:Class = getClass("SkinDefaults");
+                return clazz["values"];
+            } catch (e:Error) {
+            }
+            return null;
+        }
+
+        public static function get margins():Array {
+            try {
+                var clazz:Class = getClass("SkinDefaults");
+                return clazz["margins"];
+            } catch (e:Error) {
+            }
+            return [0,0,0,0];
+        }
+
+        public static function getSpaceAfterWidget(widget:DisplayObject, lastOnRight:Boolean):Number {
+            try {
+                var clazz:Class = getClass("SkinDefaults");
+                return clazz["getSpaceAfterWidget"](widget, lastOnRight);
+            } catch (e:Error) {
+            }
+            return 0;            
+        }
 
         public static function set skinClasses(val:ApplicationDomain):void {
+            log.debug("received skin classes " + val);
             _skinClasses = val;
         }
 
