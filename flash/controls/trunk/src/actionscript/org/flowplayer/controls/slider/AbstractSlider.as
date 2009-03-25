@@ -9,31 +9,30 @@
  */
 
 package org.flowplayer.controls.slider {
-	import org.flowplayer.controls.NullToolTip;	
-	import org.flowplayer.controls.Config;
-	import org.flowplayer.controls.DefaultToolTip;
-	import org.flowplayer.controls.ToolTip;
-	import org.flowplayer.controls.flash.Dragger;
-    import org.flowplayer.util.Arrange;
-import org.flowplayer.util.GraphicsUtil;
-	import org.flowplayer.view.AbstractSprite;
-	import org.flowplayer.view.AnimationEngine;
-	
-	import flash.display.DisplayObject;
-	import flash.display.Sprite;
-	import flash.events.Event;
-	import flash.events.EventDispatcher;
-	import flash.events.MouseEvent;
-	import flash.events.TimerEvent;
-	import flash.utils.Timer;	
+    import flash.display.DisplayObject;
+    import flash.display.Sprite;
+    import flash.events.Event;
+    import flash.events.EventDispatcher;
+    import flash.events.MouseEvent;
+    import flash.events.TimerEvent;
+    import flash.utils.Timer;
 
-	/**
+    import org.flowplayer.controls.Config;
+    import org.flowplayer.controls.DefaultToolTip;
+    import org.flowplayer.controls.NullToolTip;
+    import org.flowplayer.controls.ToolTip;
+    import org.flowplayer.controls.button.DraggerButton;
+import org.flowplayer.util.GraphicsUtil;
+    import org.flowplayer.view.AbstractSprite;
+    import org.flowplayer.view.AnimationEngine;
+
+    /**
 	 * @author api
 	 */
 	public class AbstractSlider extends AbstractSprite {
 		public static const DRAG_EVENT:String = "onDrag";
 		
-		protected var _dragger:Sprite;
+		protected var _dragger:DraggerButton;
 		private var _dragTimer:Timer;
 		private var _previousDragEventPos:Number;
 		protected var _config:Config;
@@ -108,7 +107,7 @@ import org.flowplayer.util.GraphicsUtil;
 		}
 
 		protected function createDragger():void {
-			_dragger = new Dragger();
+ 			_dragger = new DraggerButton(_config, _animationEngine);
 			_dragger.buttonMode = true;
 			addChild(_dragger);
 		}

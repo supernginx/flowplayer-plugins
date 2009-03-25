@@ -173,5 +173,9 @@ import org.flowplayer.controls.flash.FullScreenOnButton;
         public static function getVolumeBottom():DisplayObject {
             return getDisplayObject("org.flowplayer.controls.flash.VolumeBottomEdge");
         }
+
+        public static function getDragger():DisplayObjectContainer {
+            return getDisplayObject("org.flowplayer.controls.flash.Dragger") as DisplayObjectContainer;
+        }
     }
 }
