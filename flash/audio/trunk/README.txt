@@ -1,5 +1,9 @@
 Version history:
 
+3.0.5
+-----
+- compatibility with core 3.1 StreamProvider interface
+
 3.0.4
 -----
 - fixed to stop audio when stop() is called
