@@ -13,6 +13,7 @@ package org.flowplayer.controls {
     import flash.events.Event;
     import flash.events.TimerEvent;
     import flash.system.ApplicationDomain;
+    import flash.system.Security;
 import flash.utils.Timer;
 
     import org.flowplayer.controls.button.AbstractButton;
@@ -228,13 +229,7 @@ import org.flowplayer.model.PlayerEvent;
 			log.info("received player API! autohide == " + _config.autoHide);
 			_player = player;
             if (_config.skin) {
-                var skin:PluginModel = player.pluginRegistry.getPlugin(_config.skin) as PluginModel;
-                log.debug("using skin " + skin);
-                SkinClasses.skinClasses = skin.pluginObject as ApplicationDomain;
-                log.debug("skin has defaults", SkinClasses.defaults);
-                fixPositionSettings(_pluginModel as DisplayPluginModel, SkinClasses.defaults);
-                new PropertyBinder(_pluginModel, "config").copyProperties(SkinClasses.defaults, false);
-                _config = createConfig(_pluginModel);
+                initSkin();
             }
             createChildren();
             loader = player.createLoader();
@@ -252,8 +247,20 @@ import org.flowplayer.model.PlayerEvent;
             if (_muteVolumeButton) {
                 _muteVolumeButton.down = player.muted;
             }
-			_pluginModel.dispatchOnLoad();
-		}
+            _pluginModel.dispatchOnLoad();
+        }
+
+        private function initSkin():void {
+            // must allowDomain because otherwise the dynamically loaded buttons cannot access this controlbar
+            Security.allowDomain("*");
+            var skin:PluginModel = _player.pluginRegistry.getPlugin(_config.skin) as PluginModel;
+            log.debug("using skin " + skin);
+            SkinClasses.skinClasses = skin.pluginObject as ApplicationDomain;
+            log.debug("skin has defaults", SkinClasses.defaults);
+            fixPositionSettings(_pluginModel as DisplayPluginModel, SkinClasses.defaults);
+            new PropertyBinder(_pluginModel, "config").copyProperties(SkinClasses.defaults, false);
+            _config = createConfig(_pluginModel);
+        }
 
         private function fixPositionSettings(props:DisplayProperties, defaults:Object):void {
             clearOpposite("bottom", "top", props, defaults);
