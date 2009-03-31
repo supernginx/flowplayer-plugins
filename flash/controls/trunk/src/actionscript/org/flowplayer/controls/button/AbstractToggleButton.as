@@ -28,7 +28,6 @@ package org.flowplayer.controls.button {
             _downStateFace = createDownStateFace();
 			_upStateFace = createUpStateFace();
 			addChild(_upStateFace);
-            clickListenerEnabled = true;
 		}
 
         override protected function resizeFace():void {
