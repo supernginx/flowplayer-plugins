@@ -4,18 +4,8 @@ package org.flowplayer.controls.button {
     import flash.display.Sprite;
 import flash.system.ApplicationDomain;
 import flash.utils.getDefinitionByName;
-import org.flowplayer.controls.flash.FullScreenOnButton;
-    import org.flowplayer.controls.flash.FullScreenOffButton;
-    import org.flowplayer.controls.flash.Dragger;
-    import org.flowplayer.controls.flash.NextButton;
-    import org.flowplayer.controls.flash.PauseButton;
-    import org.flowplayer.controls.flash.PlayButton;
-    import org.flowplayer.controls.flash.PrevButton;
-    import org.flowplayer.controls.flash.StopButton;
-    import org.flowplayer.controls.flash.MuteButton;
-    import org.flowplayer.controls.flash.UnMuteButton;
-    import org.flowplayer.controls.flash.ScrubberLeftEdge;
     import org.flowplayer.util.Log;
+    import fp.*;
 
 
     /**
@@ -28,32 +18,32 @@ import org.flowplayer.controls.flash.FullScreenOnButton;
         private static var _skinClasses:ApplicationDomain;
 
         CONFIG::skin {
-            private var foo:org.flowplayer.controls.flash.FullScreenOnButton;
-            private var bar:org.flowplayer.controls.flash.FullScreenOffButton;
-            private var next:org.flowplayer.controls.flash.NextButton;
-            private var prev:org.flowplayer.controls.flash.PrevButton;
-            private var dr:org.flowplayer.controls.flash.Dragger;
-            private var pause:org.flowplayer.controls.flash.PauseButton;
-            private var play:org.flowplayer.controls.flash.PlayButton;
-            private var stop:org.flowplayer.controls.flash.StopButton;
-            private var vol:org.flowplayer.controls.flash.MuteButton;
-            private var volOff:org.flowplayer.controls.flash.UnMuteButton;
-            private var scrubberLeft:org.flowplayer.controls.flash.ScrubberLeftEdge;
-            private var scrubberRight:org.flowplayer.controls.flash.ScrubberRightEdge;
-            private var scrubberTop:org.flowplayer.controls.flash.ScrubberTopEdge;
-            private var scrubberBottom:org.flowplayer.controls.flash.ScrubberBottomEdge;
-            private var buttonLeft:org.flowplayer.controls.flash.ButtonLeftEdge;
-            private var buttomRight:org.flowplayer.controls.flash.ButtonRightEdge;
-            private var buttomTop:org.flowplayer.controls.flash.ButtonTopEdge;
-            private var buttonBottom:org.flowplayer.controls.flash.ButtonBottomEdge;
-            private var timeLeft:org.flowplayer.controls.flash.TimeLeftEdge;
-            private var timeRight:org.flowplayer.controls.flash.TimeRightEdge;
-            private var timeTop:org.flowplayer.controls.flash.TimeTopEdge;
-            private var timeBottom:org.flowplayer.controls.flash.TimeBottomEdge;
-            private var volumeLeft:org.flowplayer.controls.flash.VolumeLeftEdge;
-            private var volumeRight:org.flowplayer.controls.flash.VolumeRightEdge;
-            private var volumeTop:org.flowplayer.controls.flash.VolumeTopEdge;
-            private var volumeBottom:org.flowplayer.controls.flash.VolumeBottomEdge;
+            private var foo:fp.FullScreenOnButton;
+            private var bar:fp.FullScreenOffButton;
+            private var next:fp.NextButton;
+            private var prev:fp.PrevButton;
+            private var dr:fp.Dragger;
+            private var pause:fp.PauseButton;
+            private var play:fp.PlayButton;
+            private var stop:fp.StopButton;
+            private var vol:fp.MuteButton;
+            private var volOff:fp.UnMuteButton;
+            private var scrubberLeft:fp.ScrubberLeftEdge;
+            private var scrubberRight:fp.ScrubberRightEdge;
+            private var scrubberTop:fp.ScrubberTopEdge;
+            private var scrubberBottom:fp.ScrubberBottomEdge;
+            private var buttonLeft:fp.ButtonLeftEdge;
+            private var buttomRight:fp.ButtonRightEdge;
+            private var buttomTop:fp.ButtonTopEdge;
+            private var buttonBottom:fp.ButtonBottomEdge;
+            private var timeLeft:fp.TimeLeftEdge;
+            private var timeRight:fp.TimeRightEdge;
+            private var timeTop:fp.TimeTopEdge;
+            private var timeBottom:fp.TimeBottomEdge;
+            private var volumeLeft:fp.VolumeLeftEdge;
+            private var volumeRight:fp.VolumeRightEdge;
+            private var volumeTop:fp.VolumeTopEdge;
+            private var volumeBottom:fp.VolumeBottomEdge;
             private var defaults:SkinDefaults;
         }
 
@@ -103,107 +93,107 @@ import org.flowplayer.controls.flash.FullScreenOnButton;
         }
 
         public static function getScrubberLeftEdge():DisplayObject {
-            return getDisplayObject("org.flowplayer.controls.flash.ScrubberLeftEdge");
+            return getDisplayObject("fp.ScrubberLeftEdge");
         }
 
         public static function getScrubberRightEdge():DisplayObject {
-            return getDisplayObject("org.flowplayer.controls.flash.ScrubberRightEdge");
+            return getDisplayObject("fp.ScrubberRightEdge");
         }
 
         public static function getScrubberTopEdge():DisplayObject {
-            return getDisplayObject("org.flowplayer.controls.flash.ScrubberTopEdge");
+            return getDisplayObject("fp.ScrubberTopEdge");
         }
 
         public static function getScrubberBottomEdge():DisplayObject {
-            return getDisplayObject("org.flowplayer.controls.flash.ScrubberBottomEdge");
+            return getDisplayObject("fp.ScrubberBottomEdge");
         }
 
         public static function getFullScreenOnButton():DisplayObject {
-            return getDisplayObject("org.flowplayer.controls.flash.FullScreenOnButton");
+            return getDisplayObject("fp.FullScreenOnButton");
         }
 
         public static function getFullScreenOffButton():DisplayObject {
-            return getDisplayObject("org.flowplayer.controls.flash.FullScreenOffButton");
+            return getDisplayObject("fp.FullScreenOffButton");
         }
 
         public static function getPlayButton():DisplayObject {
-            return getDisplayObject("org.flowplayer.controls.flash.PlayButton");
+            return getDisplayObject("fp.PlayButton");
         }
 
         public static function getPauseButton():DisplayObject {
-            return getDisplayObject("org.flowplayer.controls.flash.PauseButton");
+            return getDisplayObject("fp.PauseButton");
         }
 
         public static function getMuteButton():DisplayObject {
-            return getDisplayObject("org.flowplayer.controls.flash.MuteButton");
+            return getDisplayObject("fp.MuteButton");
         }
 
         public static function getUnmuteButton():DisplayObject {
-            return getDisplayObject("org.flowplayer.controls.flash.UnMuteButton");
+            return getDisplayObject("fp.UnMuteButton");
         }
 
         public static function getNextButton():DisplayObjectContainer {
-            return DisplayObjectContainer(getDisplayObject("org.flowplayer.controls.flash.NextButton"));
+            return DisplayObjectContainer(getDisplayObject("fp.NextButton"));
         }
 
         public static function getPrevButton():DisplayObjectContainer {
-            return DisplayObjectContainer(getDisplayObject("org.flowplayer.controls.flash.PrevButton"));
+            return DisplayObjectContainer(getDisplayObject("fp.PrevButton"));
         }
 
         public static function getStopButton():DisplayObjectContainer {
-            return DisplayObjectContainer(getDisplayObject("org.flowplayer.controls.flash.StopButton"));
+            return DisplayObjectContainer(getDisplayObject("fp.StopButton"));
         }
 
         public static function getButtonLeft():DisplayObject {
-            return getDisplayObject("org.flowplayer.controls.flash.ButtonLeftEdge");
+            return getDisplayObject("fp.ButtonLeftEdge");
         }
 
         public static function getButtonRight():DisplayObject {
-            return getDisplayObject("org.flowplayer.controls.flash.ButtonRightEdge");
+            return getDisplayObject("fp.ButtonRightEdge");
         }
 
         public static function getButtonTop():DisplayObject {
-            return getDisplayObject("org.flowplayer.controls.flash.ButtonTopEdge");
+            return getDisplayObject("fp.ButtonTopEdge");
         }
 
         public static function getButtonBottom():DisplayObject {
-            return getDisplayObject("org.flowplayer.controls.flash.ButtonBottomEdge");
+            return getDisplayObject("fp.ButtonBottomEdge");
         }
 
         public static function getTimeLeft():DisplayObject {
-            return getDisplayObject("org.flowplayer.controls.flash.TimeLeftEdge");
+            return getDisplayObject("fp.TimeLeftEdge");
         }
 
         public static function getTimeRight():DisplayObject {
-            return getDisplayObject("org.flowplayer.controls.flash.TimeRightEdge");
+            return getDisplayObject("fp.TimeRightEdge");
         }
 
         public static function getTimeTop():DisplayObject {
-            return getDisplayObject("org.flowplayer.controls.flash.TimeTopEdge");
+            return getDisplayObject("fp.TimeTopEdge");
         }
 
         public static function getTimeBottom():DisplayObject {
-            return getDisplayObject("org.flowplayer.controls.flash.TimeBottomEdge");
+            return getDisplayObject("fp.TimeBottomEdge");
         }
 
         public static function getVolumeLeft():DisplayObject {
-            return getDisplayObject("org.flowplayer.controls.flash.VolumeLeftEdge");
+            return getDisplayObject("fp.VolumeLeftEdge");
         }
 
         public static function getVolumeRight():DisplayObject {
-            return getDisplayObject("org.flowplayer.controls.flash.VolumeRightEdge");
+            return getDisplayObject("fp.VolumeRightEdge");
         }
 
         public static function getVolumeTop():DisplayObject {
-            return getDisplayObject("org.flowplayer.controls.flash.VolumeTopEdge");
+            return getDisplayObject("fp.VolumeTopEdge");
         }
 
         public static function getVolumeBottom():DisplayObject {
-            return getDisplayObject("org.flowplayer.controls.flash.VolumeBottomEdge");
+            return getDisplayObject("fp.VolumeBottomEdge");
         }
 
         public static function getDragger():DisplayObjectContainer {
-            return getDisplayObject("org.flowplayer.controls.flash.Dragger") as DisplayObjectContainer;
+            return getDisplayObject("fp.Dragger") as DisplayObjectContainer;
         }
     }
 }

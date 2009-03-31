@@ -10,13 +10,12 @@
 package org.flowplayer.controls.slider {
 
     import flash.display.DisplayObject;
-import org.flowplayer.controls.Config;
+
+    import org.flowplayer.controls.Config;
     import org.flowplayer.controls.button.SkinClasses;
-import org.flowplayer.controls.flash.ScrubberBottomEdge;
-import org.flowplayer.controls.flash.ScrubberLeftEdge;
-import org.flowplayer.model.Playlist;
+    import org.flowplayer.model.Playlist;
     import org.flowplayer.util.Arrange;
-import org.flowplayer.view.AbstractSprite;
+    import org.flowplayer.view.AbstractSprite;
     import org.flowplayer.view.AnimationEngine;
 
     public class Scrubber extends AbstractSprite{
