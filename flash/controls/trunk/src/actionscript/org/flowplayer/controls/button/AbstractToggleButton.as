@@ -85,11 +85,6 @@ package org.flowplayer.controls.button {
 			if (isDown == down) return;
 			removeChild(down ? _upStateFace : _downStateFace);
 			addChild(down ? _downStateFace : _upStateFace);
-            if (down) {
-                log.error("downstateface grid " + _downStateFace.scale9Grid);
-            } else {
-                log.error("upStateFace grid " + _upStateFace.scale9Grid);                
-            }
 		}
 
 		protected function createUpStateFace():DisplayObjectContainer {
