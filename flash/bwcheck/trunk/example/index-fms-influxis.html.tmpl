@@ -77,7 +77,7 @@
 		            	150,400,700,1000
 		            ],
 		            //{0} is filename, {1} is bitrate, {2} is extension
-		            fileNameString: '{0}-{1}',
+		            urlPattern: '{0}-{1}',
                     
                     onBwDone: function(url, chosenBitrate, bitrate) {
                         console.info("Bandwidth detected " + bitrate + ", mapped to " + chosenBitrate + ", url is " + url);
