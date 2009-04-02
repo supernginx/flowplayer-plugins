@@ -36,13 +36,10 @@
 
 			// configure clip to use "rtmp" plugin for providing video data 
 		    clip: {  
-		        url: 'KimAronson-TwentySeconds73213.flv',  
-		        baseUrl: 'http://blip.tv/file/get/',
-		        provider: 'http',
+		        url: 'http://flowplayer.org/video/skyandice.flv',
 		        urlResolvers: 'bwcheck',
 		        autoPlay: true,
 			    start: 0,
-			    duration: 0,
 			    accelerated: true,
 			    bufferLength: 8
 		    }, 
@@ -50,32 +47,19 @@
 			
 			// streaming plugins are configured under the plugins node 
 			plugins:  {
-				// here is our rtpm plugin configuration
-				rtmp: {
-					 url: 'flowplayer.rtmp.swf',
-					 netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
-     				 
-				},
 				bwcheck: {  
 		            url: '@MAIN_PLAYER_SWF@',  
-		            serverType: 'http',
-		            netConnectionUrl: 'http://www.electroteque.org/audio/xspf_player.swf',
-		            defaultBitrate: 300,
+		            netConnectionUrl: 'http://flowplayer.org/swf/expressinstall.swf',
+		            defaultBitrate: 400,
 		            bitrates: [
-		            	100,300,500,700
+		            	150,400,700,1000
 		            ],
 		            //{0} is filename, {1} is bitrate, {2} is extension
-		            fileNameString: '{0}-{1}.{2}' 
+		            urlPattern: '{0}-{1}.{2}' 
 		            
-		        },
-			
-			}, 
-			log:  {         
-			     
-				     // other levels are: 'info', 'warning', 'error' which will cause less output 
-				     level: 'info' 
-				},
-			
+		        }
+			},
+			log:  { level: 'debug', filter: 'org.flowplayer.bwcheck.*' }
 		});
 		</script>
 	
