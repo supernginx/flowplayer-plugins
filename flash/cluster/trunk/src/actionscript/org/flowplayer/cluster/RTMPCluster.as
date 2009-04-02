@@ -100,7 +100,7 @@ package org.flowplayer.cluster
 		
 		public function stop():void
 		{
-			if (_timer.running) _timer.stop();
+			if (_timer != null && _timer.running) _timer.stop();
 		}
 		
 		public function hasMultipleHosts():Boolean
