@@ -53,6 +53,7 @@ package org.flowplayer.bwcheck.servers
 		
 		public function onComplete(event:Event):void
 		{
+            log.debug("reference file successfully downloaded");
 			this._downloadTime = getTimer() - this._startTime;
 			this._bytes = event.currentTarget.bytesLoaded;
 			this._bandwidth = this._bytes * 8 / this._downloadTime;
@@ -85,6 +86,7 @@ package org.flowplayer.bwcheck.servers
 			}
 			
 			var obj:Object = new Object();
+            obj.info = new Object();
 			obj.info.count = this._bytes;
 			
 			dispatchStatus(obj);
@@ -93,7 +95,8 @@ package org.flowplayer.bwcheck.servers
 
 		override public function start():void
 		{
-			request = new URLRequest(_url);
+			log.debug("requesting reference file " + _url);
+            request = new URLRequest(_url);
 			var noCacheHeader:URLRequestHeader = new URLRequestHeader('pragma', 'no-cache');
 			request.requestHeaders.push(noCacheHeader);
 			
