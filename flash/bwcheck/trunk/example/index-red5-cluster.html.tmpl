@@ -55,23 +55,23 @@
 					 netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
      				 
 				},
-				bwcheck: {  
-		            url: '@MAIN_PLAYER_SWF@',  
-		            serverType: 'red5',
-		            netConnectionUrl: 'rtmp://electroteque.org/bwcheck',
-		            hosts: [
+                bwcheck: {
+                    url: '@MAIN_PLAYER_SWF@',
+                    serverType: 'red5',
+                    netConnectionUrl: 'rtmp://electroteque.org/bwcheck',
+                    hosts: [
                         {host:'rtmp://electroteque1.org/bwcheck'},
                         {host:'rtmp://electroteque2.org/bwcheck'},
                         {host:'rtmp://electroteque.org/bwcheck'}
-		            ],
-		            defaultBitrate: 300,
-		            bitrates: [
-		            	100,300,500,700
-		            ],
-		            //{0} is filename, {1} is bitrate, {2} is extension
-		            urlPattern: '{0}-{1}.{2}' 
-		            
-		        }
+                    ],
+                    defaultBitrate: 300,
+                    bitrates: [
+                        100,300,500,700
+                    ],
+                    //{0} is filename, {1} is bitrate, {2} is extension
+                    urlPattern: '{0}-{1}.{2}'
+
+                }
 			
 			}, 
 			log: { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.rtmp.*' }
