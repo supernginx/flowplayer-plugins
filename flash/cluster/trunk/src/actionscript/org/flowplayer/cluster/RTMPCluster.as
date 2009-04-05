@@ -18,7 +18,6 @@ package org.flowplayer.cluster
 
     public class RTMPCluster {
         protected var _hosts:Array;
-        protected var _netConnectionUrl:*;
         protected var _timer:Timer;
         protected var _hostIndex:int = 0;
         protected var _hostCount:int = 0;
@@ -26,7 +25,7 @@ package org.flowplayer.cluster
         protected var _reConnectCount:int = 0;
         protected var _connectTimeout:int = 3000;
         protected var _loadBalanceServers:Boolean = false;
-        protected var _liveServers:Array;
+        protected var _liveHosts:Array;
         protected var _liveRandomServers:Array = [];
         private var _startAfterConnect:Boolean;
         protected var _failureExpiry:int = 0;
@@ -43,12 +42,25 @@ package org.flowplayer.cluster
             _config = config;
 
             // there can be several hosts, or we are just using one single netConnectionUrl
-            hosts = _config.hosts;
-            _netConnectionUrl = config.netConnectionUrl;
+            initHosts(_config.hosts, config.netConnectionUrl);
 
             _connectCount = config.connectCount;
             _connectTimeout = config.connectTimeout;
             _failureExpiry = config.failureExpiry;
+        }
+
+        private function initHosts(hosts:Array, fallback:String):void {
+            log.debug("initHosts");
+            var myHosts:Array = [];
+            if (! hosts) {
+                myHosts.push({ 'host': fallback});
+            } else {
+                for (var i:int = 0; i < hosts.length; i++) {
+                    myHosts.push(hosts[i] is String ? { 'host': hosts[i] } : hosts[i]);
+                }
+            }
+            _hosts = myHosts;
+            _liveHosts = _hosts;
         }
 
 
@@ -56,16 +68,8 @@ package org.flowplayer.cluster
             _reconnectListener = listener;
         }
 
-
         public function onFailed(listener:Function):void {
             _failureListener = listener;
-        }
-
-
-        public function set hosts(hosts:Array):void
-        {
-            _hosts = hosts;
-            _liveServers = currentHosts;
         }
 
         public function get currentHosts():Array
@@ -78,12 +82,11 @@ package org.flowplayer.cluster
             return _hosts;
         }
 
-
         public function get host():*
         {
             if (hasMultipleHosts())
             {
-                _liveServers = currentHosts;
+                _liveHosts = currentHosts;
 
                 if (_config.loadBalanceServers)
                 {
@@ -91,15 +94,14 @@ package org.flowplayer.cluster
 
                     log.debug("Load balanced index " + _hostIndex);
                 }
-                if (_liveServers.length > _hostIndex) {
+                if (_liveHosts.length > _hostIndex) {
                     log.debug("cluster has multiple hosts");
-                    _currentHost = _liveServers[_hostIndex].host;
+                    _currentHost = _liveHosts[_hostIndex].host;
                     return _currentHost;
                 }
             }
             log.debug("one host available");
-            _currentHost = _netConnectionUrl;
-            return _netConnectionUrl;
+            return null;
         }
 
         public function start():void
@@ -107,7 +109,7 @@ package org.flowplayer.cluster
             if (_timer && _timer.running) {
                 _timer.stop();
             }
-            _timer = new Timer(_connectTimeout, _liveServers.length);
+            _timer = new Timer(_connectTimeout, _liveHosts.length);
             _timer.addEventListener(TimerEvent.TIMER_COMPLETE , tryFallBack);
             if (hasMultipleHosts()) {
                 _timer.start();
@@ -121,17 +123,17 @@ package org.flowplayer.cluster
 
         public function hasMultipleHosts():Boolean
         {
-            return _liveServers.length > 0;
+            return _liveHosts.length > 0;
         }
 
         public function getRandomIndex():uint
         {
-            return Math.round(Math.random() * (_liveServers.length - 1));
+            return Math.round(Math.random() * (_liveHosts.length - 1));
         }
 
         public function get liveServers():Array
         {
-            return _liveServers;
+            return _liveHosts;
         }
 
         private function _checkLiveHost(element:*, index:int, arr:Array):Boolean
@@ -164,9 +166,9 @@ package org.flowplayer.cluster
             else
                 _hostIndex = 0;
 
-            _liveServers = currentHosts;
+            _liveHosts = currentHosts;
 
-            if (_hostIndex >= _liveServers.length)
+            if (_hostIndex >= _liveHosts.length)
             {
                 //
                 _reConnectCount++;
@@ -176,8 +178,8 @@ package org.flowplayer.cluster
                     _hostIndex = 0;
                 }
             }
-            log.debug("Host Index: " + _hostIndex + " LiveServers: " + _liveServers.length);
-            return (_hostIndex <= _liveServers.length && _liveServers[_hostIndex]);
+            log.debug("Host Index: " + _hostIndex + " LiveServers: " + _liveHosts.length);
+            return (_hostIndex <= _liveHosts.length && _liveHosts[_hostIndex]);
         }
 
         private function _isLiveServer(element:*):Boolean
