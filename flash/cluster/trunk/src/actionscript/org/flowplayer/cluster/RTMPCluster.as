@@ -34,7 +34,7 @@ package org.flowplayer.cluster
         private var log:Log = new Log(this);
         private var _reconnectListener:Function;
         private var _failureListener:Function;
-        private var _currentHost:String;
+        private var _currentHost:Object;
 
 
         public function RTMPCluster(config:*)
@@ -82,7 +82,7 @@ package org.flowplayer.cluster
             return _hosts;
         }
 
-        public function get host():*
+        public function get host():String
         {
             if (hasMultipleHosts())
             {
@@ -91,13 +91,12 @@ package org.flowplayer.cluster
                 if (_config.loadBalanceServers)
                 {
                     _hostIndex = getRandomIndex();
-
                     log.debug("Load balanced index " + _hostIndex);
                 }
                 if (_liveHosts.length > _hostIndex) {
                     log.debug("cluster has multiple hosts");
-                    _currentHost = _liveHosts[_hostIndex].host;
-                    return _currentHost;
+                    _currentHost = _liveHosts[_hostIndex];
+                    return _currentHost.host;
                 }
             }
             log.debug("one host available");
@@ -227,7 +226,11 @@ package org.flowplayer.cluster
         }
 
         public function get currentHost():String {
-            return _currentHost;
+            return _currentHost.host;
+        }
+
+        public function get currentHostIndex():int {
+            return _hosts.indexOf(_currentHost);
         }
     }
 
