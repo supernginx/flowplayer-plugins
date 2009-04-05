@@ -52,7 +52,7 @@
 				// here is our rtpm plugin configuration
 				rtmp: {
 					 url: '../flowplayer.rtmp.swf',
-					 netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
+					 netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer'
      				 
 				},
                 bwcheck: {
@@ -69,7 +69,15 @@
                         100,300,500,700
                     ],
                     //{0} is filename, {1} is bitrate, {2} is extension
-                    urlPattern: '{0}-{1}.{2}'
+                    urlPattern: '{0}-{1}.{2}',
+
+                    onConnectFailed: function(host, index) {
+                        console.log("onConnectFailed " + host + ", host# " + index);
+                    },
+
+                    onConnect: function(host, index) {
+                        console.log("onConnect " + host + ", host# " + index);
+                    }
 
                 }
 			
