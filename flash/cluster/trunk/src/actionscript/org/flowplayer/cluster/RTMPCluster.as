@@ -52,7 +52,7 @@ package org.flowplayer.cluster
         private function initHosts(hosts:Array, fallback:String):void {
             log.debug("initHosts");
             var myHosts:Array = [];
-            if (! hosts) {
+            if (! hosts || hosts.length == 0) {
                 myHosts.push({ 'host': fallback});
             } else {
                 for (var i:int = 0; i < hosts.length; i++) {
@@ -99,7 +99,7 @@ package org.flowplayer.cluster
                     return _currentHost.host;
                 }
             }
-            log.debug("one host available");
+            log.error("no hosts available");
             return null;
         }
 
