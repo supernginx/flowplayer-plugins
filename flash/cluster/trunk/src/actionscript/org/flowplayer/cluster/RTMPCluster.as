@@ -34,8 +34,11 @@ package org.flowplayer.cluster
 		public function RTMPCluster(config:*)
 		{
 			_config = config;
+
+            // there can be several hosts, or we are just using one single netConnectionUrl
 			hosts = _config.hosts;
 			_netConnectionUrl = config.netConnectionUrl;
+
 			_connectCount = config.connectCount;
 			_connectTimeout = config.connectTimeout;
 			_failureExpiry = config.failureExpiry;
@@ -74,27 +77,31 @@ package org.flowplayer.cluster
 			if (hasMultipleHosts())
 			{
 				_liveServers = currentHosts;
-				
-				if (_config.loadBalanceServers)
-				{
-					_hostIndex = getRandomIndex();
-					
-					log.debug("Load balanced index " + _hostIndex);
-				}
-				
-				return _liveServers[_hostIndex].host;
+
+                if (_config.loadBalanceServers)
+            {
+                _hostIndex = getRandomIndex();
+
+                log.debug("Load balanced index " + _hostIndex);
+            }
+                if (_liveServers.length >= _hostIndex) {
+                    log.debug("cluster has multiple hosts");
+                    return _liveServers[_hostIndex].host;
+                }
 			}
-			
+            log.debug("one host available");			
 			return _netConnectionUrl;
 		}
 		
 		public function start():void
 		{
+            if (_timer && _timer.running) {
+                _timer.stop();
+            }
 			_timer = new Timer(_connectTimeout, _liveServers.length);
 			_timer.addEventListener(TimerEvent.TIMER_COMPLETE , tryFallBack);
-			if (!_timer.running && hasMultipleHosts())
-			{
-				_timer.start();
+            if (hasMultipleHosts()) {
+                _timer.start();
 			}
 		}
 		
