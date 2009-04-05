@@ -38,13 +38,15 @@
 		    clip: {  
 		        url: 'KimAronson-TwentySeconds73213.flv',  
 		        baseUrl: 'http://blip.tv/file/get/',
-		        provider: 'http',
 		        urlResolvers: 'clustering',
 		        autoPlay: true,
 			    start: 0,
-			    duration: 0,
 			    accelerated: true,
-			    bufferLength: 8
+			    bufferLength: 8,
+
+                onStart: function(clip) {
+                    console.log("started clip " + clip.url);
+                }
 		    }, 
 			
 			
@@ -55,26 +57,43 @@
 				// here is our rtpm plugin configuration
 		
 				clustering: {  
-		            url: '@MAIN_PLAYER_SWF@',  
-		            hosts: [
-		            	{host:'http://blippppp.tv1/file/get/'},
-		            	{host:'http://blippppppp.tv2/file/get/'},
-		            	{host:'http://blip.tv/file/get/'}
-		            ],
+		            url: '@MAIN_PLAYER_SWF@',
+                    hosts: [
+                        'http://ablip.tv/file/get/',
+                        'http://aablip.tv/file/get/',
+                        'http://aaablip.tv/file/get/',
+                        'http://blip.tv/file/get/'
+        ],
 		            encoding: 0,
 		            connectCount: 2,
-		            connectTimeout: 5000,
-		            failureExpiry: 100000,
+		            connectTimeout: 50000,
+		            failureExpiry: 10000,
 		            loadBalanceServers: false,
-		            connectCount: 2
+		            connectCount: 2,
+
+                    onConnectFailed: function(host, index) {
+                        console.log("onConnectFailed " + host + ", host# " + index);
+
+                        // our 1st host in the hosts array is a hardware load balancer
+                        // if that fails --> enable client side load balancing
+                        if (index == 0) {
+                            console.log("enabling load balancing");
+                            this.setLoadBalancing(true);
+                        }
+                    },
+
+                    onConnect: function(host, index) {
+                        console.log("onConnect " + host + ", host# " + index);
+                    }
+                    
 		        }
 			
 			}, 
 			log:  {         
 			     
 				     // other levels are: 'info', 'warning', 'error' which will cause less output 
-				     level: 'info' 
-				},
+				     level: 'debug', filter: 'org.flowplayer.cluster.*' 
+				}
 			
 		});
 		</script>
