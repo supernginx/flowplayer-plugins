@@ -58,11 +58,11 @@ package org.flowplayer.bwcheck
 		{
 			_netStream = netStream;
 		}
-		
-		public function get currentStreamBitRate():Number {
-			return _bitrates[_curStreamID];
-		}
-		
+
+        public function get currentStreamBitRate():Number {
+            return _bitrates[_curStreamID];
+        }
+
 		protected function setup():void
 		{
 			_preferredBufferLength = _config.preferredBufferLength;
@@ -80,16 +80,22 @@ package org.flowplayer.bwcheck
 			
 			_curBufferTime = _startBufferLength;
 
+            createQosTimer();
+
 			mainTimer = new Timer(_config.monitorQOSTimerDelay *1000, 0);
 			mainTimer.addEventListener(TimerEvent.TIMER, monitorQOS);
-			
-			qosTimer  = new Timer(_config.switchQOSTimerDelay*1000, 0);
-			qosTimer.addEventListener(TimerEvent.TIMER, getQOSAndSwitch);
 
-			droppedFramesTimer = new Timer(_config.droppedFramesTimerDelay *1000, 0);
-			droppedFramesTimer.addEventListener(TimerEvent.TIMER, releaseDFLock);	
-			mainTimer.start();
-		}
+
+            droppedFramesTimer = new Timer(_config.droppedFramesTimerDelay *1000, 0);
+            droppedFramesTimer.addEventListener(TimerEvent.TIMER, releaseDFLock);
+            mainTimer.start();
+        }
+
+        private function createQosTimer():void {
+            if (qosTimer) return;
+            qosTimer  = new Timer(_config.switchQOSTimerDelay*1000, 0);
+            qosTimer.addEventListener(TimerEvent.TIMER, getQOSAndSwitch);
+        }
 		
 		public function init():void
 		{
@@ -458,7 +464,8 @@ package org.flowplayer.bwcheck
 		{
 			getMaxBandwidth();
 			SwitchUpOnMaxBandwidth();
-			_isBuffering = false;	
+			_isBuffering = false;
+            createQosTimer();
 			qosTimer.start();
 		}
 		
