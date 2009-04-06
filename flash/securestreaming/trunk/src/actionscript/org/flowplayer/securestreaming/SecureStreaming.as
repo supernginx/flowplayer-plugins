@@ -81,7 +81,6 @@ import org.flowplayer.model.Plugin;
         public function onConfig(model:PluginModel):void {
             _model = model;
             _config = new PropertyBinder(new Config()).copyProperties(model.config) as Config;
-            _model.dispatchOnLoad();
         }
 
         public function onLoad(player:Flowplayer):void {
@@ -89,6 +88,7 @@ import org.flowplayer.model.Plugin;
             _httpResolver = new SecureHttpUrlResolver(player, _config, _failureListener);
             _connectionProvider = new SecureRTMPConnectionProvider(_config.token || SECRET);
             _connectionProvider.connectionClient = _connectionClient;
+            _model.dispatchOnLoad();
         }
 
 
