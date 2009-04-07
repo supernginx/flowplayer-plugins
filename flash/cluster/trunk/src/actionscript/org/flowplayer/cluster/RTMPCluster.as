@@ -88,7 +88,7 @@ package org.flowplayer.cluster
             {
                 _liveHosts = currentHosts;
 
-                if (_config.loadBalanceServers)
+                if (_config.loadBalance)
                 {
                     _hostIndex = getRandomIndex();
                     log.debug("Load balanced index " + _hostIndex);

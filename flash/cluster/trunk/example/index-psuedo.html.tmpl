@@ -65,9 +65,8 @@
 		            ],
 		            encoding: 0,
 		            connectCount: 2,
-		            connectTimeout: 5000,
-		            failureExpiry: 10000,
-		            loadBalanceServers: false,
+		            connectTimeout: 1000,
+		            failureExpiry: 20000,
 		            connectCount: 2
 		        }
 			
@@ -75,8 +74,8 @@
 			log:  {         
 			     
 				     // other levels are: 'info', 'warning', 'error' which will cause less output 
-				     level: 'info' 
-				},
+				     level: 'debug', filter: 'org.flowplayer.cluster.*' 
+				}
 			
 		});
 		</script>
