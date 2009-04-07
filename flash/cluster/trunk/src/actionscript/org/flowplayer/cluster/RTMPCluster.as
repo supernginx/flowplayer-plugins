@@ -191,7 +191,7 @@ package org.flowplayer.cluster
                 var date:Date = new Date();
 
                 // Determine the failure offset
-                var offset:int = (date.getTime() - server.data.failureTimestamp.getTime()) / 60;
+                var offset:int = date.getTime() - server.data.failureTimestamp.getTime();
 
                 log.debug("Failed Server Remaining Expiry: " + offset + " Start Time: " + server.data.failureTimestamp.getTime() + " Current Time: " + date.getTime());
 
