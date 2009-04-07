@@ -23,7 +23,7 @@ package org.flowplayer.cluster
         protected var _hostCount:int = 0;
         protected var _connectCount:int = 0;
         protected var _reConnectCount:int = 0;
-        protected var _connectTimeout:int = 3000;
+        protected var _connectTimeout:int = 2000;
         protected var _loadBalanceServers:Boolean = false;
         protected var _liveHosts:Array;
         protected var _liveRandomServers:Array = [];
@@ -109,8 +109,9 @@ package org.flowplayer.cluster
                 _timer.stop();
             }
             _timer = new Timer(_connectTimeout, _liveHosts.length);
-            _timer.addEventListener(TimerEvent.TIMER_COMPLETE , tryFallBack);
+            _timer.addEventListener(TimerEvent.TIMER , tryFallBack);
             if (hasMultipleHosts()) {
+                log.debug("starting connection timeout timer, with a delay of " + _connectTimeout);
                 _timer.start();
             }
         }
@@ -212,6 +213,7 @@ package org.flowplayer.cluster
             // Check if there is more hosts to attempt reconnection to
             if (hasMoreHosts())
             {
+                log.debug("invoking reconnect listener");
                 if (_reconnectListener != null) {
                     _reconnectListener();
                 }
