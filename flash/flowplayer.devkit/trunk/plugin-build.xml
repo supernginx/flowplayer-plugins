@@ -11,7 +11,7 @@
 	<property name="lib-dir" value="lib" />
 	<property name="flex-libs-path" value="${flex3libsdir}" />
 	<property name="flowplayer-js-version-info" value="3.0.6" />
-	<property name="src-flowplayer" value="../flowplayer" />
+	<property name="src-flowplayer" value="../core" />
 	<property name="plugin-libs" value="" />
 
 	<condition property="extra.libs" value="" else="${plugin-libs}">
@@ -79,12 +79,15 @@
             <condition property="mxmlc-define" value="-define=${compiler-define}" else="">
                 <isset property="compiler-define" />
             </condition>
+            <condition property="mxmlc-sources" value="${extra-sources}" else="">
+                <isset property="extra-sources" />
+            </condition>
 
             <echo message="compiling with  ${mxmlc-library-path}" />
             <echo message="compiling with  ${mxmlc-define}" />
             
 			<exec executable="${mxmlc_bin}">
-				<arg line="-source-path @{src} ${mxmlc-library-path}" />
+				<arg line="-source-path @{src} ${mxmlc-library-path} ${mxmlc-sources}" />
                 <arg line="${mxmlc-define}" />
 				<arg line="${libs}" />
 				<arg line="-library-path ${flex-libs-path} ${mxmlc-library-path}" />
@@ -156,7 +159,7 @@
 		</sequential>
 	</macrodef>
 	
-	<target name="library" depends="compile">
+	<target name="library" depends="compile" description="builds the plugin lib">
 		<compc.compile src="${src-as}" libs="${extra.libs}" sources="." out="${plugin-swc}" />
 	</target>
 
@@ -227,9 +230,12 @@
 				<include name="build.xml" />
 				<include name="build.properties" />
 			</zipfileset>
-			<zipfileset prefix="${basename}/${src}" dir="${src}">
-				<include name="**/*" />
-			</zipfileset>
+            <zipfileset prefix="${basename}/${src}" dir="${src}">
+                <include name="**/*" />
+            </zipfileset>
+            <zipfileset prefix="${basename}/example" dir="example">
+                <include name="**/*" />
+            </zipfileset>
 		</zip>
 	</target>
 
