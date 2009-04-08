@@ -78,7 +78,9 @@
 		            ],
 		            //{0} is filename, {1} is bitrate, {2} is extension
 		            urlPattern: '{0}-{1}',
-                    
+                    onStreamSwitch: function(chosenBitrate, streamName, oldStreamName) {
+                    	console.info("Stream switched to bitrate: " + chosenBitrate + ", stream name: " + streamName + ", old stream name: " + oldStreamName);
+                    },
                     onBwDone: function(url, chosenBitrate, bitrate) {
                         console.info("Bandwidth detected " + bitrate + ", mapped to " + chosenBitrate + ", url is " + url);
                     }
@@ -114,7 +116,7 @@
 			showBitrates();
 			
 			$('.bitrateBtn').click(function() {
-				$f().getPlugin("bwcheck").changeBitrate($(this).val());
+				$f().getPlugin("bwcheck").setBitrate($(this).val());
 			});
 		});
 		
