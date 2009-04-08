@@ -145,7 +145,8 @@ import org.flowplayer.model.PlayerEvent;
 		override public function css(styleProps:Object = null):Object {
 			var result:Object = super.css(styleProps);
 			var newStyleProps:Object = _config.style.addStyleProps(result);
-			
+			if (! styleProps) return newStyleProps;
+            
 			initTooltipConfig(_config, styleProps);
 			newStyleProps["tooltips"] = _config.tooltips.props;
 			
