@@ -65,7 +65,11 @@ public class DefaultSeekDataStore {
         if (!rangeEnd) {
             rangeEnd = _keyFrameTimes.length - 1;
         }
-        if (rangeBegin == rangeEnd) return queryParamValue(rangeBegin);
+//        if (rangeBegin == rangeEnd) return queryParamValue(rangeBegin);
+        if (rangeBegin == rangeEnd) { 
+             _prevSeekTime =_keyFrameTimes[rangeBegin];
+             return queryParamValue(rangeBegin);
+        }
 
         var rangeMid:Number = Math.floor((rangeEnd + rangeBegin)/2);
         if (_keyFrameTimes[rangeMid] >= seekPosition)
@@ -77,9 +81,9 @@ public class DefaultSeekDataStore {
     protected function queryParamValue(pos:Number):Number {
         return _keyFrameFilePositions[pos];
     }
-    
-    public function set prevSeekTime(val:Number):void {
-        _prevSeekTime = val;
+
+    public function reset():void {
+        _prevSeekTime = 0;
     }
 
     public function inBufferSeekTarget(target:Number):Number {
