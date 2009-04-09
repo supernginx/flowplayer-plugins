@@ -50,6 +50,9 @@ package org.flowplayer.captions.parsers
 	      
 	      public function parse(data:XML):Array
 	      {
+	      	log.debug("got data " + data);
+	      	log.debug("body " + data.body);
+	      	log.debug("div " + data.body.div);
 	      	parseStyles(data.head.styling.style);
 	      	bodyStyle = data.body.hasOwnProperty("@style") ? data.body.@style : _styles.rootStyleName;
 	      	return parseCaptions(data.body.div);
@@ -67,11 +70,13 @@ package org.flowplayer.captions.parsers
 	      
 	      private function parseCaptions(div:XMLList):Array
 	      {
+	      	log.debug("parseCaptions! " + div);
 	      	var arr:Array = new Array();
 	      	var i:int = 0;
 	      	
 	      	for each (var property:XML in div)
  			{
+ 				log.debug("found div");
  				var divStyle:String = property.hasOwnProperty("@style") ? property.@style : bodyStyle;
 				var parent:XML = div.parent().parent();
 	 			var lang:String = property.hasOwnProperty("@lang") ? property.@*::lang : parent.@*::lang;
@@ -86,6 +91,7 @@ package org.flowplayer.captions.parsers
 	 	
 	 			for each (var p:XML in property.p)
 	 			{
+	 				log.debug("found paragraph (p tag)");
 	 				var time:int = begin ? begin : NumberFormatter.seconds(p.@begin);
 	 				var cue:Object = Cuepoint.createDynamic(time, "embedded"); 
 	 				var parameters:Object = new Object();
@@ -95,15 +101,17 @@ package org.flowplayer.captions.parsers
 					
 			        cue.captionType = "external";
 	 				cue.time = time;
+                    
 	 				cue.name = name;
 	 				cue.type = "event";
 	 				parameters.begin = time;
 	 				parameters.end = endTime;
 	 				parameters.lang = lang;
 	 				parameters.style = pStyle;
-	 				parameters.text = p.text();
+	 				parameters.text = p.text().toString();
 	 				cue.parameters = parameters;
 	 				arr.push(cue);
+	 				log.debug("added cuepoint " + cue);
 	 				cueRow++;
 	 			}
 		 		
