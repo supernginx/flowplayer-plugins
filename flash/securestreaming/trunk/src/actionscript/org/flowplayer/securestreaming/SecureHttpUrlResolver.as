@@ -65,8 +65,8 @@ import flash.events.NetStatusEvent;
         }
 
         private function doResolve(url:String, clip:Clip, successListener:Function):void {
-            log.debug("resolved url " + url);
             clip.resolvedUrl = url;
+            log.debug("resolved url " + clip.completeUrl);
             if (! url) {
                 if (_failureListener != null) {
                     _failureListener();
@@ -98,7 +98,10 @@ import flash.events.NetStatusEvent;
         }
 
         private function generateProtection(timestamp:String, file:String):String {
-            return MD5.hash(_config.token || SECRET + file + timestamp) + "/" + timestamp ;
+            var secret:String = _config.token || SECRET;
+            log.debug("secret token is " + secret + ", filename is " + "/" + file);
+            log.debug(secret + "/" + file + timestamp);
+            return MD5.hash(secret + "/" + file + timestamp) + "/" + timestamp ;
         }
 
         public function set onFailure(listener:Function):void {
