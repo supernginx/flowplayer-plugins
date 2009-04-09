@@ -42,7 +42,8 @@ package org.flowplayer.captions.parsers
 	     
 	    private function parseRows(item:*, index:int, array:Array):void
     	{
-	    	var rows:Array = item.split(/\r?\n/);
+	    	log.debug("parsing " + item);
+            var rows:Array = item.split(/\r?\n/);
 	    	var time_pattern:RegExp = /(\d{2}:\d{2}:\d{2}(?:,\d*)?) --> (\d{2}:\d{2}:\d{2}(?:,\d*)?)/;
 	        var hasValidTime:Boolean = time_pattern.test(rows[1]);
 	         
@@ -75,7 +76,8 @@ package org.flowplayer.captions.parsers
 	      
 	      private function parseCaptions(data:String):Array
 	      {
-	      	var line_break:RegExp = /\n\r?\n/; 
+	      	log.debug("parseCaptions");
+            var line_break:RegExp = /\n\r?\n/;
             var subtitles:Array = String(data).split(line_break);
 			subtitles.forEach(parseRows);
 			return _arr;
