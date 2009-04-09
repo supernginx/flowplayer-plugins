@@ -116,6 +116,7 @@ import org.flowplayer.util.GraphicsUtil;
 			if (_dragTimer.running) {
 				onMouseUp();
 			}
+            _dragTimer.stop();
 		}
 		
 		private function onMouseUp(event:MouseEvent = null):void {
