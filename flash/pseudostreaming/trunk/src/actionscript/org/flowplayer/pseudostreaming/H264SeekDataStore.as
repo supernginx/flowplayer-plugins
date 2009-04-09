@@ -26,7 +26,7 @@ public class H264SeekDataStore extends DefaultSeekDataStore {
     }
 
     override protected function queryParamValue(pos:Number):Number {
-        return _keyFrameTimes[pos] as Number;
+        return _keyFrameTimes[pos] + 0.01;
     }
 }
 
