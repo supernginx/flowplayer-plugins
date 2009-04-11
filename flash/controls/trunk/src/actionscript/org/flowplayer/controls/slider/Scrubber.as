@@ -49,10 +49,6 @@ package org.flowplayer.controls.slider {
             addChild(_scrubber);
         }
 
-
-
-
-
         override public function addEventListener(type:String,listener:Function,useCapture:Boolean = false,priority:int = 0,useWeakReference:Boolean = false):void {
             if (type == DRAG_EVENT) {
                 _scrubber.addEventListener(type, listener, useCapture, priority, useWeakReference);
