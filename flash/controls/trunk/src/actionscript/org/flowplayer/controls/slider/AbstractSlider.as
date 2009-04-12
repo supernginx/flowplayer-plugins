@@ -70,7 +70,7 @@ import org.flowplayer.util.GraphicsUtil;
 
 		public function set enabled(value:Boolean) :void {
 			log.debug("setting enabled to " + value);
-			_dragTimer.addEventListener(TimerEvent.TIMER, onDrag);
+            _dragTimer.addEventListener(TimerEvent.TIMER, onDrag);
 			var func:String = value ? "addEventListener" : "removeEventListener";
 
 			this[func](MouseEvent.MOUSE_UP, onMouseUp);
@@ -82,6 +82,10 @@ import org.flowplayer.util.GraphicsUtil;
 			alpha = value ? 1 : 0.5;
 			_dragger.buttonMode = value;
 		}
+
+        public function get enabled():Boolean {
+            return _dragger.buttonMode;
+        }
 		
 		private function onAddedToStage(event:Event):void {
 			enabled = true;

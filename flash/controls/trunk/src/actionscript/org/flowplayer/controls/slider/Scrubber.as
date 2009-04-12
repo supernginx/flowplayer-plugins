@@ -97,8 +97,12 @@ package org.flowplayer.controls.slider {
             _scrubber.redraw(config);
         }
 
-        public function set enabled(value:Boolean) :void {
+        public function set enabled(value:Boolean):void {
             _scrubber.enabled = value;
+        }
+
+        public function get enabled():Boolean {
+            return _scrubber.enabled;
         }
 
         public function get value():Number {

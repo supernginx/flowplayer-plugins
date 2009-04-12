@@ -7,6 +7,7 @@ Version history:
 Fixes:
 - fixed setting button enabled states in config
 - now fullscreen works with Flash versions older than 9.0.115, in versions that do not support hardware scaling
+- the scrubber is disabled if the clip is not seekable in the first frame: http://flowplayer.org/forum/8/16526 
 
 3.0.3
 -----
