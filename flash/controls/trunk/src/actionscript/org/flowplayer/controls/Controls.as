@@ -109,7 +109,7 @@ import org.flowplayer.model.PlayerEvent;
 			if (_animationTimer && _animationTimer.running) return;
 			setConfigBooleanStates("enabled", enabledWidgets);
 			enableWidgets();
-			enableFullscreenButton(_player.playlist.current);
+            enableFullscreenButton(_player.playlist.current);
 		}
 
 		private function enableWidgets():void {
@@ -239,7 +239,8 @@ import org.flowplayer.model.PlayerEvent;
             if (_scrubber) {
                 _scrubber.playlist = player.playlist;
             }
-            enableFullscreenButton(player.playlist.current);
+//            enableFullscreenButton(player.playlist.current);
+//            enableScrubber(player.playlist.current);
             if (_playButton) {
                 _playButton.down = player.isPlaying();
             }
@@ -470,18 +471,28 @@ import org.flowplayer.model.PlayerEvent;
 			}
 			enableFullscreenButton(event.target as Clip);
 		}
-		
-		private function enableFullscreenButton(clip:Clip):void {
-			if (!_fullScreenButton) return;
-			var enabled:Boolean = clip && (clip.originalWidth > 0 || ! clip.accelerated) && _config.enabled.fullscreen;
-			_fullScreenButton.enabled = enabled;
-			if (enabled) {
-				_fullScreenButton.addEventListener(ButtonEvent.CLICK, toggleFullscreen);
-			} else {
-				_fullScreenButton.removeEventListener(ButtonEvent.CLICK, toggleFullscreen);
-			}
-		}
-		
+        
+        private function enableFullscreenButton(clip:Clip):void {
+            if (!_fullScreenButton) return;
+            var enabled:Boolean = clip && (clip.originalWidth > 0 || ! clip.accelerated) && _config.enabled.fullscreen;
+            _fullScreenButton.enabled = enabled;
+            if (enabled) {
+                _fullScreenButton.addEventListener(ButtonEvent.CLICK, toggleFullscreen);
+            } else {
+                _fullScreenButton.removeEventListener(ButtonEvent.CLICK, toggleFullscreen);
+            }
+        }
+
+        private function enableScrubber(enabled:Boolean):void {
+            if (!_scrubber) return;
+            _scrubber.enabled = enabled;
+            if (enabled) {
+                _scrubber.addEventListener(Scrubber.DRAG_EVENT, onScrubbed);
+            } else {
+                _scrubber.removeEventListener(Scrubber.DRAG_EVENT, onScrubbed);
+            }
+        }
+
 		private function toggleFullscreen(event:ButtonEvent):void  {
 			_player.toggleFullscreen();
 		}
@@ -495,6 +506,11 @@ import org.flowplayer.model.PlayerEvent;
 			log.info("received " + event);
 			if (!_playButton) return;
 			_playButton.down = false;
+            var clip:Clip = event.target as Clip;
+            log.info("clip.seekableOnBegin: " + clip.seekableOnBegin);
+            if (_player.status.time == 0 && ! clip.seekableOnBegin) {
+                enableScrubber(false);
+            }
 		}
 
 		private function onPlayStopped(event:ClipEvent):void {
@@ -508,6 +524,9 @@ import org.flowplayer.model.PlayerEvent;
 			log.info("received " + event);
 			if (!_playButton) return;
 			_playButton.down = true;
+            if (_player.status.time < 3) {
+                enableScrubber(true);
+            }
 		}
 		
 		private function onPlayerFullscreenEvent(event:PlayerEvent):void {
