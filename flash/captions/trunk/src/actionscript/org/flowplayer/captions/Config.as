@@ -10,6 +10,9 @@
  
 package org.flowplayer.captions
 {
+    import org.flowplayer.model.DisplayProperties;
+import org.flowplayer.model.DisplayPropertiesImpl;
+import org.flowplayer.util.Arrange;
 	public class Config {
 		private var _captions:Array = new Array();
 		private var _autoLayout:Boolean = true;
@@ -17,6 +20,8 @@ package org.flowplayer.captions
 		private var _showCaptions:Boolean = true;
 		private var _captionTarget:String;
 		private var _template:String;
+        private static const BUTTON_DEFAULTS:* = { width: 20, height: 15, right: 5, bottom: 30, name: "cc_button" };
+        private var _button:Object = BUTTON_DEFAULTS;
 		
 		public function get captions():Array {
 			return _captions;
@@ -65,7 +70,33 @@ package org.flowplayer.captions
 		public function set showCaptions(showCaptions:Boolean):void {
 			_showCaptions = showCaptions;
 		}
-	}
+
+        public function get button():Object {
+            return _button;
+        }
+
+        public function set button(val:Object):void {
+            fixPositionSettings(val, BUTTON_DEFAULTS);
+            _button = BUTTON_DEFAULTS;
+            for (var prop:String in val) {
+                _button[prop] = val[prop];
+            }
+        }
+
+        private function fixPositionSettings(props:Object, defaults:Object):void {
+            clearOpposite("bottom", "top", props, defaults);
+            clearOpposite("left", "right", props, defaults);
+        }
+
+        private function clearOpposite(prop1:String, prop2:String, props:Object, defaults:Object):void {
+            if (props.hasOwnProperty(prop1) && defaults.hasOwnProperty(prop2)) {
+                delete defaults[prop2];
+            } else if (props.hasOwnProperty(prop2) && defaults.hasOwnProperty(prop1)) {
+                delete defaults[prop1];
+            }
+        }
+
+    }
 }
 
 
