@@ -19,33 +19,24 @@ package org.flowplayer.captions {
     public class CCButton extends AbstractSprite {
         private var _text:TextField;
         private var _hitArea:Sprite;
+        private var _textColor:Number;
 
         public function CCButton(player:Flowplayer) {
             createText(player);
             buttonMode = true;
-            addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
-            addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
+            isDown = true;
         }
-
-        private function onMouseOver(event:MouseEvent):void {
-            this.alpha = 1;
-        }
-
-        private function onMouseOut(event:MouseEvent = null):void {
-            this.alpha = 0.8;
-        }
-
 
         protected override function onResize():void {
             drawBackground();
             _text.x = 2;
             _text.y = 0;
-            onMouseOut();
         }
 
         private function drawBackground():void {
+            graphics.clear(),
             graphics.lineStyle(2, 0x555555);
-            graphics.beginFill(0xeeeeee, 1);
+            graphics.beginFill(0xaaaaaa, 1);
             graphics.drawRoundRect(0, 0, width, height, 6, 6);
             graphics.endFill();
         }
@@ -53,10 +44,16 @@ package org.flowplayer.captions {
         private function createText(player:Flowplayer):void {
             _text = player.createTextField(8, true);
             _text.text = "CC";
-            _text.textColor = 0;
+            _text.textColor = _textColor;
             addChild(_text);
             _text.selectable = false;
             _text.mouseEnabled = false;
         }
+
+        public function set isDown(isDown:Boolean):void {
+            _textColor = isDown ? 0 : 0xff2222;
+            _text.textColor = _textColor;
+        }
+
     }
 }
