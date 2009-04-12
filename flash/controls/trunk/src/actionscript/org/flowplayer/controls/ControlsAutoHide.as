@@ -182,11 +182,11 @@ package org.flowplayer.controls {
 		}
 
 		private function isHardwareScaledFullsreen():Boolean {
-			return isInFullscreen() && _stage.fullScreenSourceRect != null;
+			return isInFullscreen() && _stage.hasOwnProperty("fullScreenSourceRect") && _stage.fullScreenSourceRect != null;
 		}
 		
 		private function getControlBarHiddenTopPosition():Object {
-			if (_stage.displayState == StageDisplayState.FULL_SCREEN) {
+			if (_stage.displayState == StageDisplayState.FULL_SCREEN && _stage.hasOwnProperty("fullScreenSourceRect")) {
 				var rect:Rectangle = _stage.fullScreenSourceRect;
 				if (rect) {
 					return rect.height;

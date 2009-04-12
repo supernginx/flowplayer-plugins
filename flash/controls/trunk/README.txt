@@ -2,7 +2,11 @@ Version history:
 
 3.1
 ---
+- New 'tube" skin and improved skinnability
+- Tooltips
+Fixes:
 - fixed setting button enabled states in config
+- now fullscreen works with Flash versions older than 9.0.115, in versions that do not support hardware scaling
 
 3.0.3
 -----
