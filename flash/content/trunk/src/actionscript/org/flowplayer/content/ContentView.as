@@ -8,8 +8,21 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 package org.flowplayer.content {
-	import org.flowplayer.model.DisplayPluginModel;	import org.flowplayer.view.FlowStyleSheet;	import org.flowplayer.view.Flowplayer;	import org.flowplayer.view.StyleableSprite;		import flash.display.BlendMode;	import flash.display.DisplayObject;	import flash.display.Sprite;	import flash.events.MouseEvent;	import flash.text.AntiAliasType;	import flash.text.TextField;	import flash.text.TextFieldAutoSize;		
-	/**
+    import flash.filters.GlowFilter;
+import org.flowplayer.model.DisplayPluginModel;
+	import org.flowplayer.view.FlowStyleSheet;
+	import org.flowplayer.view.Flowplayer;
+	import org.flowplayer.view.StyleableSprite;
+	
+	import flash.display.BlendMode;
+	import flash.display.DisplayObject;
+	import flash.display.Sprite;
+	import flash.events.MouseEvent;
+	import flash.text.AntiAliasType;
+	import flash.text.TextField;
+	import flash.text.TextFieldAutoSize;		
+
+	/**
 	 * @author api
 	 */
 	internal class ContentView extends StyleableSprite {
@@ -18,7 +31,8 @@ package org.flowplayer.content {
 		private var _textMask:Sprite;
 		private var _closeButton:CloseButton;
 		private var _htmlText:String;
-		private var _player:Flowplayer;		private var _plugin:DisplayPluginModel;
+		private var _player:Flowplayer;
+		private var _plugin:DisplayPluginModel;
 		private var _originalAlpha:Number;
 
 		public function ContentView(plugin:DisplayPluginModel, player:Flowplayer, closeButton:Boolean) {
@@ -29,7 +43,8 @@ package org.flowplayer.content {
 				createCloseButton();
 			}
 		}
-		override protected function onSetStyle(style:FlowStyleSheet):void {
+
+		override protected function onSetStyle(style:FlowStyleSheet):void {
 			log.debug("onSetStyle");
 			createTextField(_text ? _text.htmlText : null);
 		}
@@ -57,7 +72,8 @@ package org.flowplayer.content {
 			log.debug("appended html to " + _text.htmlText);
 			return _htmlText;
 		}
-		public function set closeImage(image:DisplayObject):void {
+
+		public function set closeImage(image:DisplayObject):void {
 			if (_closeButton) {
 				removeChild(_closeButton);
 			}
@@ -76,6 +92,15 @@ package org.flowplayer.content {
 			_text.multiline = true;
 			_text.antiAliasType = AntiAliasType.ADVANCED;
 			_text.condenseWhite = true;
+
+            log.info("style.textDecoration " + style.textDecoration);
+            if (style.textDecoration == "outline") {
+                log.debug("setting textDecoration")
+                var glow:GlowFilter = new GlowFilter(0, .80, 2, 4, 6);
+                var filters:Array = [glow];
+                _text.filters = filters;
+            }
+
 			addChild(_text);
 			if (style) {
 				_text.styleSheet = style.styleSheet;
@@ -92,13 +117,16 @@ package org.flowplayer.content {
 		
 		private function arrangeText():void {
 			if (! (_text && style)) return;
-			var padding:Array = style.padding;			log.debug("arranging text with padding " + padding + " height is " + height);
+			var padding:Array = style.padding;
+			log.debug("arranging text with padding " + padding + " height is " + height);
 			// only reset values if they change, otherwise there will be visual "blinking" of text/images
 			setTextProperty("y", padding[0]);
 			setTextProperty("x", padding[3]);
 			setTextProperty("height", height - padding[0] - padding[2]);
 			setTextProperty("width", width - padding[1] - padding[3]);
-		}				private function setTextProperty(prop:String, value:Number):void {
+		}
+		
+		private function setTextProperty(prop:String, value:Number):void {
 			if (_text[prop] != value) {
 				log.debug("setting text property " + prop + " to value " + value);
 				_text[prop] = value;
@@ -114,7 +142,8 @@ package org.flowplayer.content {
 			this.x = 0;
 			this.y = 0;
 		}
-		override protected function onRedraw():void {
+
+		override protected function onRedraw():void {
 			arrangeText();
 			arrangeCloseButton();
 		}
@@ -137,7 +166,9 @@ package org.flowplayer.content {
 			Content(_plugin.getDisplayObject()).removeListeners();
 			_originalAlpha = _plugin.getDisplayObject().alpha;
 			_player.animationEngine.fadeOut(_plugin.getDisplayObject(), 500, onFadeOut);
-		}				private function onFadeOut():void {
+		}
+		
+		private function onFadeOut():void {
 			log.debug("faded out");
 //
 			// restore original alpha value
@@ -148,7 +179,8 @@ package org.flowplayer.content {
 			
 			Content(_plugin.getDisplayObject()).addListeners();
 		}
-		override public function set alpha(value:Number):void {
+
+		override public function set alpha(value:Number):void {
 			super.alpha = value;
 			if (! _text) return;
 			_text.alpha = value;
