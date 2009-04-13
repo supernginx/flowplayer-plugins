@@ -20,7 +20,7 @@ import org.flowplayer.util.Arrange;
 		private var _showCaptions:Boolean = true;
 		private var _captionTarget:String;
 		private var _template:String;
-        private static const BUTTON_DEFAULTS:* = { width: 20, height: 15, right: 5, bottom: 30, name: "cc_button" };
+        private static const BUTTON_DEFAULTS:Object = { width: 20, height: 15, right: 5, bottom: 35, name: "cc_button", label: 'CC' };
         private var _button:Object = BUTTON_DEFAULTS;
 		
 		public function get captions():Array {
@@ -76,6 +76,10 @@ import org.flowplayer.util.Arrange;
         }
 
         public function set button(val:Object):void {
+            if (! val) {
+                _button = null;
+                return;
+            }
             fixPositionSettings(val, BUTTON_DEFAULTS);
             _button = BUTTON_DEFAULTS;
             for (var prop:String in val) {
