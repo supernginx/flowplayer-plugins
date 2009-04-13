@@ -20,8 +20,10 @@ package org.flowplayer.captions {
         private var _text:TextField;
         private var _hitArea:Sprite;
         private var _textColor:Number;
+        private var _label:String;
 
-        public function CCButton(player:Flowplayer) {
+        public function CCButton(player:Flowplayer, label:String) {
+            _label = label;
             createText(player);
             buttonMode = true;
             isDown = true;
@@ -43,7 +45,7 @@ package org.flowplayer.captions {
 
         private function createText(player:Flowplayer):void {
             _text = player.createTextField(8, true);
-            _text.text = "CC";
+            _text.text = _label;
             _text.textColor = _textColor;
             addChild(_text);
             _text.selectable = false;
