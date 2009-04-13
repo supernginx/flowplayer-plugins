@@ -4,6 +4,8 @@ Version history:
 -----
 Changes:
 - added public get and set functions for accessing the content view style property
+- supports outlining the text with a black outline (using the flash glow filter), this is enabled using
+  textDecoration: 'outline'
 
 3.0.1
 -----
