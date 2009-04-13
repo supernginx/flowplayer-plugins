@@ -86,7 +86,7 @@
             <echo message="compiling with  ${mxmlc-library-path}" />
             <echo message="compiling with  ${mxmlc-define}" />
             
-			<exec executable="${mxmlc_bin}">
+			<exec executable="${mxmlc_bin}" failonerror="true">
 				<arg line="-source-path @{src} ${mxmlc-library-path} ${mxmlc-sources}" />
                 <arg line="${mxmlc-define}" />
 				<arg line="${libs}" />
@@ -113,7 +113,7 @@
                     <condition property="libs" value="" else="-external-library-path @{libs}">
                             <equals arg1="@{libs}" arg2="" />
                     </condition>
-                    <exec executable="${compc_bin}">
+                    <exec executable="${compc_bin}" failonerror="true">
                             <arg line="-source-path @{src}" />
                             <arg line="${libs}" />
                             <arg line="-library-path ${flex3dir}/frameworks/locale/en_US ${flex-libs-path} ${flowplayer_lib}" />
