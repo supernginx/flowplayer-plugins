@@ -39,7 +39,7 @@
 		        url: 'honda_accord',  
 		        provider: 'rtmp',
 		        connectionProvider: 'clustering',
-		        autoPlay: true,
+		        autoPlay: false,
 			    start: 0,
 			    duration: 0,
 			    accelerated: true,
@@ -59,23 +59,21 @@
 		            hosts: [
 		            	{host:'rtmp://cyzy7r959.badhost1.com/flowplayer'},
 		            	{host:'rtmp://cyzy7r959.badhost2.com/flowplayer'},
-		            	{host:'rtmp://cyzy7r959.rtmphost.com/flowplayer'},
 		            	{host:'rtmp://cyzy7r959.rtmphost.com/flowplayer'}
 		            ],
 		            encoding: 0,
-		            connectCount: 2,
 		            connectTimeout: 5000,
-		            failureExpiry: 10000,
+//		            failureExpiry: 10000,
 		            loadBalance: true,
-		            connectCount: 2
+		            connectCount: 4
 		        }
 			
 			}, 
 			log:  {         
 			     
 				     // other levels are: 'info', 'warning', 'error' which will cause less output 
-				     level: 'info' 
-				},
+				     level: 'debug', filter: 'org.flowplayer.cluster.*' 
+				}
 			
 		});
 		</script>
