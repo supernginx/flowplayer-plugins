@@ -34,9 +34,7 @@ package org.flowplayer.bwcheck.servers
 
         public function onBwCheck(obj:Object):Boolean
         {
-            log.debug("onBwCheck");
-            dispatchStatus(obj);
-            return true;
+            return onBWCheck(obj);
         }
 
         public function onBWCheck(obj:Object):Boolean
@@ -48,14 +46,14 @@ package org.flowplayer.bwcheck.servers
 
         public function onBWDone(kbitDown:int, deltaDown:int, deltaTime:int, latency:int):void
 		{
-            log.debug("onBWDone");
+            log.debug("onBWDone, " + info);
 			var obj:Object = new Object();
 			obj.kbitDown = kbitDown;
 			obj.delatDown = deltaDown;
 			obj.deltaTime = deltaTime;
 			obj.latency = latency;
 			dispatchComplete(obj);
-		} 
+		}
 		
 		
 		override public function start():void

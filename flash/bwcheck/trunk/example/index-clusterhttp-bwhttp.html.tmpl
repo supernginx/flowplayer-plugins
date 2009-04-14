@@ -36,10 +36,10 @@
 
 			// configure clip to use "rtmp" plugin for providing video data 
 		    clip: {  
-		        url: 'KimAronson-TwentySeconds73213.flv',  
-		        baseUrl: 'http://blip.tv/file/get/',
-		        provider: 'http',
-		        urlResolvers: ['bwcheck','clustering'],
+		        url: 'skyandice',  
+		        provider: 'rtmp',
+		        urlResolvers: 'bwcheck',
+                connectionProvider: 'clustering',
 		        autoPlay: true,
 			    start: 0,
 			    duration: 0,
@@ -62,7 +62,7 @@
 		            netConnectionUrl: 'http://www.electroteque.org/audio/xspf_player.swf',
 		            defaultBitrate: 300,
 		            bitrates: [
-		            	100,300,500,700
+		            	 150,400,700,1000
 		            ],
 		            //{0} is filename, {1} is bitrate, {2} is extension
 		            urlPattern: '{0}-{1}.{2}',
@@ -71,11 +71,12 @@
 		        },
 		        
 		        clustering: {  
-		            url: '../flowplayer.cluster.swf',  
+		            url: '../flowplayer.cluster.swf',
+                    serverType: 'wowza',
 		            hosts: [
-		            	{host:'http://blippppp.tv1/file/get/'},
-		            	{host:'http://blippppppp.tv2/file/get/'},
-		            	{host:'http://blip.tv/file/get/'}
+		            	{host:'rtmp://zzzzcyzy7r959.rtmphost.com/flowplayer'},
+		            	{host:'rtmp://zzzzzzzzcyzy7r959.rtmphost.com/flowplayer'},
+		            	{host:'rtmp://flowplayer.org/fastplay'}
 		            ],
 		            encoding: 0,
 		            connectCount: 2,
@@ -88,7 +89,7 @@
 			log:  {         
 			     
 				     // other levels are: 'info', 'warning', 'error' which will cause less output 
-				     level: 'debug', filter: 'org.flowplayer.controller.CompositeClipUrlResolver' 
+				     level: 'debug', filter: 'org.flowplayer.cluster.*' 
 				}
 			
 		});
