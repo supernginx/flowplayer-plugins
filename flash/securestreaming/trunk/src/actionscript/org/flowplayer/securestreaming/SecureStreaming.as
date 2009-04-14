@@ -51,9 +51,6 @@ import org.flowplayer.model.Plugin;
          * URL resolving is used for HTTP
          */
         public function resolve(provider:StreamProvider, clip:Clip, successListener:Function):void {
-            if (! _config.timestampUrl) {
-                throw new Error("resolve: timestampUrl not defined in config");
-            }
             _httpResolver.resolve(provider, clip, successListener);
         }
 
