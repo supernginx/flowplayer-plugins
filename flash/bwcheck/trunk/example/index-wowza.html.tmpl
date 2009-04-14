@@ -65,8 +65,14 @@
 		            ],
 		            //{0} is filename, {1} is bitrate, {2} is extension
 //                    fileNameString: '{0}-{1}.{2}'
-                    fileNameString: '{0}.{2}',
-
+                    urlPattern: '{0}.{2}',
+                    rememberBitrate: true,
+                    
+                    hosts: [
+		            	{host:'rtmp://zzzzcyzy7r959.rtmphost.com/flowplayer'},
+		            	{host:'rtmp://zzzzzzzzcyzy7r959.rtmphost.com/flowplayer'},
+		            	{host:'rtmp://flowplayer.org/bwcheck'}
+		            ],
                     onBwDone: function(url, chosenBitrate, bitrate) {
                         console.info("Bandwidth detected " + bitrate + ", mapped to " + chosenBitrate + ", url is " + url);
                     }
@@ -77,7 +83,7 @@
 			log:  {         
 			     
 				     // other levels are: 'info', 'warning', 'error' which will cause less output 
-				     level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.model.PluginEvent, org.flowplayer.model.PluginModelImpl' 
+				     level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.cluster.*' 
 				},
 			
 		});
