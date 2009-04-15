@@ -1,3 +1,13 @@
+/*
+ * This file is part of Flowplayer, http://flowplayer.org
+ *
+ * By: Daniel Rossi, <electroteque@gmail.com>, Anssi Piirainen Flowplayer Oy
+ * Copyright (c) 2009 Electroteque Multimedia, Flowplayer Oy
+ *
+ * Released under the MIT License:
+ * http://www.opensource.org/licenses/mit-license.php
+ */
+
 package org.flowplayer.cluster
 {
     import flash.events.TimerEvent;
@@ -87,7 +97,13 @@ package org.flowplayer.cluster
             if (hasMultipleHosts())
             {
                 _liveHosts = currentHosts;
-
+                if (_liveHosts.length == 0) {
+                    log.error("no live hosts available");
+                    if (_failureListener != null) {
+                        _failureListener();
+                        return null;
+                    }
+                }
                 if (_config.loadBalance)
                 {
                     _hostIndex = getRandomIndex();
@@ -126,8 +142,7 @@ package org.flowplayer.cluster
             return _liveHosts.length > 0;
         }
 
-        public function getRandomIndex():uint
-        {
+        public function getRandomIndex():uint {
             return Math.round(Math.random() * (_liveHosts.length - 1));
         }
 
