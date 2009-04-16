@@ -146,13 +146,16 @@ import org.flowplayer.model.PlayerEvent;
 			var result:Object = super.css(styleProps);
 			var newStyleProps:Object = _config.style.addStyleProps(result);
 			if (! styleProps) return newStyleProps;
-            
-			initTooltipConfig(_config, styleProps);
-			newStyleProps["tooltips"] = _config.tooltips.props;
 			
 			redraw(styleProps);
 			return newStyleProps;
 		}
+
+        [External]
+        public function tooltips(props:Object):void {
+            initTooltipConfig(_config, props);
+            redraw(props);
+        }
 		
 		/**
 		 * @inheritDoc
@@ -197,7 +200,7 @@ import org.flowplayer.model.PlayerEvent;
 		}
 		
 		private function initTooltipConfig(config:Config, styleProps:Object):void {
-			new PropertyBinder(config.tooltips).copyProperties(styleProps["tooltips"]);
+			new PropertyBinder(config.tooltips).copyProperties(styleProps);
 		}
 		
 		private function redraw(styleProps:Object):void {
@@ -259,22 +262,9 @@ import org.flowplayer.model.PlayerEvent;
             log.debug("using skin " + skin);
             SkinClasses.skinClasses = skin.pluginObject as ApplicationDomain;
             log.debug("skin has defaults", SkinClasses.defaults);
-            fixPositionSettings(_pluginModel as DisplayPluginModel, SkinClasses.defaults);
+            Arrange.fixPositionSettings(_pluginModel as DisplayPluginModel, SkinClasses.defaults);
             new PropertyBinder(_pluginModel, "config").copyProperties(SkinClasses.defaults, false);
             _config = createConfig(_pluginModel);
-        }
-
-        private function fixPositionSettings(props:DisplayProperties, defaults:Object):void {
-            clearOpposite("bottom", "top", props, defaults);
-            clearOpposite("left", "right", props, defaults);
-        }
-
-        private function clearOpposite(prop1:String, prop2:String, props:DisplayProperties, defaults:Object):void {
-            if (props.position[prop1].hasValue() && defaults.hasOwnProperty(prop2)) {
-                delete defaults[prop2];
-            } else if (props.position[prop2].hasValue() && defaults.hasOwnProperty(prop1)) {
-                delete defaults[prop1];
-            }
         }
 
 		public function onConfig(model:PluginModel):void {
@@ -290,7 +280,7 @@ import org.flowplayer.model.PlayerEvent;
 			new PropertyBinder(config.visible).copyProperties(plugin.config);
 			new PropertyBinder(config.enabled).copyProperties(plugin.config.enabled);
 			config.addStyleProps(plugin.config);
-			initTooltipConfig(config, plugin.config);
+			initTooltipConfig(config, plugin.config["tooltips"]);
 			return config;
 		}
 		
