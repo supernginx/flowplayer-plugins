@@ -10,7 +10,7 @@
 	<property name="dist-dir" value="dist" />
 	<property name="lib-dir" value="lib" />
 	<property name="flex-libs-path" value="${flex3libsdir}" />
-	<property name="flowplayer-js-version-info" value="3.0.6" />
+	<property name="flowplayer-js-version-info" value="3.1.0" />
 	<property name="src-flowplayer" value="../core" />
 	<property name="plugin-libs" value="" />
 
