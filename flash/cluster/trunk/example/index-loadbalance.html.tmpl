@@ -34,17 +34,19 @@
 		<script>
 		$f("fms", {src:"@PLAYER_SWF@",bgcolor:'#333333'}, {
 
-			// configure clip to use "rtmp" plugin for providing video data 
-		    clip: {  
-		        url: 'honda_accord',  
-		        provider: 'rtmp',
-		        connectionProvider: 'clustering',
-		        autoPlay: false,
-			    start: 0,
-			    duration: 0,
-			    accelerated: true,
-			    bufferLength: 8
-		    }, 
+            playlist: [
+                { url: '1m.jpg', duration: 3 },
+                {
+                    url: 'Extremists.flv',
+                    provider: 'rtmp',
+                    connectionProvider: 'clustering',
+                    autoPlay: true,
+                    start: 0,
+                    duration: 0,
+                    accelerated: true,
+                    bufferLength: 8
+                }
+            ],
 			
 			
 			// streaming plugins are configured under the plugins node 
@@ -59,10 +61,11 @@
 		            hosts: [
 		            	{host:'rtmp://cyzy7r959.badhost1.com/flowplayer'},
 		            	{host:'rtmp://cyzy7r959.badhost2.com/flowplayer'},
-		            	{host:'rtmp://cyzy7r959.rtmphost.com/flowplayer'}
+		            	{host:'rtmp://cyzy7r959.rtmphost.com/flowplayer'},
+                        {host: 'rtmp://flowplayer.org/fastplay'}
 		            ],
 		            encoding: 0,
-		            connectTimeout: 5000,
+		            connectTimeout: 1000,
 //		            failureExpiry: 10000,
 		            loadBalance: true,
 		            connectCount: 4
