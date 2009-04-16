@@ -1,8 +1,9 @@
 Version history:
 
-3.1
----
+3.1.0
+------
 - Subscribing connection establishment for Akamai and Limelight. Enabled by setting subscribe: true in the plugin config.
+- Added objectEncoding config option, needed to connect to FMS2
 
 3.0.2
 -----
