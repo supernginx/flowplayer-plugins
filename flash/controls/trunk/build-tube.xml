@@ -4,7 +4,7 @@
     <property name="basename" value="flowplayer.controls-tube" />
 
     <!-- version number, will be appened to the filename -->
-    <property name="version" value="3.1.0-dev" />
+    <property name="version" value="3.1.0" />
 
     <!-- location of the skin swd, anc swc -->
     <property name="library-path" value="src/flash/tube" />
@@ -19,4 +19,8 @@
     <property name="plugin-binary-versioned" value="${basename}-${version}.swf" />
     <property name="plugin-main-class" value="org/flowplayer/controls/Controls.as" />
     <property name="compiler-define" value="CONFIG::skin,'true'" />
+
+    <target name="release-remote">
+    </target>
+    
 </project>

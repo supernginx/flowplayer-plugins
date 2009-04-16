@@ -1,7 +1,7 @@
 Version history:
 
-3.1
----
+3.1.0
+-----
 - New 'tube" skin and improved skinnability
 - Tooltips
 Fixes:
