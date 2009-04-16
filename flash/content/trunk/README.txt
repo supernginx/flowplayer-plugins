@@ -1,6 +1,6 @@
 Version history:
 
-3.0.2
+3.1.0
 -----
 Changes:
 - added public get and set functions for accessing the content view style property
