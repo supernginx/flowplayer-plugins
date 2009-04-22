@@ -16,8 +16,9 @@ package org.flowplayer.captions.parsers
 	import org.flowplayer.model.Cuepoint;
 	import org.flowplayer.util.Log;
 	import org.flowplayer.view.FlowStyleSheet;
+    import org.flowplayer.view.FlowStyleSheet;
 	
-	public class SRTParser
+	public class SRTParser implements CaptionParser
 	{
 		
 		protected var log:Log = new Log(this);
@@ -35,9 +36,9 @@ package org.flowplayer.captions.parsers
 	    	_styles = style;
 	    }		
  		
-	    public function parse(data:String):Array
+	    public function parse(data:Object):Array
 	    {
-	      	return parseCaptions(data);
+	      	return parseCaptions(data as String);
 	    }
 	     
 	    private function parseRows(item:*, index:int, array:Array):void
@@ -82,5 +83,9 @@ package org.flowplayer.captions.parsers
 			subtitles.forEach(parseRows);
 			return _arr;
 	      }
-	}
+
+        public function get styles():FlowStyleSheet {
+            return _styles;
+        }
+    }
 }

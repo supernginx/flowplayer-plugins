@@ -1,5 +1,9 @@
 Version history:
 
+3.1.1
+-----
+- added a file extension parameter to the loadCaptions external method
+
 3.1.0
 -----
 - added a button to toggle the captions, new config option 'button' can be used to control it

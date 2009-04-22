@@ -15,7 +15,7 @@ package org.flowplayer.captions.parsers
 	import org.flowplayer.util.Log;
 	import org.flowplayer.view.FlowStyleSheet;
 	
-	public class TTXTParser
+	public class TTXTParser implements CaptionParser
 	{
 		private var tt:Namespace = new Namespace("http://www.w3.org/2006/10/ttaf1");
  		private var tts:Namespace = new Namespace("http://www.w3.org/2006/04/ttaf1#styling");
@@ -48,14 +48,14 @@ package org.flowplayer.captions.parsers
  		}
  		
 	      
-	      public function parse(data:XML):Array
-	      {
-	      	log.debug("got data " + data);
-	      	log.debug("body " + data.body);
-	      	log.debug("div " + data.body.div);
-	      	parseStyles(data.head.styling.style);
-	      	bodyStyle = data.body.hasOwnProperty("@style") ? data.body.@style : _styles.rootStyleName;
-	      	return parseCaptions(data.body.div);
+        public function parse(data:Object):Array {
+            var xml:XML = new XML(data);
+	      	log.debug("got data " + xml);
+	      	log.debug("body " + xml.body);
+	      	log.debug("div " + xml.body.div);
+	      	parseStyles(xml.head.styling.style);
+	      	bodyStyle = xml.body.hasOwnProperty("@style") ? xml.body.@style : _styles.rootStyleName;
+	      	return parseCaptions(xml.body.div);
 	      }
 	      
 	      public function get styles():FlowStyleSheet

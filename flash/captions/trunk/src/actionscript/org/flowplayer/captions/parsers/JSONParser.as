@@ -13,7 +13,7 @@ package org.flowplayer.captions.parsers
 	import org.flowplayer.util.Log;
 	import org.flowplayer.view.FlowStyleSheet;
 	
-	public class JSONParser
+	public class JSONParser implements CaptionParser
 	{
 		
 		protected var log:Log = new Log(this);
@@ -36,9 +36,9 @@ package org.flowplayer.captions.parsers
 	    	return _styles;
 	    }
  		
-	    public function parse(data:Array):Array
+	    public function parse(data:Object):Array
 	    {
-	      	return parseCaptions(data);
+	      	return parseCaptions(data as Array);
 	    }
 	     
 	    private function parseRows(item:*, index:int, array:Array):void
@@ -55,7 +55,7 @@ package org.flowplayer.captions.parsers
 	 		 if (item.parameters)
 	 		 {
 	 		 	
-	 		 	for (var param:Object in item.parameters)
+	 		 	for (var param:String in item.parameters)
 	 		 	{
 	 		 		parameters[param] = item.parameters[param];
 	 		 	}	 		 
