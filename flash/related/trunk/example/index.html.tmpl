@@ -1,0 +1,186 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<!-- A minimal Flowplayer setup to get you started -->
+  
+
+	<!-- 
+		include flowplayer JavaScript file that does  
+		Flash embedding and provides the Flowplayer API.
+	-->
+	<script type="text/javascript" src="jquery-1.2.6.min.js"></script>
+	<script type="text/javascript" src="flowplayer-@FLOWPLAYER_JS_VERSION_INFO@.min.js"></script>
+	
+	<!-- some minimal styling, can be removed -->
+	<link rel="stylesheet" type="text/css" href="style.css">
+	
+	<!-- page title -->
+	<title>Captions Plugin with Timed Text</title>
+
+</head><body>
+
+	<div id="page">
+		
+		<h1>Captions Plugin with Timed Text</h1>
+		
+		<p></p>
+
+		<!-- this A tag is where your Flowplayer will be placed. it can be anywhere -->
+		<a  
+			 href=""  
+			 style="display:block;width:400px;height:300px"  
+			 id="captions"> 
+		</a> 
+		
+	
+		<!-- this will install flowplayer inside previous A- tag. -->
+
+		
+		<script>
+		$f("captions", {src:"@PLAYER_SWF@",bgcolor:'#333333'}, {
+
+			playlist: [
+	
+				// 1:st clip
+				{
+					url: 'KimAronson-TwentySeconds73213.flv',
+					//url: 'metacafe',
+					customProperties: {
+						related: 'related.txt'
+						//related: 'http://admin.electrocode.net/related/'
+					}
+				},
+				
+				// 2:nd clip
+				{
+					url: 'skyandice-400', 
+					customProperties: {
+						related: [
+						
+							// 1:st related clip
+							{
+								// normal clip properties
+								url: 'metacafe', 
+								accelerated: 'false',
+								
+								// custom properties for "related videos" the plugin
+								title: 'My descriptive title for the video',
+								thumbnail: '/thumbs/video2.jpg'
+								
+								/*
+									these are "normal" clips and can also have related videos
+						
+									when related videos are not explicitly specified then those
+									related videos are fetched from the URL that is specified 
+									for the plugin
+								*/		
+								
+							},
+							
+							// 2:nd related clip
+							{
+								url: 'metacafe', 
+								scaling: 'orig', 
+								title: 'Another good title for the video',
+								thumbnail: '/thumbs/video3.jpg',
+								
+								// disable related videos for this clip
+								related: null
+							}, 
+							
+							// simple strings are also supported just like in playlist 
+							'metacafe'
+						]
+					}
+				}
+			], 
+			clip: {
+				baseUrl: 'http://blip.tv/file/get/',
+				//provider: 'rtmp',
+				autoPlay: false,
+				onStart: function(clip)  {
+			
+				}
+			}, 
+			
+			log:  {         
+			     
+				     // other levels are: 'info', 'warning', 'error' which will cause less output 
+				     level: 'debug',
+				     filter: 'org.flowplayer.related.*, org.flowplayer.rtmp.*' 
+				},
+			plugins:  {
+				rtmp: {
+					 url: '../flowplayer.rtmp.swf',
+					 netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
+					 objectEncoding: 0
+     				 
+				},
+				related: {
+					url:'@MAIN_PLAYER_SWF@',
+					items: 4,
+					showOnFinish: true,
+					//related: 'http://admin.electrocode.net/related/',
+					related: 'related.txt',
+					image: 'thumbnail',
+					title: 'title',
+					subTitle: null,
+					showUrl: false,
+					bottom: 30,
+					left: 10,
+					height: 75,
+					screen: {
+						left: 0,
+						top: 0,
+						opacity: 0.8,
+						height: 150
+					},
+					onBeforeShow: function() {
+					
+					},
+					
+					onShow: function(loadedClips) { 
+				
+					},
+					
+					onClick: function(relatedClip, index) {  
+				
+					},
+					
+					onBeforeClose: function(selectedClip, index) {
+					
+					}, 
+					
+					onClose: function(selectedClip, index) {
+					
+					}
+				}
+			},
+		
+		
+		});
+		
+		function closerelated(btn)
+     	{
+     		$f().getPlugin("related").close();
+     	}
+     	
+     	function show(btn)
+     	{
+     		$f().getPlugin("related").show();
+     	}
+     	
+     	function openrelated(btn)
+     	{
+     		$f().getPlugin("related").open();
+     	}
+     	
+		//}}}
+		</script>
+		
+		<a href="#" onclick="openrelated();">Open</a> &nbsp; <a href="#" onclick="closerelated();">Close</a> &nbsp; <a href="#" onclick="show();">Show</a>
+		
+		
+	</div>
+	
+	
+</body></html>
