@@ -1,5 +1,10 @@
 Version history:
 
+3.1.1
+-----
+Fixes:
+- Play/pause tooltip was not changed when clicking the button, if mouse was moved out and into the button before clicking.
+
 3.1.0
 -----
 - New 'tube" skin and improved skinnability

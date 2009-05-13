@@ -486,11 +486,11 @@ import org.flowplayer.model.PlayerEvent;
 		private function toggleFullscreen(event:ButtonEvent):void  {
 			_player.toggleFullscreen();
 		}
-
-		private function onMetaData(event:ClipEvent):void {
-			if (!_fullScreenButton) return;
-			enableFullscreenButton(event.target as Clip);
-		}
+//
+//		private function onMetaData(event:ClipEvent):void {
+//			if (!_fullScreenButton) return;
+//			enableFullscreenButton(event.target as Clip);
+//		}
 
 		private function onPlayPaused(event:ClipEvent):void {
 			log.info("received " + event);
@@ -511,10 +511,10 @@ import org.flowplayer.model.PlayerEvent;
 		}
 
 		private function onPlayResumed(event:ClipEvent):void {
-			log.info("received " + event);
+			log.info("received onResume, time " + _player.status.time);
 			if (!_playButton) return;
 			_playButton.down = true;
-            if (_player.status.time < 3) {
+            if (_player.status.time < 0.5) {
                 enableScrubber(true);
             }
 		}
