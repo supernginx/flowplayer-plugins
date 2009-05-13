@@ -1,13 +1,22 @@
-﻿
+
 
 package org.flowplayer.controls {
-	import org.flowplayer.controls.Config;	import org.flowplayer.view.Animation;	import org.flowplayer.view.AnimationEngine;		import flash.display.*;	import flash.events.*;	import flash.filters.*;	import flash.geom.*;	import flash.text.*;	import flash.utils.Timer;		
-	/**
+    import flash.display.*;
+    import flash.events.*;
+    import flash.filters.*;
+    import flash.geom.*;
+    import flash.text.*;
+    import flash.utils.Timer;
+
+    import org.flowplayer.view.Animation;
+    import org.flowplayer.view.AnimationEngine;
+
+    /**
 	 * Tooltip based on a class by Duncan Reid, www.hy-brid.com
 	 */
 	public class DefaultToolTip extends Sprite implements ToolTip {
 		
-		private var _stage:Stage;
+        private var _stage:Stage;
 		private var _parentObject:DisplayObject;
 		private var _tf:TextField;  // title field
 		private var _titleFormat:TextFormat;
@@ -55,7 +64,6 @@ package org.flowplayer.controls {
 			if (_tween) {
 				_tween.cancel();
 				this.alpha = 1;
-				return;
 			}
 			if (this.parent == p.stage) {
 				if (_tf && _tf.htmlText != "" && _tf.htmlText != title) {
@@ -67,7 +75,7 @@ package org.flowplayer.controls {
 			this._stage = p.stage;
 			this._parentObject = p;
 			
-			this.addCopy( title, content );
+			this.addCopy(title, content);
 			this.setOffset();
 			this.drawBG();
 			this.bgGlow();
@@ -141,7 +149,9 @@ package org.flowplayer.controls {
 		}
 
 		private function addCopy( title:String, content:String ):void {
-			if (_tf) return;
+			if (_tf) {
+                removeChild(_tf);
+            }
 			var titleIsDevice:Boolean = this.isDeviceFont(  _titleFormat );
 			
 			this._tf = this.createField( titleIsDevice ); 
