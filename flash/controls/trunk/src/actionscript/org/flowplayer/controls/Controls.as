@@ -76,6 +76,8 @@ import org.flowplayer.model.PlayerEvent;
 		private var _player:Flowplayer;
 		private var _pluginModel:PluginModel;
 		private var _initialized:Boolean;
+        private var _currentControlsConfig:Object;
+        private var _originalConfig:Object;
 
 		public function Controls() {
 			log.debug("creating ControlBar");
@@ -94,11 +96,15 @@ import org.flowplayer.model.PlayerEvent;
 			log.debug("enable()");
 			if (_animationTimer && _animationTimer.running) return;
 			setConfigBooleanStates("visible", visibleWidgets);
-			immediatePositioning = false;
-			createChildren();
-			onResize();
-			immediatePositioning = true;
+            recreateWidgets();
 		}
+
+        private function recreateWidgets():void {
+            immediatePositioning = false;
+            createChildren();
+            onResize();
+            immediatePositioning = true;
+        }
 
 		/**
 		 * Enables and disables buttons and other widgets.
@@ -126,6 +132,7 @@ import org.flowplayer.model.PlayerEvent;
 		}
 
 		private function setConfigBooleanStates(propertyName:String, values:Object):void {
+            log.debug("setConfigBooleanStates");
 			if (values.hasOwnProperty("all")) {
 				_config[propertyName].reset();
 			}
@@ -203,8 +210,10 @@ import org.flowplayer.model.PlayerEvent;
 			new PropertyBinder(config.tooltips).copyProperties(styleProps);
 		}
 		
-		private function redraw(styleProps:Object):void {
-			_config.addStyleProps(styleProps);
+		private function redraw(styleProps:Object = null):void {
+            if (styleProps) {
+                _config.addStyleProps(styleProps);
+            }
 			if (_scrubber) {
 				_scrubber.redraw(_config);
 			}
@@ -264,24 +273,32 @@ import org.flowplayer.model.PlayerEvent;
             log.debug("skin has defaults", SkinClasses.defaults);
             Arrange.fixPositionSettings(_pluginModel as DisplayPluginModel, SkinClasses.defaults);
             new PropertyBinder(_pluginModel, "config").copyProperties(SkinClasses.defaults, false);
-            _config = createConfig(_pluginModel);
+            _config = createConfig(_pluginModel.config);
         }
 
 		public function onConfig(model:PluginModel):void {
 			log.info("received my plugin config ", model.config);
 			_pluginModel = model;
+            storeOriginalConfig(model);
 			log.debug("-");
-			_config = createConfig(model);
+			_config = createConfig(model.config);
 			log.debug("config created");
 		}
+
+        private function storeOriginalConfig(model:PluginModel):void {
+            _originalConfig = new Object();
+            for (var prop:String in model.config) {
+                _originalConfig[prop] = model.config[prop];
+            }
+        }
 		
-		private function createConfig(plugin:PluginModel):Config {
-			var config:Config = new PropertyBinder(new Config()).copyProperties(plugin.config) as Config;
-			new PropertyBinder(config.visible).copyProperties(plugin.config);
-			new PropertyBinder(config.enabled).copyProperties(plugin.config.enabled);
-			config.addStyleProps(plugin.config);
-			initTooltipConfig(config, plugin.config["tooltips"]);
-			return config;
+		private function createConfig(config:Object):Config {
+			var result:Config = new PropertyBinder(new Config()).copyProperties(config) as Config;
+			new PropertyBinder(result.visible).copyProperties(config);
+			new PropertyBinder(result.enabled).copyProperties(config.enabled);
+			result.addStyleProps(config);
+			initTooltipConfig(result, config["tooltips"]);
+			return result;
 		}
 		
 		public function set floating(float:Boolean):void {
@@ -429,7 +446,8 @@ import org.flowplayer.model.PlayerEvent;
 
 		private function addListeners(playlist:Playlist):void {
 			playlist.onConnect(onPlayStarted);
-			playlist.onBeforeBegin(onPlayStarted);
+            playlist.onBeforeBegin(onPlayStarted);
+            playlist.onBegin(onPlayBegin);
 			playlist.onMetaData(onPlayStarted);
 			playlist.onPause(onPlayPaused);
 			playlist.onResume(onPlayResumed);
@@ -453,6 +471,42 @@ import org.flowplayer.model.PlayerEvent;
 			if (! _muteVolumeButton) return;
 			_muteVolumeButton.down = event.eventType == PlayerEventType.MUTE;
 		}
+
+        private function onPlayBegin(event:ClipEvent):void {
+            log.debug("onPlayBegin(): received " + event);
+            var clip:Clip = event.target as Clip;
+            handleClipConfig(clip);
+        }
+
+        private function handleClipConfig(clip:Clip):void {
+            var controlsConfig:Object = clip.getCustomProperty("controls");
+            if (controlsConfig) {
+                if (controlsConfig == _currentControlsConfig) {
+                    return;
+                }
+                log.debug("onPlayBegin(): clip has controls configuration, reconfiguring");
+                reconfigure(controlsConfig);
+            } else if (_currentControlsConfig) {
+                log.debug("onPlayBegin(): reverting to original configuration");
+                _config = createConfig(_originalConfig);
+                rootStyle = _config.style.bgStyle;
+                recreateWidgets();
+                enableWidgets();
+                redraw();
+            }
+        }
+
+        private function reconfigure(controlsConfig:Object):void {
+            _currentControlsConfig = controlsConfig;
+            widgets(controlsConfig);
+            if (controlsConfig.hasOwnProperty("tooltips")) {
+                initTooltipConfig(_config, controlsConfig["tooltips"]);
+            }
+            css(controlsConfig);
+            if (controlsConfig.hasOwnProperty("enabled")) {
+                enable(controlsConfig["enabled"]);
+            }
+        }
 
 		private function onPlayStarted(event:ClipEvent):void {
 			log.debug("received " + event);
@@ -508,6 +562,11 @@ import org.flowplayer.model.PlayerEvent;
 			if (!_playButton) return;
 			log.debug("setting playButton to up state");
 			_playButton.down = false;
+
+            var clip:Clip = event.target as Clip;
+            if (clip.isMidStream) {
+                handleClipConfig(clip.parent);                
+            }
 		}
 
 		private function onPlayResumed(event:ClipEvent):void {
