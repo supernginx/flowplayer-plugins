@@ -2,6 +2,8 @@ Version history:
 
 3.1.1
 -----
+- Possibility to have controlbar configurations in clips
+- A live stream can have a duration and after that the duration is shown in the controlbar
 Fixes:
 - Play/pause tooltip was not changed when clicking the button, if mouse was moved out and into the button before clicking.
 
