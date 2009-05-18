@@ -17,6 +17,7 @@
 
 
     <target name="zip" depends="prepare, build">
+        <echo message="zipping controls" />
         <zip destfile="${dist-dir}/${basename}-${version}.zip">
             <zipfileset prefix="${basename}" dir=".">
                 <include name="LICENSE.txt" />

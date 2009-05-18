@@ -410,7 +410,7 @@ import org.flowplayer.model.PlayerEvent;
 			var status:Status = getPlayerStatus();
 			if (! status) return;
 			var duration:Number = status.clip ? status.clip.duration : 0;
-//			log.debug("duration " + duration + ", bufferStart " + status.bufferStart + ", bufferEnd " + status.bufferEnd + ", clip " + status.clip);
+			log.debug("duration " + duration + ", bufferStart " + status.bufferStart + ", bufferEnd " + status.bufferEnd + ", clip " + status.clip);
 			if (_scrubber) {
 				if (duration > 0) { 
 					_scrubber.value = (status.time / duration) * 100;
@@ -428,7 +428,7 @@ import org.flowplayer.model.PlayerEvent;
 				}
 			}
 			if (_timeView) {
-				_timeView.duration = status.clip.live ? -1 : duration;
+				_timeView.duration = status.clip.live && duration == 0 ? -1 : duration;
 				_timeView.time = status.time;
 			}
 		}
