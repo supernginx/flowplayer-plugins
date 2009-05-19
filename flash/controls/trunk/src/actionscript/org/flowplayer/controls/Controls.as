@@ -112,7 +112,7 @@ import org.flowplayer.model.PlayerEvent;
 		[External]
 		 public function enable(enabledWidgets:Object):void {
 			log.debug("enable()");
-			if (_animationTimer && _animationTimer.running) return;
+//			if (_animationTimer && _animationTimer.running) return;
 			setConfigBooleanStates("enabled", enabledWidgets);
 			enableWidgets();
             enableFullscreenButton(_player.playlist.current);
@@ -410,7 +410,7 @@ import org.flowplayer.model.PlayerEvent;
 			var status:Status = getPlayerStatus();
 			if (! status) return;
 			var duration:Number = status.clip ? status.clip.duration : 0;
-			log.debug("duration " + duration + ", bufferStart " + status.bufferStart + ", bufferEnd " + status.bufferEnd + ", clip " + status.clip);
+//			log.debug("duration " + duration + ", bufferStart " + status.bufferStart + ", bufferEnd " + status.bufferEnd + ", clip " + status.clip);
 			if (_scrubber) {
 				if (duration > 0) { 
 					_scrubber.value = (status.time / duration) * 100;
@@ -559,14 +559,15 @@ import org.flowplayer.model.PlayerEvent;
 
 		private function onPlayStopped(event:ClipEvent):void {
 			log.debug("received " + event);
-			if (!_playButton) return;
-			log.debug("setting playButton to up state");
-			_playButton.down = false;
 
             var clip:Clip = event.target as Clip;
             if (clip.isMidStream) {
-                handleClipConfig(clip.parent);                
+                handleClipConfig(clip.parent);
             }
+            
+            if (!_playButton) return;
+            log.debug("setting playButton to up state");
+            _playButton.down = false;
 		}
 
 		private function onPlayResumed(event:ClipEvent):void {
