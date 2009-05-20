@@ -561,7 +561,7 @@ import org.flowplayer.model.PlayerEvent;
 			log.debug("received " + event);
 
             var clip:Clip = event.target as Clip;
-            if (clip.isMidStream) {
+            if (clip.isMidroll) {
                 handleClipConfig(clip.parent);
             }
             
