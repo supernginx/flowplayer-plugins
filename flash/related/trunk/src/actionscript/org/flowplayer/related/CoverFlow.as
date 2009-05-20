@@ -67,7 +67,7 @@ package org.flowplayer.related {
 			if (_config.showReflection) surfaceHeight = -_imageHeight; 
 			//renderer.clipping = new FrustumClipping(FrustumClipping.BOTTOM)
 			viewport.buttonMode = true;
-
+		
 			addEventListener(Event.ENTER_FRAME, loop);
 			
     		//loadNextImage();
@@ -131,6 +131,8 @@ package org.flowplayer.related {
 			var plane:Plane = Plane(event.target);
 			viewport.containerSprite.buttonMode = true;
 			TweenMax.to(plane, TIME, {z:Z_FOCUS, rotationY:0});
+			
+			_config.mouseOverListener(plane.extra.planeIndex);
 		}
 		
 		private function onOut(event:InteractiveScene3DEvent):void
@@ -138,11 +140,14 @@ package org.flowplayer.related {
 			var plane:Plane = Plane(event.target);
 			TweenMax.to(plane, TIME, {z:0, rotationY:0});
 			viewport.containerSprite.buttonMode = false;
+			_config.mouseOutListener();
 		}
 		
 		private function onClick(event:InteractiveScene3DEvent):void
 		{
 			var plane:Plane = Plane(event.target);
+			
+			_config.mouseClickListener(plane.extra.planeIndex);
 
 		}
 		

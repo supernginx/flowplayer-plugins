@@ -115,6 +115,26 @@
 					 objectEncoding: 0
      				 
 				},
+				content: {
+					url:'../flowplayer.content.swf',
+					bottom: 20,
+					left: 0,
+					width: '80%',
+					height:40,
+					backgroundColor: 'transparent',
+					backgroundGradient: 'none',
+					border: 0,
+					style: { 
+					    'body': { 
+						fontSize: '14', 
+						fontWeight: 'bold',
+						fontFamily: 'Arial',
+						textAlign: 'left',
+								color: '#ffffff',
+								//backgroundColor:'#000000'
+					    } 
+				    } 
+				},
 				related: {
 					url:'@MAIN_PLAYER_SWF@',
 					items: 4,
@@ -125,9 +145,13 @@
 					title: 'title',
 					subTitle: null,
 					showUrl: false,
-					bottom: 30,
-					left: 10,
-					height: 150,
+					bottom: 70,
+					titleTarget: 'content',
+					relfectionHeight: 50,
+					showRelfection: true,
+					left: 0,
+					thumbHeight: 100,
+					height: 180,
 					screen: {
 						left: 0,
 						top: 0,

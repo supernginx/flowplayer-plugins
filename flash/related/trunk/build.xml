@@ -2,7 +2,7 @@
 
 	<property name="devkit-dir" value="../flowplayer.devkit" />
 	
-	<property name="plugin-libs" value="lib/Papervision3D_2.0.883.swc lib/goasap.swc lib/TweenMax.swc" />
+	<property name="plugin-libs" value="lib/Papervision3D_2.0.883.swc lib/TweenMax.swc" />
 	<property file="${devkit-dir}/plugin-build.properties" />
 	<import file="${devkit-dir}/plugin-build.xml"/>
 	<property name="flowplayer_lib" value="${devkit-dir}/flowplayer.swc" />
