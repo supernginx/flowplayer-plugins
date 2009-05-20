@@ -56,9 +56,12 @@ package org.flowplayer.related
 			all display properties are supported (provide good defaults)
 		*/
 			
-		private var _bottom:int = 10;
-		private var _left:int = 10;
-		private var _height:int = 100;
+		//private var _bottom:int = 10;
+		//private var _left:int = 0;
+		private var _thumbHeight:int = 100;
+		private var _relfectionSpacing:int = 5;
+		private var _horizontalSpacing:int = 11;
+		private var _showReflection:Boolean = true;
 		
 		
 		public function get items():int {
@@ -125,30 +128,38 @@ package org.flowplayer.related
 			_screen = screen;
 		}
 		
-		public function get bottom():int {
-			return _bottom;
+	
+		public function get thumbHeight():int {
+			return _thumbHeight;
 		}
 		
-		public function set bottom(bottom:int):void {
-			_bottom = bottom;
+		public function set thumbHeight(height:int):void {
+			_thumbHeight = height;
 		}
 		
-		public function get left():int {
-			return _left;
+		public function get relfectionSpacing():int {
+			return _relfectionSpacing;
 		}
 		
-		public function set left(left:int):void {
-			_left = left;
+		public function set relfectionSpacing(value:int):void {
+			_relfectionSpacing = value;
 		}
 		
-		public function get height():int {
-			return _height;
+		public function get horizontalSpacing():int {
+			return _horizontalSpacing;
 		}
 		
-		public function set height(height:int):void {
-			_height = height;
+		public function set horizontalSpacing(value:int):void {
+			_horizontalSpacing = value;
 		}
 		
+		public function get showReflection():Boolean {
+			return _showReflection;
+		}
+		
+		public function set showReflection(showReflection:Boolean):void {
+			_showReflection = showReflection;
+		}
 		
 		
 	}
