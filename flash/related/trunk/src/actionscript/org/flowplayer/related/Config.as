@@ -63,6 +63,8 @@ package org.flowplayer.related
 		private var _horizontalSpacing:int = 11;
 		private var _showReflection:Boolean = true;
 		
+		// name of a title property
+		private var _titleTarget:String;
 		
 		public function get items():int {
 			return _items;
@@ -94,6 +96,14 @@ package org.flowplayer.related
 		
 		public function set image(image:String):void {
 			_image = image;
+		}
+		
+		public function get titleTarget():String {
+			return _titleTarget;
+		}
+		
+		public function set titleTarget(target:String):void {
+			_titleTarget = target;
 		}
 		
 		public function get title():String {
