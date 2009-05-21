@@ -94,6 +94,16 @@ package org.flowplayer.related {
 			
     	}
     	
+    	public function clear():void
+    	{
+    		_currentIndex = 0;
+
+    		
+    	//	while(scene.numChildren > 0) scene.removeChildAt(scene.numChildren-1);
+    //		while(_container.numChildren > 0) _container.removeChildAt(_container.numChildren-1);
+			
+			scene.removeChild(_container);
+    	}
 		
 		private function loop(event:Event):void
         {			
