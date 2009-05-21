@@ -21,10 +21,8 @@ package org.flowplayer.related {
 	import 	org.papervision3d.core.clipping.FrustumClipping;
 
 	import flash.geom.Matrix;
-	import flash.filters.BlurFilter;
 	import flash.display.GradientType;
 	import flash.display.Shape;
-	import flash.geom.ColorTransform;
 	 import flash.display.Bitmap;
 	 import flash.display.BitmapData;
 	
@@ -48,29 +46,52 @@ package org.flowplayer.related {
 		private static const ROTATION_Y:Number = 0;
 
 		
-		
-		
-	
-    	//public function CoverFlow(coverFlowData:Array, imageWidth:Number, imageHeight:Number, player:Flowplayer, config:*):void
     	public function CoverFlow(config:Object):void
     	{
-    		
-    		//_coverFlowData = config.coverFlowData;
     		_imageWidth = config.imageWidth;
     		_imageHeight = config.imageHeight;
-
+			setReflectionColor(1, 1, 1);
     		_config = config;
-			//_loader = _player.createLoader();
 			viewportReflection.alpha = .8;
 			viewport.interactive = true;
 			camera.z = -800;
 			if (_config.showReflection) surfaceHeight = -_imageHeight; 
 			//renderer.clipping = new FrustumClipping(FrustumClipping.BOTTOM)
 			viewport.buttonMode = true;
-		
-			addEventListener(Event.ENTER_FRAME, loop);
 			
+	
+			
+			addEventListener(Event.ENTER_FRAME, loop);
+			addEventListener(Event.ADDED_TO_STAGE, setGradient);
     		//loadNextImage();
+    	}
+    	
+
+    	
+    	private function setGradient(e:Event):void
+    	{
+    		
+    		
+			// Fade				
+			var holder:Shape = new Shape();
+			var gradientMatrix:Matrix = new Matrix();
+			
+			gradientMatrix.createGradientBox(stage.width, stage.height, Math.PI/2 , 0 , 0);
+			
+			holder.graphics.beginGradientFill( GradientType.LINEAR, [0x000000, 0x000000], [0, 1], [0x00, 0x7E], gradientMatrix);
+			holder.graphics.drawRect(0, 0, stage.width, stage.height);
+			holder.graphics.endFill();
+			holder.cacheAsBitmap = true;
+			
+			viewportReflection.cacheAsBitmap = true;
+			viewportReflection.addChild(holder);
+			holder.x = 0;
+			holder.y = Math.floor(_imageHeight * _config.maskRatio);
+			
+			
+
+			viewportReflection.mask = holder;
+			
     	}
     	
 		
