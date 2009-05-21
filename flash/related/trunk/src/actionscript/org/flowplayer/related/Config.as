@@ -62,6 +62,7 @@ package org.flowplayer.related
 		private var _relfectionSpacing:int = 5;
 		private var _horizontalSpacing:int = 11;
 		private var _showReflection:Boolean = true;
+		private var _maskRatio:Number = 0.9;
 		
 		// name of a title property
 		private var _titleTarget:String;
@@ -171,6 +172,13 @@ package org.flowplayer.related
 			_showReflection = showReflection;
 		}
 		
+		public function set maskRatio(value:Number):void {
+			_maskRatio = value;
+		}
+		
+		public function get maskRatio():Number {
+			return _maskRatio;
+		}
 		
 	}
 }
