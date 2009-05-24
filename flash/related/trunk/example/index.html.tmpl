@@ -53,6 +53,7 @@
 				// 2:nd clip
 				{
 					url: 'skyandice-400', 
+					provider: 'rtmp',
 					customProperties: {
 						related: [
 						
@@ -60,6 +61,7 @@
 							{
 								// normal clip properties
 								url: 'metacafe', 
+								provider: 'rtmp',
 								accelerated: 'false',
 								
 								// custom properties for "related videos" the plugin
@@ -79,16 +81,14 @@
 							// 2:nd related clip
 							{
 								url: 'metacafe', 
+								provider: 'rtmp',
 								scaling: 'orig', 
 								title: 'Another good title for the video',
 								thumbnail: '/thumbs/video3.jpg',
 								
 								// disable related videos for this clip
 								related: null
-							}, 
-							
-							// simple strings are also supported just like in playlist 
-							'metacafe'
+							}
 						]
 					}
 				}
@@ -115,6 +115,7 @@
 					 objectEncoding: 0
      				 
 				},
+				/*
 				content: {
 					url:'../flowplayer.content.swf',
 					bottom: 20,
@@ -134,7 +135,7 @@
 								//backgroundColor:'#000000'
 					    } 
 				    } 
-				},
+				},*/
 				related: {
 					url:'@MAIN_PLAYER_SWF@',
 					items: 4,
@@ -145,8 +146,7 @@
 					title: 'title',
 					subTitle: null,
 					showUrl: false,
-					bottom: 70,
-					titleTarget: 'content',
+					bottom: 80,
 					relfectionSapcing: 5,
 					horizontalSpacing: 11,
 					maskRatio: 0.9,
@@ -154,13 +154,26 @@
 					
 					left: 0,
 					thumbHeight: 100,
-					height: 180,
+					height: 140,
 					screen: {
 						left: 0,
 						top: 0,
 						opacity: 0.8,
-						height: 150
+						height: 200,
+						width: 267
 					},
+					style: { 
+					    'body': { 
+						fontSize: '14', 
+						fontWeight: 'bold',
+						fontFamily: 'Arial',
+						left: 0,
+						bottom: 0,
+						textAlign: 'left',
+								color: '#ffffff',
+								//backgroundColor:'#000000'
+					    } 
+				    }, 
 					onBeforeShow: function() {
 					
 					},
