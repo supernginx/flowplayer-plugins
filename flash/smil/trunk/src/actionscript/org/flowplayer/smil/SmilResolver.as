@@ -95,7 +95,7 @@ package org.flowplayer.smil{
             log.debug("parsing SMIL file " + smilFile);
             var smil:XML = new XML(smilFile);
             clip.setCustomProperty("netConnectionUrl", smil.children()[0].children()[0].@base.toString());
-            clip.url = smil.children()[1].children()[0].@src.toString();
+            clip.resolvedUrl = smil.children()[1].children()[0].@src.toString();
         }
 
         private function _onConnectionStatus(event:NetStatusEvent):void {
