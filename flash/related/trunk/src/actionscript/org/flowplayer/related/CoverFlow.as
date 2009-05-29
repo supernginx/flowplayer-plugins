@@ -12,7 +12,7 @@ package org.flowplayer.related {
 
 	import org.papervision3d.events.InteractiveScene3DEvent;
 	import org.papervision3d.materials.MovieMaterial;
-	import org.papervision3d.materials.BitmapMaterial;
+	import org.papervision3d.materials.BitmapFileMaterial;
 
 	import org.papervision3d.objects.DisplayObject3D;
 	import org.papervision3d.objects.primitives.Plane;
@@ -63,7 +63,7 @@ package org.flowplayer.related {
 			
 			addEventListener(Event.ENTER_FRAME, loop);
 			addEventListener(Event.ADDED_TO_STAGE, setGradient);
-    		//loadNextImage();
+
     	}
     	
 
@@ -97,11 +97,8 @@ package org.flowplayer.related {
     	public function clear():void
     	{
     		_currentIndex = 0;
+    		_coverFlowData = null;
 
-    		
-    	//	while(scene.numChildren > 0) scene.removeChildAt(scene.numChildren-1);
-    //		while(_container.numChildren > 0) _container.removeChildAt(_container.numChildren-1);
-			
 			scene.removeChild(_container);
     	}
 		
@@ -112,16 +109,47 @@ package org.flowplayer.related {
 			
         }
 		
-		/*
-    	private function loadNextImage():void {
-
-			var imageUrl:String = _coverFlowData[_currentIndex].customProperties.thumbnail;
+		
+		public function set data(data:Array):void
+		{
+			_coverFlowData = data;
 			
-			log.error("Loading image " + imageUrl);
-			
-			_loader.load(imageUrl, onImageLoadComplete);
+			loadImages();
 		}
-		*/
+		
+		private function loadImages():void
+		{
+			for (var i:int = 0; i < _coverFlowData.length; i++)
+        	{
+        		_currentIndex = i;
+        		
+        		var material:BitmapFileMaterial = new BitmapFileMaterial(_coverFlowData[_currentIndex]);
+        		material.smooth= true;
+				material.doubleSided = true;
+				material.interactive = true;
+	
+				var plane:Plane = new Plane( material, _imageWidth, _imageHeight, 4, 4);
+
+				_container.addChild(plane);
+				
+				var xDist:Number = stage.width-(_currentIndex * (_imageWidth +  _config.horizontalSpacing));
+	
+        		TweenMax.to(plane, 1, {x:xDist});
+				plane.y = _config.relfectionSpacing;
+				plane.z = 0;
+				plane.extra = {planeIndex : _currentIndex, height:  _imageHeight};
+				
+				scene.addChild(_container);
+				
+				planes.push(plane);
+				plane.addEventListener(InteractiveScene3DEvent.OBJECT_OVER, onOver);	
+				plane.addEventListener(InteractiveScene3DEvent.OBJECT_OUT, onOut);						
+				//plane.addEventListener(InteractiveScene3DEvent.OBJECT_MOVE, onMove);
+
+        	}
+        	
+        	startRendering();
+		}
 		
 		public function addImage(image:DisplayObject):void
 		{
@@ -161,7 +189,7 @@ package org.flowplayer.related {
 		{
 			var plane:Plane = Plane(event.target);
 			viewport.containerSprite.buttonMode = true;
-			TweenMax.to(plane, TIME, {z:Z_FOCUS, rotationY:0});
+			//TweenMax.to(plane, TIME, {z:Z_FOCUS, rotationY:0});
 			
 			_config.mouseOverListener(plane.extra.planeIndex);
 		}
@@ -169,7 +197,7 @@ package org.flowplayer.related {
 		private function onOut(event:InteractiveScene3DEvent):void
 		{
 			var plane:Plane = Plane(event.target);
-			TweenMax.to(plane, TIME, {z:0, rotationY:0});
+			//TweenMax.to(plane, TIME, {z:0, rotationY:0});
 			viewport.containerSprite.buttonMode = false;
 			_config.mouseOutListener();
 		}
