@@ -96,12 +96,9 @@ package org.flowplayer.bwcheck.servers
 		override public function start():void
 		{
 			log.debug("requesting reference file " + _url);
-            request = new URLRequest(_url);
-			var noCacheHeader:URLRequestHeader = new URLRequestHeader('pragma', 'no-cache');
-			request.requestHeaders.push(noCacheHeader);
 			
 			this._startTime = getTimer();
-			loader.load(request);
+			loader.load(new URLRequest(_url));
 		}
 		
 		protected function onResult(obj:Object):void
