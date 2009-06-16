@@ -6,7 +6,10 @@
 	<property file="${devkit-dir}/plugin-build.properties" />
 	<import file="${devkit-dir}/plugin-build.xml"/>
 	<property name="flowplayer_lib" value="${devkit-dir}/flowplayer.swc" />
+	<property name="library-path" value="src/flash"/>
+
 	<property name="plugin-runtime-lib-swc1" value="lib/as3corelib.swc" />
+	<!--<property name="plugin-runtime-lib-swc2" value="lib/goasap.swc" />-->
 	
 
 	

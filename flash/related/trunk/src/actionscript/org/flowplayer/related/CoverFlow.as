@@ -1,30 +1,28 @@
 package org.flowplayer.related {
 	
-	import flash.display.DisplayObject;
+	import com.awen.Callback;
+	import com.hydrotik.go.HydroTween;
+	
+	import flash.display.Bitmap;
+	import flash.display.GradientType;
+	import flash.display.Loader;
+	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.events.Event;
-	import flash.events.MouseEvent;
-	
-	import gs.TweenMax;
-	
+	import flash.geom.Matrix;
+	import flash.geom.Rectangle;
+	import flash.net.URLRequest;
+	import flash.system.LoaderContext;
 	
 	import org.flowplayer.util.Log;
-
+	import org.papervision3d.core.effects.view.ReflectionView;
 	import org.papervision3d.events.InteractiveScene3DEvent;
+	import org.papervision3d.materials.BitmapMaterial;
 	import org.papervision3d.materials.MovieMaterial;
-	import org.papervision3d.materials.BitmapFileMaterial;
-
 	import org.papervision3d.objects.DisplayObject3D;
 	import org.papervision3d.objects.primitives.Plane;
-	import org.papervision3d.view.BasicView;
-	import org.papervision3d.core.effects.view.ReflectionView;
-	import 	org.papervision3d.core.clipping.FrustumClipping;
-
-	import flash.geom.Matrix;
-	import flash.display.GradientType;
-	import flash.display.Shape;
-	 import flash.display.Bitmap;
-	 import flash.display.BitmapData;
+	
+	import org.flowplayer.related.assets.PreloadAnimation;
 	
 	public class CoverFlow extends ReflectionView
     {
@@ -37,13 +35,13 @@ package org.flowplayer.related {
 		private var planes:Array = [];
 		private var _config:Object;    	
     	private var _container:DisplayObject3D = new DisplayObject3D();
-
+    	
+    	//[Embed(source="../../../../flash/preloader.swf", symbol="org.flowplayer.view.BufferAnimation")]
+        //private var PreloadAnimation:Class;
+		private var preloadAnimation:Sprite;
 		
-		private static const SPACING:Number = 100;
-		private static const NUMBER_OF_PLANES:int = 10;
-		private static const TIME:Number = .5;
+		
 		private static const Z_FOCUS:Number = -100;
-		private static const ROTATION_Y:Number = 0;
 
 		
     	public function CoverFlow(config:Object):void
@@ -104,7 +102,7 @@ package org.flowplayer.related {
 		
 		private function loop(event:Event):void
         {			
-			TweenMax.to(_container, TIME, {x:-viewport.containerSprite.mouseX, ease: 'Expo.easeIn'});
+			HydroTween.go(_container, {x: -viewport.containerSprite.mouseX} , 5);
 			this.singleRender();
 			
         }
@@ -123,18 +121,31 @@ package org.flowplayer.related {
         	{
         		_currentIndex = i;
         		
-        		var material:BitmapFileMaterial = new BitmapFileMaterial(_coverFlowData[_currentIndex]);
-        		material.smooth= true;
-				material.doubleSided = true;
-				material.interactive = true;
+        		var preloadAnimation:Sprite = new PreloadAnimation() as Sprite;
+ 				preloadAnimation.width = 20;
+ 				preloadAnimation.height = 20;
+ 				
+ 				var mmaterial:MovieMaterial = new MovieMaterial(preloadAnimation,true,true);
+				mmaterial.allowAutoResize = false;
+				mmaterial.interactive = true;
+				mmaterial.interactive = true ;
+				mmaterial.oneSide = false;
+				mmaterial.smooth = true;
+				mmaterial.rect = new Rectangle( 0, 0, 20,20);
+				
+        		
+        		//var material:BitmapFileMaterial = new BitmapFileMaterial(_coverFlowData[_currentIndex]);
+        		//material.smooth= true;
+				//material.doubleSided = true;
+				//material.interactive = true;
 	
-				var plane:Plane = new Plane( material, _imageWidth, _imageHeight, 4, 4);
-
+				var plane:Plane = new Plane( mmaterial, _imageWidth, _imageHeight, 1, 1);
+				plane.scale = 0.5;
 				_container.addChild(plane);
 				
 				var xDist:Number = stage.width-(_currentIndex * (_imageWidth +  _config.horizontalSpacing));
 	
-        		TweenMax.to(plane, 1, {x:xDist});
+        		HydroTween.go(plane, {x: xDist} , 1);
 				plane.y = _config.relfectionSpacing;
 				plane.z = 0;
 				plane.extra = {planeIndex : _currentIndex, height:  _imageHeight};
@@ -143,14 +154,43 @@ package org.flowplayer.related {
 				
 				planes.push(plane);
 				plane.addEventListener(InteractiveScene3DEvent.OBJECT_OVER, onOver);	
-				plane.addEventListener(InteractiveScene3DEvent.OBJECT_OUT, onOut);						
+				plane.addEventListener(InteractiveScene3DEvent.OBJECT_OUT, onOut);	
+				plane.addEventListener(InteractiveScene3DEvent.OBJECT_CLICK, onClick);						
 				//plane.addEventListener(InteractiveScene3DEvent.OBJECT_MOVE, onMove);
+				
+				var loader:Loader = new Loader();
+ 				
+ 				var loaderContext:LoaderContext = new LoaderContext();
+				loaderContext.checkPolicyFile = false;
+			
+ 				loader.load(new URLRequest(_coverFlowData[_currentIndex]));
+ 				loader.contentLoaderInfo.addEventListener(Event.COMPLETE,Callback.create(onLoaderComplete,plane));
 
         	}
         	
         	startRendering();
 		}
 		
+		
+		private function onLoaderComplete(event:Event, planeObj:Plane):void
+        {
+        	
+        	var image:Bitmap = event.target.content as Bitmap;
+			image.width = _imageWidth;
+			image.height = _imageHeight;
+			  	
+			var bmp:BitmapMaterial = new BitmapMaterial(image.bitmapData);
+			bmp.doubleSided = true;
+			bmp.smooth = true;
+			bmp.interactive = true;
+	
+
+			planeObj.material = bmp;
+			planeObj.scale = 1;
+			
+			event.currentTarget.loader.unload();
+        }
+		/*
 		public function addImage(image:DisplayObject):void
 		{
 			image.width = _imageWidth;
@@ -182,13 +222,14 @@ package org.flowplayer.related {
 			plane.addEventListener(InteractiveScene3DEvent.OBJECT_RELEASE, onClick);
 			
 			_currentIndex++
-		}
+		}*/
 		
 		
 		private function onOver(event:InteractiveScene3DEvent):void
 		{
 			var plane:Plane = Plane(event.target);
 			viewport.containerSprite.buttonMode = true;
+			HydroTween.go(plane,  {z:Z_FOCUS, y: plane.y - 10, rotationY:0}, 0.5);
 			//TweenMax.to(plane, TIME, {z:Z_FOCUS, rotationY:0});
 			
 			_config.mouseOverListener(plane.extra.planeIndex);
@@ -198,6 +239,7 @@ package org.flowplayer.related {
 		{
 			var plane:Plane = Plane(event.target);
 			//TweenMax.to(plane, TIME, {z:0, rotationY:0});
+			HydroTween.go(plane,  {z:0, y: 0, rotationY:0}, 0.2);
 			viewport.containerSprite.buttonMode = false;
 			_config.mouseOutListener();
 		}
