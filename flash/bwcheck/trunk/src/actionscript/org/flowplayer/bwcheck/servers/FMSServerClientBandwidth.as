@@ -15,35 +15,32 @@ package org.flowplayer.bwcheck.servers
 	
 	import org.red5.flash.bwcheck.BandwidthDetection;
 	
-	public class FMSServerClientBandwidth extends BandwidthDetection
-	{
-		
-		private var info:Object = new Object();
-		private var res:Responder;
-		
-		public function FMSServerClientBandwidth()
-		{
-
-		}
+	public class FMSServerClientBandwidth extends BandwidthDetection {
 
 		public function onBWCheck(... rest):Number
 		{
             dispatchStatus(rest);
             return 0;
 		}
-			
-		public function onBWDone(... rest):void 
-		{ 
+
+		public function onBWDone(... rest):void
+		{
+            log.debug("onBWDone()");
 			var obj:Object = new Object();
 			obj.kbitDown = rest[0];
 			dispatchComplete(obj);
-		} 
+		}
 		
 		
 		override public function start():void
 		{
+            log.debug("start() calling service " + _service);
 			nc.client = this;
             nc.call(_service, null);
 		}
+
+        public function close(... rest):void {
+            log.debug("close()");
+        }
 	}
 }
