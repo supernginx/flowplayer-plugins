@@ -1,5 +1,9 @@
 Version history:
 
+3.1.1
+-----
+- Possibility to query stream durations from the server. New config option 'durationFunc' for this.
+
 3.1.0
 ------
 - Subscribing connection establishment for Akamai and Limelight. Enabled by setting subscribe: true in the plugin config.
