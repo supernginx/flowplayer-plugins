@@ -136,6 +136,7 @@ package org.flowplayer.bwcheck
 			_bitrateProfile.data.maxBandwidth = _maxBandwidth;
 		}
 
+        // TODO: this function needs refactoring, nobody can understand this
 		private function checkLiveQOSAndSwitch():void {
 
 			log.debug(_preferredBufferLength + "-" + int(_netStream.bufferLength) + " *-1: " + _maxBandwidth); 
@@ -222,6 +223,7 @@ package org.flowplayer.bwcheck
 			}
 		}
 
+        // TODO: this function needs refactoring, nobody can understand this
 		private function checkVodQOSAndSwitch():void {
 
 
@@ -416,6 +418,7 @@ package org.flowplayer.bwcheck
 		{
 			var event:DynamicStreamEvent = new DynamicStreamEvent(eventName);
 			event.info = info;
+            log.debug("dispatching dynamic stream event with info obj ", info);
 			dispatchEvent(event);
 		}
 		
@@ -433,7 +436,7 @@ package org.flowplayer.bwcheck
 				
 			getMaxBandwidth();
 			
-			log.debug("max bw: "+_maxBandwidth);
+//			log.debug("max bw: "+_maxBandwidth);
 		}
 		
 		public function stop():void

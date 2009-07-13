@@ -73,7 +73,5 @@ import org.red5.flash.bwcheck.events.BandwidthDetectEvent;
 			_service = value;
 		}
 
-		
-
 	}
 }
