@@ -1,5 +1,9 @@
 Version history:
 
+3.1.2
+-----
+- Dispatches events when autohiding: onControlsShow & onControlsHidden
+
 3.1.1
 -----
 - Possibility to have controlbar configurations in clips

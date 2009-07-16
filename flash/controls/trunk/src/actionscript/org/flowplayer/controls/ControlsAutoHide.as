@@ -11,7 +11,9 @@
 package org.flowplayer.controls {
 	import org.flowplayer.model.DisplayProperties;
 	import org.flowplayer.model.Playlist;
-	import org.flowplayer.util.Assert;
+    import org.flowplayer.model.PluginEventType;
+    import org.flowplayer.model.PluginModel;
+    import org.flowplayer.util.Assert;
 	import org.flowplayer.util.Log;
 	import org.flowplayer.view.AnimationEngine;
 	import org.flowplayer.view.Flowplayer;
@@ -40,22 +42,26 @@ package org.flowplayer.controls {
 		private var _originalPos:DisplayProperties;
 		private var _mouseOver:Boolean = false;
 		private var _hwFullScreen:Boolean;
+        private var _model:PluginModel;
 
-		public function ControlsAutoHide(config:Config, player:Flowplayer, stage:Stage, controlBar:DisplayObject) {
-			Assert.notNull(config, "config cannot be null");
-			Assert.notNull(player, "player cannot be null");
-			Assert.notNull(stage, "stage cannot be null");
-			Assert.notNull(controlBar, "controlbar cannot be null");
-			_config = config;
-			_playList = player.playlist;
-			_player = player;
-			_stage = stage;
-			_controlBar = controlBar;
-			if (_config.autoHide != "fullscreen") {
-				initTimerAndListeners();
-			}
-			_stage.addEventListener(FullScreenEvent.FULL_SCREEN, onFullScreen);
-		}
+        public function ControlsAutoHide(model:PluginModel, config:Config, player:Flowplayer, stage:Stage, controlBar:DisplayObject) {
+            Assert.notNull(model, "model cannot be null");
+            Assert.notNull(config, "config cannot be null");
+            Assert.notNull(player, "player cannot be null");
+            Assert.notNull(stage, "stage cannot be null");
+            Assert.notNull(controlBar, "controlbar cannot be null");
+            _model = model;
+            _config = config;
+            _playList = player.playlist;
+            _player = player;
+            _stage = stage;
+            _controlBar = controlBar;
+            if (_config.autoHide != "fullscreen") {
+                initTimerAndListeners();
+            }
+            _stage.addEventListener(FullScreenEvent.FULL_SCREEN, onFullScreen);
+        }
+
 
 		private function get hiddenPos():DisplayProperties {
 			_originalPos = DisplayProperties(_player.pluginRegistry.getPlugin("controls")).clone() as DisplayProperties;
@@ -148,9 +154,14 @@ package org.flowplayer.controls {
 			
 			log.debug("mouse pos " + _stage.mouseX + "x" + _stage.mouseY + " mouse on stage " + _mouseOver);
 			if (_mouseOver) return;
-			_player.animationEngine.animate(_controlBar, hiddenPos, 1000);
+			_player.animationEngine.animate(_controlBar, hiddenPos, 1000, onHidden);
 			_hideTimer.stop();
 		}
+
+        private function onHidden():void {
+            log.debug("onHidden()");
+            _model.dispatch(PluginEventType.PLUGIN_EVENT, "onControlsHidden");
+        }
 
 		private function showControlBar():void {
 			// fetch the current props, they might have changed because of some
@@ -175,6 +186,8 @@ package org.flowplayer.controls {
 		}
 		
 		private function onShowed():void {
+            log.debug("onShowed()");
+            _model.dispatch(PluginEventType.PLUGIN_EVENT, "onControlsShow");
 			_stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 			if (_hideTimer) {
 				_hideTimer.start();
