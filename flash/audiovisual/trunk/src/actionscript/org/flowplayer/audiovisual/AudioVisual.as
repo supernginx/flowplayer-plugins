@@ -33,12 +33,59 @@ package org.flowplayer.audiovisual {
             addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
         }
 
+        /**
+         * Starts visualization.
+         */
+        [External]
+        public function start():void {
+            _visual.start();
+        }
+
+        /**
+         * Stops visualization
+         * @return
+         */
+        [External]
+        public function stop():void {
+            _visual.stop();
+        }
+
+        /**
+         * Swithches to the specified effect.
+         * @param num
+         * @return
+         */
+        [External]
+        public function set effect(num:int):void {
+            _visual.effect = num;
+        }
+
+        /**
+         * Sets the effects. To select effects 2 and 4 set this property to <code>[2, 4]</code>
+         * @param val an array specifying effect numbers to use. There are 6 effects numbered from zero to five.
+         * @return
+         */
+        [External]
+        public function set effects(val:Array):void {
+            _visual.effects = val;
+        }
+
+        /**
+         * Picks next random effect
+         * @return
+         */
+        [External]
+        public function nextEffect():void {
+            _visual.nextEffect();
+        }
+
         private function onAddedToStage(event:Event):void {
             createVisual();
             stage.addEventListener(Event.FULLSCREEN, onFullscreen);
         }
 
         private function createVisual():void {
+            log.debug("createVisual()");
             _visual = new Revolt(stage.stageWidth, stage.stageHeight);
             addChild(_visual);
             _visual.addEventListener(MouseEvent.CLICK, onClick);
@@ -86,8 +133,7 @@ package org.flowplayer.audiovisual {
         }
 
         private function get followScreen():Boolean {
-            if (! _model.config) return true;
-            return _model.config["followScreen"]; 
+            return _model.config["followScreen"];
         }
 
         private function hide(event:ClipEvent):void {
@@ -95,7 +141,7 @@ package org.flowplayer.audiovisual {
         }
 
         public function getDefaultConfig():Object {
-            return { left: '50%', top: '50%', width: '100%', height: '100%', zIndex: 1, opacity: 0 };
+            return { left: '50%', top: '50%', width: '100%', height: '100%', zIndex: 1, opacity: 0, followScreen: true };
         }
 
         override protected function onResize():void {
