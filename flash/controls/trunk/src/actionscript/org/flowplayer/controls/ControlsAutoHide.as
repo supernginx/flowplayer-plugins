@@ -64,7 +64,7 @@ package org.flowplayer.controls {
 
 
 		private function get hiddenPos():DisplayProperties {
-			_originalPos = DisplayProperties(_player.pluginRegistry.getPlugin("controls")).clone() as DisplayProperties;
+			_originalPos = DisplayProperties(_player.pluginRegistry.getPlugin(_model.name)).clone() as DisplayProperties;
 			var hiddenPos:DisplayProperties = _originalPos.clone() as DisplayProperties;
 			if (isHardwareScaledFullsreen()) {
 				_hwFullScreen = true;
@@ -165,9 +165,9 @@ package org.flowplayer.controls {
 
 		private function showControlBar():void {
 			// fetch the current props, they might have changed because of some
-			var currentProps:DisplayProperties = _player.pluginRegistry.getPlugin("controls") as DisplayProperties;
+			var currentProps:DisplayProperties = _player.pluginRegistry.getPlugin(_model.name) as DisplayProperties;
 			if (!_originalPos) {
-				_originalPos = DisplayProperties(_player.pluginRegistry.getPlugin("controls")).clone() as DisplayProperties;
+				_originalPos = DisplayProperties(_player.pluginRegistry.getPlugin(_model.name)).clone() as DisplayProperties;
 			}
 			
 			if (_hwFullScreen) {
