@@ -3,6 +3,7 @@ Version history:
 3.1.2
 -----
 - Dispatches events when autohiding: onControlsShow & onControlsHidden
+- Now it's possible to have several controlbars that all autohide.
 
 3.1.1
 -----

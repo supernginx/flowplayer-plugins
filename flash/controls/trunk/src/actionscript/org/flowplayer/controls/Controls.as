@@ -232,7 +232,7 @@ import org.flowplayer.model.PlayerEvent;
 		}
 		private function onAddedToStage(event:Event):void {
 			log.debug("addedToStage, config is " + _config);
-			if (_pluginModel.name == "controls" && _config.autoHide != 'never' && ! _controlBarMover) {
+			if (_config.autoHide != 'never' && ! _controlBarMover) {
 				_controlBarMover = new ControlsAutoHide(_pluginModel, _config, _player, stage, this);
 			}
 			enableWidgets();
