@@ -13,6 +13,7 @@ package org.flowplayer.related {
 	import flash.geom.Rectangle;
 	import flash.net.URLRequest;
 	import flash.system.LoaderContext;
+	import flash.utils.setInterval;
 	
 	import org.flowplayer.util.Log;
 	import org.papervision3d.core.effects.view.ReflectionView;
@@ -22,6 +23,7 @@ package org.flowplayer.related {
 	import org.papervision3d.objects.DisplayObject3D;
 	import org.papervision3d.objects.primitives.Plane;
 	
+	//import org.flowplayer.related.assets.PreloadAnimation;
 	import org.flowplayer.related.assets.PreloadAnimation;
 	
 	public class CoverFlow extends ReflectionView
@@ -42,7 +44,12 @@ package org.flowplayer.related {
 		
 		
 		private static const Z_FOCUS:Number = -100;
-
+		private var pageSpacing:Number = 50;
+		private var imagePadding:Number = 100;
+		private var scrollX:Number;
+		private var speed:Number = 6;
+		private var currentPage:Number = 1;
+		private var intervalSpeed:Number = 40;
 		
     	public function CoverFlow(config:Object):void
     	{
@@ -102,10 +109,27 @@ package org.flowplayer.related {
 		
 		private function loop(event:Event):void
         {			
-			HydroTween.go(_container, {x: -viewport.containerSprite.mouseX} , 5);
+			var mouseX:Number = viewport.containerSprite.mouseX;
+            //mouseX = Math.max(0, mouseX);
+            //mouseX = Math.min(this.width, mouseX);
+   
+            var widthX:Number = stage.width - this.width + imagePadding;
+            var spacing:Number = -(stage.width - pageSpacing) * this.currentPage + imagePadding / 2;
+            //scrollTo(_loc4 - mouseX / this.width * widthX);
+          	this.scrollX = (spacing - (mouseX / this.width) * widthX) + 7 + _imageWidth;
+          	
+			//HydroTween.go(_container, {x: -viewport.containerSprite.mouseX} , 5);
 			this.singleRender();
 			
         }
+        
+        private function scrollTo():void
+    	{
+    		_container.x = _container.x - (_container.x - this.scrollX) / 6;
+    		//HydroTween.go(_container, {x: _container.x - (_container.x - this.scrollX)} , 3);
+    	
+    		singleRender();
+    	}
 		
 		
 		public function set data(data:Array):void
@@ -168,6 +192,8 @@ package org.flowplayer.related {
 
         	}
         	
+        	setInterval(scrollTo, intervalSpeed);
+        	
         	startRendering();
 		}
 		
@@ -229,7 +255,8 @@ package org.flowplayer.related {
 		{
 			var plane:Plane = Plane(event.target);
 			viewport.containerSprite.buttonMode = true;
-			HydroTween.go(plane,  {z:Z_FOCUS, y: plane.y - 10, rotationY:0}, 0.5);
+			//HydroTween.go(plane,  {z:Z_FOCUS, y: plane.y - 10, rotationY:0}, 0.5);
+			HydroTween.go(plane,  {scaleX:1.1, scaleY:1.1, y:0}, 4.000000E-001);
 			//TweenMax.to(plane, TIME, {z:Z_FOCUS, rotationY:0});
 			
 			_config.mouseOverListener(plane.extra.planeIndex);
@@ -239,7 +266,8 @@ package org.flowplayer.related {
 		{
 			var plane:Plane = Plane(event.target);
 			//TweenMax.to(plane, TIME, {z:0, rotationY:0});
-			HydroTween.go(plane,  {z:0, y: 0, rotationY:0}, 0.2);
+			//HydroTween.go(plane,  {z:0, y: 0, rotationY:0}, 0.2);
+			HydroTween.go(plane,  {scaleX:1, scaleY:1,y:0}, 4.000000E-001);
 			viewport.containerSprite.buttonMode = false;
 			_config.mouseOutListener();
 		}
