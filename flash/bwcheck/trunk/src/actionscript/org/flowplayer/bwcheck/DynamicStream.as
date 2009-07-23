@@ -107,7 +107,7 @@ package org.flowplayer.bwcheck
             qosTimer.addEventListener(TimerEvent.TIMER, getQOSAndSwitch);
         }
 		
-		public function init():void
+		private function init():void
 		{
 			log.debug("initializing ...");
 			
@@ -449,6 +449,7 @@ package org.flowplayer.bwcheck
 		
 		public function onStart(event:ClipEvent):void
 		{
+            log.debug("onStart()");
 			setup();
 			init();
 		}
@@ -461,6 +462,7 @@ package org.flowplayer.bwcheck
 		
 		public function onBufferEmpty(event:ClipEvent):void
 		{
+            log.debug("onBufferEmpty()");
 			_curStreamID = 0;
 
 			if(!_config.liveStream) {
@@ -475,6 +477,7 @@ package org.flowplayer.bwcheck
 		
 		public function onBufferFull(event:ClipEvent):void
 		{
+            log.debug("onBufferFull()");
 			getMaxBandwidth();
 			SwitchUpOnMaxBandwidth();
 			_isBuffering = false;
