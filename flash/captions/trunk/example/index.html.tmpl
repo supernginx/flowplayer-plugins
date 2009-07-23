@@ -26,7 +26,7 @@
 
 		<!-- this A tag is where your Flowplayer will be placed. it can be anywhere -->
 		<a  
-			 href="buffalo_soldiers.mp4"  
+			 href="http://flowplayer.org/video/honda_accord.flv"  
 			 style="display:block;width:400px;height:300px"  
 			 id="captions"> 
 		</a> 
@@ -45,8 +45,11 @@
 			     
 				     // other levels are: 'info', 'warning', 'error' which will cause less output 
 				     level: 'debug',
-				     filter: 'org.flowplayer.captions.*' 
+				     filter: 'org.flowplayer.captions.*, org.flowplayer.captions.parsers.*' 
 				},
+            clip: {
+                captionUrl: 'buffalo.srt'
+            },
 			plugins:  {
 			    content: {
 					url:'../flowplayer.content.swf',
@@ -54,26 +57,26 @@
 					width: '80%',
 					height:40,
 					backgroundColor: 'transparent',
-					backgroundGradient: 'none',
+//					backgroundGradient: 'none',
 					border: 0,
 					style: { 
 					    'body': { 
 						fontSize: '14', 
 						fontFamily: 'Arial',
 						textAlign: 'center',
-								color: '#ffffff',
+								color: '#ffffff'
 								//backgroundColor:'#000000'
-					    } 
-				    } 
+					    }
+				    }
+                    , display: 'none'
 				},
 				
 				captions: {
 					url:'@MAIN_PLAYER_SWF@',
-					captionUrl: 'buffalo.srt',
 					captionType: 'external',
 					captionTarget: 'content'
 				}
-			},
+			}
 		
 		
 		});

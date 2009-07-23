@@ -1,5 +1,10 @@
 Version history:
 
+3.1.2
+------
+- Now the captions can be initially made invisible by just specifying display: 'none' in the content plugin that is used
+  to show the captions
+
 3.1.1
 -----
 - added a file extension parameter to the loadCaptions external method
