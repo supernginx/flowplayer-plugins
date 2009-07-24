@@ -2,6 +2,8 @@ Version history:
 
 3.1.3
 -----
+- Added new urlExtension, determines the 3rd token in the urlPattern
+- Possibility to attach labels to bitrates. These are used with the urlPattern and urlExtension to generate the resolved file names.
 Fixes:
 - Fixed dynamic switching, it was interpreting the 'bitrates' array in reversed order
 - Bandwidth is only detected once per clip. Because it was detected multiple times repeated plays did not work because
