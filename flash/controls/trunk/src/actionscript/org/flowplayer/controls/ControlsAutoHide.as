@@ -160,7 +160,7 @@ package org.flowplayer.controls {
 
         private function onHidden():void {
             log.debug("onHidden()");
-            _model.dispatch(PluginEventType.PLUGIN_EVENT, "onControlsHidden");
+            _model.dispatch(PluginEventType.PLUGIN_EVENT, "onHidden");
         }
 
 		private function showControlBar():void {
@@ -187,7 +187,7 @@ package org.flowplayer.controls {
 		
 		private function onShowed():void {
             log.debug("onShowed()");
-            _model.dispatch(PluginEventType.PLUGIN_EVENT, "onControlsShow");
+            _model.dispatch(PluginEventType.PLUGIN_EVENT, "onShowed");
 			_stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 			if (_hideTimer) {
 				_hideTimer.start();
