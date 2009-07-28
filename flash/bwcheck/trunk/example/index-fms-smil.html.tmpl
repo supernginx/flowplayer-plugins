@@ -38,7 +38,7 @@
         // configure clip to use "rtmp" plugin for providing video data
         clip: {
             provider: 'rtmp',
-            urlResolvers: 'bwcheck',
+            connectionProvider: 'bwcheck',
             autoPlay: false,
             start: 0,
             duration: 0,
@@ -55,30 +55,25 @@
             }
         },
         playlist: [
-            "skyandice", "honda_accord"
+            "http://hwcdn.net/i5w9b4e5/fms/WOP_episodes/18_189_en_.smil"
         ],
 
         // streaming plugins are configured under the plugins node
         plugins:  {
             // here is our rtpm plugin configuration
             rtmp: {
-                url: '../flowplayer.rtmp.swf',
-                netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
-                objectEncoding: 0
-
+                url: '../flowplayer.rtmp.swf'
             },
             bwcheck: {
                 url: '@MAIN_PLAYER_SWF@',
                 serverType: 'fms',
-                netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
-                // rtmp://69.16.188.164/i5w9b4e5/_definst_
-                defaultBitrate: 150,
-                enableDynamicSwitching: true,
+                netConnectionUrl: 'http://hwcdn.net/i5w9b4e5/fms/WOP_episodes/18_189_en_.smil',
+                defaultBitrate: 500,
                 bitrates: [
-                    150,400,700,1000
+                    500, 800
                 ],
                 //{0} is filename, {1} is bitrate, {2} is extension
-                urlPattern: '{0}-{1}',
+                urlPattern: '{0}{1}.flv.smil',
 
 
                 onConnectFailed: function(host, index) {

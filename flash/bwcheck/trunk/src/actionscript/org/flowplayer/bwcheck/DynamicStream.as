@@ -73,6 +73,11 @@ package org.flowplayer.bwcheck
             return _bitrates[_curStreamID];
         }
 
+        public function start():void {
+            onStart();
+            onBufferFull();
+        }
+
 		protected function setup():void
 		{
 			_preferredBufferLength = _config.preferredBufferLength;
@@ -447,7 +452,7 @@ package org.flowplayer.bwcheck
 		}
 		
 		
-		public function onStart(event:ClipEvent):void
+		public function onStart(event:ClipEvent = null):void
 		{
             log.debug("onStart()");
 			setup();
@@ -475,7 +480,7 @@ package org.flowplayer.bwcheck
 			init();			
 		}
 		
-		public function onBufferFull(event:ClipEvent):void
+		public function onBufferFull(event:ClipEvent = null):void
 		{
             log.debug("onBufferFull()");
 			getMaxBandwidth();
