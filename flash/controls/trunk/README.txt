@@ -2,8 +2,10 @@ Version history:
 
 3.1.2
 -----
-- Dispatches events when autohiding: onControlsShow & onControlsHidden
+- Dispatches events when autohiding: onShowed & onHidden
 - Now it's possible to have several controlbars that all autohide.
+- Scrubber moving now smoother
+- The scrubber time tooltip now always shown when hovering the mouse over the scrubber bar
 
 3.1.1
 -----

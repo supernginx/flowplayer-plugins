@@ -363,5 +363,10 @@ package org.flowplayer.controls {
 				parent.removeChild( this );
 			}
 		}
-	}
+
+        override public function get visible():Boolean {
+            if (super.visible) return false;
+            return this.alpha < 1;
+        }
+    }
 }

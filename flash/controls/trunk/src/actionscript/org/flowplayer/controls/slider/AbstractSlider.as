@@ -41,6 +41,7 @@ import org.flowplayer.util.GraphicsUtil;
 		private var _tooltip:ToolTip;
 		private var _tooltipTextFunc:Function;
         private var _controlbar:DisplayObject;
+        private var _mouseOver:Boolean;
 
         public function AbstractSlider(config:Config, animationEngine:AnimationEngine, controlbar:DisplayObject) {
             _config = config;
@@ -50,8 +51,53 @@ import org.flowplayer.util.GraphicsUtil;
             createDragger();
             toggleTooltip();
             addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+            addEventListener(MouseEvent.ROLL_OVER, onMouseOver);
+            addEventListener(MouseEvent.ROLL_OUT, onMouseOut);
         }
 
+        private function onMouseMove(event:MouseEvent):void {
+            if (! _mouseOver) return;
+//            log.debug("onMouseMove(), changing tooltip text to " + tooltipText);
+            var text:String = tooltipText;
+            if (! tooltipText) {
+                _tooltip.hide();
+            } else if (_tooltip.visible) {
+                showTooltip();
+            } else {
+			    _tooltip.text = tooltipText;
+            }
+        }
+
+        private function get tooltipText():String {
+            if (_tooltipTextFunc == null) return null;
+            return _tooltipTextFunc((mouseX / (width - _dragger.width)) * 100);
+        }
+
+        protected function onMouseOut(event:MouseEvent = null):void {
+//            if (event && isParent(event.relatedObject as DisplayObject, this)) return;
+            log.debug("onMouseOut");
+            hideTooltip();
+            _mouseOver = false;
+            removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+        }
+
+        protected function onMouseOver(event:MouseEvent):void {
+            log.debug("onMouseOver");
+            showTooltip();
+            _mouseOver = true;
+            addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+        }
+
+
+        protected function hideTooltip():void {
+            _tooltip.hide();
+        }
+
+        protected function showTooltip():void {
+            if (tooltipText) {
+                _tooltip.show(this, tooltipText, true);
+            }
+        }
 
 		private function toggleTooltip():void {
 			if (isToolTipEnabled()) {
@@ -151,9 +197,9 @@ import org.flowplayer.util.GraphicsUtil;
 		protected function onMouseDown(event:MouseEvent):void {
 			if (! event.target == this) return;
 			_dragTimer.start();
-			if (_tooltipTextFunc != null) { 
-				_tooltip.show(_dragger, _tooltipTextFunc(value) as String, true);
-			}
+//			if (_tooltipTextFunc != null) {
+//				_tooltip.show(_dragger, _tooltipTextFunc(value) as String, true);
+//			}
 		}
 
 		private function onDrag(event:TimerEvent = null):void {
@@ -165,7 +211,7 @@ import org.flowplayer.util.GraphicsUtil;
 			}
 			
 			_dragger.x = pos;
-			_tooltip.text = _tooltipTextFunc((_dragger.x / (width - _dragger.width)) * 100) as String;
+//			_tooltip.text = _tooltipTextFunc((_dragger.x / (width - _dragger.width)) * 100) as String;
 
 			// do not dispatch several times from almost the same pos
 			if (Math.abs(_previousDragEventPos - _dragger.x) < 1) return;
@@ -217,10 +263,11 @@ import org.flowplayer.util.GraphicsUtil;
 				return;
 			}
 			var pos:Number = value/100 * (width - _dragger.width);
-			_dragger.x = pos;
-			onSetValue();
+            _animationEngine.animateProperty(_dragger, "x", pos, 200, function():void { onSetValue() });
+//			_dragger.x = pos;
+//			onSetValue();
 		}
-		
+
 		protected function onSetValue():void {
 		}
 
