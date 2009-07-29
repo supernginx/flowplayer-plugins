@@ -27,6 +27,7 @@ import org.flowplayer.view.AnimationEngine;
 		public function VolumeSlider(config:Config, animationEngine:AnimationEngine, controlbar:DisplayObject) {
 			super(config, animationEngine, controlbar);
 			tooltipTextFunc = function(percentage:Number):String {
+                if (percentage > 100) return "100%";
 				return Math.round(percentage) + "%";
 			};
 		}

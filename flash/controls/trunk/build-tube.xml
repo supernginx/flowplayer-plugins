@@ -4,7 +4,7 @@
     <property name="basename" value="flowplayer.controls-tube" />
 
     <!-- version number, will be appened to the filename -->
-    <property name="version" value="3.1.1" />
+    <property name="version" value="3.1.2" />
 
     <!-- location of the skin swd, anc swc -->
     <property name="library-path" value="src/flash/tube" />

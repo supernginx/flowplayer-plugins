@@ -392,7 +392,7 @@ import org.flowplayer.model.PlayerEvent;
 		}
 		
 		private function createScrubberUpdateTimer():void {
-			_timeUpdateTimer = new Timer(500);
+			_timeUpdateTimer = new Timer(200);
 			_timeUpdateTimer.addEventListener(TimerEvent.TIMER, onTimeUpdate);
 			_timeUpdateTimer.start();
 		}
@@ -423,6 +423,7 @@ import org.flowplayer.model.PlayerEvent;
 				}
 				if (status.clip) {
 					_scrubber.tooltipTextFunc = function(percentage:Number):String {
+                        if (duration == 0) return null;
 						return TimeUtil.formatSeconds(percentage / 100 * duration);
 					};
 				}
