@@ -13,7 +13,7 @@ package org.flowplayer.related
 	public class Config {
 		
 		// max amount of visible items
-		private var _items:int = 4;
+		private var _items:int = 7;
 		
 		/*
 			by default related videos are shown on clip's onFinish event
@@ -59,6 +59,8 @@ package org.flowplayer.related
 		//private var _bottom:int = 10;
 		//private var _left:int = 0;
 		private var _thumbHeight:int = 100;
+		private var _height:int = 140;
+		private var _width:int;
 		private var _relfectionSpacing:int = 5;
 		private var _horizontalSpacing:int = 11;
 		private var _showReflection:Boolean = true;
@@ -146,6 +148,22 @@ package org.flowplayer.related
 		
 		public function set thumbHeight(height:int):void {
 			_thumbHeight = height;
+		}
+		
+		public function get height():int {
+			return _height;
+		}
+		
+		public function set height(height:int):void {
+			_height = height;
+		}
+		
+		public function get width():int {
+			return _width;
+		}
+		
+		public function set width(width:int):void {
+			_width = width;
 		}
 		
 		public function get relfectionSpacing():int {

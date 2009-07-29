@@ -9,11 +9,17 @@ package org.flowplayer.related {
 	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 	import flash.net.URLRequest;
 	import flash.system.LoaderContext;
+	import flash.utils.clearInterval;
 	import flash.utils.setInterval;
+	
+	import org.flowplayer.related.assets.NextBtn;
+	import org.flowplayer.related.assets.PreloadAnimation;
+	import org.flowplayer.related.assets.PrevBtn;
 	
 	import org.flowplayer.util.Log;
 	import org.papervision3d.core.effects.view.ReflectionView;
@@ -22,9 +28,6 @@ package org.flowplayer.related {
 	import org.papervision3d.materials.MovieMaterial;
 	import org.papervision3d.objects.DisplayObject3D;
 	import org.papervision3d.objects.primitives.Plane;
-	
-	//import org.flowplayer.related.assets.PreloadAnimation;
-	import org.flowplayer.related.assets.PreloadAnimation;
 	
 	public class CoverFlow extends ReflectionView
     {
@@ -47,14 +50,28 @@ package org.flowplayer.related {
 		private var pageSpacing:Number = 50;
 		private var imagePadding:Number = 100;
 		private var scrollX:Number;
+		private var containerXInterval:int;
 		private var speed:Number = 6;
+		private var totalPages:Number;
+		private var pageWidth:Number;
 		private var currentPage:Number = 1;
 		private var intervalSpeed:Number = 40;
 		
+		private var prevBtn:Sprite;
+		private var nextBtn:Sprite;
+		private var _maxItems:int;
+		private var _margin:int;
+	
+		
     	public function CoverFlow(config:Object):void
     	{
+    		//super(config.width,config.height,false,true,"Target");
+    		
     		_imageWidth = config.imageWidth;
     		_imageHeight = config.imageHeight;
+    		_maxItems = config.items;
+    		_margin = config.horizontalSpacing;
+    		
 			setReflectionColor(1, 1, 1);
     		_config = config;
 			viewportReflection.alpha = .8;
@@ -64,7 +81,8 @@ package org.flowplayer.related {
 			//renderer.clipping = new FrustumClipping(FrustumClipping.BOTTOM)
 			viewport.buttonMode = true;
 			
-	
+
+			
 			
 			addEventListener(Event.ENTER_FRAME, loop);
 			addEventListener(Event.ADDED_TO_STAGE, setGradient);
@@ -96,6 +114,28 @@ package org.flowplayer.related {
 			
 
 			viewportReflection.mask = holder;
+		
+			prevBtn = new PrevBtn();
+  			prevBtn.x = 5;
+  			prevBtn.y = stage.height - 10;
+  			prevBtn.buttonMode = true;
+  			prevBtn.visible = true;
+  			prevBtn.addEventListener(MouseEvent.CLICK, prevPage);
+  			addChild(prevBtn);
+  			
+  			nextBtn = new NextBtn();
+			
+			log.debug((stage.height - 10).toString());
+			
+			
+  			nextBtn.x = stage.width - (nextBtn.width + 5);
+  			nextBtn.y = stage.height - 10;
+  			nextBtn.buttonMode = true;
+  			nextBtn.visible = true;
+  			nextBtn.addEventListener(MouseEvent.CLICK, nextPage);
+  			addChild(nextBtn);
+  			
+  			updateNavigation();
 			
     	}
     	
@@ -123,12 +163,62 @@ package org.flowplayer.related {
 			
         }
         
-        private function scrollTo():void
+        private function updateXPosition():void
     	{
     		_container.x = _container.x - (_container.x - this.scrollX) / 6;
     		//HydroTween.go(_container, {x: _container.x - (_container.x - this.scrollX)} , 3);
     	
     		singleRender();
+    	}
+    	
+    	private function nextPage(event:MouseEvent):void
+    	{
+    		setPage(this.currentPage + 1);	
+    	}
+    	
+    	private function prevPage(event:MouseEvent):void
+    	{
+    		setPage(this.currentPage - 1);	
+    	}
+    	
+    	private function setPage(page:Number):void
+    	{
+    		this.currentPage = page;
+    		stopScrolling();
+    		var pageX:Number = -this.currentPage * (this.pageWidth + this.pageSpacing);
+
+    		HydroTween.go(_container, {x: pageX} , 5,0,null,null,startScrolling);
+    		updateNavigation();
+    	}
+    	
+    	private function stopScrolling():void
+    	{
+    		clearInterval(containerXInterval);
+    	}
+    	
+    	private function startScrolling():void
+    	{
+    		containerXInterval = setInterval(updateXPosition, intervalSpeed);
+    	}
+    	
+        
+    	private function updateNavigation():void
+    	{
+    		log.debug(totalPages.toString());
+    		if (currentPage == totalPages)
+    		{
+    			nextBtn.visible = false;
+    		} else {
+    			nextBtn.visible = true;
+    		}
+    		
+    		if (currentPage == 1)
+    		{
+    			prevBtn.visible = false;
+    		} else {
+    			prevBtn.visible = true;
+    		}
+    		
     	}
 		
 		
@@ -141,6 +231,13 @@ package org.flowplayer.related {
 		
 		private function loadImages():void
 		{
+			this.pageWidth = (_imageWidth + _margin) * _maxItems;
+    		
+    		this.totalPages = Math.ceil(_coverFlowData.length / _maxItems);
+    		
+    		log.debug(totalPages.toString());
+			updateNavigation();
+				
 			for (var i:int = 0; i < _coverFlowData.length; i++)
         	{
         		_currentIndex = i;
@@ -170,11 +267,11 @@ package org.flowplayer.related {
 				var xDist:Number = stage.width-(_currentIndex * (_imageWidth +  _config.horizontalSpacing));
 	
         		HydroTween.go(plane, {x: xDist} , 1);
-				plane.y = _config.relfectionSpacing;
+			//	plane.y = _config.reflectionSpacing;
 				plane.z = 0;
 				plane.extra = {planeIndex : _currentIndex, height:  _imageHeight};
 				
-				scene.addChild(_container);
+				
 				
 				planes.push(plane);
 				plane.addEventListener(InteractiveScene3DEvent.OBJECT_OVER, onOver);	
@@ -192,7 +289,10 @@ package org.flowplayer.related {
 
         	}
         	
-        	setInterval(scrollTo, intervalSpeed);
+        	scene.addChild(_container);
+        	
+        	//setInterval(scrollTo, intervalSpeed);
+        	startScrolling();
         	
         	startRendering();
 		}
