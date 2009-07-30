@@ -17,11 +17,11 @@ package org.flowplayer.related {
 	import flash.utils.clearInterval;
 	import flash.utils.setInterval;
 	
+	import org.flowplayer.util.Log;
 	import org.flowplayer.related.assets.NextBtn;
 	import org.flowplayer.related.assets.PreloadAnimation;
 	import org.flowplayer.related.assets.PrevBtn;
 	
-	import org.flowplayer.util.Log;
 	import org.papervision3d.core.effects.view.ReflectionView;
 	import org.papervision3d.events.InteractiveScene3DEvent;
 	import org.papervision3d.materials.BitmapMaterial;
@@ -61,11 +61,12 @@ package org.flowplayer.related {
 		private var nextBtn:Sprite;
 		private var _maxItems:int;
 		private var _margin:int;
+
 	
 		
     	public function CoverFlow(config:Object):void
     	{
-    		//super(config.width,config.height,false,true,"Target");
+    		//super(width,height,false,true,"Target");
     		
     		_imageWidth = config.imageWidth;
     		_imageHeight = config.imageHeight;
@@ -111,25 +112,24 @@ package org.flowplayer.related {
 			holder.x = 0;
 			holder.y = Math.floor(_imageHeight * _config.maskRatio);
 			
-			
-
+	
 			viewportReflection.mask = holder;
 		
 			prevBtn = new PrevBtn();
   			prevBtn.x = 5;
-  			prevBtn.y = stage.height - 10;
+  			prevBtn.y = 140;
   			prevBtn.buttonMode = true;
   			prevBtn.visible = true;
   			prevBtn.addEventListener(MouseEvent.CLICK, prevPage);
   			addChild(prevBtn);
   			
   			nextBtn = new NextBtn();
-			
-			log.debug((stage.height - 10).toString());
-			
-			
+		
   			nextBtn.x = stage.width - (nextBtn.width + 5);
-  			nextBtn.y = stage.height - 10;
+  			
+  			nextBtn.y = 0;
+  			
+  			nextBtn.y = 140;
   			nextBtn.buttonMode = true;
   			nextBtn.visible = true;
   			nextBtn.addEventListener(MouseEvent.CLICK, nextPage);
@@ -204,7 +204,7 @@ package org.flowplayer.related {
         
     	private function updateNavigation():void
     	{
-    		log.debug(totalPages.toString());
+ 
     		if (currentPage == totalPages)
     		{
     			nextBtn.visible = false;
