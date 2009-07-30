@@ -51,31 +51,31 @@
                 captionUrl: 'buffalo.srt'
             },
 			plugins:  {
-			    content: {
-					url:'../flowplayer.content.swf',
-					bottom: 25,
-					width: '80%',
-					height:40,
-					backgroundColor: 'transparent',
+            content: {
+                url:'../flowplayer.content.swf',
+                bottom: 25,
+                width: '80%',
+                height:40,
+                backgroundColor: 'transparent',
 //					backgroundGradient: 'none',
-					border: 0,
-					style: { 
-					    'body': { 
-						fontSize: '14', 
-						fontFamily: 'Arial',
-						textAlign: 'center',
-								color: '#ffffff'
-								//backgroundColor:'#000000'
-					    }
-				    }
-                    , display: 'none'
-				},
-				
-				captions: {
-					url:'@MAIN_PLAYER_SWF@',
-					captionType: 'external',
-					captionTarget: 'content'
-				}
+                border: 0,
+                style: {
+                    'body': {
+                    fontSize: '14',
+                    fontFamily: 'Arial',
+                    textAlign: 'center',
+                            color: '#ffffff'
+                            //backgroundColor:'#000000'
+                    }
+                }
+                , display: 'none'
+            },
+
+            captions: {
+                url:'@MAIN_PLAYER_SWF@',
+                captionType: 'external',
+                captionTarget: 'content'
+            }
 			}
 		
 		
