@@ -31,6 +31,8 @@ package org.flowplayer.smil{
         private var _connection:NetConnection;
         private var _streamName:String;
         private var _provider:StreamProvider;
+        private var _objectEncoding:uint;
+        private var _clip:Clip;
 
         public function connect(provider:StreamProvider, clip:Clip, successListener:Function, objectEncoding: uint, ... rest):void {
             _provider = provider;
@@ -41,14 +43,34 @@ package org.flowplayer.smil{
                 doConnect(clip, successListener, objectEncoding);
                 return;
             }
+            _clip = clip;
+            _successListener = successListener;
+            _objectEncoding = objectEncoding;
+            loadSmil(_clip.completeUrl, onSmilLoaded);
+        }
 
-            log.debug("connect(), loading SMIL file from " + clip.completeUrl);
+        [External]
+        public function resolveSmil(smilUrl:String, callback:Function):void {
+            log.debug("resolveSmil()");
+            loadSmil(smilUrl, function(smilContent:String):void {
+                var result:Array = parseSmil(smilContent);
+                log.debug("resolveSmil(), resolved to netConnectionUrl " + result[0] + " streamName " + result[1]);
+                callback(result[0], result[1]);
+            });
+        }
+
+        private function loadSmil(smilUrl:String, loadedCallback:Function):void {
+            log.debug("connect(), loading SMIL file from " + smilUrl);
             var loader:ResourceLoader = _player.createLoader();
-            loader.load(clip.completeUrl, function(loader:ResourceLoader):void {
+            loader.load(smilUrl, function(loader:ResourceLoader):void {
                 log.debug("SMIL file received");
-                updateClip(clip, String(loader.getContent()));
-                doConnect(clip, successListener, objectEncoding);
+                loadedCallback(String(loader.getContent()));
             }, true);
+        }
+
+        private function onSmilLoaded(smilContent:String):void {
+            updateClip(_clip, smilContent);
+            doConnect(_clip, _successListener, _objectEncoding);
         }
 
 
@@ -93,9 +115,14 @@ package org.flowplayer.smil{
 
         private function updateClip(clip:Clip, smilFile:String):void {
             log.debug("parsing SMIL file " + smilFile);
+            var result:Array = parseSmil(smilFile);
+            clip.setCustomProperty("netConnectionUrl", result[0]);
+            clip.resolvedUrl = result[1];
+        }
+
+        private function parseSmil(smilFile:String):Array {
             var smil:XML = new XML(smilFile);
-            clip.setCustomProperty("netConnectionUrl", smil.children()[0].children()[0].@base.toString());
-            clip.resolvedUrl = smil.children()[1].children()[0].@src.toString();
+            return [smil.children()[0].children()[0].@base.toString(), smil.children()[1].children()[0].@src.toString()];
         }
 
         private function _onConnectionStatus(event:NetStatusEvent):void {
