@@ -1,5 +1,10 @@
 Version history:
 
+3.1.2
+-----
+- Starts RTMP and RTMPT connection attempts in parallel. The one who succeeds first will be used and the other one is discarded.
+  The approach is described here: http://kb2.adobe.com/cps/185/tn_18537.html#http_improv
+
 3.1.1
 -----
 - Possibility to query stream durations from the server. New config option 'durationFunc' for this.
