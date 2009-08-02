@@ -1,5 +1,10 @@
 Version history:
 
+3.1.2
+-----
+- Now the remembered bitrate is only cached for 24 hours by default. You can control the cache expiry using a new
+  config option 'cacheExpiry' where the expiry period is given in seconds.
+
 3.1.1
 -----
 - New external method dynamic(enabled) to toggle dynamic bitrate adaptation
