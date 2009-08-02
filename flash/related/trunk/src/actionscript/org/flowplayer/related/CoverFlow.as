@@ -68,6 +68,7 @@ package org.flowplayer.related {
     	{
     		//super(width,height,false,true,"Target");
     		
+    		//log.debug("width: " + width);
     		_imageWidth = config.imageWidth;
     		_imageHeight = config.imageHeight;
     		_maxItems = config.items;
@@ -81,11 +82,13 @@ package org.flowplayer.related {
 			if (_config.showReflection) surfaceHeight = -_imageHeight; 
 			//renderer.clipping = new FrustumClipping(FrustumClipping.BOTTOM)
 			viewport.buttonMode = true;
+			//viewport.viewportWidth = width;
+ 			//viewport.viewportHeight = height;
 			
 
 			
 			
-			addEventListener(Event.ENTER_FRAME, loop);
+			
 			addEventListener(Event.ADDED_TO_STAGE, setGradient);
 
     	}
@@ -149,14 +152,34 @@ package org.flowplayer.related {
 		
 		private function loop(event:Event):void
         {			
-			var mouseX:Number = viewport.containerSprite.mouseX;
+			//var mouseX:Number = viewport.containerSprite.mouseX + width;
+			
+			var mouseX:Number = stage.mouseX;
+			var maxScroll:Number = stage.width - this.pageWidth;
+			var percent:Number = mouseX/maxScroll;
+			var scroll:Number = (percent*(this.pageWidth));
+			
+			//scroll = scroll < maxScroll ? maxScroll + (_imageWidth - _margin) : scroll + (_imageWidth + _margin);
+			//log.debug("pageWidth: " + this.stage.width);
+			/*
+			 log.debug("pageWidth: " + this.pageWidth);
+			  log.debug("max scroll: " + maxScroll);
+             log.debug("percent: " + percent);
+             log.debug("scroll" + scroll);*/
+          
+			 
+			//log.debug(mouseX.toString());
             //mouseX = Math.max(0, mouseX);
             //mouseX = Math.min(this.width, mouseX);
    
-            var widthX:Number = stage.width - this.width + imagePadding;
-            var spacing:Number = -(stage.width - pageSpacing) * this.currentPage + imagePadding / 2;
+            //var widthX:Number = stage.width - this.width + imagePadding;
+            //var spacing:Number = -(stage.width - pageSpacing) * this.currentPage + imagePadding / 2;
             //scrollTo(_loc4 - mouseX / this.width * widthX);
-          	this.scrollX = (spacing - (mouseX / this.width) * widthX) + 7 + _imageWidth;
+          	//this.scrollX = (spacing - (mouseX / this.width) * widthX) + 7 + _imageWidth;
+          	//this.scrollX = scroll;
+          	
+          	//this.scrollX = -stage.width;
+          	this.scrollX = scroll;
           	
 			//HydroTween.go(_container, {x: -viewport.containerSprite.mouseX} , 5);
 			this.singleRender();
@@ -165,6 +188,7 @@ package org.flowplayer.related {
         
         private function updateXPosition():void
     	{
+    		//_container.x = -stage.width;
     		_container.x = _container.x - (_container.x - this.scrollX) / 6;
     		//HydroTween.go(_container, {x: _container.x - (_container.x - this.scrollX)} , 3);
     	
@@ -231,11 +255,15 @@ package org.flowplayer.related {
 		
 		private function loadImages():void
 		{
-			this.pageWidth = (_imageWidth + _margin) * _maxItems;
-    		
+			this.pageWidth = (_coverFlowData.length > _maxItems) 
+  							? ((_imageWidth + _margin) * _maxItems)
+  							: ((_imageWidth + _margin) * _coverFlowData.length);
+  							
+    		// log.debug(this.pageWidth.toString());
+    		 
     		this.totalPages = Math.ceil(_coverFlowData.length / _maxItems);
     		
-    		log.debug(totalPages.toString());
+    	
 			updateNavigation();
 				
 			for (var i:int = 0; i < _coverFlowData.length; i++)
@@ -264,8 +292,9 @@ package org.flowplayer.related {
 				plane.scale = 0.5;
 				_container.addChild(plane);
 				
-				var xDist:Number = stage.width-(_currentIndex * (_imageWidth +  _config.horizontalSpacing));
-	
+				//var xDist:Number = stage.width-(_currentIndex * (_imageWidth +  _config.horizontalSpacing));
+				var xDist:Number = (_currentIndex * (_imageWidth +  _config.horizontalSpacing));
+        		
         		HydroTween.go(plane, {x: xDist} , 1);
 			//	plane.y = _config.reflectionSpacing;
 				plane.z = 0;
@@ -292,6 +321,7 @@ package org.flowplayer.related {
         	scene.addChild(_container);
         	
         	//setInterval(scrollTo, intervalSpeed);
+        	addEventListener(Event.ENTER_FRAME, loop);
         	startScrolling();
         	
         	startRendering();
