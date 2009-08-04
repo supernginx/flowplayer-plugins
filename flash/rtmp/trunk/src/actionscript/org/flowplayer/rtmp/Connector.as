@@ -29,10 +29,14 @@ package org.flowplayer.rtmp {
             _failureListener = onFailure;
         }
 
-        public function connect(objectEncoding:uint, ... rest):void {
-            log.debug(this +"::connect()");
+        public function connect(proxyType:String, objectEncoding:uint, ... rest):void {
+            log.debug(this +"::connect() using proxy type '" + proxyType + "'");
+            if (_successListener == null) {
+                log.debug(this + ", this connector has been stopped, will not proceed with connect()");
+                return;
+            }
             _connection = new NetConnection();
-            _connection.proxyType = "best";
+            _connection.proxyType = proxyType;
             _connection.objectEncoding = objectEncoding;
 
             if (_connectionClient) {
@@ -56,6 +60,7 @@ package org.flowplayer.rtmp {
                     _successListener(this, _connection);
                 } else {
                     log.debug("this connector is stopped, will not call successListener");
+                    _connection.close();
                 }
 
             } else if (["NetConnection.Connect.Failed", "NetConnection.Connect.Rejected", "NetConnection.Connect.AppShutdown", "NetConnection.Connect.InvalidApp"].indexOf(event.info.code) >= 0) {
