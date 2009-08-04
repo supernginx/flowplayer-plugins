@@ -67,7 +67,9 @@ package org.flowplayer.rtmp {
 
         public function stop():void {
             log.debug("stop()");
-            _connection.close();
+            if (_connection) {
+                _connection.close();
+            }
             _successListener = null;
         }
 
