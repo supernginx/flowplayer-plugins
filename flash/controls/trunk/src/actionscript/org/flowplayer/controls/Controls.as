@@ -248,9 +248,6 @@ import org.flowplayer.model.PlayerEvent;
             loader = player.createLoader();
             createTimeView();
             addListeners(player.playlist);
-            if (_scrubber) {
-                _scrubber.playlist = player.playlist;
-            }
 //            enableFullscreenButton(player.playlist.current);
 //            enableScrubber(player.playlist.current);
             if (_playButton) {
@@ -317,7 +314,12 @@ import org.flowplayer.model.PlayerEvent;
 			_prevButton = addChildWidget(createWidget(_prevButton, "playlist", PrevButton, _config, animationEngine), ButtonEvent.CLICK, "previous");
 			_muteVolumeButton = addChildWidget(createWidget(_muteVolumeButton, "mute", ToggleVolumeMuteButton, _config, animationEngine), ButtonEvent.CLICK, onMuteVolumeClicked) as AbstractToggleButton;
 			_volumeSlider = addChildWidget(createWidget(_volumeSlider, "volume", VolumeScrubber, _config, animationEngine, this), VolumeSlider.DRAG_EVENT, onVolumeSlider) as VolumeScrubber;
+
 			_scrubber = addChildWidget(createWidget(_scrubber, "scrubber", Scrubber, _config, animationEngine, this), Scrubber.DRAG_EVENT, onScrubbed) as Scrubber;
+            if (_scrubber) {
+                _scrubber.playlist = _player.playlist;
+            }
+
 			createTimeView();
 			createScrubberUpdateTimer();
 			log.debug("created all buttons");
