@@ -1,0 +1,21 @@
+<project name="Flowplayer skinless controlbar" default="deploy">
+
+	<property name="devkit-dir" value="../flowplayer.devkit" />
+	
+	<property file="${devkit-dir}/plugin-build.properties" />
+	<import file="${devkit-dir}/plugin-build.xml"/>
+	<property name="flowplayer_lib" value="${devkit-dir}/flowplayer.swc" />
+	
+	<property name="version" value="3.1.2" />
+	<property name="basename" value="flowplayer.controls-skinless" />
+	<property name="plugin-binary" value="${basename}.swf" />
+	<property name="plugin-binary-versioned" value="${basename}-${version}.swf" />
+	<property name="plugin-main-class" value="org/flowplayer/controls/Controls.as" />
+	<property name="plugin-runtime-lib-swc1" value="src/flash/tube/buttons_tube.swc" />
+	<property name="library-path" value="" />
+    <property name="compiler-define" value="CONFIG::skin,'false'" />
+
+    <target name="release-remote">
+    </target>
+
+</project>
