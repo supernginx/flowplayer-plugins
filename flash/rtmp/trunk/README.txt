@@ -4,6 +4,7 @@ Version history:
 -----
 - Starts RTMP and RTMPT connection attempts in parallel. The one who succeeds first will be used and the other one is discarded.
   The approach is described here: http://kb2.adobe.com/cps/185/tn_18537.html#http_improv
+- New configuration option proxyType. Default value is "best". See http://livedocs.adobe.com/flash/9.0/ActionScriptLangRefV3/flash/net/NetConnection.html#proxyType
 
 3.1.1
 -----
