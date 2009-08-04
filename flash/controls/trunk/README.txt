@@ -1,5 +1,10 @@
 Version history:
 
+3.1.3
+-----
+Fixes:
+- Scrubber stopped moving when seeking if it was not shown initially and later enabled using the widgets() call.
+
 3.1.2
 -----
 - Dispatches events when autohiding: onShowed & onHidden
