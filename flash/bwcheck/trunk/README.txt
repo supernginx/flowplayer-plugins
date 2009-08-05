@@ -4,6 +4,8 @@ Version history:
 -----
 - Now the remembered bitrate is only cached for 24 hours by default. You can control the cache expiry using a new
   config option 'cacheExpiry' where the expiry period is given in seconds.
+- With 'rememberBitrate' enabled now stores the detected bandwidth and the mapping to the bitrate happens every time
+  the remembered bandwidht is used.
 
 3.1.1
 -----
