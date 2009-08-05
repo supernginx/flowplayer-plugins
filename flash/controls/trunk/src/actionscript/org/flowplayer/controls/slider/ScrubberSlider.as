@@ -111,8 +111,8 @@ package org.flowplayer.controls.slider {
 		}
 
 		override protected function get maxDrag():Number {
-			if (_allowRandomSeek) return width;
-			return _bufferEnd * width;
+			if (_allowRandomSeek) return width - _dragger.width;
+			return _bufferEnd * (width - _dragger.width);
 		}
 
 		public function setBufferRange(start:Number, end:Number):void {
