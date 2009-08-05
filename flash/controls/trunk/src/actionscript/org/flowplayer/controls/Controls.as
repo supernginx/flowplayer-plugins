@@ -85,7 +85,6 @@ import org.flowplayer.model.PlayerEvent;
 			height = DEFAULT_HEIGHT;
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
-		
 
 		/**
 		 * Makes buttons and other widgets visible/hidden.
@@ -426,7 +425,7 @@ import org.flowplayer.model.PlayerEvent;
 				if (status.clip) {
 					_scrubber.tooltipTextFunc = function(percentage:Number):String {
                         if (duration == 0) return null;
-						return TimeUtil.formatSeconds(percentage / 100 * duration);
+						return TimeUtil.formatSeconds(Math.min(100, percentage) / 100 * duration);
 					};
 				}
 			}

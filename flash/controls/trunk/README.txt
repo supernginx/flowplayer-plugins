@@ -4,6 +4,7 @@ Version history:
 -----
 Fixes:
 - Scrubber stopped moving when seeking if it was not shown initially and later enabled using the widgets() call.
+- It was possible to move the scrubber to time that was larger than the clip's duration
 
 3.1.2
 -----
