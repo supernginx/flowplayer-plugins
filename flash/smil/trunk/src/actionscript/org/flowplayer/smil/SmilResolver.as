@@ -18,7 +18,9 @@ package org.flowplayer.smil{
     import org.flowplayer.model.Clip;
     import org.flowplayer.model.Plugin;
     import org.flowplayer.model.PluginModel;
+    import org.flowplayer.rtmp.RTMPConnectionProvider;
     import org.flowplayer.util.Log;
+    import org.flowplayer.util.PropertyBinder;
     import org.flowplayer.view.Flowplayer;
 
     public class SmilResolver implements ConnectionProvider, Plugin {
@@ -26,9 +28,9 @@ package org.flowplayer.smil{
         private var _failureListener:Function;
         private var _player:Flowplayer;
         private var _model:PluginModel;
+        private var _config:Config;
         private var _connectionClient:Object;
         private var _successListener:Function;
-        private var _connection:NetConnection;
         private var _streamName:String;
         private var _provider:StreamProvider;
         private var _objectEncoding:uint;
@@ -88,6 +90,8 @@ package org.flowplayer.smil{
 
         public function onConfig(model:PluginModel):void {
             _model = model;
+            _config = new PropertyBinder(new Config()).copyProperties(_model.config) as Config;
+
         }
 
         public function onLoad(player:Flowplayer):void {
@@ -100,16 +104,13 @@ package org.flowplayer.smil{
             return null;
         }
 
-        private function doConnect(clip:Clip, successListener:Function, objectEndocing:uint):void {
-            _connection = new NetConnection();
-            _connection.proxyType = "best";
-            _connection.objectEncoding = objectEndocing;
-
+        private function doConnect(clip:Clip, successListener:Function, objectEncoding:uint):void {
+            log.debug("doConnect()");
+            var provider:RTMPConnectionProvider = new RTMPConnectionProvider(_config.proxyType, _config.netConnectionUrl);
             if (_connectionClient) {
-                _connection.client = _connectionClient;
+                provider.connectionClient = _connectionClient;
             }
-            _connection.addEventListener(NetStatusEvent.NET_STATUS, _onConnectionStatus);
-            _connection.connect(clip.getCustomProperty("netConnectionUrl") as String);
+            provider.connect(null, clip, successListener, objectEncoding);
         }
 
 
@@ -123,18 +124,6 @@ package org.flowplayer.smil{
         private function parseSmil(smilFile:String):Array {
             var smil:XML = new XML(smilFile);
             return [smil.children()[0].children()[0].@base.toString(), smil.children()[1].children()[0].@src.toString()];
-        }
-
-        private function _onConnectionStatus(event:NetStatusEvent):void {
-            log.debug("onConnectionStatus " + event.info.code);
-            if (event.info.code == "NetConnection.Connect.Success" && _successListener != null) {
-                _successListener(_connection);
-            } else if (["NetConnection.Connect.Failed", "NetConnection.Connect.Rejected", "NetConnection.Connect.AppShutdown", "NetConnection.Connect.InvalidApp"].indexOf(event.info.code) >= 0) {
-
-                if (_failureListener != null) {
-                    _failureListener();
-                }
-            }
         }
     }
 }
