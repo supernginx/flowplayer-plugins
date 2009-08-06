@@ -30,7 +30,7 @@ package org.flowplayer.rtmp {
         }
 
         public function connect(proxyType:String, objectEncoding:uint, ... rest):void {
-            log.debug(this +"::connect() using proxy type '" + proxyType + "'");
+            log.debug(this +"::connect() using proxy type '" + proxyType + "'" + ", object encoding " + objectEncoding);
             if (_successListener == null) {
                 log.debug(this + ", this connector has been stopped, will not proceed with connect()");
                 return;
