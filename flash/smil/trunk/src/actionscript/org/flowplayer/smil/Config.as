@@ -10,23 +10,14 @@
 
 package org.flowplayer.smil {
     public class Config {
-        private var _proxyType:String = "best";
-        private var _netConnectionUrl:String;
+        private var _rtmpProvier:String = "rtmp";
 
-        public function get proxyType():String {
-            return _proxyType;
+        public function get rtmpProvier():String {
+            return _rtmpProvier;
         }
 
-        public function set proxyType(value:String):void {
-            _proxyType = value;
-        }
-
-        public function get netConnectionUrl():String {
-            return _netConnectionUrl;
-        }
-
-        public function set netConnectionUrl(value:String):void {
-            _netConnectionUrl = value;
+        public function set rtmpProvier(value:String):void {
+            _rtmpProvier = value;
         }
     }
 }

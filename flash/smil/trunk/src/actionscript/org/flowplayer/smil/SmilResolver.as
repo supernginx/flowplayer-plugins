@@ -10,15 +10,14 @@
 
 package org.flowplayer.smil{
     import flash.events.NetStatusEvent;
-    import flash.net.NetConnection;
 
     import org.flowplayer.controller.ConnectionProvider;
     import org.flowplayer.controller.ResourceLoader;
     import org.flowplayer.controller.StreamProvider;
     import org.flowplayer.model.Clip;
     import org.flowplayer.model.Plugin;
+    import org.flowplayer.model.PluginError;
     import org.flowplayer.model.PluginModel;
-    import org.flowplayer.rtmp.RTMPConnectionProvider;
     import org.flowplayer.util.Log;
     import org.flowplayer.util.PropertyBinder;
     import org.flowplayer.view.Flowplayer;
@@ -35,6 +34,7 @@ package org.flowplayer.smil{
         private var _provider:StreamProvider;
         private var _objectEncoding:uint;
         private var _clip:Clip;
+        private var _rtmpConnectionProvider:ConnectionProvider;
 
         public function connect(provider:StreamProvider, clip:Clip, successListener:Function, objectEncoding: uint, ... rest):void {
             _provider = provider;
@@ -97,7 +97,19 @@ package org.flowplayer.smil{
         public function onLoad(player:Flowplayer):void {
             log.debug("onLoad");
             _player = player;
-            _model.dispatchOnLoad();
+            if (findRtmpProvider()) {
+                _model.dispatchOnLoad();
+            }
+        }
+
+        private function findRtmpProvider():Boolean {
+            var plugin:Object = _player.pluginRegistry.getPlugin(_config.rtmpProvier);
+            if (! plugin) {
+                _model.dispatchError(PluginError.INIT_FAILED, "Unable to find a plugin with name '" + _config.rtmpProvier + "', it must be available for this plugin.");
+                return false;
+            }
+            _rtmpConnectionProvider = StreamProvider(PluginModel(plugin).pluginObject).getDefaultConnectionProvider();
+            return true;
         }
 
         public function getDefaultConfig():Object {
@@ -105,12 +117,9 @@ package org.flowplayer.smil{
         }
 
         private function doConnect(clip:Clip, successListener:Function, objectEncoding:uint):void {
-            log.debug("doConnect()");
-            var provider:RTMPConnectionProvider = new RTMPConnectionProvider(_config.proxyType, _config.netConnectionUrl);
-            if (_connectionClient) {
-                provider.connectionClient = _connectionClient;
-            }
-            provider.connect(null, clip, successListener, objectEncoding);
+            log.debug("doConnect(), calling connect on " + _rtmpConnectionProvider);
+            _rtmpConnectionProvider.connectionClient = _connectionClient;
+            _rtmpConnectionProvider.connect(null, clip, successListener, objectEncoding);
         }
 
 

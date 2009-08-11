@@ -8,7 +8,6 @@
     <orderEntry type="jdk" jdkName="flex_sdk_3" jdkType="Flex SDK Type" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="core" />
-    <orderEntry type="module" module-name="rtmp" />
   </component>
 </module>
 
