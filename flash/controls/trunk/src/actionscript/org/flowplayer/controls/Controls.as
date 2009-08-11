@@ -422,7 +422,13 @@ import org.flowplayer.model.PlayerEvent;
 				if (status.clip) {
 					_scrubber.tooltipTextFunc = function(percentage:Number):String {
                         if (duration == 0) return null;
-						return TimeUtil.formatSeconds(Math.min(100, percentage) / 100 * duration);
+                        if (percentage < 0) {
+                            percentage = 0;
+                        }
+                        if (percentage > 100) {
+                            percentage = 100;
+                        }
+						return TimeUtil.formatSeconds(percentage / 100 * duration);
 					};
 				}
 			}
