@@ -62,7 +62,7 @@ package org.flowplayer.related
 		private var _height:int = 140;
 		private var _width:int;
 		private var _relfectionSpacing:int = 5;
-		private var _horizontalSpacing:int = 11;
+		private var _horizontalSpacing:int = 20;
 		private var _showReflection:Boolean = true;
 		private var _maskRatio:Number = 0.9;
 		
