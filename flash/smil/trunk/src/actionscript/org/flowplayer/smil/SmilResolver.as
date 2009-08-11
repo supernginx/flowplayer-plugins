@@ -119,6 +119,7 @@ package org.flowplayer.smil{
         private function doConnect(clip:Clip, successListener:Function, objectEncoding:uint):void {
             log.debug("doConnect(), calling connect on " + _rtmpConnectionProvider);
             _rtmpConnectionProvider.connectionClient = _connectionClient;
+            _rtmpConnectionProvider.onFailure = _failureListener;
             _rtmpConnectionProvider.connect(null, clip, successListener, objectEncoding);
         }
 
