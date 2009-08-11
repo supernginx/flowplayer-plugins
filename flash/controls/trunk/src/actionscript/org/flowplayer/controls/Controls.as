@@ -363,9 +363,6 @@ import org.flowplayer.model.PlayerEvent;
 			}
 			
 			_widgetMaxHeight = Math.max(_widgetMaxHeight, widget.height);
-//			if (widget.height == _widgetMaxHeight) {
-//				_tallestWidget = widget;
-//			}
 			
 			widget.visible = false;
 			widget.name = name;
@@ -627,7 +624,7 @@ import org.flowplayer.model.PlayerEvent;
 				// arrange from right to left (scrubber takes the remaining space)
 				rightControls = [_fullScreenButton, _volumeSlider, _muteVolumeButton, _timeView];
 				edge = arrangeControls(edge, rightControls, arrangeToRightEdge);
-				edge = arrangeScrubber(leftEdge, edge);
+				edge = arrangeScrubber(leftEdge, edge, firstNonNull(rightControls.reverse(), 0));
 			} else {
 				// no scrubber --> stack from left to right
 				rightControls = [_timeView, _muteVolumeButton, _volumeSlider, _fullScreenButton];
@@ -636,6 +633,13 @@ import org.flowplayer.model.PlayerEvent;
 
 			arrangeVolumeControl();
 		}
+
+        private function firstNonNull(controls:Array, start:int):DisplayObject {
+            for (var i:Number = start; i < controls.length; i++) {
+                if (controls[i]) return controls[i] as DisplayObject;
+            }
+            return null;
+        }
 		
 		private function arrangeControls(edge:Number, controls:Array, arrangeFunc:Function):Number {
 			for (var i:Number = 0; i < controls.length; i++) {
@@ -664,17 +668,19 @@ import org.flowplayer.model.PlayerEvent;
 //			return;
 //		}
 		
-		private function arrangeScrubber(leftEdge:Number, rightEdge:Number):Number {
+		private function arrangeScrubber(leftEdge:Number, rightEdge:Number, nextToRight:DisplayObject):Number {
 			if (! _config.visible.scrubber) return rightEdge;
-			arrangeX(_scrubber, leftEdge);
-			var scrubberWidth:Number = rightEdge - leftEdge - 2 * getSpaceAfterWidget(_scrubber); 
-			if (! _player || _immediatePositioning) { 
-				_scrubber.width = scrubberWidth;
-			} else {
-				_player.animationEngine.animateProperty(_scrubber, "width", scrubberWidth);
-			}
+            _scrubber.setRightEdgeWidth(getScrubberRightEdgeWidth(nextToRight))
+            arrangeX(_scrubber, leftEdge);
+            var scrubberWidth:Number = rightEdge - leftEdge - 2 * getSpaceAfterWidget(_scrubber);
+            if (! _player || _immediatePositioning) {
+                _scrubber.width = scrubberWidth;
+            } else {
+                _player.animationEngine.animateProperty(_scrubber, "width", scrubberWidth);
+            }
             _scrubber.height = height - margins[0] - margins[2];
             _scrubber.y = _height - margins[2] - _scrubber.height;
+            log.debug("arrangeScrubber(), next widget to right is " + nextToRight.name);
 			return rightEdge - getSpaceAfterWidget(_scrubber) - scrubberWidth;
 		}
 	
@@ -719,11 +725,15 @@ import org.flowplayer.model.PlayerEvent;
 
 			Arrange.center(clip, 0, height);
 		}
-	
-		private function getSpaceAfterWidget(widget:DisplayObject):int {
+
+        private function getSpaceAfterWidget(widget:DisplayObject):int {
             return SkinClasses.getSpaceAfterWidget(widget, widget == lastOnRight);
-		}
-		
+        }
+
+        private function getScrubberRightEdgeWidth(nextWidgetToRight:DisplayObject):int {
+            return SkinClasses.getScrubberRightEdgeWidth(nextWidgetToRight);
+        }
+
 		private function get lastOnRight():DisplayObject {
 			if (_fullScreenButton) return _fullScreenButton;
 			if (_volumeSlider) return _volumeSlider;

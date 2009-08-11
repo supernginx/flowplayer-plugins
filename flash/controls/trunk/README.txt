@@ -2,9 +2,12 @@ Version history:
 
 3.1.3
 -----
+- timeBgColor: 'transparent' now hides the background color of the time display
 Fixes:
 - Scrubber stopped moving when seeking if it was not shown initially and later enabled using the widgets() call.
 - It was possible to move the scrubber to time that was larger than the clip's duration
+- The scrubber tooltip time value is now more accurate
+- The tube skin's scrubber no longer extends to touch the button right to it if the time view is hidden
 
 3.1.2
 -----

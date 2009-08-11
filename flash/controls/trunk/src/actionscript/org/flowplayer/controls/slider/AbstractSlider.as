@@ -70,7 +70,7 @@ import org.flowplayer.util.GraphicsUtil;
 
         private function get tooltipText():String {
             if (_tooltipTextFunc == null) return null;
-            return _tooltipTextFunc((mouseX / (width - _dragger.width)) * 100);
+            return _tooltipTextFunc(((mouseX - _dragger.width/2) / (width - _dragger.width)) * 100);
         }
 
         protected function onMouseOut(event:MouseEvent = null):void {
@@ -171,7 +171,7 @@ import org.flowplayer.util.GraphicsUtil;
 		
 		private function onMouseUp(event:MouseEvent = null):void {
 			log.debug("onMouseUp");
-			_tooltip.hide();
+//			_tooltip.hide();
 			if (event && event.target != this) return;
 			if (! canDragTo(mouseX) && _dragger.x > 0) return;
 			_dragTimer.stop();
