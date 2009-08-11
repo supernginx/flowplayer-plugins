@@ -84,7 +84,16 @@ import flash.utils.getDefinitionByName;
                 return clazz["getSpaceAfterWidget"](widget, lastOnRight);
             } catch (e:Error) {
             }
-            return 0;            
+            return 0;
+        }
+
+        public static function getScrubberRightEdgeWidth(nextWidgetToRight:DisplayObject):Number {
+            try {
+                var clazz:Class = getClass("SkinDefaults");
+                return clazz["getScrubberRightEdgeWidth"](nextWidgetToRight);
+            } catch (e:Error) {
+            }
+            return 0;
         }
 
         public static function set skinClasses(val:ApplicationDomain):void {

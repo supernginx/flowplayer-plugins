@@ -49,6 +49,11 @@ package org.flowplayer.controls.slider {
             addChild(_scrubber);
         }
 
+        public function setRightEdgeWidth(width:Number):void {
+            log.debug("setRightEdgeWidth() " + width);
+            _rightEdge.width = width;
+        }
+
         override public function addEventListener(type:String,listener:Function,useCapture:Boolean = false,priority:int = 0,useWeakReference:Boolean = false):void {
             if (type == DRAG_EVENT) {
                 _scrubber.addEventListener(type, listener, useCapture, priority, useWeakReference);
@@ -67,7 +72,7 @@ package org.flowplayer.controls.slider {
             _rightEdge.y = _topEdge.height;
 
             _scrubber.x = _leftEdge.width;
-            _scrubber.setSize(width - _leftEdge.width, (height-_bottomEdge.height) * _config.style.scrubberHeightRatio);
+            _scrubber.setSize(width - _leftEdge.width - _rightEdge.width, (height-_bottomEdge.height) * _config.style.scrubberHeightRatio);
             Arrange.center(_scrubber, 0, height);
 
             _bottomEdge.y = height - _bottomEdge.height;
