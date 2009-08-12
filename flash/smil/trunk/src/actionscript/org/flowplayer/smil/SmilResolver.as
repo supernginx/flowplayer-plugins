@@ -11,9 +11,12 @@
 package org.flowplayer.smil{
     import flash.events.NetStatusEvent;
 
+    import org.flowplayer.controller.ClipURLResolver;
     import org.flowplayer.controller.ConnectionProvider;
     import org.flowplayer.controller.ResourceLoader;
     import org.flowplayer.controller.StreamProvider;
+    import org.flowplayer.controller.StreamProvider;
+    import org.flowplayer.model.Clip;
     import org.flowplayer.model.Clip;
     import org.flowplayer.model.Plugin;
     import org.flowplayer.model.PluginError;
@@ -22,7 +25,7 @@ package org.flowplayer.smil{
     import org.flowplayer.util.PropertyBinder;
     import org.flowplayer.view.Flowplayer;
 
-    public class SmilResolver implements ConnectionProvider, Plugin {
+    public class SmilResolver implements ClipURLResolver, Plugin {
         private var log:Log = new Log(this);
         private var _failureListener:Function;
         private var _player:Flowplayer;
@@ -31,23 +34,19 @@ package org.flowplayer.smil{
         private var _connectionClient:Object;
         private var _successListener:Function;
         private var _streamName:String;
-        private var _provider:StreamProvider;
         private var _objectEncoding:uint;
         private var _clip:Clip;
         private var _rtmpConnectionProvider:ConnectionProvider;
 
-        public function connect(provider:StreamProvider, clip:Clip, successListener:Function, objectEncoding: uint, ... rest):void {
-            _provider = provider;
+        public function resolve(provider:StreamProvider, clip:Clip, successListener:Function):void {
             _successListener = successListener;
-
-            if (clip.getCustomProperty("netConnectionUrl")) {
-                log.debug("clip now has a netConnectionUrl, connecting");
-                doConnect(clip, successListener, objectEncoding);
-                return;
-            }
             _clip = clip;
-            _successListener = successListener;
-            _objectEncoding = objectEncoding;
+
+            //            if (clip.getCustomProperty("netConnectionUrl")) {
+            //                log.debug("clip now has a netConnectionUrl, connecting");
+            //                doConnect(clip, successListener, objectEncoding);
+            //                return;
+            //            }
             loadSmil(_clip.completeUrl, onSmilLoaded);
         }
 
@@ -72,7 +71,7 @@ package org.flowplayer.smil{
 
         private function onSmilLoaded(smilContent:String):void {
             updateClip(_clip, smilContent);
-            doConnect(_clip, _successListener, _objectEncoding);
+            _successListener(_clip);
         }
 
 
@@ -97,43 +96,25 @@ package org.flowplayer.smil{
         public function onLoad(player:Flowplayer):void {
             log.debug("onLoad");
             _player = player;
-            if (findRtmpProvider()) {
-                _model.dispatchOnLoad();
-            }
-        }
-
-        private function findRtmpProvider():Boolean {
-            var plugin:Object = _player.pluginRegistry.getPlugin(_config.rtmpProvier);
-            if (! plugin) {
-                _model.dispatchError(PluginError.INIT_FAILED, "Unable to find a plugin with name '" + _config.rtmpProvier + "', it must be available for this plugin.");
-                return false;
-            }
-            _rtmpConnectionProvider = StreamProvider(PluginModel(plugin).pluginObject).getDefaultConnectionProvider();
-            return true;
+            _model.dispatchOnLoad();
         }
 
         public function getDefaultConfig():Object {
             return null;
         }
 
-        private function doConnect(clip:Clip, successListener:Function, objectEncoding:uint):void {
-            log.debug("doConnect(), calling connect on " + _rtmpConnectionProvider);
-            _rtmpConnectionProvider.connectionClient = _connectionClient;
-            _rtmpConnectionProvider.onFailure = _failureListener;
-            _rtmpConnectionProvider.connect(null, clip, successListener, objectEncoding);
-        }
-
-
         private function updateClip(clip:Clip, smilFile:String):void {
-            log.debug("parsing SMIL file " + smilFile);
             var result:Array = parseSmil(smilFile);
             clip.setCustomProperty("netConnectionUrl", result[0]);
+            clip.baseUrl = null;
             clip.resolvedUrl = result[1];
         }
 
         private function parseSmil(smilFile:String):Array {
+            log.debug("parsing SMIL file " + smilFile);
             var smil:XML = new XML(smilFile);
             return [smil.children()[0].children()[0].@base.toString(), smil.children()[1].children()[0].@src.toString()];
         }
+
     }
 }
