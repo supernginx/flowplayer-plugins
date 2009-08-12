@@ -9,40 +9,45 @@
  */
 
 package org.flowplayer.akamai {
-    import flash.net.NetConnection;
+    import flash.events.NetStatusEvent;
 
-    import flash.net.URLRequest;
-
-    import org.flowplayer.controller.ConnectionProvider;
+    import org.flowplayer.controller.ClipURLResolver;
     import org.flowplayer.controller.ResourceLoader;
+    import org.flowplayer.controller.StreamProvider;
+    import org.flowplayer.model.Clip;
     import org.flowplayer.model.Plugin;
     import org.flowplayer.model.PluginModel;
+    import org.flowplayer.util.Log;
     import org.flowplayer.view.Flowplayer;
 
-    public class AkamaiConnectionProvider extends AbstractAsyncConnectionProvider implements ConnectionProvider, Plugin {
+    public class AkamaiResolver implements ClipURLResolver, Plugin {
 
+        private var log:Log = new Log(this);
         private var _parseResults:Object;
         private var _player:Flowplayer;
         private var _model:PluginModel;
+        private var _failureListener:Function;
+        private var _clip:Clip;
 
-        override protected function doConnect():void {
-            _parseResults = URLUtil.parseURL(clip.completeUrl);
+
+        public function resolve(provider:StreamProvider, clip:Clip, successListener:Function):void {
+            _clip = clip;
+            _parseResults = URLUtil.parseURL(_clip.completeUrl);
             if (!_parseResults.isRTMP) {
                 throw new Error("This is not a RTMP url");
             }
 
-            findAkamaiIP("http://" + _parseResults.serverName);
+            findAkamaiIP("http://" + _parseResults.serverName, successListener);
         }
 
-        public function findAkamaiIP(akamaiAppURL:String):void
-        {
+        public function findAkamaiIP(akamaiAppURL:String, successListener:Function):void{
             log.debug("findAkamaiIP(), requesting " + akamaiAppURL + "/fcs/ident " + _player);
 
             var loader:ResourceLoader = _player.createLoader();
             loader.load(akamaiAppURL + "/fcs/ident/", function(loader:ResourceLoader):void {
                 log.debug("Ident file received " + loader.getContent());
                 updateClip(String(loader.getContent()));
-                connection.connect(clip.getCustomProperty("netConnectionUrl") as String);
+                successListener(_clip);
             }, true);
         }
 
@@ -55,14 +60,14 @@ package org.flowplayer.akamai {
             if (_parseResults.portNumber) {
                 url += ":" + _parseResults.portNumber;
             }
-            url += "/" + getAkamaiAppName(clip.completeUrl);
+            url += "/" + getAkamaiAppName(_clip.completeUrl);
 
             log.debug("netConnectionUrl is " + url);
-            clip.setCustomProperty("netConnectionUrl", url);
-            clip.resolvedUrl = getAkamaiStreamName(clip.completeUrl);
-            clip.url = null;
-            clip.baseUrl = null;
-            log.debug("stream name is " + clip.url);
+            _clip.setCustomProperty("netConnectionUrl", url);
+            _clip.resolvedUrl = getAkamaiStreamName(_clip.completeUrl);
+            _clip.url = null;
+            _clip.baseUrl = null;
+            log.debug("stream name is " + _clip.url);
         }
 
         public function onLoad(player:Flowplayer):void {
@@ -100,6 +105,13 @@ package org.flowplayer.akamai {
                       p.slice(p.indexOf(tempApp)+tempApp.length+1, p.indexOf("_fcs_vhost")-1)
                         : p.slice(p.indexOf(tempApp)+tempApp.length+1, p.length);
             return URLUtil.stripFlvExtension(tempApp);
+        }
+
+        public function set onFailure(listener:Function):void {
+        }
+
+        public function handeNetStatusEvent(event:NetStatusEvent):Boolean {
+            return true;
         }
     }
 }

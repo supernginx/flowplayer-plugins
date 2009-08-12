@@ -15,7 +15,7 @@ package org.flowplayer.akamai {
     public class AkamaiPlugin extends Sprite implements PluginFactory {
 
         public function newPlugin():Object {
-            return new AkamaiConnectionProvider();
+            return new AkamaiResolver();
         }
     }
 }
