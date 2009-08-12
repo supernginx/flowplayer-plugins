@@ -1,5 +1,10 @@
 Version history:
 
+3.1.1
+-----
+Fixes:
+- calling closeBuffering() after the audio had finished caused an exception
+
 3.1.0
 -----
 - compatibility with core 3.1 StreamProvider interface
