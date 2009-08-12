@@ -37,14 +37,14 @@ package org.flowplayer.rtmp {
         }
 
 
-        override public function connect(provider:StreamProvider, clip:Clip, successListener:Function, objectEncoding:uint, ...rest):void {
+        override public function connect(provider:StreamProvider, clip:Clip, successListener:Function, objectEncoding:uint, connectionArgs:Array):void {
 //            clip.onConnectionEvent(onConnectionEvent);
             _clip = clip;
 //            _onSuccess = successListener;
             super.connect(provider, clip, function(connection:NetConnection):void {
                 getStreamLength(connection, clip);
                 successListener(connection);
-            }, objectEncoding, rest);
+            }, objectEncoding, connectionArgs);
         }
 
         private function getStreamLength(connection:NetConnection, clip:Clip):void {
