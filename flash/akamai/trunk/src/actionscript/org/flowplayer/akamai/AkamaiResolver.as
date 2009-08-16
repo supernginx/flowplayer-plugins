@@ -28,16 +28,20 @@ package org.flowplayer.akamai {
         private var _model:PluginModel;
         private var _failureListener:Function;
         private var _clip:Clip;
+        private var _smilResolver:AkamaiSmilResolver = new AkamaiSmilResolver();
 
 
         public function resolve(provider:StreamProvider, clip:Clip, successListener:Function):void {
             _clip = clip;
             _parseResults = URLUtil.parseURL(_clip.completeUrl);
-            if (!_parseResults.isRTMP) {
-                throw new Error("This is not a RTMP url");
+
+            if (_parseResults.isRTMP) {
+                findAkamaiIP("http://" + _parseResults.serverName, successListener);
+            } else {
+                log.debug("resolve(): This is not a RTMP url, assuming it points to a Akamai BOSS smil file");
+                _smilResolver.resolve(provider, clip, successListener);
             }
 
-            findAkamaiIP("http://" + _parseResults.serverName, successListener);
         }
 
         public function findAkamaiIP(akamaiAppURL:String, successListener:Function):void{
