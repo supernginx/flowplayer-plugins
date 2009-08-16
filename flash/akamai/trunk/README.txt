@@ -1,9 +1,10 @@
 Version history:
 
-3.1.1
+3.2.0
 -----
-- refactored to use the RTMP plugin to establish the connection after this plugin has resolved the URL
+- compatible with 3.2 ConnectionProvider and URLResolver API
+- Added support for Akamai BOSS smil files (live streams etc)
 
-3.1.0
+3.1.2
 ------
 - first public release
