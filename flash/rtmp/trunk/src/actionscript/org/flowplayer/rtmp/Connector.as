@@ -27,6 +27,7 @@ package org.flowplayer.rtmp {
             _connectionClient = connectionClient;
             _successListener = onSuccess;
             _failureListener = onFailure;
+            log.debug("created with connection client " + _connectionClient);
         }
 
         public function connect(proxyType:String, objectEncoding:uint, ... rest):void {
@@ -39,6 +40,7 @@ package org.flowplayer.rtmp {
             _connection.proxyType = proxyType;
             _connection.objectEncoding = objectEncoding;
 
+            log.debug("using connection client " + _connectionClient);
             if (_connectionClient) {
                 _connection.client = _connectionClient;
             }

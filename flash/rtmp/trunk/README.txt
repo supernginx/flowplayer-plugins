@@ -1,5 +1,9 @@
 Version history:
 
+3.1.3
+-----
+- compatible with the new ConnectionProvider and URLResolver API
+
 3.1.2
 -----
 - Starts RTMP and RTMPT connection attempts in parallel. The one who succeeds first will be used and the other one is discarded.
