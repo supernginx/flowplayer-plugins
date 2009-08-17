@@ -1,7 +1,9 @@
 /*
  * This file is part of Flowplayer, http://flowplayer.org
  *
- * By: Anssi Piirainen, Flowplayer Oy
+ * By:
+ *     Andreas Reiter
+ *     Anssi Piirainen, Flowplayer Oy
  * Copyright (c) 2009 Flowplayer Oy
  *
  * Released under the MIT License:
@@ -78,9 +80,12 @@ package org.flowplayer.akamai{
             log.debug("======= End of Metafile data ===========");
 
             var protocol:String = bossMetafile.protocol.indexOf("rtmpe") != -1 ? "rtmpe,rtmpte" : "rtmp";
-            _clip.setCustomProperty("netConnectionUrl", protocol + "://" + bossMetafile.serverName + "/" + bossMetafile.appName);
+            _clip.setCustomProperty("netConnectionUrl", protocol + "://" + bossMetafile.serverName + "/" + bossMetafile.appName + (bossMetafile.connectAuthParams ? "?" + bossMetafile.connectAuthParams : ""));
             _clip.live = bossMetafile.isLive;
-            _clip.resolvedUrl = bossMetafile.streamName + "?" + bossMetafile.playAuthParams;
+            if (bossMetafile.isLive) {
+                _clip.setCustomProperty("rtmpSubscribe", true);
+            }
+            _clip.resolvedUrl = bossMetafile.streamName + (bossMetafile.playAuthParams ? "?" + bossMetafile.playAuthParams : "");
             _successListener(_clip);
 		}
 
