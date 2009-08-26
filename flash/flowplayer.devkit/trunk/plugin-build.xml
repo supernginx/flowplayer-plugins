@@ -10,10 +10,10 @@
 	<property name="dist-dir" value="dist" />
 	<property name="lib-dir" value="lib" />
 	<property name="flex-libs-path" value="${flex3libsdir}" />
-	<property name="flowplayer-js-version-info" value="3.1.0" />
-	<property name="src-flowplayer" value="../flowplayer" />
-	<property name="plugin-libs" value="" />
-
+	<property name="flowplayer-js-version-info" value="3.1.2" />
+	<property name="src-flowplayer" value="../core" />
+    <property name="plugin-swc" value="${basename}.swc" />
+ 
 	<condition property="extra.libs" value="" else="${plugin-libs}">
 		<equals arg1="${plugin-libs}" arg2="" />
 	</condition>
@@ -91,7 +91,7 @@
 
             <echo message="compiling with  ${mxmlc-library-path}" />
             <echo message="compiling with  ${mxmlc-define}" />
-            
+
 			<exec executable="${mxmlc_bin}" failonerror="true">
 				<arg line="-source-path @{src} ${mxmlc-library-path} ${mxmlc-sources}" />
                 <arg line="${mxmlc-define}" />
@@ -107,6 +107,7 @@
 				<arg line="-keep-as3-metadata=Value,External" />
 				<arg line="'${src-as}/@{plugin-main-class}'" />
 				<arg line="-output '${build-dir}/@{out}'" />
+                <arg line="-target-player '10.0.0'" />
 			</exec>
 		</sequential>
 	</macrodef>
@@ -121,10 +122,13 @@
                     <condition property="libs" value="" else="-external-library-path @{libs}">
                             <equals arg1="@{libs}" arg2="" />
                     </condition>
+                    <condition property="compc-library-path" value="${library-path}" else="">
+                        <isset property="library-path" />
+                    </condition>
                     <exec executable="${compc_bin}" failonerror="true">
                             <arg line="-source-path @{src}" />
                             <arg line="${libs}" />
-                            <arg line="-library-path ${flex3dir}/frameworks/locale/en_US ${flex-libs-path} ${flowplayer_lib}" />
+                            <arg line="-library-path ${flex3dir}/frameworks/locale/en_US ${flex-libs-path} ${flowplayer_lib} ${compc-library-path}" />
                             <arg line="-include-sources @{sources}" />
             
                             <arg line="-strict=true" />
@@ -159,11 +163,17 @@
 					<include name="*.jpg" />
 				</fileset>
 			</copy>
-			<copy todir="${build-dir}">
-				<fileset dir="${src-flowplayer}/build">
-					<include name="*.swf" />
-				</fileset>
-			</copy>
+            <copy todir="${build-dir}">
+                <fileset dir="${src-flowplayer}/build">
+                    <include name="*.swf" />
+                </fileset>
+            </copy>
+            <echo message="copying js files to build/example" />
+            <copy todir="${build-dir}/example" overwrite="true">
+                <fileset dir="${src-flowplayer}/build">
+                    <include name="*.js" />
+                </fileset>
+            </copy>
 		</sequential>
 	</macrodef>
 	
@@ -173,7 +183,7 @@
 
 	<target name="compile" unless="uptodate.main">
 		<mxmlc.compile src="${src-as}" libs="${extra.libs}" out="${plugin-binary}" plugin-main-class="${plugin-main-class}" />
-		<antcall target="example" />
+		<!--<antcall target="example" />-->
 	</target>
 
 	<target name="example" depends="build" description="prepare the plugin example html files">
@@ -229,6 +239,11 @@
 			</zipfileset>
 		</zip>
 	</target>
+    
+    <target name="write-zip-url">
+<echo file="${url-file}" append="true">&#60;a href="http://flowplayer.org/releases/${basename}/${basename}-${version}.zip"&#62;${basename}-${version}.zip&#60;/a&#62; &#60;br /&#62;
+</echo>
+    </target>
 
 	<target name="source-zip" depends="prepare">
 		<zip destfile="${dist-dir}/${basename}-${version}-src.zip">
