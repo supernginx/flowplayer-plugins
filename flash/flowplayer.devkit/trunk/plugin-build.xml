@@ -14,9 +14,9 @@
 	<property name="src-flowplayer" value="../core" />
     <property name="plugin-swc" value="${basename}.swc" />
  
-	<condition property="extra.libs" value="" else="${plugin-libs}">
-		<equals arg1="${plugin-libs}" arg2="" />
-	</condition>
+	<condition property="extra.libs" value="${plugin-libs}" else="">
+        <isset property="plugin-libs" />
+    </condition>
 
 	<macrodef name="build-plugin">
 		<attribute name="plugin-main-class" />
