@@ -18,28 +18,12 @@ package org.flowplayer.captions.parsers
 	import org.flowplayer.view.FlowStyleSheet;
     import org.flowplayer.view.FlowStyleSheet;
 	
-	public class SRTParser implements CaptionParser
+	public class SRTParser extends AbstractCaptionParser
 	{
 		
 		protected var log:Log = new Log(this);
 		private var _arr:Array = new Array();
-		private var _styles:FlowStyleSheet;
 		private var cueRow:int = 0;
-		
-		public function SRTParser()
-		{
-
-		}
- 		
- 		public function set styles(style:FlowStyleSheet):void
-	    {
-	    	_styles = style;
-	    }		
- 		
-	    public function parse(data:Object):Array
-	    {
-	      	return parseCaptions(data as String);
-	    }
 	     
 	    private function parseRows(item:*, index:int, array:Array):void
     	{
@@ -68,24 +52,19 @@ package org.flowplayer.captions.parsers
 	 		 cue.type = "event";
 	 		 parameters.begin = begin;
 	 		 parameters.end = end;
-	 		 parameters.style = _styles.rootStyleName;	 		 
+	 		 parameters.style = styles.rootStyleName;	 		 
 	 		 parameters.text = text;
 	 		 cue.parameters = parameters;
 	 		 _arr.push(cue);
 	 		 cueRow++;
     	}
 	      
-	      private function parseCaptions(data:String):Array
-	      {
+	      override protected function parseCaptions(data:Object):Array {
 	      	log.debug("parseCaptions");
             var line_break:RegExp = /\n\r?\n/;
             var subtitles:Array = String(data).split(line_break);
 			subtitles.forEach(parseRows);
 			return _arr;
 	      }
-
-        public function get styles():FlowStyleSheet {
-            return _styles;
-        }
     }
 }

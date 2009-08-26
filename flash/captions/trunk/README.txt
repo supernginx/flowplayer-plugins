@@ -1,5 +1,10 @@
 Version history:
 
+3.1.3
+-----
+Fixes:
+- loadCaptions() now removes all previous captions before adding the loaded ones
+
 3.1.2
 ------
 - Now the captions can be initially made invisible by just specifying display: 'none' in the content plugin that is used

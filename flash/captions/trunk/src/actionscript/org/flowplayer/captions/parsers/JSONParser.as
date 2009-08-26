@@ -13,34 +13,13 @@ package org.flowplayer.captions.parsers
 	import org.flowplayer.util.Log;
 	import org.flowplayer.view.FlowStyleSheet;
 	
-	public class JSONParser implements CaptionParser
+	public class JSONParser extends AbstractCaptionParser
 	{
 		
 		protected var log:Log = new Log(this);
 		private var _arr:Array = new Array();
-		private var _styles:FlowStyleSheet;
 		private var cueRow:int = 0;
-		
-		public function JSONParser()
-		{
 
-		}
- 		
- 		public function set styles(style:FlowStyleSheet):void
-	    {
-	    	_styles = style;
-	    }		
-	    
-	    public function get styles():FlowStyleSheet
-	    {
-	    	return _styles;
-	    }
- 		
-	    public function parse(data:Object):Array
-	    {
-	      	return parseCaptions(data as Array);
-	    }
-	     
 	    private function parseRows(item:*, index:int, array:Array):void
     	{    
 	         
@@ -61,7 +40,7 @@ package org.flowplayer.captions.parsers
 	 		 	}	 		 
 	 		 }
 	 		 
-	 		 parameters.style = _styles.rootStyleName;	
+	 		 parameters.style = styles.rootStyleName;	
 	 		 parameters.begin = item.parameters.begin;
 	 		 parameters.end = item.parameters.end - item.parameters.begin;
 	 		 cue.parameters = parameters;
@@ -69,9 +48,8 @@ package org.flowplayer.captions.parsers
 	 		 cueRow++;
     	}
 	      
-	      private function parseCaptions(data:Array):Array
-	      {
-			data.forEach(parseRows);
+	      override protected function parseCaptions(data:Object):Array {
+			(data as Array).forEach(parseRows);
 			return _arr;
 	      }
 	}
