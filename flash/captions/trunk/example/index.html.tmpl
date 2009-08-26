@@ -44,11 +44,14 @@
 			log:  {         
 			     
 				     // other levels are: 'info', 'warning', 'error' which will cause less output 
-				     level: 'debug',
-				     filter: 'org.flowplayer.captions.*, org.flowplayer.captions.parsers.*' 
+				     level: 'error',
+				     filter: 'org.flowplayer.captions.*' 
 				},
             clip: {
-                captionUrl: 'buffalo.srt'
+                captionUrl: 'buffalo.srt',
+                onCuepoint: function(clip, cue) {
+                    console.log("cuepoint", cue);
+                }
             },
 			plugins:  {
             content: {

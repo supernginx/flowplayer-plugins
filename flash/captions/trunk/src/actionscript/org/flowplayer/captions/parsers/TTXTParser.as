@@ -15,7 +15,7 @@ package org.flowplayer.captions.parsers
 	import org.flowplayer.util.Log;
 	import org.flowplayer.view.FlowStyleSheet;
 	
-	public class TTXTParser implements CaptionParser
+	public class TTXTParser extends AbstractCaptionParser
 	{
 		private var tt:Namespace = new Namespace("http://www.w3.org/2006/10/ttaf1");
  		private var tts:Namespace = new Namespace("http://www.w3.org/2006/04/ttaf1#styling");
@@ -47,39 +47,25 @@ package org.flowplayer.captions.parsers
  			return _styles.getStyle("." + style);
  		}
  		
-	      
-        public function parse(data:Object):Array {
+
+        override protected function parseCaptions(data:Object):Array {
             var xml:XML = new XML(data);
-	      	log.debug("got data " + xml);
-	      	log.debug("body " + xml.body);
-	      	log.debug("div " + xml.body.div);
-	      	parseStyles(xml.head.styling.style);
-	      	bodyStyle = xml.body.hasOwnProperty("@style") ? xml.body.@style : _styles.rootStyleName;
-	      	return parseCaptions(xml.body.div);
-	      }
-	      
-	      public function get styles():FlowStyleSheet
-	      {
-	      	return _styles;
-	      }
-	      
-	      public function set styles(style:FlowStyleSheet):void
-	      {
-	      	_styles = style;
-	      }
-	      
-	      private function parseCaptions(div:XMLList):Array
-	      {
-	      	log.debug("parseCaptions! " + div);
-	      	var arr:Array = new Array();
-	      	var i:int = 0;
-	      	
-	      	for each (var property:XML in div)
- 			{
- 				log.debug("found div");
- 				var divStyle:String = property.hasOwnProperty("@style") ? property.@style : bodyStyle;
-				var parent:XML = div.parent().parent();
-	 			var lang:String = property.hasOwnProperty("@lang") ? property.@*::lang : parent.@*::lang;
+            log.debug("got data " + xml);
+            log.debug("body " + xml.body);
+            log.debug("div " + xml.body.div);
+            parseStyles(xml.head.styling.style);
+            bodyStyle = xml.body.hasOwnProperty("@style") ? xml.body.@style : _styles.rootStyleName;
+
+            var arr:Array = new Array();
+            var i:int = 0;
+
+            var div:XMLList = xml.body.div;
+            for each (var property:XML in div)
+            {
+                log.debug("found div");
+                var divStyle:String = property.hasOwnProperty("@style") ? property.@style : bodyStyle;
+                var parent:XML = div.parent().parent();
+                var lang:String = property.hasOwnProperty("@lang") ? property.@*::lang : parent.@*::lang;
 	 			var begin:Number;
 		 		var end:Number;
 		
@@ -123,7 +109,7 @@ package org.flowplayer.captions.parsers
 	      
 	      public function parseStyles(style:XMLList):FlowStyleSheet
 	      {
-			
+
 	      	for each (var styleProperty:XML in style)
 	 		{
 				var styleObj:Object = styleProperty.hasOwnProperty("@style") 
