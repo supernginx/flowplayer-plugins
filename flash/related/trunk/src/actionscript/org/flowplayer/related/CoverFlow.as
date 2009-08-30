@@ -15,6 +15,7 @@ package org.flowplayer.related {
 	import flash.net.URLRequest;
 	import flash.system.LoaderContext;
 	import flash.utils.clearInterval;
+	import flash.utils.setInterval;
 	
 	import org.flowplayer.util.Log;
 	import org.papervision3d.core.effects.view.ReflectionView;
@@ -210,7 +211,7 @@ package org.flowplayer.related {
         private function updateXPosition():void
     	{
     		//_container.x = -stage.width;
-    		//_container.x = _container.x - (_container.x - this.scrollX) / 6;
+    		_container.x = _container.x - (_container.x - this.scrollX) / 6;
     		//HydroTween.go(_container, {x: _container.x - (_container.x - this.scrollX)} , 3);
     	
     		singleRender();
@@ -237,8 +238,10 @@ package org.flowplayer.related {
     		//var pageX:Number = -_currentPage * (this.pageWidth + this.pageSpacing);
 			//var pageX:Number = -_currentPage * (this.pageWidth);
 			var pageX:Number = -(page * (_pageWidth));
-    		HydroTween.go(_container, {x: pageX} , 5,0,null,null,startScrolling);
+    		//HydroTween.go(_container, {x: pageX} , 5,0,null,null,startScrolling);
+    		_container.x = page > 0 ? pageX : -stage.width;
     		
+    		startScrolling();
     		
     	}
     	
@@ -254,7 +257,7 @@ package org.flowplayer.related {
     	
     	private function startScrolling():void
     	{
-    		//containerXInterval = setInterval(updateXPosition, intervalSpeed);
+    		containerXInterval = setInterval(updateXPosition, intervalSpeed);
     	}
     	
     	private function beginScrolling(arg:Object):void
@@ -308,7 +311,7 @@ package org.flowplayer.related {
     		//var pageSpacing:int = 0;
         	pager = new Pager({itemData: _coverFlowData, perPage: _maxItems, pageChangeHandler: pageChangeHandler, nextBtn: nextBtn, prevBtn:prevBtn, pageInfoText: "{0}-{1} of {2}" });
         	pager.currentPageID = 0;
-    		 
+    		setPage(pager.currentPageID);
     		//_totalPages = Math.ceil(_coverFlowData.length / _maxItems);
     		
     		
