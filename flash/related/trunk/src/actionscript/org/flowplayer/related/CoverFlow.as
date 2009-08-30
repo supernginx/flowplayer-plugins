@@ -15,13 +15,8 @@ package org.flowplayer.related {
 	import flash.net.URLRequest;
 	import flash.system.LoaderContext;
 	import flash.utils.clearInterval;
-	import flash.utils.setInterval;
 	
 	import org.flowplayer.util.Log;
-	import org.flowplayer.related.assets.NextBtn;
-	import org.flowplayer.related.assets.PreloadAnimation;
-	import org.flowplayer.related.assets.PrevBtn;
-	
 	import org.papervision3d.core.effects.view.ReflectionView;
 	import org.papervision3d.events.InteractiveScene3DEvent;
 	import org.papervision3d.materials.BitmapMaterial;
@@ -29,6 +24,10 @@ package org.flowplayer.related {
 	import org.papervision3d.objects.DisplayObject3D;
 	import org.papervision3d.objects.primitives.Plane;
 	
+	import org.flowplayer.related.assets.NextBtn;
+	import org.flowplayer.related.assets.PreloadAnimation;
+	import org.flowplayer.related.assets.PrevBtn;
+		
 	public class CoverFlow extends ReflectionView
     {
     	private var _coverFlowData:Array;
@@ -47,21 +46,22 @@ package org.flowplayer.related {
 		
 		
 		private static const Z_FOCUS:Number = -100;
-		private var pageSpacing:Number = 50;
+		private var pageSpacing:Number = 500;
 		private var imagePadding:Number = 100;
 		private var scrollX:Number;
 		private var containerXInterval:int;
 		private var speed:Number = 6;
-		private var totalPages:Number;
-		private var pageWidth:Number;
-		private var currentPage:Number = 1;
+		//private var _totalPages:Number;
+		private var _pageWidth:Number;
+		//private var _currentPage:Number = 0;
 		private var intervalSpeed:Number = 40;
+		private var _pageItems:Array = [];
 		
 		private var prevBtn:Sprite;
 		private var nextBtn:Sprite;
 		private var _maxItems:int;
 		private var _margin:int;
-
+		private var pager:Pager;
 	
 		
     	public function CoverFlow(config:Object):void
@@ -138,7 +138,7 @@ package org.flowplayer.related {
   			nextBtn.addEventListener(MouseEvent.CLICK, nextPage);
   			addChild(nextBtn);
   			
-  			updateNavigation();
+  			//updateNavigation();
 			
     	}
     	
@@ -149,16 +149,37 @@ package org.flowplayer.related {
 
 			scene.removeChild(_container);
     	}
+    	
+    	private function get pageWidth():Number
+    	{
+  							
+  			/*return (pager.totalItems > pager.perPage) 
+  							? (((_imageWidth + margin) * pager.getPageItems(pager.currentPageID)) + (_imageWidth + margin + pageSpacing)
+  							: ((_imageWidth + margin) * pager.totalItems) + (_imageWidth + margin) + margin;*/
+  			return (pager.totalItems > pager.perPage) 
+  							? (((_imageWidth + _margin) * pager.getPageItems(pager.currentPageID)) + (_imageWidth + _margin) + pageSpacing)
+  							: ((_imageWidth + _margin) * pager.totalItems) + (_imageWidth + _margin) + pageSpacing;
+    	}
 		
 		private function loop(event:Event):void
         {			
 			//var mouseX:Number = viewport.containerSprite.mouseX + width;
 			
-			var mouseX:Number = stage.mouseX;
-			var maxScroll:Number = stage.width - this.pageWidth;
-			var percent:Number = mouseX/maxScroll;
-			var scroll:Number = (percent*(this.pageWidth));
 			
+				var mouseX:Number = stage.mouseX;
+				var maxScroll:Number = stage.width - _pageWidth;
+				var percent:Number = mouseX/maxScroll;
+				//var scroll:Number = (percent*(this.pageWidth));
+				var scroll:Number = (percent*(_pageWidth * (pager.currentPageID + 1)));
+				
+				//log.debug(Math.abs(scroll) + " " + this.pageWidth.toString());
+				//log.debug(Math.abs(scroll).toString());
+			//if (Math.abs(scroll) > this.pageWidth) return;
+			
+			//scroll = scroll < maxScroll ? maxScroll + (_imageWidth - _margin - 10) : scroll + (_imageWidth + _margin);
+			
+			
+			this.scrollX = scroll;
 			//scroll = scroll < maxScroll ? maxScroll + (_imageWidth - _margin) : scroll + (_imageWidth + _margin);
 			//log.debug("pageWidth: " + this.stage.width);
 			/*
@@ -173,13 +194,13 @@ package org.flowplayer.related {
             //mouseX = Math.min(this.width, mouseX);
    
             //var widthX:Number = stage.width - this.width + imagePadding;
-            //var spacing:Number = -(stage.width - pageSpacing) * this.currentPage + imagePadding / 2;
+            //var spacing:Number = -(stage.width - pageSpacing) * _currentPage + imagePadding / 2;
             //scrollTo(_loc4 - mouseX / this.width * widthX);
           	//this.scrollX = (spacing - (mouseX / this.width) * widthX) + 7 + _imageWidth;
           	//this.scrollX = scroll;
           	
           	//this.scrollX = -stage.width;
-          	this.scrollX = scroll;
+          	
           	
 			//HydroTween.go(_container, {x: -viewport.containerSprite.mouseX} , 5);
 			this.singleRender();
@@ -189,7 +210,7 @@ package org.flowplayer.related {
         private function updateXPosition():void
     	{
     		//_container.x = -stage.width;
-    		_container.x = _container.x - (_container.x - this.scrollX) / 6;
+    		//_container.x = _container.x - (_container.x - this.scrollX) / 6;
     		//HydroTween.go(_container, {x: _container.x - (_container.x - this.scrollX)} , 3);
     	
     		singleRender();
@@ -197,22 +218,33 @@ package org.flowplayer.related {
     	
     	private function nextPage(event:MouseEvent):void
     	{
-    		setPage(this.currentPage + 1);	
+    		pager.currentPageID = pager.nextPageID;
+    		setPage(pager.currentPageID);	
     	}
     	
     	private function prevPage(event:MouseEvent):void
     	{
-    		setPage(this.currentPage - 1);	
+    		pager.currentPageID = pager.previousPageID;
+    		setPage(pager.currentPageID);	
     	}
     	
     	private function setPage(page:Number):void
     	{
-    		this.currentPage = page;
+    		_pageWidth = this.pageWidth;
+    		//_currentPage = page;
+    		//x_config.pagingListener();
     		stopScrolling();
-    		var pageX:Number = -this.currentPage * (this.pageWidth + this.pageSpacing);
-
+    		//var pageX:Number = -_currentPage * (this.pageWidth + this.pageSpacing);
+			//var pageX:Number = -_currentPage * (this.pageWidth);
+			var pageX:Number = -(page * (_pageWidth));
     		HydroTween.go(_container, {x: pageX} , 5,0,null,null,startScrolling);
-    		updateNavigation();
+    		
+    		
+    	}
+    	
+    	private function pageChangeHandler():void
+    	{
+    		_config.pagingListener();
     	}
     	
     	private function stopScrolling():void
@@ -222,28 +254,20 @@ package org.flowplayer.related {
     	
     	private function startScrolling():void
     	{
-    		containerXInterval = setInterval(updateXPosition, intervalSpeed);
+    		//containerXInterval = setInterval(updateXPosition, intervalSpeed);
     	}
     	
-        
-    	private function updateNavigation():void
+    	private function beginScrolling(arg:Object):void
     	{
- 
-    		if (currentPage == totalPages)
+
+    		if (arg >=_coverFlowData.length - 1)
     		{
-    			nextBtn.visible = false;
-    		} else {
-    			nextBtn.visible = true;
+
+    			//addEventListener(Event.ENTER_FRAME, loop);
+    			//startScrolling();
     		}
-    		
-    		if (currentPage == 1)
-    		{
-    			prevBtn.visible = false;
-    		} else {
-    			prevBtn.visible = true;
-    		}
-    		
     	}
+    	
 		
 		
 		public function set data(data:Array):void
@@ -253,76 +277,146 @@ package org.flowplayer.related {
 			loadImages();
 		}
 		
+		public function getResults():String
+		{
+			return pager.getResults();	
+		}
+		
+		public function get totalPages():Number
+		{
+			return pager.totalPages;
+		}
+		
+		public function get currentPage():Number
+		{
+			return pager.currentPageID;
+		}
+		
+		public function get pageItems():Number
+		{
+			return pager.totalItems;
+		}
+		
 		private function loadImages():void
 		{
-			this.pageWidth = (_coverFlowData.length > _maxItems) 
+			/*this.pageWidth = (_coverFlowData.length > _maxItems) 
   							? ((_imageWidth + _margin) * _maxItems)
-  							: ((_imageWidth + _margin) * _coverFlowData.length);
+  							: ((_imageWidth + _margin) * _coverFlowData.length);*/
   							
     		// log.debug(this.pageWidth.toString());
-    		 
-    		this.totalPages = Math.ceil(_coverFlowData.length / _maxItems);
     		
-    	
-			updateNavigation();
-				
-			for (var i:int = 0; i < _coverFlowData.length; i++)
-        	{
-        		_currentIndex = i;
-        		
-        		var preloadAnimation:Sprite = new PreloadAnimation() as Sprite;
- 				preloadAnimation.width = 20;
- 				preloadAnimation.height = 20;
- 				
- 				var mmaterial:MovieMaterial = new MovieMaterial(preloadAnimation,true,true);
-				mmaterial.allowAutoResize = false;
-				mmaterial.interactive = true;
-				mmaterial.interactive = true ;
-				mmaterial.oneSide = false;
-				mmaterial.smooth = true;
-				mmaterial.rect = new Rectangle( 0, 0, 20,20);
-				
-        		
-        		//var material:BitmapFileMaterial = new BitmapFileMaterial(_coverFlowData[_currentIndex]);
-        		//material.smooth= true;
-				//material.doubleSided = true;
-				//material.interactive = true;
-	
-				var plane:Plane = new Plane( mmaterial, _imageWidth, _imageHeight, 1, 1);
-				plane.scale = 0.5;
-				_container.addChild(plane);
-				
-				//var xDist:Number = stage.width-(_currentIndex * (_imageWidth +  _config.horizontalSpacing));
-				var xDist:Number = (_currentIndex * (_imageWidth +  _config.horizontalSpacing));
-        		
-        		HydroTween.go(plane, {x: xDist} , 1);
-			//	plane.y = _config.reflectionSpacing;
-				plane.z = 0;
-				plane.extra = {planeIndex : _currentIndex, height:  _imageHeight};
-				
-				
-				
-				planes.push(plane);
-				plane.addEventListener(InteractiveScene3DEvent.OBJECT_OVER, onOver);	
-				plane.addEventListener(InteractiveScene3DEvent.OBJECT_OUT, onOut);	
-				plane.addEventListener(InteractiveScene3DEvent.OBJECT_CLICK, onClick);						
-				//plane.addEventListener(InteractiveScene3DEvent.OBJECT_MOVE, onMove);
-				
-				var loader:Loader = new Loader();
- 				
- 				var loaderContext:LoaderContext = new LoaderContext();
-				loaderContext.checkPolicyFile = false;
+    		//var pageSpacing:int = 0;
+        	pager = new Pager({itemData: _coverFlowData, perPage: _maxItems, pageChangeHandler: pageChangeHandler, nextBtn: nextBtn, prevBtn:prevBtn, pageInfoText: "{0}-{1} of {2}" });
+        	pager.currentPageID = 0;
+    		 
+    		//_totalPages = Math.ceil(_coverFlowData.length / _maxItems);
+    		
+    		
 			
- 				loader.load(new URLRequest(_coverFlowData[_currentIndex]));
- 				loader.contentLoaderInfo.addEventListener(Event.COMPLETE,Callback.create(onLoaderComplete,plane));
-
-        	}
+			
+			//var startPos:Number = -(stage.width / 2);
+			
+			//_container.x = startPos;
+			
+			//var page:int = 0;
+        	//var pageSpacing:int = 0;
+        	//var xDist:Number = 0;
+        	var xDist:Number = -stage.width + _margin;
+			//var offset:Number = 0;
+			//var end:Number;
+		
+				
+			var preloadAnimation:Sprite = new PreloadAnimation() as Sprite;
+	 		preloadAnimation.width = 20;
+	 		preloadAnimation.height = 20;
+	 		
+	 		var mmaterial:MovieMaterial = new MovieMaterial(preloadAnimation,true,true);
+			mmaterial.allowAutoResize = false;
+			mmaterial.interactive = true;
+			mmaterial.interactive = true ;
+			mmaterial.oneSide = false;
+			mmaterial.smooth = true;
+			mmaterial.rect = new Rectangle( 0, 0, 20,20);
+	 		
+	 		var pageData:Array = pager.pageData;
+				
+			for (var page:Object in pageData)	
+			//for (var j:int = 0; j < _totalPages; j++)
+			{
+				//offset = j * _maxItems;
+				//end = (_totalPages == 1 ? _coverFlowData.length : offset + _maxItems);
+				//var arr:Array = _coverFlowData.slice(offset, end);
+		
+				
+				//for (var i:int = 0; i < arr.length; i++)
+				//for (var i:int = 0; i < _coverFlowData.length; i++)
+				for (var i:Object in pager.getPageData(Number(page)))
+	        	{
+	        		//_currentIndex = i;
+	        		xDist += (i==0 && Number(page) == 0) ? 0 : (_imageWidth + _margin);
+ 					if (i == 0 && Number(page) >= 1) {
+ 						//log.debug("spacing: " + xDist.toString());
+ 						xDist += pageSpacing;
+ 						//log.debug("spacing: " + xDist.toString());
+ 					}
+	        		
+	        		//log.error(xDist.toString());
+	        		//var material:BitmapFileMaterial = new BitmapFileMaterial(_coverFlowData[_currentIndex]);
+	        		//material.smooth= true;
+					//material.doubleSided = true;
+					//material.interactive = true;
+		
+					var plane:Plane = new Plane( mmaterial, _imageWidth, _imageHeight, 1, 1);
+					plane.scale = 0.5;
+					_container.addChild(plane);
+					
+					//var xDist:Number = (stage.width + stage.width/2)-(_currentIndex * (_imageWidth +  _config.horizontalSpacing));
+					//xDist =  startPos + (_currentIndex * (_imageWidth +  _config.horizontalSpacing));
+	        		HydroTween.go(plane, {x: xDist} , 1, 0,null,beginScrolling,null,[_currentIndex]);
+	        		
+	        		//HydroTween.go(plane, {x: xDist} , 1, 0,null,beginScrolling);
+				//	plane.y = _config.reflectionSpacing;
+					plane.z = 0;
+					plane.extra = {planeIndex : _currentIndex, height:  _imageHeight};
+					
+					
+					
+					planes.push(plane);
+					plane.addEventListener(InteractiveScene3DEvent.OBJECT_OVER, onOver);	
+					plane.addEventListener(InteractiveScene3DEvent.OBJECT_OUT, onOut);	
+					plane.addEventListener(InteractiveScene3DEvent.OBJECT_CLICK, onClick);						
+					//plane.addEventListener(InteractiveScene3DEvent.OBJECT_MOVE, onMove);
+					
+					var loader:Loader = new Loader();
+	 				
+	 				var loaderContext:LoaderContext = new LoaderContext();
+					loaderContext.checkPolicyFile = false;
+				
+	 				//loader.load(new URLRequest(_coverFlowData[_currentIndex]));
+	 				loader.load(new URLRequest(pageData[page][i]));
+	 				//log.debug(_coverFlowData.toString());
+	 				loader.contentLoaderInfo.addEventListener(Event.COMPLETE,Callback.create(onLoaderComplete,plane));
+					
+					_currentIndex++;
+					
+					//_pageItems[page] = i;
+	        	}
+	        	
+	        	//page++;
+   			}
+        	
         	
         	scene.addChild(_container);
         	
-        	//setInterval(scrollTo, intervalSpeed);
+        	//updateNavigation();
+			_config.pagingListener();
+			
         	addEventListener(Event.ENTER_FRAME, loop);
-        	startScrolling();
+    		startScrolling();
+    			
+        	//setInterval(scrollTo, intervalSpeed);
+        	//addEventListener(Event.ENTER_FRAME, loop);
+        	//startScrolling();
         	
         	startRendering();
 		}
