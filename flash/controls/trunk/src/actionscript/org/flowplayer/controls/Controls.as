@@ -686,7 +686,6 @@ import org.flowplayer.model.PlayerEvent;
             }
             _scrubber.height = height - margins[0] - margins[2];
             _scrubber.y = _height - margins[2] - _scrubber.height;
-            log.debug("arrangeScrubber(), next widget to right is " + nextToRight.name);
 			return rightEdge - getSpaceAfterWidget(_scrubber) - scrubberWidth;
 		}
 	
