@@ -28,12 +28,13 @@ package org.flowplayer.securestreaming {
         private var _sharedSecret:String;
 
         public function SecureRTMPConnectionProvider(sharedSecret:String) {
+            log.debug("SecureRTMPConnectionProvider()");
             _sharedSecret = sharedSecret;
         }
 
-        override public function connect(provider:StreamProvider, clip:Clip, successListener:Function, objectEncoding:uint, ...rest):void {
+        override public function connect(provider:StreamProvider, clip:Clip, successListener:Function, objectEncoding:uint, connectionArgs:Array):void {
             log.debug("connect");
-            super.connect(provider, clip, successListener, objectEncoding, rest);
+            super.connect(provider, clip, successListener, objectEncoding, connectionArgs);
         }
 
         override protected function onConnectionStatus(event:NetStatusEvent):void {

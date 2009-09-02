@@ -29,12 +29,15 @@ import flash.events.NetStatusEvent;
         private var _player:Flowplayer;
         private var _failureListener:Function;
         private static const SECRET:String = "sn983pjcnhupclavsnda";
+        private var _mainResolver:ClipURLResolver;
 
-        public function SecureHttpUrlResolver(player:Flowplayer, config:Config, failureListener:Function) {
+        public function SecureHttpUrlResolver(mainResolver:ClipURLResolver, player:Flowplayer, config:Config, failureListener:Function) {
+            _mainResolver = mainResolver;
             _player = player;
             _config = config;
             _failureListener = failureListener;
         }
+
 
         public function resolve(provider:StreamProvider, clip:Clip, successListener:Function):void {
             if (_config.timestamp) {
@@ -54,7 +57,7 @@ import flash.events.NetStatusEvent;
         }
 
         private function doResolve(url:String, clip:Clip, successListener:Function):void {
-            clip.resolvedUrl = url;
+            clip.setResolvedUrl(_mainResolver, url);
             log.debug("resolved url " + clip.completeUrl);
             if (! url) {
                 if (_failureListener != null) {
@@ -77,13 +80,12 @@ import flash.events.NetStatusEvent;
         private function buildClipUrl(timestamp:String, clip:Clip):String {
             if (! timestamp) return null;
 
-            var protection:String;
-
-            if (URLUtil.isCompleteURLWithProtocol(clip.url)) {
+            log.debug("main resolver is " + _mainResolver);
+            if (URLUtil.isCompleteURLWithProtocol(clip.getPreviousResolvedUrl(_mainResolver))) {
                 var parts:Array = URLUtil.baseUrlAndRest(clip.url);
                 return URLUtil.appendToPath(URLUtil.appendToPath(parts[0], generateProtection(timestamp, parts[1])), parts[1]);
             }
-            return URLUtil.appendToPath(generateProtection(timestamp, clip.url), clip.url);
+            return URLUtil.appendToPath(generateProtection(timestamp, clip.getPreviousResolvedUrl(_mainResolver)), clip.url);
         }
 
         private function generateProtection(timestamp:String, file:String):String {
