@@ -46,8 +46,8 @@ import org.flowplayer.model.Plugin;
         /*
          * Connection establishment is used for Wowza
          */
-        public function connect(provider:StreamProvider, clip:Clip, successListener:Function, objectEncoding: uint, ... rest):void {
-            _connectionProvider.connect(provider, clip, successListener, objectEncoding);
+        public function connect(provider:StreamProvider, clip:Clip, successListener:Function, objectEncoding: uint, connectionArgs:Array):void {
+            _connectionProvider.connect(provider, clip, successListener, objectEncoding, connectionArgs);
         }
 
         public function set onFailure(listener:Function):void {
@@ -71,7 +71,7 @@ import org.flowplayer.model.Plugin;
 
         public function onLoad(player:Flowplayer):void {
             _player = player;
-            _httpResolver = new SecureHttpUrlResolver(player, _config, _failureListener);
+            _httpResolver = new SecureHttpUrlResolver(this, player, _config, _failureListener);
             _connectionProvider = new SecureRTMPConnectionProvider(_config.token || SECRET);
             _connectionProvider.connectionClient = _connectionClient;
             _model.dispatchOnLoad();
