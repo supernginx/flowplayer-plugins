@@ -28,12 +28,17 @@ package org.flowplayer.akamai {
         private var _model:PluginModel;
         private var _failureListener:Function;
         private var _clip:Clip;
-        private var _smilResolver:AkamaiSmilResolver = new AkamaiSmilResolver();
+        private var _smilResolver:AkamaiSmilResolver;
+
+        public function AkamaiResolver() {
+            _smilResolver = new AkamaiSmilResolver(this);
+        }
 
 
         public function resolve(provider:StreamProvider, clip:Clip, successListener:Function):void {
             _clip = clip;
             _parseResults = URLUtil.parseURL(_clip.completeUrl);
+            log.debug("resolve(), inspecting what to do with URL " + _clip.completeUrl);
 
             if (_parseResults.isRTMP) {
                 findAkamaiIP("http://" + _parseResults.serverName, successListener);
@@ -68,7 +73,7 @@ package org.flowplayer.akamai {
 
             log.debug("netConnectionUrl is " + url);
             _clip.setCustomProperty("netConnectionUrl", url);
-            _clip.resolvedUrl = getAkamaiStreamName(_clip.completeUrl);
+            _clip.setResolvedUrl(this, getAkamaiStreamName(_clip.completeUrl));
             _clip.url = null;
             _clip.baseUrl = null;
             log.debug("stream name is " + _clip.url);
