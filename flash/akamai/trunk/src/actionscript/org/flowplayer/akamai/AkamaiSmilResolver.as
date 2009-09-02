@@ -41,9 +41,15 @@ package org.flowplayer.akamai{
         private var _provider:StreamProvider;
         private var _objectEncoding:uint;
         private var _clip:Clip;
-        
+        private var _mainResolver:ClipURLResolver;
+
         private var bossMetafile:AkamaiBOSSParser;
         private var ak:AkamaiConnection;
+
+        public function AkamaiSmilResolver(mainResolver:ClipURLResolver) {
+            _mainResolver = mainResolver;
+        }
+
 
         public function resolve(provider:StreamProvider, clip:Clip, successListener:Function):void {
             log.debug("resolve()");
@@ -85,7 +91,7 @@ package org.flowplayer.akamai{
             if (bossMetafile.isLive) {
                 _clip.setCustomProperty("rtmpSubscribe", true);
             }
-            _clip.resolvedUrl = bossMetafile.streamName + (bossMetafile.playAuthParams ? "?" + bossMetafile.playAuthParams : "");
+            _clip.setResolvedUrl(_mainResolver, bossMetafile.streamName + (bossMetafile.playAuthParams ? "?" + bossMetafile.playAuthParams : ""));
             _successListener(_clip);
 		}
 
