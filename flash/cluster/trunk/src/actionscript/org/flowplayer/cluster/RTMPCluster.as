@@ -96,7 +96,7 @@ package org.flowplayer.cluster
             return _hosts;
         }
 
-        public function get host():String
+        public function get nextHost():String
         {
             if (hasMultipleHosts())
             {
