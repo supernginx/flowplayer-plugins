@@ -11,12 +11,17 @@
 package org.flowplayer.bwcheck.servers
 {
 
-	import flash.net.Responder;
-	
 	import org.red5.flash.bwcheck.BandwidthDetection;
 	
 	public class FMSServerClientBandwidth extends BandwidthDetection {
 
+		private var _host:String;
+		
+		public function set host(host:String):void
+		{
+			_host = host;
+		}
+		
 		public function onBWCheck(... rest):Number
 		{
             dispatchStatus(rest);
@@ -25,10 +30,14 @@ package org.flowplayer.bwcheck.servers
 
 		public function onBWDone(... rest):void
 		{
-            log.debug("onBWDone()");
-			var obj:Object = new Object();
-			obj.kbitDown = rest[0];
-			dispatchComplete(obj);
+            if (rest[0] != undefined)
+            {
+	            log.debug("onBWDone() " + rest[0]);
+				var obj:Object = new Object();
+				obj.kbitDown = rest[0];
+				obj.latency = rest[3];
+				dispatchComplete(obj);
+            }
 		}
 		
 		
