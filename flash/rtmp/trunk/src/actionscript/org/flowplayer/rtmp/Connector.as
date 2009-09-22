@@ -30,7 +30,7 @@ package org.flowplayer.rtmp {
             log.debug("created with connection client " + _connectionClient);
         }
 
-        public function connect(proxyType:String, objectEncoding:uint, ... rest):void {
+        public function connect(proxyType:String, objectEncoding:uint, connectionArgs:Array):void {
             log.debug(this +"::connect() using proxy type '" + proxyType + "'" + ", object encoding " + objectEncoding);
             if (_successListener == null) {
                 log.debug(this + ", this connector has been stopped, will not proceed with connect()");
@@ -47,10 +47,29 @@ package org.flowplayer.rtmp {
             _connection.addEventListener(NetStatusEvent.NET_STATUS, onConnectionStatus);
 
             log.debug("netConnectionUrl is " + _url);
-            if (rest.length > 0) {
-                _connection.connect(_url, rest);
+            if (connectionArgs && connectionArgs.length > 0) {
+                doConnect(_connection, _url, connectionArgs);
             } else {
                 _connection.connect(_url);
+            }
+        }
+
+        private function doConnect(connection:NetConnection, url:String, args:Array):void {
+            log.debug("doConnect(): connection arguments " + args.length, args);
+            if (args.length == 5) {
+                connection.connect(url, args[0], args[1], args[2], args[3], args[4]);
+            }
+            if (args.length == 4) {
+                connection.connect(url, args[0], args[1], args[2], args[3]);
+            }
+            if (args.length == 3) {
+                connection.connect(url, args[0], args[1], args[2]);
+            }
+            if (args.length == 2) {
+                connection.connect(url, args[0], args[1]);
+            }
+            if (args.length == 1) {
+                connection.connect(url, args[0]);
             }
         }
 
