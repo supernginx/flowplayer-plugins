@@ -32,7 +32,7 @@ package org.flowplayer.rtmp {
         private var _clip:Clip;
 
         public function DurationQueryingRTMPConnectionProvider(config:Config, durationFunc:String) {
-            super(config.proxyType, config.netConnectionUrl);
+            super(config);
             _durationFunc = durationFunc;
         }
 
