@@ -1,5 +1,9 @@
 Version history:
 
+3.1.4
+-----
+- Timed Text parsing was fixed
+
 3.1.3
 -----
 Fixes:

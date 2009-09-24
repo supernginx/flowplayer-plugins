@@ -21,7 +21,6 @@ package org.flowplayer.captions.parsers
  		private var tts:Namespace = new Namespace("http://www.w3.org/2006/04/ttaf1#styling");
 		private var ttm:Namespace =	new Namespace("http://www.w3.org/2006/10/ttaf1#metadata");	
 		
-		private var _styles:FlowStyleSheet;
 		private var bodyStyle:String;
 		private var _simpleFormatting:Boolean = false;
 		private var cueRow:int = 0;
@@ -44,7 +43,7 @@ package org.flowplayer.captions.parsers
 		
 		private function getStyleObj(style:String):Object
  		{
- 			return _styles.getStyle("." + style);
+ 			return styles.getStyle("." + style);
  		}
  		
 
@@ -54,7 +53,7 @@ package org.flowplayer.captions.parsers
             log.debug("body " + xml.body);
             log.debug("div " + xml.body.div);
             parseStyles(xml.head.styling.style);
-            bodyStyle = xml.body.hasOwnProperty("@style") ? xml.body.@style : _styles.rootStyleName;
+            bodyStyle = xml.body.hasOwnProperty("@style") ? xml.body.@style : styles.rootStyleName;
 
             var arr:Array = new Array();
             var i:int = 0;
@@ -113,7 +112,7 @@ package org.flowplayer.captions.parsers
 	      	for each (var styleProperty:XML in style)
 	 		{
 				var styleObj:Object = styleProperty.hasOwnProperty("@style") 
-				? _styles.getStyle("." + styleProperty.@style)
+				? styles.getStyle("." + styleProperty.@style)
 				: {};
 	
 				for each (var attr:XML in styleProperty.@*)
@@ -126,9 +125,9 @@ package org.flowplayer.captions.parsers
 					}
 				}
 				
-				_styles.setStyle("." + styleProperty.@id, styleObj);
+				styles.setStyle("." + styleProperty.@id, styleObj);
 	 		}
-	 		return _styles;
+	 		return styles;
 	      }
 
 	}
