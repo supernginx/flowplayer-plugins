@@ -11,6 +11,7 @@
 package org.flowplayer.controls {
 	import org.flowplayer.model.DisplayProperties;
 	import org.flowplayer.model.Playlist;
+    import org.flowplayer.model.PluginEvent;
     import org.flowplayer.model.PluginEventType;
     import org.flowplayer.model.PluginModel;
     import org.flowplayer.util.Assert;
@@ -154,6 +155,13 @@ package org.flowplayer.controls {
 			
 			log.debug("mouse pos " + _stage.mouseX + "x" + _stage.mouseY + " mouse on stage " + _mouseOver);
 			if (_mouseOver) return;
+
+            log.debug("dispatching onBeforeHidden");
+            if (! _model.dispatchBeforeEvent(PluginEventType.PLUGIN_EVENT, "onBeforeHidden")) {
+                log.debug("hideControlBar() onHidden event was prevented, not hiding controlbar");
+                return;
+            }
+
 			_player.animationEngine.animate(_controlBar, hiddenPos, 1000, onHidden);
 			_hideTimer.stop();
 		}
@@ -181,7 +189,13 @@ package org.flowplayer.controls {
 					currentProps.bottom = _originalPos.position.bottom;
 				}
 			}
-			
+
+            log.debug("dispatching onBeforeShowed");
+            if (! _model.dispatchBeforeEvent(PluginEventType.PLUGIN_EVENT, "onBeforeShowed")) {
+                log.debug("hideControlBar() onShowed event was prevented, not showing controlbar");
+                return;
+            }
+
 			_player.animationEngine.animate(_controlBar, currentProps, 400, onShowed);			
 		}
 		
