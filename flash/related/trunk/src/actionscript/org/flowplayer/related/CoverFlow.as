@@ -47,13 +47,11 @@ package org.flowplayer.related {
 		
 		
 		private static const Z_FOCUS:Number = -100;
-		private var pageSpacing:Number = 500;
 		private var imagePadding:Number = 100;
 		private var scrollX:Number;
 		private var containerXInterval:int;
 		private var speed:Number = 6;
 		//private var _totalPages:Number;
-		private var _pageWidth:Number;
 		//private var _currentPage:Number = 0;
 		private var intervalSpeed:Number = 40;
 		private var _pageItems:Array = [];
@@ -129,7 +127,7 @@ package org.flowplayer.related {
   			
   			nextBtn = new NextBtn();
 		
-  			nextBtn.x = stage.width - (nextBtn.width + 5);
+  			nextBtn.x = stage.stageWidth - (nextBtn.width + 5);
   			
   			nextBtn.y = 0;
   			
@@ -158,9 +156,15 @@ package org.flowplayer.related {
   							? (((_imageWidth + margin) * pager.getPageItems(pager.currentPageID)) + (_imageWidth + margin + pageSpacing)
   							: ((_imageWidth + margin) * pager.totalItems) + (_imageWidth + margin) + margin;*/
   			return (pager.totalItems > pager.perPage) 
-  							? (((_imageWidth + _margin) * pager.getPageItems(pager.currentPageID)) + (_imageWidth + _margin) + pageSpacing)
-  							: ((_imageWidth + _margin) * pager.totalItems) + (_imageWidth + _margin) + pageSpacing;
+  							? (((_imageWidth + _margin) * (pager.getPageItems(pager.currentPageID)+1)) + pageSpacing) + PAGE_LEFT_MARGIN
+  							: ((_imageWidth + _margin) * (pager.totalItems+1)) + pageSpacing + PAGE_LEFT_MARGIN;
     	}
+
+        private const PAGE_LEFT_MARGIN:Number = 100;
+
+        private function get pageSpacing():Number {
+            return 1000;
+        }
 		
 		private function loop(event:Event):void
         {			
@@ -168,10 +172,12 @@ package org.flowplayer.related {
 			
 			
 				var mouseX:Number = stage.mouseX;
-				var maxScroll:Number = stage.width - _pageWidth;
+				var maxScroll:Number = stage.stageWidth - pageWidth;
 				var percent:Number = mouseX/maxScroll;
+
+
 				//var scroll:Number = (percent*(this.pageWidth));
-				var scroll:Number = (percent*(_pageWidth * (pager.currentPageID + 1)));
+				var scroll:Number = - pager.currentPageID * pageWidth + percent * pageWidth;// (percent*(pageWidth * (pager.currentPageID + 1)));
 				
 				//log.debug(Math.abs(scroll) + " " + this.pageWidth.toString());
 				//log.debug(Math.abs(scroll).toString());
@@ -180,7 +186,7 @@ package org.flowplayer.related {
 			//scroll = scroll < maxScroll ? maxScroll + (_imageWidth - _margin - 10) : scroll + (_imageWidth + _margin);
 			
 			
-			this.scrollX = scroll;
+			this.scrollX = scroll; // + (mouseX > stage.width/2 ? _pageWidth/2 : - pageWidth/2);
 			//scroll = scroll < maxScroll ? maxScroll + (_imageWidth - _margin) : scroll + (_imageWidth + _margin);
 			//log.debug("pageWidth: " + this.stage.width);
 			/*
@@ -231,15 +237,15 @@ package org.flowplayer.related {
     	
     	private function setPage(page:Number):void
     	{
-    		_pageWidth = this.pageWidth;
+            log.debug("setPage() " + page + ", currentPage " + pager.currentPageID);
     		//_currentPage = page;
     		//x_config.pagingListener();
     		stopScrolling();
     		//var pageX:Number = -_currentPage * (this.pageWidth + this.pageSpacing);
 			//var pageX:Number = -_currentPage * (this.pageWidth);
-			var pageX:Number = -(page * (_pageWidth));
+			var pageX:Number = -(page * (pageWidth));
     		//HydroTween.go(_container, {x: pageX} , 5,0,null,null,startScrolling);
-    		_container.x = page > 0 ? pageX : -stage.width;
+    		_container.x = page > 0 ? pageX : -stage.stageWidth;
     		
     		startScrolling();
     		
@@ -324,7 +330,7 @@ package org.flowplayer.related {
 			//var page:int = 0;
         	//var pageSpacing:int = 0;
         	//var xDist:Number = 0;
-        	var xDist:Number = -stage.width + _margin;
+        	var xDist:Number = -stage.stageWidth + _margin;
 			//var offset:Number = 0;
 			//var end:Number;
 		
@@ -356,7 +362,7 @@ package org.flowplayer.related {
 				for (var i:Object in pager.getPageData(Number(page)))
 	        	{
 	        		//_currentIndex = i;
-	        		xDist += (i==0 && Number(page) == 0) ? 0 : (_imageWidth + _margin);
+	        		xDist += (i==0 && Number(page) == 0) ? _margin + PAGE_LEFT_MARGIN : (_imageWidth + _margin);
  					if (i == 0 && Number(page) >= 1) {
  						//log.debug("spacing: " + xDist.toString());
  						xDist += pageSpacing;
@@ -373,7 +379,7 @@ package org.flowplayer.related {
 					plane.scale = 0.5;
 					_container.addChild(plane);
 					
-					//var xDist:Number = (stage.width + stage.width/2)-(_currentIndex * (_imageWidth +  _config.horizontalSpacing));
+					//var xDist:Number = (stage.stageWidth + stage.stageWidth/2)-(_currentIndex * (_imageWidth +  _config.horizontalSpacing));
 					//xDist =  startPos + (_currentIndex * (_imageWidth +  _config.horizontalSpacing));
 	        		HydroTween.go(plane, {x: xDist} , 1, 0,null,beginScrolling,null,[_currentIndex]);
 	        		
