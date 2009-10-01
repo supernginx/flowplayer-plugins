@@ -23,6 +23,16 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>airframework.swc</name>
+			<type>1</type>
+			<locationURI>Flex_3_SDK_1/frameworks/libs/air/airframework.swc</locationURI>
+		</link>
+		<link>
+			<name>airglobal.swc</name>
+			<type>1</type>
+			<locationURI>Flex_3_SDK_1/frameworks/libs/air/airglobal.swc</locationURI>
+		</link>
+		<link>
 			<name>core</name>
 			<type>2</type>
 			<locationURI>AS2_CORE_DEFAULT</locationURI>
@@ -46,6 +56,11 @@
 			<name>rpc.swc</name>
 			<type>1</type>
 			<locationURI>Flex_3_SDK_1/frameworks/libs/rpc.swc</locationURI>
+		</link>
+		<link>
+			<name>servicemonitor.swc</name>
+			<type>1</type>
+			<locationURI>Flex_3_SDK_1/frameworks/libs/air/servicemonitor.swc</locationURI>
 		</link>
 		<link>
 			<name>utilities.swc</name>
