@@ -10,7 +10,7 @@
 	<property name="dist-dir" value="dist" />
 	<property name="lib-dir" value="lib" />
 	<property name="flex-libs-path" value="${flex3libsdir}" />
-	<property name="flowplayer-js-version-info" value="3.1.2" />
+	<property name="flowplayer-js-version-info" value="3.1.4" />
 	<property name="src-flowplayer" value="../core" />
     <property name="plugin-swc" value="${basename}.swc" />
  
@@ -119,17 +119,38 @@
             <attribute name="libs" default="" />
 
             <sequential>
-                    <condition property="libs" value="" else="-external-library-path @{libs}">
-                            <equals arg1="@{libs}" arg2="" />
-                    </condition>
-                    <condition property="compc-library-path" value="${library-path}" else="">
-                        <isset property="library-path" />
-                    </condition>
+            				<condition property="libs" value="" else="-include-libraries @{libs}">
+            					<equals arg1="@{libs}" arg2="" />
+            				</condition>
+            				<condition property="pluginruntimelibs1" value="-runtime-shared-library-path+=${plugin-runtime-lib-swc1},library.swf" else="">
+            							<isset property="plugin-runtime-lib-swc1" />
+            				</condition>
+            				<condition property="pluginruntimelibs2" value="-runtime-shared-library-path+=${plugin-runtime-lib-swc2},library.swf" else="">
+            					<isset property="plugin-runtime-lib-swc2" />
+            				</condition>
+            				<condition property="pluginruntimelibs3" value="-runtime-shared-library-path+=${plugin-runtime-lib-swc3},library.swf" else="">
+            					<isset property="plugin-runtime-lib-swc3" />
+            				</condition>
+            	            <condition property="compc-library-path" value="${library-path}" else="">
+            	                <isset property="library-path" />
+            	            </condition>
+            	            <condition property="compc-define" value="-define=${compiler-define}" else="">
+            	                <isset property="compiler-define" />
+            	            </condition>
+            	            <condition property="compc-sources" value="${extra-sources}" else="">
+            	                <isset property="extra-sources" />
+            	            </condition>
+
+            	            <echo message="compiling lbrary with  ${compc-library-path}" />
+            	            <echo message="compiling with  ${compc-define}" />
+            		
+                   
                     <exec executable="${compc_bin}" failonerror="true">
                             <arg line="-source-path @{src}" />
                             <arg line="${libs}" />
+                    		<arg line="${compc-define}" />
                             <arg line="-library-path ${flex3dir}/frameworks/locale/en_US ${flex-libs-path} ${flowplayer_lib} ${compc-library-path}" />
-                            <arg line="-include-sources @{sources}" />
+                            <arg line="-include-sources @{src}" />
             
                             <arg line="-strict=true" />
                             <arg line="-keep-as3-metadata=External" />
