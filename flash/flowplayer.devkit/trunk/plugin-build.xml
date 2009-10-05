@@ -177,11 +177,16 @@
 
 			<copy todir="${build-dir}/example">
 				<fileset dir="example">
+					<exclude name="*.tmpl"/>
+					
 					<include name="*.js" />
 					<include name="*.html" />
 					<include name="*.css" />
 					<include name="*.png" />
 					<include name="*.jpg" />
+					<include name="*.swf" />
+					<include name="**/css/*" />
+					<include name="**/images/*" />
 				</fileset>
 			</copy>
             <copy todir="${build-dir}">
