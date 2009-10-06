@@ -9,7 +9,8 @@ package org.flowplayer.related
 	{
 		private var _totalItems:Number = 0;
 		private var _totalPages:Number = 0;
-		private var _currentPage:Number = 0;
+        private var _oldPage:Number = 0;
+        private var _currentPage:Number = 0;
 		private var _perPage:Number;
 		private var _itemData:Array;
 		private var _pageData:Array = [];
@@ -96,11 +97,12 @@ package org.flowplayer.related
     	
     	public function set currentPageID(page:Number):void
     	{
-        	_currentPage = page;
+        	_oldPage = _currentPage;
+            _currentPage = page;
         	_updateNavigation();
         	_pageChangeHandler();
     	}
-    	
+
     	public function get previousPageID():Number
 		{
 			return isFirstPage ? 0 : _currentPage - 1;
@@ -145,7 +147,7 @@ package org.flowplayer.related
 	        }
     	}
     	
-    	public function getPageData(pageID:Number = 0):Array
+    	public function getPageData(pageID:Number = -1):Array
     	{
         	pageID = pageID > 0 ? pageID : _currentPage;
 
@@ -166,9 +168,9 @@ package org.flowplayer.related
     		return data[index];
     	}
     	
-    	public function getPageItems(pageID:Number = 0):Number
+    	public function getPageItemCount(pageID:Number = -1):Number
     	{
-    		return getPageData(pageID).length;
+    		return getPageData(pageID >= 0 ? pageID : currentPageID).length;
     	}
     	
     	public function getResults():String
@@ -221,10 +223,10 @@ package org.flowplayer.related
 	        //prevent URL modification
 	        _currentPage = Math.min(_currentPage, _totalPages);
     	}
-    	
-    	
-    	
-    	
 
-	}
+
+        public function get oldPage():Number {
+            return _oldPage;
+        }
+    }
 }

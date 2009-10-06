@@ -58,7 +58,7 @@ package org.flowplayer.related
 			
 		//private var _bottom:int = 10;
 		//private var _left:int = 0;
-		private var _thumbHeight:int = 100;
+//		private var _thumbHeight:int = 100;
 		private var _height:int = 140;
 		private var _width:int;
 		private var _relfectionSpacing:int = 5;
@@ -141,14 +141,13 @@ package org.flowplayer.related
 			_screen = screen;
 		}
 		
-	
-		public function get thumbHeight():int {
-			return _thumbHeight;
-		}
-		
-		public function set thumbHeight(height:int):void {
-			_thumbHeight = height;
-		}
+//		public function get thumbHeight():int {
+//			return _thumbHeight;
+//		}
+//
+//		public function set thumbHeight(height:int):void {
+//			_thumbHeight = height;
+//		}
 		
 		public function get height():int {
 			return _height;
