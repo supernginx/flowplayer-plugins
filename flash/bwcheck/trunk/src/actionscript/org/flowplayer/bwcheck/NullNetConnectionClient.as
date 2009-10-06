@@ -12,5 +12,10 @@ package org.flowplayer.bwcheck {
     internal dynamic class NullNetConnectionClient {
         public function NullNetConnectionClient() {
         }
+        
+        public function onBWDone():void
+        {
+        	
+        }
     }
 }
