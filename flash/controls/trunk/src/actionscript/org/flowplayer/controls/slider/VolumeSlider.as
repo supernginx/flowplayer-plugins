@@ -28,6 +28,7 @@ import org.flowplayer.view.AnimationEngine;
 			super(config, animationEngine, controlbar);
 			tooltipTextFunc = function(percentage:Number):String {
                 if (percentage > 100) return "100%";
+                if (percentage < 0) return "0%";
 				return Math.round(percentage) + "%";
 			};
 		}
