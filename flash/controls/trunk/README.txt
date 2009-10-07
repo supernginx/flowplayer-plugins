@@ -1,5 +1,11 @@
 Version history:
 
+3.1.4
+-----
+- dispatches onBeforeHidden & onBeforeShowed
+Fixes:
+- the volume slider tooltip does not show negative values any more
+
 3.1.3
 -----
 - timeBgColor: 'transparent' now hides the background color of the time display
