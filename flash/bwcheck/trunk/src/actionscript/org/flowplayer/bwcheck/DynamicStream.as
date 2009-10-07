@@ -123,13 +123,18 @@ package org.flowplayer.bwcheck
 		}
 		
 		private function getMaxBandwidth():void {
-			if (bandwidthlimit>-1) {
-				var maxbw:Number =  _netStream.info.maxBytesPerSecond*8/1024;			
-				if (bandwidthlimit>maxbw) _maxBandwidth = maxbw; else _maxBandwidth =  bandwidthlimit;	
-			}
-			else {
-				 _maxBandwidth =  _netStream.info.maxBytesPerSecond*8/1024;		
-			}
+            try {
+                if (bandwidthlimit>-1) {
+                    var maxbw:Number =  _netStream.info.maxBytesPerSecond*8/1024;
+                    if (bandwidthlimit>maxbw) _maxBandwidth = maxbw; else _maxBandwidth =  bandwidthlimit;
+                }
+                else {
+                    _maxBandwidth =  _netStream.info.maxBytesPerSecond*8/1024;
+                }
+            } catch (e: Error) {
+                // an error is thrown if NetStream times out and goes invalid
+                _maxBandwidth = 0;
+            }
 		}
 		
 		private function getQOSAndSwitch(te:TimerEvent):void {
