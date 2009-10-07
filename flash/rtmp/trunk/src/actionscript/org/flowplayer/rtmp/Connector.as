@@ -12,6 +12,8 @@ package org.flowplayer.rtmp {
     import flash.events.NetStatusEvent;
     import flash.net.NetConnection;
 
+    import flash.utils.setTimeout;
+
     import org.flowplayer.util.Log;
 
     public class Connector {
@@ -64,6 +66,16 @@ package org.flowplayer.rtmp {
                     log.debug("this connector is stopped, will not call successListener");
                     _connection.close();
                 }
+                
+            } else if (event.info.code == "NetConnection.Connect.Rejected") {
+                if (event.info.ex && event.info.ex.code == 302) {
+                    log.debug("starting a timeout to connect to a redirected URL " + event.info.ex.redirect);
+                    setTimeout(function():void{
+                        log.debug("connecting to a redirected URL " + event.info.ex.redirect);
+                        _connection.connect(event.info.ex.redirect);
+                    }, 100);
+
+				}
 
             } else if (["NetConnection.Connect.Failed", "NetConnection.Connect.Rejected", "NetConnection.Connect.AppShutdown", "NetConnection.Connect.InvalidApp"].indexOf(event.info.code) >= 0) {
                 if (_failureListener != null) {
