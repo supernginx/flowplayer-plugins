@@ -2,10 +2,14 @@ Version history:
 
 3.1.3
 -----
-- compatible with the new ConnectionProvider and URLResolver API
+- Supports connection redirects as described here: http://www.wowzamedia.com/forums/showthread.php?t=6206#2
+- New configuration option 'connectionArgs' that accepts an array of arguments to be passed to NetConnection.connect().
+  This is needed for example with the Internap CDN.
+- Now correctly recognizes fully qualified RTMP clip urls (no need to specify netConnectionUrl separately)
 
 3.1.2
 -----
+- compatible with the new ConnectionProvider and URLResolver API
 - Starts RTMP and RTMPT connection attempts in parallel. The one who succeeds first will be used and the other one is discarded.
   The approach is described here: http://kb2.adobe.com/cps/185/tn_18537.html#http_improv
 - New configuration option proxyType. Default value is "best". See http://livedocs.adobe.com/flash/9.0/ActionScriptLangRefV3/flash/net/NetConnection.html#proxyType
