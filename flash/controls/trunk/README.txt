@@ -2,7 +2,7 @@ Version history:
 
 3.1.4
 -----
-- dispatches onBeforeHidden & onBeforeShowed
+- new events onBeforeHidden & onBeforeShowed
 Fixes:
 - the volume slider tooltip does not show negative values any more
 
