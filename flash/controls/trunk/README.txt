@@ -1,5 +1,10 @@
 Version history:
 
+3.1.5
+-----
+Fixes:
+- Setting scrubber height ratio using $f().getControls().css({ scrubberHeightRatio: 0.9 }) needed 2 calls to take effect
+
 3.1.4
 -----
 - new events onBeforeHidden & onBeforeShowed
