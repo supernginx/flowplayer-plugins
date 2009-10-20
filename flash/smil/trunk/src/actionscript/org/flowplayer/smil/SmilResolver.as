@@ -39,15 +39,11 @@ package org.flowplayer.smil{
         private var _rtmpConnectionProvider:ConnectionProvider;
 
         public function resolve(provider:StreamProvider, clip:Clip, successListener:Function):void {
+            log.debug("resolve(), resolving " + clip.url);
             _successListener = successListener;
             _clip = clip;
 
-            //            if (clip.getCustomProperty("netConnectionUrl")) {
-            //                log.debug("clip now has a netConnectionUrl, connecting");
-            //                doConnect(clip, successListener, objectEncoding);
-            //                return;
-            //            }
-            loadSmil(_clip.completeUrl, onSmilLoaded);
+            loadSmil(_clip.url, onSmilLoaded);
         }
 
         [External]
@@ -105,9 +101,10 @@ package org.flowplayer.smil{
 
         private function updateClip(clip:Clip, smilFile:String):void {
             var result:Array = parseSmil(smilFile);
+            log.debug("updateClip() baseUrl")
             clip.setCustomProperty("netConnectionUrl", result[0]);
             clip.baseUrl = null;
-            clip.resolvedUrl = result[1];
+            clip.setResolvedUrl(this, result[1]);
         }
 
         private function parseSmil(smilFile:String):Array {
