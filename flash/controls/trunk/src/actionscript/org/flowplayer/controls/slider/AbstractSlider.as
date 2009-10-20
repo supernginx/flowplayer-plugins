@@ -312,7 +312,7 @@ import org.flowplayer.util.GraphicsUtil;
 
 		public function redraw(config:Config):void {
 			_config = config;
-			drawBackground();
+            drawBackground();
 			toggleTooltip();
 			_tooltip.redraw(config);
 		}

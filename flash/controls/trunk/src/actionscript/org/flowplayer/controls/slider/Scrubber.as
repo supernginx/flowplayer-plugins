@@ -99,6 +99,7 @@ package org.flowplayer.controls.slider {
         }
 
         public function redraw(config:Config):void {
+            onResize();
             _scrubber.redraw(config);
         }
 
