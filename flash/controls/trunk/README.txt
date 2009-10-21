@@ -2,6 +2,8 @@ Version history:
 
 3.1.5
 -----
+- Controlbar is now by default centered horizontally. Now when you specify a widht that is less than 100% it by default is
+centered nicely.
 Fixes:
 - Setting scrubber height ratio using $f().getControls().css({ scrubberHeightRatio: 0.9 }) needed 2 calls to take effect
 
