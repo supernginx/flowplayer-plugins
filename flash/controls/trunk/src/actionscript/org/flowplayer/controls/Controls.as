@@ -162,6 +162,28 @@ import org.flowplayer.model.PlayerEvent;
             initTooltipConfig(_config, props);
             redraw(props);
         }
+
+        [External]
+        public function autoHide(props:Object = null):void  {
+            if (! props || (props && props.status  == "never")) {
+                log.debug("setting autoHide to 'never'");
+                _config.autoHide = 'never';
+                if (_controlBarMover) {
+                    _controlBarMover.stop();
+                }
+                return;
+            }
+
+            if (props.delay >= 0) {
+                _config.hideDelay = props.delay;
+            }
+            if (props.status) {
+                log.debug("setting autoHide to '" + props.status + "'");
+                _config.autoHide = props.status;
+                createControlBarMover();
+                _controlBarMover.start();
+            }
+        }
 		
 		/**
 		 * @inheritDoc
@@ -231,11 +253,15 @@ import org.flowplayer.model.PlayerEvent;
 		}
 		private function onAddedToStage(event:Event):void {
 			log.debug("addedToStage, config is " + _config);
-			if (_config.autoHide != 'never' && ! _controlBarMover) {
-				_controlBarMover = new ControlsAutoHide(_pluginModel, _config, _player, stage, this);
-			}
+            createControlBarMover();
 			enableWidgets();
-		}
+        }
+
+        private function createControlBarMover():void {
+            if (_config.autoHide != 'never' && ! _controlBarMover) {
+                _controlBarMover = new ControlsAutoHide(_pluginModel, _config, _player, stage, this);
+            }
+        }
 
 		public function onLoad(player:Flowplayer):void {
 			log.info("received player API! autohide == " + _config.autoHide);
