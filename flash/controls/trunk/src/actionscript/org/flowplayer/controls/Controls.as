@@ -177,9 +177,9 @@ import org.flowplayer.model.PlayerEvent;
             if (props.delay >= 0) {
                 _config.hideDelay = props.delay;
             }
-            if (props.status) {
-                log.debug("setting autoHide to '" + props.status + "'");
-                _config.autoHide = props.status;
+            if (props.state) {
+                log.debug("setting autoHide to '" + props.state + "'");
+                _config.autoHide = props.state;
                 createControlBarMover();
                 _controlBarMover.start();
             }
