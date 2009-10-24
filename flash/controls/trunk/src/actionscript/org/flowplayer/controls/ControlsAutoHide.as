@@ -57,12 +57,12 @@ package org.flowplayer.controls {
             _player = player;
             _stage = stage;
             _controlBar = controlBar;
+
             if (_config.autoHide != "fullscreen") {
-                initTimerAndListeners();
+                startTimerAndInitializeListeners();
             }
             _stage.addEventListener(FullScreenEvent.FULL_SCREEN, onFullScreen);
         }
-
 
 		private function get hiddenPos():DisplayProperties {
 			_originalPos = DisplayProperties(_player.pluginRegistry.getPlugin(_model.name)).clone() as DisplayProperties;
@@ -79,11 +79,11 @@ package org.flowplayer.controls {
 
 		private function onFullScreen(event:FullScreenEvent):void {
 			if (event.fullScreen) {
-				initTimerAndListeners();
+				startTimerAndInitializeListeners();
 				showControlBar();
 			} else {
 				if (_config.autoHide != 'always') {
-					removeTimerAndListeners();
+					stop();
 				}
 				_controlBar.alpha = 0;
 				_player.animationEngine.cancel(_controlBar);
@@ -91,18 +91,40 @@ package org.flowplayer.controls {
 			}
 		}
 		
-		private function removeTimerAndListeners():void {
-			log.debug("removing autoHide timer");
-			_stage.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-			_stage.removeEventListener(Event.RESIZE, onStageResize);
-			if (_hideTimer) {
-				_hideTimer.stop();
-				_hideTimer = null;
-			}
+		public function stop():void {
+			log.debug("stop()");
+            if (! isShowing()) {
+                showControlBar();
+            }
+            stopHideTimer();
+            _stage.removeEventListener(FullScreenEvent.FULL_SCREEN, onFullScreen);
+            _stage.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+            _stage.removeEventListener(Event.RESIZE, onStageResize);
+            _controlBar.removeEventListener(MouseEvent.ROLL_OVER, onMouseOver);
+            _controlBar.removeEventListener(MouseEvent.ROLL_OUT, onMouseOut);
 		}
 
-		private function initTimerAndListeners():void {
-			createHideTimer();
+        public function start():void {
+            showControlBar();
+            log.debug("start(), autoHide is " + _config.autoHide);
+            if (_config.autoHide == 'fullscreen') {
+                if (isInFullscreen()) {
+                    startTimerAndInitializeListeners()();
+                } else {
+                    _stage.addEventListener(FullScreenEvent.FULL_SCREEN, onFullScreen);
+                }
+                return;
+            }
+            if (_config.autoHide == "always") {
+                startTimerAndInitializeListeners();
+                return;
+            }
+        }
+
+		private function startTimerAndInitializeListeners():void {
+            log.debug("startTimerAndInitializeListeners()");
+			startHideTimer();
+            _stage.addEventListener(FullScreenEvent.FULL_SCREEN, onFullScreen);
 			_stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 			_stage.addEventListener(Event.RESIZE, onStageResize);
 			_controlBar.addEventListener(MouseEvent.ROLL_OVER, onMouseOver);
@@ -118,8 +140,9 @@ package org.flowplayer.controls {
 		}
 
 		private function onMouseMove(event:MouseEvent):void {
+            log.debug("onMouseMove()");
 			if (isShowing() && _hideTimer) {
-				log.debug("controlbar already showing"); 
+				log.debug("onMouseMove(): controlbar already showing"); 
 				_hideTimer.stop();
 				_hideTimer.start();
 				return;
@@ -133,19 +156,25 @@ package org.flowplayer.controls {
 		}
 
 		private function onStageResize(event:Event):void {
+            if (! _hideTimer) return;
 			_hideTimer.stop();
 			_hideTimer.start();
 		}
 
-		private function createHideTimer():void {
-			if (_config.autoHide == "fullscreen" &&  ! isInFullscreen()) return;
+		private function startHideTimer():void {
 			if (! _hideTimer) {
 				_hideTimer = new Timer(_config.hideDelay);
 				_hideTimer.addEventListener(TimerEvent.TIMER, hideControlBar);
 			}
 			_hideTimer.start();
 		}
-		
+
+        private function stopHideTimer():void {
+            if (! _hideTimer) return;
+            _hideTimer.stop();
+            _hideTimer = null;
+        }
+
 		private function isInFullscreen():Boolean {
 			return _stage.displayState == StageDisplayState.FULL_SCREEN;
 		}
@@ -202,10 +231,13 @@ package org.flowplayer.controls {
 		private function onShowed():void {
             log.debug("onShowed()");
             _model.dispatch(PluginEventType.PLUGIN_EVENT, "onShowed");
-			_stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-			if (_hideTimer) {
-				_hideTimer.start();
-			}
+            if (_config.autoHide != "never") {
+                _stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+                if (_hideTimer) {
+                    log.debug("onShowed(), autoHide status is '" + _config.autoHide + "', starting hide timer");
+                    _hideTimer.start();
+                }
+            }
 		}
 
 		private function isHardwareScaledFullsreen():Boolean {
