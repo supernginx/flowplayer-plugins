@@ -28,7 +28,6 @@ import flash.events.NetStatusEvent;
         private var _config:Config;
         private var _player:Flowplayer;
         private var _failureListener:Function;
-        private static const SECRET:String = "sn983pjcnhupclavsnda";
         private var _mainResolver:ClipURLResolver;
 
         public function SecureHttpUrlResolver(mainResolver:ClipURLResolver, player:Flowplayer, config:Config, failureListener:Function) {
@@ -89,7 +88,7 @@ import flash.events.NetStatusEvent;
         }
 
         private function generateProtection(timestamp:String, file:String):String {
-            var secret:String = _config.token || SECRET;
+            var secret:String = _config.token;
             log.debug("secret token is " + secret + ", filename is " + "/" + file);
             log.debug(secret + "/" + file + timestamp);
             return MD5.hash(secret + "/" + file + timestamp) + "/" + timestamp ;

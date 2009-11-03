@@ -33,7 +33,6 @@ import org.flowplayer.model.Plugin;
         private var _config:Config;
         private var _player:Flowplayer;
         private var _failureListener:Function;
-        private static const SECRET:String = "sn983pjcnhupclavsnda";
         private var _connectionClient:Object;
 
         /*
@@ -72,7 +71,7 @@ import org.flowplayer.model.Plugin;
         public function onLoad(player:Flowplayer):void {
             _player = player;
             _httpResolver = new SecureHttpUrlResolver(this, player, _config, _failureListener);
-            _connectionProvider = new SecureRTMPConnectionProvider(_config.token || SECRET);
+            _connectionProvider = new SecureRTMPConnectionProvider(_config.token);
             _connectionProvider.connectionClient = _connectionClient;
             _model.dispatchOnLoad();
         }

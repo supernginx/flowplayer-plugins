@@ -13,7 +13,7 @@ package org.flowplayer.securestreaming {
     public class Config {
         private var _timestamp:String;
         private var _timestampUrl:String;
-        private var _token:String;
+        private var _token:String = "sn983pjcnhupclavsnda";
 
         public function get timestampUrl():String {
             return _timestampUrl;
