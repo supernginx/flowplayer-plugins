@@ -49,7 +49,25 @@ package org.flowplayer.related
 		private var _showUrl:Boolean = false;
 		
 		// screen display properties when plugin is shown
-		private var _screen:Object;
+		private var _screen:Object = {
+	    	left: 0,
+			top: 0,
+			opacity: 0.8,
+			height: "50%",
+			width: "50%"
+		}
+		
+		private var _style:Object = {
+			body: { 
+				fontSize: 14, 
+				fontWeight: 'bold',
+				fontFamily: 'Arial',
+				left: 0,
+				bottom: 0,
+				textAlign: 'left',
+				color: '#ffffff'
+			} 
+		}
 		
 		/*
 			position, size and opacity when plugin is shown
@@ -61,6 +79,8 @@ package org.flowplayer.related
 //		private var _thumbHeight:int = 100;
 		private var _height:int = 140;
 		private var _width:int;
+		private var _left:int = 0;
+		private var _bottom:int = 80;
 		private var _relfectionSpacing:int = 5;
 		private var _horizontalSpacing:int = 20;
 		private var _showReflection:Boolean = true;
@@ -141,6 +161,14 @@ package org.flowplayer.related
 			_screen = screen;
 		}
 		
+		public function get style():Object {
+			return _screen;
+		}
+		
+		public function set style(style:Object):void {
+			_style = style;
+		}
+		
 //		public function get thumbHeight():int {
 //			return _thumbHeight;
 //		}
@@ -163,6 +191,22 @@ package org.flowplayer.related
 		
 		public function set width(width:int):void {
 			_width = width;
+		}
+		
+		public function get left():int {
+			return _left;
+		}
+		
+		public function set left(left:int):void {
+			_left = left;
+		}
+		
+		public function get bottom():int {
+			return _bottom;
+		}
+		
+		public function set bottom(bottom:int):void {
+			_bottom = bottom;
 		}
 		
 		public function get relfectionSpacing():int {
