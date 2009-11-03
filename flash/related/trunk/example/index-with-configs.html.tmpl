@@ -107,10 +107,85 @@
 					 objectEncoding: 0
      				 
 				},
+				/*
+				content: {
+					url:'../flowplayer.content.swf',
+					bottom: 20,
+					left: 0,
+					width: '80%',
+					height:40,
+					backgroundColor: 'transparent',
+					backgroundGradient: 'none',
+					border: 0,
+					style: { 
+					    'body': { 
+						fontSize: '14', 
+						fontWeight: 'bold',
+						fontFamily: 'Arial',
+						textAlign: 'left',
+								color: '#ffffff',
+								//backgroundColor:'#000000'
+					    } 
+				    } 
+				},*/
 				related: {
 					url:'@MAIN_PLAYER_SWF@',
-					related: 'related.txt',				
-					width: 400
+					items: 7,
+					showOnFinish: true,
+					//related: 'http://admin.electrocode.net/related/',
+					related: 'related.txt',
+					image: 'thumbnail',
+					title: 'title',
+					subTitle: null,
+					showUrl: false,
+					bottom: 80,
+					relfectionSapcing: 5,
+					horizontalSpacing: 20,
+					maskRatio: 0.9,
+					showReflection: true,
+					
+					left: 0,
+					thumbHeight: 100,
+					height: 140,
+					width: 400,
+					screen: {
+						left: 0,
+						top: 0,
+						opacity: 0.8,
+						height: 200,
+						width: 267
+					},
+					style: { 
+					    'body': { 
+						fontSize: '14', 
+						fontWeight: 'bold',
+						fontFamily: 'Arial',
+						left: 0,
+						bottom: 0,
+						textAlign: 'left',
+								color: '#ffffff',
+								//backgroundColor:'#000000'
+					    } 
+				    }, 
+					onBeforeShow: function() {
+					
+					},
+					
+					onShow: function(loadedClips) { 
+				
+					},
+					
+					onClick: function(relatedClip, index) {  
+				
+					},
+					
+					onBeforeClose: function(selectedClip, index) {
+					
+					}, 
+					
+					onClose: function(selectedClip, index) {
+					
+					}
 				}
 			},
 		
