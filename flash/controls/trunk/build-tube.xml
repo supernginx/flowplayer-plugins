@@ -1,6 +1,7 @@
 <project name="'tube' controlbar for Flowplayer" default="deploy">
 
-    <property file="build.properties" />
+	<property file="${user.home}/plugin.properties" />
+	<property file="build.properties" />
 
     <!-- filename for the plugin swf -->
     <property name="basename" value="flowplayer.controls-tube" />
@@ -8,7 +9,6 @@
     <!-- location of the skin swd, anc swc -->
     <property name="library-path" value="src/flash/tube" />
 
-    <property name="devkit-dir" value="../flowplayer.devkit" />
 
     <property file="${devkit-dir}/plugin-build.properties" />
     <import file="${devkit-dir}/plugin-build.xml"/>
