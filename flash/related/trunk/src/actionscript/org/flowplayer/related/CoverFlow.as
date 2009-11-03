@@ -75,6 +75,7 @@ package org.flowplayer.related {
 
         override public function set height(value:Number):void {
             _imageHeight = value / 2;
+            // _imageHeight = value;
             if (_config.showReflection) {
                 surfaceHeight = - _imageHeight;
             }
@@ -106,18 +107,18 @@ package org.flowplayer.related {
 			holder.cacheAsBitmap = true;
 			
 			viewportReflection.cacheAsBitmap = true;
-			viewportReflection.addChild(holder);
+			//viewportReflection.addChild(holder);
 			holder.x = 0;
 //			holder.y = Math.floor(_imageHeight * _config.maskRatio);
             holder.y = _imageHeight;
 			
-			viewportReflection.mask = holder;
+			//viewportReflection.mask = holder;
     	}
 
         private function createButtons():void {
             prevBtn = new PrevBtn();
             prevBtn.x = 5;
-            prevBtn.y = 0;
+            prevBtn.y = 140;
             prevBtn.buttonMode = true;
             prevBtn.visible = true;
             prevBtn.addEventListener(MouseEvent.CLICK, prevPage);
@@ -126,7 +127,7 @@ package org.flowplayer.related {
             nextBtn = new NextBtn();
 
             nextBtn.x = stage.stageWidth - (nextBtn.width + 5);
-            nextBtn.y = 0;
+            nextBtn.y = 140;
             nextBtn.buttonMode = true;
             nextBtn.visible = true;
             nextBtn.addEventListener(MouseEvent.CLICK, nextPage);
@@ -174,7 +175,6 @@ package org.flowplayer.related {
         private function updateXPosition():void
     	{
     		container.x = container.x - (container.x - this.scrollX) / 6;
-
     		singleRender();
     	}
 
@@ -273,10 +273,10 @@ package org.flowplayer.related {
             var mmaterial:MovieMaterial = new MovieMaterial(preloadAnimation,true,true);
             mmaterial.allowAutoResize = false;
             mmaterial.interactive = true;
-            mmaterial.interactive = true ;
+            //mmaterial.interactive = true;
             mmaterial.oneSide = false;
             mmaterial.smooth = true;
-            mmaterial.rect = new Rectangle( 0, 0, 20,20);
+           // mmaterial.rect = new Rectangle( 0, 0, 20,20);
 
             var pageData:Array = pager.pageData;
 
@@ -289,7 +289,8 @@ package org.flowplayer.related {
                 {
                     xDist += i==0 ? 0 : (_imageWidth + _margin);
 
-					var plane:Plane = new Plane( mmaterial, 30, 30, 1, 1);
+					//var plane:Plane = new Plane( mmaterial, 30, 30, 1, 1);
+					var plane:Plane = new Plane( mmaterial, _imageWidth, _imageHeight, 1, 1);
 //					plane.scale = 0.5;
 					pageContainer.addChild(plane);
 					
@@ -324,10 +325,10 @@ package org.flowplayer.related {
         {
         	
         	var image:Bitmap = event.target.content as Bitmap;
-            image.height = _imageHeight;
-            image.scaleX = image.scaleY;
-//			image.width = _imageWidth;
-//			image.height = _imageHeight;
+         //   image.height = _imageHeight;
+          //  image.scaleX = image.scaleY;
+			image.width = _imageWidth;
+			image.height = _imageHeight;
 			  	
 			var bmp:BitmapMaterial = new BitmapMaterial(image.bitmapData);
 			bmp.doubleSided = true;
@@ -335,17 +336,22 @@ package org.flowplayer.related {
 			bmp.interactive = true;
 
 
-            var container:DisplayObject3D = info["container"];
-            container.removeChild(info["plane"]);
+            //var container:DisplayObject3D = info["container"];
+            //container.removeChild(info["plane"]);
             
-            var plane:Plane = new Plane(bmp, image.width, _imageHeight);
+            /*var plane:Plane = new Plane(bmp, image.width, _imageHeight);
             plane.z = 0;
             plane.extra = {planeIndex : info["index"], height: _imageHeight};
             plane.addEventListener(InteractiveScene3DEvent.OBJECT_OVER, onOver);
             plane.addEventListener(InteractiveScene3DEvent.OBJECT_OUT, onOut);
             plane.addEventListener(InteractiveScene3DEvent.OBJECT_CLICK, onClick);
-            container.addChild(plane);
+            container.addChild(plane);*/
+            
+            var plane:Plane = info["plane"];
+            plane.material = bmp;
             HydroTween.go(plane, {x: info["x"]} , 1, 0, null, null, null, [info["index"]]);
+            
+            
 
 			event.currentTarget.loader.unload();
         }
