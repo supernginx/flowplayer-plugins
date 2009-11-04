@@ -1,0 +1,30 @@
+<project name="Flowplayer ShareEmbed" default="deploy">
+
+	<property file="${user.home}/plugin.properties" />
+	<property file="build.properties" />
+	
+
+	<property file="${devkit-dir}/plugin-build.properties" />
+	<import file="${devkit-dir}/plugin-build.xml"/>
+	<property name="flowplayer_lib" value="${devkit-dir}/flowplayer.swc" />
+	<property name="library-path" value="src/flash"/>
+
+	<property name="plugin-runtime-lib-swc1" value="lib/as3corelib.swc" />
+	<!--<property name="plugin-runtime-lib-swc2" value="lib/goasap.swc" />-->
+
+	<property name="basename" value="flowplayer.related" />
+	<property name="plugin-binary" value="${basename}.swf" />
+	<property name="plugin-binary-versioned" value="${basename}-${version}.swf" />
+	<property name="plugin-main-class" value="org/flowplayer/shareembed/ShareEmbed.as" />
+
+	<target name="release" description="makes a release" depends="build">
+		<copyrelease targetdir="flowplayer.related">
+			<releasefiles>
+				<fileset dir="${build-dir}">
+				    <include name="${plugin-binary-versioned}"/>
+				</fileset>
+			</releasefiles>
+		</copyrelease>
+	</target>
+
+</project>
