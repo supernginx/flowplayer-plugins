@@ -9,7 +9,7 @@
  */
 package org.flowplayer.shareembed {
     import flash.filters.GlowFilter;
-import org.flowplayer.model.DisplayPluginModel;
+	import org.flowplayer.model.DisplayPluginModel;
 	import org.flowplayer.view.FlowStyleSheet;
 	import org.flowplayer.view.Flowplayer;
 	import org.flowplayer.view.StyleableSprite;
@@ -21,21 +21,16 @@ import org.flowplayer.model.DisplayPluginModel;
 	import flash.text.AntiAliasType;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;	
+	import flash.text.TextFieldType;
+	import flash.events.FocusEvent;
 	
-	
-	import fl.controls.Label; 
-	import fl.controls.TextInput; 
-		
+	import org.flowplayer.shareembed.assets.SendBtn;
 
 	/**
 	 * @author api
 	 */
 	internal class EmailView extends StyleableSprite {
 
-		private var _emailToText:TextField;
-		private var _emailFromText:TextField;
-		private var _messageText:TextField;
-		private var _nameText:TextField;
 		
 		private var _textMask:Sprite;
 		private var _closeButton:CloseButton;
@@ -43,7 +38,23 @@ import org.flowplayer.model.DisplayPluginModel;
 		private var _player:Flowplayer;
 		private var _plugin:DisplayPluginModel;
 		private var _originalAlpha:Number;
-
+		
+		private var _formContainer:Sprite;
+		private var _titleLabel:TextField;
+		private var _emailToLabel:TextField;
+		private var _emailToInput:TextField;
+		private var _messageLabel:TextField;
+		private var _messageInput:TextField;
+		private var _nameFromLabel:TextField;
+		private var _nameFromInput:TextField;
+		private var _emailFromLabel:TextField;
+		private var _emailFromInput:TextField;
+		
+		private var _sendBtn:Sprite;
+		
+		private var _xPadding:int = 10;
+		private var _yPadding:int = 5;
+		
 		public function EmailView(plugin:DisplayPluginModel, player:Flowplayer) {
 			super(null, player, player.createLoader());
 			_plugin = plugin;
@@ -55,12 +66,12 @@ import org.flowplayer.model.DisplayPluginModel;
 
 		override protected function onSetStyle(style:FlowStyleSheet):void {
 			log.debug("onSetStyle");
-			createTextField(_text ? _text.htmlText : null);
+			setupForm();
 		}
 
 		override protected function onSetStyleObject(styleName:String, style:Object):void {
 			log.debug("onSetStyleObject");
-			createTextField(_text ? _text.htmlText : null);
+			setupForm();
 		}
 
 		public function set html(htmlText:String):void {
@@ -68,8 +79,8 @@ import org.flowplayer.model.DisplayPluginModel;
 			if (! _htmlText) {
 				_htmlText = "";
 			}
-			_text.htmlText = "<body>" + _htmlText + "</body>";
-			log.debug("set html to " + _text.htmlText);
+			
+		
 		}
 		
 		public function get html():String {
@@ -78,7 +89,7 @@ import org.flowplayer.model.DisplayPluginModel;
 		
 		public function append(htmlText:String):String {
 			html = _htmlText + htmlText;
-			log.debug("appended html to " + _text.htmlText);
+			
 			return _htmlText;
 		}
 
@@ -88,72 +99,221 @@ import org.flowplayer.model.DisplayPluginModel;
 			}
 			createCloseButton(image);
 		}
-
-		private function createTextField(htmlText:String = null):void {
-			log.debug("creating text field for text " + htmlText);
-			if (_text) {
-				removeChild(_text);
-			} 
-			_text = _player.createTextField();
-			_text.blendMode = BlendMode.LAYER;
-			_text.autoSize = TextFieldAutoSize.CENTER;
-			_text.wordWrap = true;
-			_text.multiline = true;
-			_text.antiAliasType = AntiAliasType.ADVANCED;
-			_text.condenseWhite = true;
-
-            log.info("style.textDecoration " + style.textDecoration);
-            if (style.textDecoration == "outline") {
-                log.debug("setting textDecoration")
-                var glow:GlowFilter = new GlowFilter(0, .80, 2, 4, 6);
-                var filters:Array = [glow];
-                _text.filters = filters;
-            }
-
-			addChild(_text);
-			if (style.styleSheet) {
-				_text.styleSheet = style.styleSheet;
-			}
-			if (htmlText) {
-				log.debug("setting html to " + htmlText);
-				html = htmlText;
-			}
-			_textMask = createMask();
-			addChild(_textMask);
-			_text.mask = _textMask;
-			arrangeText();
+		
+		private function createLabelField():TextField
+		{
+			var field:TextField = _player.createTextField();
+			field.selectable = false;
+			field.autoSize = TextFieldAutoSize.LEFT;
+			field.styleSheet = style.styleSheet;
+			return field;
 		}
 		
-		private function arrangeText():void {
-			if (! (_text && style)) return;
-			var padding:Array = style.padding;
-			log.debug("arranging text with padding " + padding + " height is " + height);
-			// only reset values if they change, otherwise there will be visual "blinking" of text/images
-			setTextProperty("y", padding[0]);
-			setTextProperty("x", padding[3]);
-			setTextProperty("height", height - padding[0] - padding[2]);
-			setTextProperty("width", width - padding[1] - padding[3]);
+		private function createInputField():TextField
+		{
+			var field:TextField = _player.createTextField();
+			field.addEventListener(FocusEvent.FOCUS_IN, onTextInputFocusIn);
+			field.addEventListener(FocusEvent.FOCUS_OUT, onTextInputFocusOut);
+			field.type = TextFieldType.INPUT;
+			field.alwaysShowSelection = true;
+			field.tabEnabled = true;
+            field.border = true;
+			return field;
 		}
 		
-		private function setTextProperty(prop:String, value:Number):void {
-			if (_text[prop] != value) {
-				log.debug("setting text property " + prop + " to value " + value);
-				_text[prop] = value;
-			}
+		private function onTextInputFocusIn(event:FocusEvent):void
+		{
+			var field:TextField = event.target as TextField;
+			field.borderColor = 0xCCCCCC;
+		}
+		
+		private function onTextInputFocusOut(event:FocusEvent):void
+		{
+			var field:TextField = event.target as TextField;
+			field.borderColor = 0x000000;
+		}
+		
+		private function titleLabel():TextField
+		{
+			var field:TextField = createLabelField();
+			field.width = 100;
+            field.height = 20;            
+            field.htmlText = "<span class=\"title\">Email this video</span>";
+            return field;
+		}
+		
+		private function emailToLabel():TextField
+		{
+			var field:TextField = createLabelField();            
+			field.width = 150;
+            field.height = 15;
+            field.htmlText = "<span class=\"label\">Type in an email address <span id=" + 
+            		"\"small\">(multiple addresses with commas)</span></span>";
+            return field;
+		}
+		
+		private function emailToInput():TextField
+		{
+			var field:TextField = createInputField();  
+			field.mouseWheelEnabled	= true;
+			field.width = 0.9 * width;
+            field.height = 20;          
+            return field;
+		}
+		
+		private function messageLabel():TextField
+		{
+			var field:TextField = createLabelField();        
+			field.width = 150;
+            field.height = 15;     
+            field.htmlText = "<span class=\"label\">Personal message <span id=" + 
+            		"\"small\">(optional)</span></span>";
+            return field;
+		}
+		
+		private function messageInput():TextField
+		{
+			var field:TextField = createInputField();    
+			field.multiline = true;    
+			field.wordWrap = true;    
+			field.mouseWheelEnabled	= true;
+            field.width = 0.9 * width;
+            field.height = 100;
+            return field;
+		}
+		
+		private function nameFromLabel():TextField
+		{
+			var field:TextField = createLabelField();            
+			field.width = 100;
+            field.height = 15;
+            field.htmlText = "<span class=\"label\">Your name <span id=" + 
+            		"\"small\">(optional)</span></span>";
+            return field;
+		}
+		
+		private function nameFromInput():TextField
+		{
+			var field:TextField = createInputField();     
+			field.width = 0.5 * (width - (3 * _xPadding));
+           	field.height = 20;      
+            return field;
+		}
+		
+		private function emailFromLabel():TextField
+		{
+			var field:TextField = createLabelField();     
+			field.width = 100;
+            field.height = 15;       
+            field.htmlText = "<span class=\"label\">Your email address <span id=" + 
+            		"\"small\">(optional)</span></span>";
+            return field;
+		}
+		
+		private function emailFromInput():TextField
+		{
+			var field:TextField = createInputField();  
+			field.width = 0.5 * (width - (3 * _xPadding));
+            field.height = 20;    
+            return field;
+		}
+
+		private function setupForm():void
+		{
+			_formContainer = new Sprite();
+			
+			addChild(_formContainer);
+			
+			_formContainer.x = 0;
+			_formContainer.y = 0;
+			
+			_titleLabel = titleLabel();
+			_formContainer.addChild(_titleLabel);
+       
+       		_emailToLabel = emailToLabel();
+			_formContainer.addChild(_emailToLabel);
+        
+			_emailToInput = emailToInput();
+            _formContainer.addChild(_emailToInput);
+            
+            _messageLabel = messageLabel();
+            addChild(_messageLabel);
+            	
+            _messageInput = messageInput();
+            _formContainer.addChild(_messageInput);
+
+            
+            _nameFromLabel = nameFromLabel();
+            addChild(_nameFromLabel);
+            
+			
+			_emailFromLabel = emailFromLabel();
+            addChild(_emailFromLabel);
+			
+            _nameFromInput = nameFromInput();
+            _formContainer.addChild(_nameFromInput);
+            
+            
+            _emailFromInput = emailFromInput();
+            _formContainer.addChild(_emailFromInput);
+            
+            _sendBtn = new SendBtn() as Sprite;
+            _sendBtn.buttonMode = true;
+            
+            _formContainer.addChild(_sendBtn);
+            
+            arrangeForm();
+
+		}
+		
+		
+		
+		private function arrangeForm():void {
+			_titleLabel.x = _xPadding;
+            _titleLabel.y = _xPadding;
+            
+            _emailToLabel.x = _xPadding;
+            _emailToLabel.y = _titleLabel.y + _titleLabel.height + (_yPadding * 2);
+            
+            _emailToInput.x = _xPadding;
+            _emailToInput.y = _emailToLabel.y + _emailToLabel.height + _yPadding;
+            
+            _messageLabel.x = _xPadding;
+            _messageLabel.y = _emailToInput.y + _emailToInput.height + _yPadding;
+            
+            _messageInput.x = _xPadding;
+            _messageInput.y = _messageLabel.y + _messageLabel.height + _yPadding;
+            
+            _nameFromLabel.x = _xPadding;
+            _nameFromLabel.y = _messageInput.y + _messageInput.height + _yPadding;
+            
+             _emailFromLabel.x = _nameFromLabel.x + _nameFromLabel.width + _xPadding;
+            _emailFromLabel.y = _messageInput.y + _messageInput.height + _yPadding;
+            
+            _nameFromInput.x = _xPadding;
+            _nameFromInput.y = _nameFromLabel.y + _nameFromLabel.height + _yPadding;
+            
+             _emailFromInput.x = _nameFromInput.x + _nameFromInput.width + _xPadding;
+            _emailFromInput.y = _emailFromLabel.y + _emailFromLabel.height + _yPadding;
+            
+            _sendBtn.x = _xPadding;
+            _sendBtn.y = _nameFromInput.y + _nameFromInput.height + (_yPadding * 2);
 		}
 
 		override protected function onResize():void {
 			arrangeCloseButton();
-			if (_textMask) {
-				_textMask.width = width;
-				_textMask.height = height;
-			}
+			
+			//_formContainer.x = 0;
+			//_formContainer.y = 0;
+			
+			
+			
 			this.x = 0;
 			this.y = 0;
 		}
 
 		override protected function onRedraw():void {
-			arrangeText();
+			//arrangeForm();
 			arrangeCloseButton();
 		}
 		
@@ -191,8 +351,7 @@ import org.flowplayer.model.DisplayPluginModel;
 
 		override public function set alpha(value:Number):void {
 			super.alpha = value;
-			if (! _text) return;
-			_text.alpha = value;
+			
 		}
 	}
 }
