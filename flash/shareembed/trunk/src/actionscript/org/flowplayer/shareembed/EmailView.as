@@ -23,7 +23,16 @@ package org.flowplayer.shareembed {
 	import flash.text.TextFieldAutoSize;	
 	import flash.text.TextFieldType;
 	import flash.events.FocusEvent;
+	import flash.net.URLLoader;
+	import flash.net.URLRequest;
+	import flash.net.URLRequestMethod;
+	import flash.net.URLVariables;
+	import flash.net.URLLoaderDataFormat;
+	import flash.events.Event;
+	import flash.events.IOErrorEvent;
+	import flash.external.ExternalInterface;
 	
+
 	import org.flowplayer.shareembed.assets.SendBtn;
 
 	/**
@@ -31,7 +40,7 @@ package org.flowplayer.shareembed {
 	 */
 	internal class EmailView extends StyleableSprite {
 
-		
+		private var _config:Config;
 		private var _textMask:Sprite;
 		private var _closeButton:CloseButton;
 		private var _htmlText:String;
@@ -52,13 +61,17 @@ package org.flowplayer.shareembed {
 		
 		private var _sendBtn:Sprite;
 		
+		private var _videoURL:String;
+		
 		private var _xPadding:int = 10;
 		private var _yPadding:int = 5;
 		
-		public function EmailView(plugin:DisplayPluginModel, player:Flowplayer) {
+		public function EmailView(plugin:DisplayPluginModel, player:Flowplayer, config:Config) {
 			super(null, player, player.createLoader());
 			_plugin = plugin;
 			_player = player;
+			_config = config;
+		
 
 			createCloseButton();
 		
@@ -259,14 +272,54 @@ package org.flowplayer.shareembed {
             
             _sendBtn = new SendBtn() as Sprite;
             _sendBtn.buttonMode = true;
+            _sendBtn.addEventListener(MouseEvent.MOUSE_DOWN, onSubmit);
             
             _formContainer.addChild(_sendBtn);
+            
+            
+            _videoURL = ExternalInterface.call('function () { return window.location.href; }');
+            
             
             arrangeForm();
 
 		}
 		
+		private function onSubmit(event:MouseEvent):void
+		{
+			var loader:URLLoader = new URLLoader();
+			var request:URLRequest = new URLRequest(_config.emailScriptURL);
+			request.method = URLRequestMethod.POST;	
+			
+	
+			
+			var param:URLVariables = new URLVariables();
+			param.name = _nameFromInput.text;
+			param.email = _emailFromInput.text;
+			param.to = _emailToInput.text;
+			param.message = _messageInput.text + "\n\n <a href=\""+_videoURL+"\>"+_videoURL+"</a>";
+			param.subject = _config.emailSubject;
+	;
+			
+			param.dataFormat = URLLoaderDataFormat.VARIABLES;
+			request.data = param;
+			
+			loader.load(request);
+			loader.addEventListener(Event.COMPLETE, onSendSuccess);
+			loader.addEventListener(IOErrorEvent.IO_ERROR, onSendError);
+		}
 		
+		private function onSendError(event:IOErrorEvent):void
+		{
+			log.debug(event.text);
+		}
+		
+		private function onSendSuccess(event:Event):void
+		{
+			var loader:URLLoader = event.target as URLLoader;
+			
+			log.debug(loader.data.toString());
+			
+		}
 		
 		private function arrangeForm():void {
 			_titleLabel.x = _xPadding;
