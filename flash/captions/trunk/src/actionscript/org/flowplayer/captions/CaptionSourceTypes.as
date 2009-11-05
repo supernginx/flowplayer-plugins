@@ -9,14 +9,14 @@
  */
 package org.flowplayer.captions
 {
-	public class CaptionSourceTypes
-	{
-		public static var EMBEDDED:String = "embedded";
-		public static var EXTERNAL:String = "external";
-		
-		public function CaptionSourceTypes()
-		{
-		}
+    public class CaptionSourceTypes
+    {
+        public static var EMBEDDED:String = "embedded";
+        public static var EXTERNAL:String = "external";
 
-	}
+        public function CaptionSourceTypes()
+        {
+        }
+
+    }
 }

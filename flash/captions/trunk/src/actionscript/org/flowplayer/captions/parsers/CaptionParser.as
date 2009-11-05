@@ -9,7 +9,7 @@
  */
 package org.flowplayer.captions.parsers {
     import org.flowplayer.view.FlowStyleSheet;
-    
+
     public interface CaptionParser {
 
         function parse(data:Object):Array;
