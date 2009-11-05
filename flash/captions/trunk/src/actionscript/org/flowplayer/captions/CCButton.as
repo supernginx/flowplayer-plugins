@@ -37,7 +37,7 @@ package org.flowplayer.captions {
 
         private function drawBackground():void {
             graphics.clear(),
-            graphics.lineStyle(2, 0x555555);
+                    graphics.lineStyle(2, 0x555555);
             graphics.beginFill(0xaaaaaa, 1);
             graphics.drawRoundRect(0, 0, width, height, 6, 6);
             graphics.endFill();
