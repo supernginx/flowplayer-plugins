@@ -60,13 +60,25 @@ package org.flowplayer.shareembed
 		private var _style:Object = {
 			body: { 
 				fontSize: 14, 
-				fontWeight: 'bold',
+				fontWeight: 'normal',
 				fontFamily: 'Arial',
 				left: 0,
 				bottom: 0,
 				textAlign: 'left',
 				color: '#ffffff'
-			} 
+			},
+			title: {
+				fontSize: 23	
+			},
+			label: {
+				fontSize: 12	
+			},
+			input: {
+				fontSize: 12
+			},
+			small: {
+				fontSize: 8		
+			}
 		}
 		
 		/*
