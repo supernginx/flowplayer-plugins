@@ -24,9 +24,9 @@ package org.flowplayer.shareembed {
 	import flash.text.TextFieldType;
 	import flash.events.FocusEvent;
 	import flash.net.URLRequest;
-	
-	import mx.utils.StringUtil;
-	
+
+	import com.ediblecode.util.StringUtil;
+
 	import flash.net.navigateToURL;
 	import flash.external.ExternalInterface;
 
@@ -120,21 +120,23 @@ package org.flowplayer.shareembed {
 		
 		private function shareFacebook(event:MouseEvent):void
 		{
-			var url:String = StringUtil.substitute(_facebookURL, "The video", _videoURL);
+		
+			var url:String = StringUtil.formatString(_facebookURL, "The video", _videoURL);
+	
 			
 			navigateToURL(new URLRequest(url), "_blank");
 		}
 		
 		private function shareMyspace(event:MouseEvent):void
 		{
-			var url:String = StringUtil.substitute(_myspaceURL, "The video", _videoURL);
+			var url:String = StringUtil.formatString(_myspaceURL, "The video", _videoURL);
 			
 			navigateToURL(new URLRequest(url), "_blank");
 		}
 		
 		private function shareTwitter(event:MouseEvent):void
 		{
-			var url:String = StringUtil.substitute(_twitterURL, "The video", _videoURL);
+			var url:String = StringUtil.formatString(_twitterURL, "The video", _videoURL);
 			
 			navigateToURL(new URLRequest(url), "_blank");
 		}
