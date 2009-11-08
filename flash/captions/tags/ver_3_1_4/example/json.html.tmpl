@@ -1,0 +1,125 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<!-- A minimal Flowplayer setup to get you started -->
+  
+
+	<!-- 
+		include flowplayer JavaScript file that does  
+		Flash embedding and provides the Flowplayer API.
+	-->
+	<script type="text/javascript" src="jquery-1.2.6.min.js"></script>
+	<script type="text/javascript" src="flowplayer-@FLOWPLAYER_JS_VERSION_INFO@.min.js"></script>
+	
+	<!-- some minimal styling, can be removed -->
+	<link rel="stylesheet" type="text/css" href="style.css">
+	
+	<!-- page title -->
+	<title>Captions Plugin with Json Config</title>
+
+</head><body>
+
+	<div id="page">
+		
+		<h1>Captions Plugin with Json Config</h1>
+		
+		<p></p>
+
+		<!-- this A tag is where your Flowplayer will be placed. it can be anywhere -->
+		<a  
+			 href="http://blip.tv/file/get/KimAronson-TwentySeconds73213.flv"  
+			 style="display:block;width:400px;height:300px"  
+			 id="captions"> 
+		</a> 
+		
+	
+		<!-- this will install flowplayer inside previous A- tag. -->
+
+		
+		<script>
+		$f("captions", {src:"@PLAYER_SWF@",bgcolor:'#333333'}, {
+			screen: {
+				top:0	
+			},
+			
+			log:  {         
+			     
+				     // other levels are: 'info', 'warning', 'error' which will cause less output 
+				     level: 'info' 
+				},
+			plugins:  {
+			    content: {
+					url:'../flowplayer.content.swf',
+					bottom: 25,
+					width: '80%',
+					height:40,
+					opacity:0.97,
+					alpha: 1,
+					backgroundColor:'transparent',
+					backgroundGradient:'low',
+					borderRadius: 4,
+					border: 0,
+					style: { 
+			            'body': { 
+			                fontSize: '14', 
+			                fontFamily: 'Arial',
+			                textAlign: 'center',
+							color: '#000000',
+							//backgroundColor:'#000000'
+			            } 
+			        } 
+				},
+		
+				controls: {
+					autoHide:'always'		
+				},
+				
+				captions: {
+					url:'@MAIN_PLAYER_SWF@',
+					captionUrl: 'timedtext.xml',
+					captionType: 'external',
+					captionTarget: 'content',
+					captions: [
+						{
+						time: 1,
+						name: 'cue1',
+						parameters: {
+							begin: 1,
+							end: 5,
+							text: 'hello'
+							}
+						},
+						{
+						time: 6,
+						name: 'cue2',
+						parameters: {
+							begin: 6,
+							end: 7,
+							text: 'hello2'
+							}
+						},
+						{
+						time: 8,
+						name: 'cue3',
+						parameters: {
+							begin: 8,
+							end: 10,
+							text: 'hello3'
+							}
+						},
+						
+					]
+				}
+			},
+		
+		
+		});
+		
+		//}}}
+		</script>
+
+		
+		
+	</div>
+	
+	
+</body></html>
