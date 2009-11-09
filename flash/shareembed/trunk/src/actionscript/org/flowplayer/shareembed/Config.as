@@ -15,6 +15,10 @@ package org.flowplayer.shareembed
 		// max amount of visible items
 		private var _emailScriptURL:String = "email.php";
 		private var _emailSubject:String = "Video you might be interested in";
+		private var _usePopup:Boolean = true;
+		private var _shareSubject:String = "The video";
+		private var _shareBody:String = "Share Body";
+		private var _shareCategory:String = "video";
 		
 		
 		// screen display properties when plugin is shown
@@ -25,6 +29,17 @@ package org.flowplayer.shareembed
 			height: "50%",
 			width: "50%"
 		}
+		
+		private var _popUpDimensions:Object = {
+			facebook: [440,620],
+			myspace: [650,1024],
+			twitter: [650,1024],
+			bebo: [436,626],
+			orkut: [650,1024],
+			digg: [650,1024],
+			stumbleupon: [650,1024],
+			livespaces: [650,1024]
+		};
 		
 		private var _style:Object = {
 			body: { 
@@ -63,11 +78,43 @@ package org.flowplayer.shareembed
 			return _emailSubject;
 		}
 		
-		public function set emailSubject(url:String):void {
-			_emailSubject = url;
+		public function set emailSubject(value:String):void {
+			_emailSubject = value;
 		}
 		
-	
+		public function set usePopup(value:Boolean):void {
+			_usePopup = value;
+		}
+		
+		public function get usePopup():Boolean
+		{
+			return _usePopup;
+		}
+		
+		public function set shareSubject(value:String):void {
+			_shareSubject = value;
+		}
+		
+		public function get shareSubject():String {
+			return _shareSubject;
+		}
+		
+		public function set shareBody(value:String):void {
+			_shareBody = value;
+		}
+		
+		public function get shareBody():String {
+			return _shareBody;
+		}
+		
+		public function set shareCategory(value:String):void {
+			_shareCategory = value;
+		}
+		
+		public function get shareCategory():String {
+			return _shareCategory;
+		}
+		
 		public function get screen():Object {
 			return _screen;
 		}
