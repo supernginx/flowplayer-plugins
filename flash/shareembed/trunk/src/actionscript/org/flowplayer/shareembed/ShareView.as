@@ -51,17 +51,18 @@ package org.flowplayer.shareembed {
 		private var _videoURL:String;
 		private var _facebookURL:String = "http://www.facebook.com/share.php?t={0}&u={1}";
 		private var _twitterURL:String = "http://twitter.com/home?status={0}: {1}";
-		private var _myspaceURL:String = "http://www.myspace.com/Modules/PostTo/Pages/?t={0}&u={1}";
+		private var _myspaceURL:String = "http://www.myspace.com/Modules/PostTo/Pages/?t={0}&c={1}&u={2}&l=1";
 		private var _beboURL:String = "http://www.bebo.com/c/share?Url={1}&Title={0}";
 		private var _orkutURL:String = "http://www.orkut.com/FavoriteVideos.aspx?u={0}";
-		private var _diggURL:String = "http://digg.com/submit?phase=2&amp;url={1];title={0}&amp;bodytext={2}&amp;topic={3}";
-		private var _stumbleUpon:String = "http://www.stumbleupon.com/submit?url={1}&amp;title={0}";
+		private var _diggURL:String = "http://digg.com/submit?phase=2&url={1];title={0}&bodytext={2}&topic={3}";
+		private var _stumbleUponURL:String = "http://www.stumbleupon.com/submit?url={1}&title={0}";
+		private var _liveSpacesURL:String = "http://spaces.live.com/BlogIt.aspx?Title={0}&SourceURL={1}&description={2}";
 		
 		private var _facebookIcon:Sprite;
 		private var _myspaceIcon:Sprite;
 		private var _twitterIcon:Sprite;
 		
-	
+		private var _embedCode:String;
 		
 		public function ShareView(plugin:DisplayPluginModel, player:Flowplayer, config:Config) {
 			super(null, player, player.createLoader());
@@ -72,6 +73,11 @@ package org.flowplayer.shareembed {
 
 			createCloseButton();
 		
+		}
+		
+		public function set embedCode(value:String):void
+		{
+			_embedCode = value;
 		}
 
 		override protected function onSetStyle(style:FlowStyleSheet):void {
@@ -120,25 +126,67 @@ package org.flowplayer.shareembed {
 		
 		private function shareFacebook(event:MouseEvent):void
 		{
-		
-			var url:String = StringUtil.formatString(_facebookURL, "The video", _videoURL);
-	
-			
-			navigateToURL(new URLRequest(url), "_blank");
+			var url:String = StringUtil.formatString(_facebookURL, _config.shareSubject, _videoURL);
+			launchURL(url);
 		}
 		
 		private function shareMyspace(event:MouseEvent):void
 		{
-			var url:String = StringUtil.formatString(_myspaceURL, "The video", _videoURL);
-			
-			navigateToURL(new URLRequest(url), "_blank");
+			var url:String = StringUtil.formatString(_myspaceURL,_config.shareSubject, _embedCode, _videoURL);
+			launchURL(url);
+		}
+		
+		private function shareDigg(event:MouseEvent):void
+		{
+			var url:String = StringUtil.formatString(_diggURL, _config.shareSubject, _videoURL,_config.shareBody, _config.shareCategory);
+			launchURL(url);
+		}
+		
+		private function shareBebo(event:MouseEvent):void
+		{
+			var url:String = StringUtil.formatString(_beboURL, _config.shareSubject, _videoURL);
+			launchURL(url);
+		}
+		
+		private function shareOrkut(event:MouseEvent):void
+		{
+			var url:String = StringUtil.formatString(_orkutURL, _videoURL);
+			launchURL(url);
 		}
 		
 		private function shareTwitter(event:MouseEvent):void
 		{
-			var url:String = StringUtil.formatString(_twitterURL, "The video", _videoURL);
+			var url:String = StringUtil.formatString(_twitterURL, _config.shareSubject, _videoURL);
+			launchURL(url);
+		}
+		
+		private function shareStumbleUpon(event:MouseEvent):void
+		{
+			var url:String = StringUtil.formatString(_stumbleUponURL, _config.shareSubject, _videoURL);
+			launchURL(url);
+		}
+		
+		private function shareLiveSpaces(event:MouseEvent):void
+		{
+			var url:String = StringUtil.formatString(_liveSpacesURL, _config.shareSubject, _videoURL, _embedCode);
+			launchURL(url);
+		}
+		
+		private function launchURL(url:String):void
+		{
+			url = escape(url);
+			var request:URLRequest;
 			
-			navigateToURL(new URLRequest(url), "_blank");
+			if (_config.usePopup)
+			{
+				var jscommand:String = "window.open('" + url + "','PopUpWindow','height=645,width=755,toolbar=no,scrollbars=yes');";
+            	request = new URLRequest("javascript:" + jscommand + " void(0);");
+            	navigateToURL(request, "_self");
+			} else {
+				request = new URLRequest(url);
+				navigateToURL(request, "_blank");
+			};
+			
 		}
 		
 		private function arrangeIcons():void
