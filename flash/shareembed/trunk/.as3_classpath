@@ -19,4 +19,9 @@
     <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">src/flash/myspaceicon.swc</AS3Classpath>
     <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">src/flash/twittericon.swc</AS3Classpath>
     <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">src/flash/facebookicon.swc</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">src/flash/beboicon.swc</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">src/flash/diggicon.swc</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">src/flash/livespacesicon.swc</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">src/flash/orkuticon.swc</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">src/flash/stumbleupon.swc</AS3Classpath>
 </AS3Classpath>

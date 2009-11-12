@@ -8,21 +8,16 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 package org.flowplayer.shareembed {
-    import flash.filters.GlowFilter;
+
 	import org.flowplayer.model.DisplayPluginModel;
 	import org.flowplayer.view.FlowStyleSheet;
 	import org.flowplayer.view.Flowplayer;
 	import org.flowplayer.view.StyleableSprite;
 	
-	import flash.display.BlendMode;
+
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
-	import flash.text.AntiAliasType;
-	import flash.text.TextField;
-	import flash.text.TextFieldAutoSize;	
-	import flash.text.TextFieldType;
-	import flash.events.FocusEvent;
 	import flash.net.URLRequest;
 
 	import com.ediblecode.util.StringUtil;
@@ -33,6 +28,11 @@ package org.flowplayer.shareembed {
 	import org.flowplayer.shareembed.assets.MyspaceIcon;
 	import org.flowplayer.shareembed.assets.TwitterIcon;
 	import org.flowplayer.shareembed.assets.FacebookIcon;
+	import org.flowplayer.shareembed.assets.BeboIcon;
+	import org.flowplayer.shareembed.assets.DiggIcon;
+	import org.flowplayer.shareembed.assets.LivespacesIcon;
+	import org.flowplayer.shareembed.assets.OrkutIcon;
+	import org.flowplayer.shareembed.assets.StumbleuponIcon;
 
 	/**
 	 * @author api
@@ -61,6 +61,11 @@ package org.flowplayer.shareembed {
 		private var _facebookIcon:Sprite;
 		private var _myspaceIcon:Sprite;
 		private var _twitterIcon:Sprite;
+		private var _beboIcon:Sprite;
+		private var _diggIcon:Sprite;
+		private var _orkutIcon:Sprite;
+		private var _stumbleUponIcon:Sprite;
+		private var _liveSpacesIcon:Sprite;
 		
 		private var _embedCode:String;
 		
@@ -77,7 +82,7 @@ package org.flowplayer.shareembed {
 		
 		public function set embedCode(value:String):void
 		{
-			_embedCode = value;
+			_embedCode = escape(value.replace(/\n/g, ""));
 		}
 
 		override protected function onSetStyle(style:FlowStyleSheet):void {
@@ -119,6 +124,26 @@ package org.flowplayer.shareembed {
             _twitterIcon = new TwitterIcon() as Sprite;
             _twitterIcon.addEventListener(MouseEvent.MOUSE_DOWN, shareTwitter);
             addChild(_twitterIcon);
+            
+            _beboIcon = new BeboIcon() as Sprite;
+            _beboIcon.addEventListener(MouseEvent.MOUSE_DOWN, shareBebo);
+            addChild(_beboIcon);
+            
+            _diggIcon = new DiggIcon() as Sprite;
+            _diggIcon.addEventListener(MouseEvent.MOUSE_DOWN, shareDigg);
+            addChild(_diggIcon);
+            
+            _orkutIcon = new OrkutIcon() as Sprite;
+            _orkutIcon.addEventListener(MouseEvent.MOUSE_DOWN, shareOrkut);
+            addChild(_orkutIcon);
+            
+            _stumbleUponIcon = new StumbleuponIcon() as Sprite;
+            _stumbleUponIcon.addEventListener(MouseEvent.MOUSE_DOWN, shareStumbleUpon);
+            addChild(_stumbleUponIcon);
+            
+            _liveSpacesIcon = new LivespacesIcon() as Sprite;
+            _liveSpacesIcon.addEventListener(MouseEvent.MOUSE_DOWN, shareLiveSpaces);
+            addChild(_liveSpacesIcon);
             
             arrangeIcons();
 			
@@ -191,11 +216,19 @@ package org.flowplayer.shareembed {
 		
 		private function arrangeIcons():void
 		{
-			_facebookIcon.x = 10;
-			_facebookIcon.y = 10;
+			_facebookIcon.x = 0;
+			_facebookIcon.y = 0;
 			
 			_myspaceIcon.x = _facebookIcon.x + _facebookIcon.width + 10;
 			_twitterIcon.x = _myspaceIcon.x + _myspaceIcon.width + 10;
+			_beboIcon.y = _myspaceIcon.y + _myspaceIcon.height + 5;
+			_diggIcon.y = _myspaceIcon.y + _myspaceIcon.height + 5;
+			_diggIcon.x = _beboIcon.x + _beboIcon.width + 5;
+			_orkutIcon.y = _myspaceIcon.y + _myspaceIcon.height + 5;
+			_orkutIcon.x = _diggIcon.x + _diggIcon.width + 5;
+			_stumbleUponIcon.y = _beboIcon.y + _beboIcon.height + 5;
+			_liveSpacesIcon.y = _beboIcon.y + _beboIcon.height + 5;
+			_liveSpacesIcon.x = _stumbleUponIcon.x + _stumbleUponIcon.width + 5;
 		}
 		
 		
@@ -232,18 +265,20 @@ package org.flowplayer.shareembed {
 		
 		private function onCloseClicked(event:MouseEvent):void {
 			//ShareEmbed(_plugin.getDisplayObject()).removeListeners();
-			_originalAlpha = _plugin.getDisplayObject().alpha;
-			_player.animationEngine.fadeOut(_plugin.getDisplayObject(), 500, onFadeOut);
+			//_originalAlpha = _plugin.getDisplayObject().alpha;
+			_player.animationEngine.fadeOut(this, 500, onFadeOut);
+			 //_player.hidePlugin(_plugin.name);
 		}
 		
 		private function onFadeOut():void {
 			log.debug("faded out");
 //
+			ShareEmbed(_plugin.getDisplayObject()).removeChild(this);
 			// restore original alpha value
-			_plugin.alpha = _originalAlpha;
-			_plugin.getDisplayObject().alpha = _originalAlpha;
+			//_plugin.alpha = _originalAlpha;
+			//_plugin.getDisplayObject().alpha = _originalAlpha;
 			// we need to update the properties to the registry, so that animations happen correctly after this
-			_player.pluginRegistry.updateDisplayProperties(_plugin);
+			//_player.pluginRegistry.updateDisplayProperties(_plugin);
 			
 			//Content(_plugin.getDisplayObject()).addListeners();
 		}

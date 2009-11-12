@@ -10,6 +10,8 @@
  
 package org.flowplayer.shareembed
 {
+	import org.flowplayer.util.URLUtil;
+	
 	public class Config {
 		
 		// max amount of visible items
@@ -19,6 +21,8 @@ package org.flowplayer.shareembed
 		private var _shareSubject:String = "The video";
 		private var _shareBody:String = "Share Body";
 		private var _shareCategory:String = "video";
+		
+		private var _baseURL:String = URLUtil.pageUrl;
 		
 		
 		// screen display properties when plugin is shown
@@ -129,6 +133,14 @@ package org.flowplayer.shareembed
 		
 		public function set style(style:Object):void {
 			_style = style;
+		}
+		
+		public function get baseURL():String {
+			return _baseURL;
+		}
+		
+		public function set baseURL(value:String):void {
+			_baseURL = value;
 		}
 		
 		
