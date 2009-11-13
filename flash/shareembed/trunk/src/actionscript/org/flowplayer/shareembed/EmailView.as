@@ -8,17 +8,19 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 package org.flowplayer.shareembed {
-    import flash.filters.GlowFilter;
+
 	import org.flowplayer.model.DisplayPluginModel;
 	import org.flowplayer.view.FlowStyleSheet;
 	import org.flowplayer.view.Flowplayer;
 	import org.flowplayer.view.StyleableSprite;
+	import org.flowplayer.util.URLUtil;
 	
-	import flash.display.BlendMode;
+	import com.ediblecode.util.StringUtil;
+	
+
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
-	import flash.text.AntiAliasType;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;	
 	import flash.text.TextFieldType;
@@ -30,7 +32,6 @@ package org.flowplayer.shareembed {
 	import flash.net.URLLoaderDataFormat;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
-	import flash.external.ExternalInterface;
 	
 
 	import org.flowplayer.shareembed.assets.SendBtn;
@@ -276,9 +277,7 @@ package org.flowplayer.shareembed {
             
             _formContainer.addChild(_sendBtn);
             
-            
-            _videoURL = ExternalInterface.call('function () { return window.location.href; }');
-            
+            _videoURL = URLUtil.pageUrl;
             
             arrangeForm();
 
@@ -296,9 +295,9 @@ package org.flowplayer.shareembed {
 			param.name = _nameFromInput.text;
 			param.email = _emailFromInput.text;
 			param.to = _emailToInput.text;
-			param.message = _messageInput.text + "\n\n <a href=\""+_videoURL+"\>"+_videoURL+"</a>";
+			param.message = StringUtil.formatString(_config.emailTemplate, _messageInput.text, _videoURL, _videoURL);
 			param.subject = _config.emailSubject;
-	;
+
 			
 			param.dataFormat = URLLoaderDataFormat.VARIABLES;
 			request.data = param;
