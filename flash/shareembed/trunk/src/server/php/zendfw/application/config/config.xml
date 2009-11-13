@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<configdata>
+    <production>
+		<mail>
+			<backend>smtp</backend>
+			<!--  <backend>sendmail</backend> -->
+			<!-- <backend>smtp</backend> -->
+			<smtp>
+				<host>mail.electroteque.org</host>
+				<options>
+					<username>danielr@electroteque.org</username>
+					<password>Electro303</password>
+					<auth>login</auth>
+					<!-- <auth>plain</auth> -->
+					<!-- <auth>crammd5</auth> -->
+					<!-- <ssl>ssl</ssl> -->
+					<!-- <ssl>tls</ssl> -->
+					<!-- <port>25</port> -->
+				</options>
+			</smtp>
+		</mail>
+    </production>
+</configdata>
