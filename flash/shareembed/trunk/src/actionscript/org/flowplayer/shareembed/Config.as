@@ -143,7 +143,9 @@ package org.flowplayer.shareembed
 			_baseURL = value;
 		}
 		
-		
+		public function get popUpDimensions():Object {
+			return _popUpDimensions;
+		}
 	}
 }
 
