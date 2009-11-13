@@ -163,24 +163,11 @@ import org.flowplayer.model.DisplayPluginModel;
 		}
 		
 		private function onCloseClicked(event:MouseEvent):void {
-			//ShareEmbed(_plugin.getDisplayObject()).removeListeners();
-			//_originalAlpha = _plugin.getDisplayObject().alpha;
-			_player.animationEngine.fadeOut(this, 500, onFadeOut);
-			//_player.hidePlugin(_plugin.name);
-			
+			_player.animationEngine.fadeOut(this, 500, onFadeOut);	
 		}
 		
 		private function onFadeOut():void {
-			log.debug("faded out");
-//
 			ShareEmbed(_plugin.getDisplayObject()).removeChild(this);
-			// restore original alpha value
-			//_plugin.alpha = _originalAlpha;
-			//_plugin.getDisplayObject().alpha = _originalAlpha;
-			// we need to update the properties to the registry, so that animations happen correctly after this
-			//_player.pluginRegistry.updateDisplayProperties(_plugin);
-			
-			//Content(_plugin.getDisplayObject()).addListeners();
 		}
 
 		override public function set alpha(value:Number):void {

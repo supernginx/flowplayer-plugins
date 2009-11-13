@@ -13,6 +13,7 @@ package org.flowplayer.shareembed {
 	import org.flowplayer.view.FlowStyleSheet;
 	import org.flowplayer.view.Flowplayer;
 	import org.flowplayer.view.StyleableSprite;
+	import org.flowplayer.util.URLUtil;
 	
 
 	import flash.display.DisplayObject;
@@ -111,7 +112,8 @@ package org.flowplayer.shareembed {
        public function setupShareIcons():void
        {
        		
-            _videoURL = ExternalInterface.call('function () { return window.location.href; }');
+            //_videoURL = ExternalInterface.call('function () { return window.location.href; }');
+            _videoURL = URLUtil.pageUrl;
             
             _facebookIcon = new FacebookIcon() as Sprite;
             _facebookIcon.addEventListener(MouseEvent.MOUSE_DOWN, shareFacebook);
@@ -152,59 +154,59 @@ package org.flowplayer.shareembed {
 		private function shareFacebook(event:MouseEvent):void
 		{
 			var url:String = StringUtil.formatString(_facebookURL, _config.shareSubject, _videoURL);
-			launchURL(url);
+			launchURL(url, _config.popUpDimensions.facebook);
 		}
 		
 		private function shareMyspace(event:MouseEvent):void
 		{
 			var url:String = StringUtil.formatString(_myspaceURL,_config.shareSubject, _embedCode, _videoURL);
-			launchURL(url);
+			launchURL(url,_config.popUpDimensions.myspace);
 		}
 		
 		private function shareDigg(event:MouseEvent):void
 		{
 			var url:String = StringUtil.formatString(_diggURL, _config.shareSubject, _videoURL,_config.shareBody, _config.shareCategory);
-			launchURL(url);
+			launchURL(url,_config.popUpDimensions.digg);
 		}
 		
 		private function shareBebo(event:MouseEvent):void
 		{
 			var url:String = StringUtil.formatString(_beboURL, _config.shareSubject, _videoURL);
-			launchURL(url);
+			launchURL(url,_config.popUpDimensions.bebo);
 		}
 		
 		private function shareOrkut(event:MouseEvent):void
 		{
 			var url:String = StringUtil.formatString(_orkutURL, _videoURL);
-			launchURL(url);
+			launchURL(url, _config.popUpDimensions.orkut);
 		}
 		
 		private function shareTwitter(event:MouseEvent):void
 		{
 			var url:String = StringUtil.formatString(_twitterURL, _config.shareSubject, _videoURL);
-			launchURL(url);
+			launchURL(url, _config.popUpDimensions.twitter);
 		}
 		
 		private function shareStumbleUpon(event:MouseEvent):void
 		{
 			var url:String = StringUtil.formatString(_stumbleUponURL, _config.shareSubject, _videoURL);
-			launchURL(url);
+			launchURL(url, _config.popUpDimensions.stumbleupon);
 		}
 		
 		private function shareLiveSpaces(event:MouseEvent):void
 		{
 			var url:String = StringUtil.formatString(_liveSpacesURL, _config.shareSubject, _videoURL, _embedCode);
-			launchURL(url);
+			launchURL(url, _config.popUpDimensions.livespaces);
 		}
 		
-		private function launchURL(url:String):void
+		private function launchURL(url:String, popUpDimensions:Array):void
 		{
 			url = escape(url);
 			var request:URLRequest;
 			
 			if (_config.usePopup)
 			{
-				var jscommand:String = "window.open('" + url + "','PopUpWindow','height=645,width=755,toolbar=no,scrollbars=yes');";
+				var jscommand:String = "window.open('" + url + "','PopUpWindow','height=" + popUpDimensions[0] + ",width=" + popUpDimensions[1] + ",toolbar=no,scrollbars=yes');";
             	request = new URLRequest("javascript:" + jscommand + " void(0);");
             	navigateToURL(request, "_self");
 			} else {
@@ -235,17 +237,11 @@ package org.flowplayer.shareembed {
 		override protected function onResize():void {
 			arrangeCloseButton();
 			
-			//_formContainer.x = 0;
-			//_formContainer.y = 0;
-			
-			
-			
 			this.x = 0;
 			this.y = 0;
 		}
 
 		override protected function onRedraw():void {
-			//arrangeForm();
 			arrangeCloseButton();
 		}
 		
@@ -264,23 +260,12 @@ package org.flowplayer.shareembed {
 		}
 		
 		private function onCloseClicked(event:MouseEvent):void {
-			//ShareEmbed(_plugin.getDisplayObject()).removeListeners();
-			//_originalAlpha = _plugin.getDisplayObject().alpha;
 			_player.animationEngine.fadeOut(this, 500, onFadeOut);
-			 //_player.hidePlugin(_plugin.name);
 		}
 		
 		private function onFadeOut():void {
-			log.debug("faded out");
-//
+
 			ShareEmbed(_plugin.getDisplayObject()).removeChild(this);
-			// restore original alpha value
-			//_plugin.alpha = _originalAlpha;
-			//_plugin.getDisplayObject().alpha = _originalAlpha;
-			// we need to update the properties to the registry, so that animations happen correctly after this
-			//_player.pluginRegistry.updateDisplayProperties(_plugin);
-			
-			//Content(_plugin.getDisplayObject()).addListeners();
 		}
 
 		override public function set alpha(value:Number):void {
