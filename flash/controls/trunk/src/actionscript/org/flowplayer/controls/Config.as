@@ -10,13 +10,15 @@
 
 package org.flowplayer.controls {
 	import org.flowplayer.util.Log;	
-	import org.flowplayer.util.PropertyBinder;	
-	
-	/**
+	import org.flowplayer.util.PropertyBinder;
+    import org.flowplayer.view.Flowplayer;
+
+    /**
 	 * @author api
 	 */
 	public class Config {
 		private var log:Log = new Log(this);
+        private var _player:Flowplayer;
 		private var _skin:String;
 		private var _style:Style;
 		private var _autoHide:String = "fullscreen"; // never | fullscreen | always
@@ -80,5 +82,13 @@ package org.flowplayer.controls {
 		public function set tooltips(tooltips:ToolTips):void {
 			_tooltips = tooltips;
 		}
-	}
+
+        public function get player():Flowplayer {
+            return _player;
+        }
+
+        public function set player(value:Flowplayer):void {
+            _player = value;
+        }
+    }
 }
