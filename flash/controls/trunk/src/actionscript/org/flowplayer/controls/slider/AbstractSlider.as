@@ -10,7 +10,6 @@
 
 package org.flowplayer.controls.slider {
     import flash.display.DisplayObject;
-    import flash.display.Sprite;
     import flash.events.Event;
     import flash.events.EventDispatcher;
     import flash.events.MouseEvent;
@@ -22,7 +21,7 @@ package org.flowplayer.controls.slider {
     import org.flowplayer.controls.NullToolTip;
     import org.flowplayer.controls.ToolTip;
     import org.flowplayer.controls.button.DraggerButton;
-import org.flowplayer.util.GraphicsUtil;
+    import org.flowplayer.util.GraphicsUtil;
     import org.flowplayer.view.AbstractSprite;
     import org.flowplayer.view.AnimationEngine;
 
@@ -54,7 +53,7 @@ import org.flowplayer.util.GraphicsUtil;
             addEventListener(MouseEvent.ROLL_OVER, onMouseOver);
             addEventListener(MouseEvent.ROLL_OUT, onMouseOut);
         }
-
+ 
         private function onMouseMove(event:MouseEvent):void {
             if (! _mouseOver) return;
 //            log.debug("onMouseMove(), changing tooltip text to " + tooltipText);
@@ -116,7 +115,7 @@ import org.flowplayer.util.GraphicsUtil;
 
 		public function set enabled(value:Boolean) :void {
 			log.debug("setting enabled to " + value);
-            _dragTimer.addEventListener(TimerEvent.TIMER, onDrag);
+            _dragTimer.addEventListener(TimerEvent.TIMER, dragging);
 			var func:String = value ? "addEventListener" : "removeEventListener";
 
 			this[func](MouseEvent.MOUSE_UP, onMouseUp);
@@ -175,7 +174,7 @@ import org.flowplayer.util.GraphicsUtil;
 			if (event && event.target != this) return;
 			if (! canDragTo(mouseX) && _dragger.x > 0) return;
 			_dragTimer.stop();
-			onDrag();
+			dragging();
 			updateCurrentPosFromDragger();
 			
 			if (! dispatchOnDrag) {
@@ -197,21 +196,19 @@ import org.flowplayer.util.GraphicsUtil;
 		protected function onMouseDown(event:MouseEvent):void {
 			if (! event.target == this) return;
 			_dragTimer.start();
-//			if (_tooltipTextFunc != null) {
-//				_tooltip.show(_dragger, _tooltipTextFunc(value) as String, true);
-//			}
 		}
 
-		private function onDrag(event:TimerEvent = null):void {
+		private function dragging(event:TimerEvent = null):void {
 			var pos:Number = mouseX - _dragger.width / 2;
-			if (pos < 0)
-				pos = 0;
-			if (pos > maxDrag) {
-				pos = maxDrag;
-			}
-			
-			_dragger.x = pos;
-//			_tooltip.text = _tooltipTextFunc((_dragger.x / (width - _dragger.width)) * 100) as String;
+            if (pos < 0) {
+                pos = 0;
+            }
+            if (pos > maxDrag) {
+                pos = maxDrag;
+            }
+
+            _dragger.x = pos;
+            onDrag();
 
 			// do not dispatch several times from almost the same pos
 			if (Math.abs(_previousDragEventPos - _dragger.x) < 1) return;
@@ -222,6 +219,9 @@ import org.flowplayer.util.GraphicsUtil;
 				dispatchDragEvent();
 			}
 		}
+
+        protected function onDrag():void {
+        }
 
 		private function dispatchDragEvent():void {
 			log.debug("dispatching drag event");
@@ -237,7 +237,7 @@ import org.flowplayer.util.GraphicsUtil;
 			// can be overridden in subclasses
 		}
 
-		protected function get maxDrag():Number {
+		internal function get maxDrag():Number {
 			return width - _dragger.width;
 		}
 		
@@ -258,18 +258,16 @@ import org.flowplayer.util.GraphicsUtil;
 				value = 100;
 			}
 			_currentPos = value;
-			if (_dragTimer && _dragTimer.running || ! allowSetValue) {
-				log.debug("drag in progress");
-				return;
-			}
-			var pos:Number = value/100 * (width - _dragger.width);
-            _animationEngine.animateProperty(_dragger, "x", pos, 200, function():void { onSetValue() });
-//			_dragger.x = pos;
-//			onSetValue();
+//			if (_dragTimer && _dragTimer.running || ! allowSetValue) {
+//				log.debug("drag in progress");
+//				return;
+//			}
+//			var pos:Number = value/100 * (width - _dragger.width);
+//            _animationEngine.animateProperty(_dragger, "x", pos, 200, function():void { onSetValue() });
 		}
-
-		protected function onSetValue():void {
-		}
+//
+//		protected function onSetValue():void {
+//		}
 
 		protected function get allowSetValue():Boolean {
 			// can be overridden in sucbclasses
@@ -320,5 +318,5 @@ import org.flowplayer.util.GraphicsUtil;
 		public function set tooltipTextFunc(tooltipTextFunc:Function):void {
 			_tooltipTextFunc=tooltipTextFunc;
 		}
-	}
+    }
 }

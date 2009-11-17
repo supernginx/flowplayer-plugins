@@ -86,10 +86,6 @@ package org.flowplayer.controls.slider {
             return "scrubber";
         }
 
-        public function set playlist(playlist:Playlist):void {
-            _scrubber.playlist = playlist;
-        }
-
         public function set allowRandomSeek(value:Boolean):void {
             _scrubber.allowRandomSeek = value;
         }

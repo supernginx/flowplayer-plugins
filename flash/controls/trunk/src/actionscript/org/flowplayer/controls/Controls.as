@@ -14,7 +14,7 @@ package org.flowplayer.controls {
     import flash.events.TimerEvent;
     import flash.system.ApplicationDomain;
     import flash.system.Security;
-import flash.utils.Timer;
+    import flash.utils.Timer;
 
     import org.flowplayer.controls.button.AbstractButton;
     import org.flowplayer.controls.button.AbstractToggleButton;
@@ -22,19 +22,18 @@ import flash.utils.Timer;
     import org.flowplayer.controls.button.NextButton;
     import org.flowplayer.controls.button.PrevButton;
     import org.flowplayer.controls.button.SkinClasses;
-import org.flowplayer.controls.button.StopButton;
+    import org.flowplayer.controls.button.StopButton;
     import org.flowplayer.controls.button.ToggleFullScreenButton;
     import org.flowplayer.controls.button.TogglePlayButton;
     import org.flowplayer.controls.button.ToggleVolumeMuteButton;
     import org.flowplayer.controls.slider.Scrubber;
     import org.flowplayer.controls.slider.ScrubberSlider;
     import org.flowplayer.controls.slider.VolumeScrubber;
-import org.flowplayer.controls.slider.VolumeSlider;
+    import org.flowplayer.controls.slider.VolumeSlider;
     import org.flowplayer.model.Clip;
     import org.flowplayer.model.ClipEvent;
     import org.flowplayer.model.DisplayPluginModel;
-import org.flowplayer.model.DisplayProperties;
-import org.flowplayer.model.PlayerEvent;
+    import org.flowplayer.model.PlayerEvent;
     import org.flowplayer.model.PlayerEventType;
     import org.flowplayer.model.Playlist;
     import org.flowplayer.model.Plugin;
@@ -266,6 +265,7 @@ import org.flowplayer.model.PlayerEvent;
 		public function onLoad(player:Flowplayer):void {
 			log.info("received player API! autohide == " + _config.autoHide);
 			_player = player;
+            _config.player = player;
             if (_config.skin) {
                 initSkin();
             }
@@ -341,9 +341,6 @@ import org.flowplayer.model.PlayerEvent;
 			_volumeSlider = addChildWidget(createWidget(_volumeSlider, "volume", VolumeScrubber, _config, animationEngine, this), VolumeSlider.DRAG_EVENT, onVolumeSlider) as VolumeScrubber;
 
 			_scrubber = addChildWidget(createWidget(_scrubber, "scrubber", Scrubber, _config, animationEngine, this), Scrubber.DRAG_EVENT, onScrubbed) as Scrubber;
-            if (_scrubber) {
-                _scrubber.playlist = _player.playlist;
-            }
 
 			createTimeView();
 			createScrubberUpdateTimer();
@@ -416,7 +413,7 @@ import org.flowplayer.model.PlayerEvent;
 		}
 		
 		private function createScrubberUpdateTimer():void {
-			_timeUpdateTimer = new Timer(200);
+			_timeUpdateTimer = new Timer(100);
 			_timeUpdateTimer.addEventListener(TimerEvent.TIMER, onTimeUpdate);
 			_timeUpdateTimer.start();
 		}

@@ -9,18 +9,21 @@
  */
 
 package org.flowplayer.controls.slider {
-	import org.flowplayer.controls.Config;
-	import org.flowplayer.controls.slider.AbstractSlider;
-	import org.flowplayer.model.ClipEvent;
-	import org.flowplayer.model.Playlist;
-	import org.flowplayer.util.GraphicsUtil;
-	import org.flowplayer.view.AnimationEngine;
-	
-	import flash.display.DisplayObject;
-	import flash.display.Sprite;
-	import flash.events.MouseEvent;	
+    import flash.display.DisplayObject;
+    import flash.display.Sprite;
+    import flash.events.MouseEvent;
 
-	/**
+    import mx.effects.easing.Linear;
+
+    import org.flowplayer.controls.Config;
+    import org.flowplayer.model.Clip;
+    import org.flowplayer.model.ClipEvent;
+    import org.flowplayer.model.Playlist;
+    import org.flowplayer.model.Status;
+    import org.flowplayer.util.GraphicsUtil;
+    import org.flowplayer.view.AnimationEngine;
+
+    /**
 	 * @author api
 	 */
 	public class ScrubberSlider extends AbstractSlider {
@@ -36,14 +39,54 @@ package org.flowplayer.controls.slider {
 		public function ScrubberSlider(config:Config, animationEngine:AnimationEngine, controlbar:DisplayObject) {
 			super(config, animationEngine, controlbar);
 			createBars();
-		}
+            addPlaylistListeners(config.player.playlist);
+        }
 
-		public function set playlist(playlist:Playlist):void {
-			playlist.onStart(onSeekDone);
-            playlist.onBeforeSeek(onBeforeSeek);
-			playlist.onSeek(onSeekDone);
-		}
-		
+        public function addPlaylistListeners(playlist:Playlist):void {
+            playlist.onStart(setSeekDone);
+            playlist.onBeforeSeek(setSeekBegin);
+            playlist.onSeek(setSeekDone);
+
+            playlist.onStart(start);
+            playlist.onResume(resume);
+            playlist.onPause(stop);
+            playlist.onStop(stop);
+            playlist.onSeek(seek);
+        }
+
+        private function seek(event:ClipEvent):void {
+//            var clip:Clip = event.target as Clip;
+//			var pos:Number = _config.player.status.time/clip.duration * (width - _dragger.width);
+//            animationEngine.animateProperty(_dragger, "x", pos, 300, function():void { doStart(event.target as Clip); });
+            doStart(event.target as Clip);
+        }
+
+        private function start(event:ClipEvent):void {
+            animationEngine.animateProperty(_dragger, "x", 0, 300, function():void { doStart(event.target as Clip); });
+        }
+
+        private function resume(event:ClipEvent):void {
+            doStart(event.target as Clip);
+        }
+
+        private function doStart(clip:Clip):void {
+            var endPos:Number = width - _dragger.width;
+            var status:Status = _config.player.status;
+            var time:Number = status.time;
+
+            log.debug("doStart(), starting an animation to x pos " + endPos + ", the duration is " + clip.duration + ", current pos is " + _dragger.x);
+            animationEngine.animateProperty(_dragger, "x", endPos, (clip.duration - time) * 1000, null, Linear.easeOut);
+        }
+
+        private function stop(event:ClipEvent = null):void {
+            log.debug("stop()");
+            animationEngine.cancel(_dragger);
+        }
+
+        override protected function onDrag():void {
+            stop();
+        }
+
 		override protected function get dispatchOnDrag():Boolean {
 			return false;
 		}
@@ -88,14 +131,14 @@ package org.flowplayer.controls.slider {
 				GraphicsUtil.removeGradient(bar);
 			}
 		}
-
-		override protected function onSetValue():void {
-			if (_seekInProgress) return;
-			drawProgressBar(_bufferStart * width);
-		}
+//
+//		override protected function onSetValue():void {
+//			if (_seekInProgress) return;
+//			drawProgressBar(_bufferStart * width);
+//		}
 
 		private function drawProgressBar(leftEdge:Number):void {
-			drawBar(_progressBar, _config.style.progressColor, _config.style.progressGradient, leftEdge || 0, value/100 * (width - _dragger.width) + _dragger.width/2);
+			drawBar(_progressBar, _config.style.progressColor, _config.style.progressGradient, leftEdge || 0, _dragger.x + _dragger.width - 2);
 		}
 
 		public function set allowRandomSeek(value:Boolean):void {
@@ -110,7 +153,7 @@ package org.flowplayer.controls.slider {
 			}
 		}
 
-		override protected function get maxDrag():Number {
+		override internal function get maxDrag():Number {
 			if (_allowRandomSeek) return width - _dragger.width;
 			return _bufferEnd * (width - _dragger.width);
 		}
@@ -144,13 +187,13 @@ package org.flowplayer.controls.slider {
 			}
 		}
 
-        private function onBeforeSeek(event:ClipEvent):void {
+        private function setSeekBegin(event:ClipEvent):void {
             log.debug("onBeforeSeek");
             _seekInProgress = ! event.isDefaultPrevented();
         }
 
-		private function onSeekDone(event:ClipEvent):void {
-			log.debug("seek done!");
+		private function setSeekDone(event:ClipEvent):void {
+			log.debug("seek done! target " + event.info);
 			_seekInProgress = false;
 		}
 
@@ -180,6 +223,10 @@ package org.flowplayer.controls.slider {
         override protected function get barCornerRadius():Number {
             if (isNaN(_config.style.scrubberBorderRadius)) return super.barCornerRadius;
             return _config.style.scrubberBorderRadius;
+        }
+
+        private function get animationEngine():AnimationEngine {
+            return _config.player.animationEngine;
         }
 	}
 }
