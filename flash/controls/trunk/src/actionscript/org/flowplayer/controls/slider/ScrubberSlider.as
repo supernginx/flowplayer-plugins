@@ -56,7 +56,16 @@ package org.flowplayer.controls.slider {
             playlist.onPause(stop);
             playlist.onStop(stopAndRewind);
             playlist.onFinish(stopAndRewind);
+            playlist.onBeforeSeek(beforeSeek);
             playlist.onSeek(seek);
+        }
+
+        private function beforeSeek(event:ClipEvent):void {
+            log.debug("beforeSeek()");
+            if (event.isDefaultPrevented()) return;
+            var clip:Clip = event.target as Clip;
+            _dragger.x = (Number(event.info) / clip.duration) * (width - _dragger.width);
+            stop();
         }
 
         private function seek(event:ClipEvent):void {
@@ -80,6 +89,7 @@ package org.flowplayer.controls.slider {
             var time:Number = startTime > 0 ? startTime : status.time;
 
             if (_startDetectTimer && _startDetectTimer.running) return;
+            if (animationEngine.hasAnimationRunning(_dragger)) return;
 
             _startDetectTimer = new Timer(200);
             _startDetectTimer.addEventListener(TimerEvent.TIMER,
@@ -106,10 +116,6 @@ package org.flowplayer.controls.slider {
             log.debug("stopAndRewind()");
             animationEngine.cancel(_dragger);
             animationEngine.animateProperty(_dragger, "x", 0, 300);
-        }
-
-        override protected function onDrag():void {
-            stop();
         }
 
 		override protected function get dispatchOnDrag():Boolean {
@@ -200,7 +206,10 @@ package org.flowplayer.controls.slider {
 		}
 		
 		private function drawBars():void {
-			if (_seekInProgress) return;
+			if (_seekInProgress)  {
+                log.debug("drawBars(): seek in progress");
+                return;
+            }
 			if (_dragger.x + _dragger.width / 2 > _bufferStart * width) {
 				drawBufferBar(_bufferStart * width, _bufferEnd * width);
 				drawProgressBar(_bufferStart * width);
