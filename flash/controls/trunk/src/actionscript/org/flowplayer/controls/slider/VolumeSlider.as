@@ -32,7 +32,12 @@ import org.flowplayer.view.AnimationEngine;
 				return Math.round(percentage) + "%";
 			};
 		}
-		
+
+        override protected function onSetValue():void {
+			var pos:Number = value/100 * (width - _dragger.width);
+            animationEngine.animateProperty(_dragger, "x", pos, 200);
+        }
+
 		override protected function isToolTipEnabled():Boolean {
 			return _config.tooltips.volume;
 		}
