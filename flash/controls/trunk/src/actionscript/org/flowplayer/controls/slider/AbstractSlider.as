@@ -258,6 +258,7 @@ package org.flowplayer.controls.slider {
 				value = 100;
 			}
 			_currentPos = value;
+            onSetValue();
 //			if (_dragTimer && _dragTimer.running || ! allowSetValue) {
 //				log.debug("drag in progress");
 //				return;
@@ -265,6 +266,9 @@ package org.flowplayer.controls.slider {
 //			var pos:Number = value/100 * (width - _dragger.width);
 //            _animationEngine.animateProperty(_dragger, "x", pos, 200, function():void { onSetValue() });
 		}
+
+        protected function onSetValue():void {
+        }
 //
 //		protected function onSetValue():void {
 //		}
@@ -306,6 +310,10 @@ package org.flowplayer.controls.slider {
         protected function get barHeight():Number {
             return height;
 
+        }
+
+        protected final function get animationEngine():AnimationEngine {
+            return _animationEngine;
         }
 
 		public function redraw(config:Config):void {

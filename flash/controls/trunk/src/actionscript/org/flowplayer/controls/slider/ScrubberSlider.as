@@ -13,6 +13,9 @@ package org.flowplayer.controls.slider {
     import flash.display.Sprite;
     import flash.events.MouseEvent;
 
+    import flash.events.TimerEvent;
+    import flash.utils.Timer;
+
     import mx.effects.easing.Linear;
 
     import org.flowplayer.controls.Config;
@@ -35,6 +38,7 @@ package org.flowplayer.controls.slider {
 		private var _progressBar:Sprite;
 		private var _bufferStart:Number;
 		private var _enabled:Boolean = true;
+        private var _startDetectTimer:Timer;
 
 		public function ScrubberSlider(config:Config, animationEngine:AnimationEngine, controlbar:DisplayObject) {
 			super(config, animationEngine, controlbar);
@@ -50,37 +54,58 @@ package org.flowplayer.controls.slider {
             playlist.onStart(start);
             playlist.onResume(resume);
             playlist.onPause(stop);
-            playlist.onStop(stop);
+            playlist.onStop(stopAndRewind);
+            playlist.onFinish(stopAndRewind);
             playlist.onSeek(seek);
         }
 
         private function seek(event:ClipEvent):void {
-//            var clip:Clip = event.target as Clip;
-//			var pos:Number = _config.player.status.time/clip.duration * (width - _dragger.width);
-//            animationEngine.animateProperty(_dragger, "x", pos, 300, function():void { doStart(event.target as Clip); });
-            doStart(event.target as Clip);
+            log.debug("seek(), isPlaying: " + _config.player.isPlaying() + ", seek target time is " + event.info);
+            if (! _config.player.isPlaying()) return;
+            doStart(event.target as Clip, event.info as Number);
         }
 
         private function start(event:ClipEvent):void {
-            animationEngine.animateProperty(_dragger, "x", 0, 300, function():void { doStart(event.target as Clip); });
+            log.debug("start()");
+            doStart(event.target as Clip);
+//            animationEngine.animateProperty(_dragger, "x", 0, 300, function():void { doStart(event.target as Clip); });
         }
 
         private function resume(event:ClipEvent):void {
             doStart(event.target as Clip);
         }
 
-        private function doStart(clip:Clip):void {
-            var endPos:Number = width - _dragger.width;
+        private function doStart(clip:Clip, startTime:Number = 0):void {
             var status:Status = _config.player.status;
-            var time:Number = status.time;
+            var time:Number = startTime > 0 ? startTime : status.time;
 
-            log.debug("doStart(), starting an animation to x pos " + endPos + ", the duration is " + clip.duration + ", current pos is " + _dragger.x);
-            animationEngine.animateProperty(_dragger, "x", endPos, (clip.duration - time) * 1000, null, Linear.easeOut);
+            if (_startDetectTimer && _startDetectTimer.running) return;
+
+            _startDetectTimer = new Timer(200);
+            _startDetectTimer.addEventListener(TimerEvent.TIMER,
+                    function onStartProgress(event:TimerEvent):void {
+                        if (_config.player.status.time > time) {
+                            _startDetectTimer.stop();
+                            var endPos:Number = width - _dragger.width;
+                            log.debug("doStart(), starting an animation to x pos " + endPos + ", the duration is " + clip.duration + ", current pos is " + _dragger.x);
+                            animationEngine.animateProperty(_dragger, "x", endPos, (clip.duration - time) * 1000, null, Linear.easeOut);
+                        }
+                    });
+            _startDetectTimer.start();
+        }
+
+        private function onStartProgress(event:TimerEvent):void {
         }
 
         private function stop(event:ClipEvent = null):void {
             log.debug("stop()");
             animationEngine.cancel(_dragger);
+        }
+
+        private function stopAndRewind(event:ClipEvent = null):void {
+            log.debug("stopAndRewind()");
+            animationEngine.cancel(_dragger);
+            animationEngine.animateProperty(_dragger, "x", 0, 300);
         }
 
         override protected function onDrag():void {
@@ -223,10 +248,6 @@ package org.flowplayer.controls.slider {
         override protected function get barCornerRadius():Number {
             if (isNaN(_config.style.scrubberBorderRadius)) return super.barCornerRadius;
             return _config.style.scrubberBorderRadius;
-        }
-
-        private function get animationEngine():AnimationEngine {
-            return _config.player.animationEngine;
         }
 	}
 }
