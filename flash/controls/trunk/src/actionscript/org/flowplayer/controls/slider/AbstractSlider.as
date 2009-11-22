@@ -208,7 +208,6 @@ package org.flowplayer.controls.slider {
             }
 
             _dragger.x = pos;
-            onDrag();
 
 			// do not dispatch several times from almost the same pos
 			if (Math.abs(_previousDragEventPos - _dragger.x) < 1) return;
@@ -219,9 +218,6 @@ package org.flowplayer.controls.slider {
 				dispatchDragEvent();
 			}
 		}
-
-        protected function onDrag():void {
-        }
 
 		private function dispatchDragEvent():void {
 			log.debug("dispatching drag event");
