@@ -1,5 +1,11 @@
 Version history:
 
+3.1.4
+-----
+Fixes:
+- Now resets the bufferStart value to zero when replaying a clip. Because it failed to reset it the buffer bar and
+  progress bar were not drawn correctly when replaying.
+
 3.1.3
 -----
 - Supports connection redirects as described here: http://www.wowzamedia.com/forums/showthread.php?t=6206#2
