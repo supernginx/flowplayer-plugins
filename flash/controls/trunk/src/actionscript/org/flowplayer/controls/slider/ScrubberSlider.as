@@ -22,9 +22,12 @@ package org.flowplayer.controls.slider {
     import org.flowplayer.model.Clip;
     import org.flowplayer.model.ClipEvent;
     import org.flowplayer.model.Playlist;
+    import org.flowplayer.model.PluginEvent;
+    import org.flowplayer.model.PluginModel;
     import org.flowplayer.model.Status;
     import org.flowplayer.util.GraphicsUtil;
     import org.flowplayer.view.AnimationEngine;
+    import org.flowplayer.view.Flowplayer;
 
     /**
 	 * @author api
@@ -39,11 +42,22 @@ package org.flowplayer.controls.slider {
 		private var _bufferStart:Number;
 		private var _enabled:Boolean = true;
         private var _startDetectTimer:Timer;
+        private var _trickPlayTrackTimer:Timer;
+        private var _slowMotionInfo:Object;
 
-		public function ScrubberSlider(config:Config, animationEngine:AnimationEngine, controlbar:DisplayObject) {
-			super(config, animationEngine, controlbar);
-			createBars();
+        public function ScrubberSlider(config:Config, animationEngine:AnimationEngine, controlbar:DisplayObject) {
+            super(config, animationEngine, controlbar);
+            lookupSlowMotionPlugin(config.player);
+            createBars();
             addPlaylistListeners(config.player.playlist);
+        }
+
+        private function lookupSlowMotionPlugin(player:Flowplayer):void {
+            var slowMotionPlugin:PluginModel = player.pluginRegistry.getPlugin("slowmotion") as PluginModel;
+            if (slowMotionPlugin) {
+                log.debug("found SlowMotion plugin " +slowMotionPlugin+ ", will track slow motion events");
+                slowMotionPlugin.onPluginEvent(onSlowMotionEvent);
+            }
         }
 
         public function addPlaylistListeners(playlist:Playlist):void {
@@ -60,12 +74,46 @@ package org.flowplayer.controls.slider {
             playlist.onSeek(seek);
         }
 
+        private function onSlowMotionEvent(event:PluginEvent):void {
+            log.debug("onSlowMotionEvent()");
+            _slowMotionInfo = event.info2;
+            stop();
+
+            if (! isTrickPlay) {
+                stopTrickPlayTracking();
+                doStart(_slowMotionInfo["clip"], adjustedTime(_config.player.status.time));
+
+            } else {
+                stratTrickPlayTracking();
+            }
+        }
+
+        private function stopTrickPlayTracking():void {
+            if (_trickPlayTrackTimer) {
+                _trickPlayTrackTimer.stop();
+            }
+        }
+
+        private function stratTrickPlayTracking():void {
+            stopTrickPlayTracking();
+            _trickPlayTrackTimer = new Timer(200);
+            _trickPlayTrackTimer.addEventListener(TimerEvent.TIMER, onTrickPlayProgress);
+            _trickPlayTrackTimer.start();
+        }
+
+        private function onTrickPlayProgress(event:TimerEvent):void {
+            updateDraggerPos(_config.player.status.time, _slowMotionInfo["clip"] as Clip);
+        }
+
         private function beforeSeek(event:ClipEvent):void {
             log.debug("beforeSeek()");
             if (event.isDefaultPrevented()) return;
-            var clip:Clip = event.target as Clip;
-            _dragger.x = (Number(event.info) / clip.duration) * (width - _dragger.width);
+            updateDraggerPos(event.info as Number, event.target as Clip);
             stop();
+        }
+
+        private function updateDraggerPos(time:Number, clip:Clip):void {
+            _dragger.x = (time / clip.duration) * (width - _dragger.width);            
         }
 
         private function seek(event:ClipEvent):void {
@@ -93,18 +141,40 @@ package org.flowplayer.controls.slider {
 
             _startDetectTimer = new Timer(200);
             _startDetectTimer.addEventListener(TimerEvent.TIMER,
-                    function onStartProgress(event:TimerEvent):void {
-                        if (_config.player.status.time > time) {
+                    function(event:TimerEvent):void {
+                        if (Math.abs(_config.player.status.time - time) > 0) {
                             _startDetectTimer.stop();
-                            var endPos:Number = width - _dragger.width;
+                            var endPos:Number = forwards ? width - _dragger.width : 0;
+                            var duration:Number = ((forwards ? clip.duration - time : time) * 1000) / speedMultiplier;  
                             log.debug("doStart(), starting an animation to x pos " + endPos + ", the duration is " + clip.duration + ", current pos is " + _dragger.x);
-                            animationEngine.animateProperty(_dragger, "x", endPos, (clip.duration - time) * 1000, null, Linear.easeOut);
+                            animationEngine.animateProperty(_dragger, "x", endPos, duration, null, Linear.easeOut);
                         }
                     });
             _startDetectTimer.start();
         }
 
-        private function onStartProgress(event:TimerEvent):void {
+        private function get forwards():Boolean {
+            if (! _slowMotionInfo) return true
+            return _slowMotionInfo["forwardDirection"];
+        }
+
+        private function get speedMultiplier():Number {
+            if (! _slowMotionInfo) return 1;
+            log.debug("speed multiplier is " + _slowMotionInfo["speedMultiplier"]);
+            return _slowMotionInfo["speedMultiplier"];
+        }
+
+        private function adjustedTime(time:Number):Number {
+            if (! _slowMotionInfo) return time;
+            if (_slowMotionInfo) {
+                log.debug("adjustedTime: " + _slowMotionInfo["adjustedTime"](time));
+                return _slowMotionInfo["adjustedTime"](time);
+            }
+            return time;
+        }
+
+        private function get isTrickPlay():Boolean {
+            return _slowMotionInfo["isTrickPlay"]; 
         }
 
         private function stop(event:ClipEvent = null):void {
