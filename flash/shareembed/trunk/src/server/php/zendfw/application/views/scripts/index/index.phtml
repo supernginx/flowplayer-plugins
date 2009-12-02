@@ -146,8 +146,8 @@ flowplayer("player", "/swf/flowplayer", {
 		// share plugin configuration
 		share: {
                 url:'/swf/flowplayer.shareembed.swf',
-                emailScriptURL: "http://localhost/Flash/flowplayer/shareembed/src/server/php/zendfw/html/",
-                emailScriptTokenURL: "http://localhost/Flash/flowplayer/shareembed/src/server/php/zendfw/html/token",
+                emailScriptURL: "http://shareembed.flowplayer.electroteque.org/email/",
+                emailScriptTokenURL: "http://shareembed.flowplayer.electroteque.org/index/token",
                 emailSubject: "Video you might be interested in",
                 emailTemplate: "{0} \n\n Video Link: <a href=\"{1}\">{2}</a>",
                 shareTitle: "The Video Title",
@@ -183,8 +183,7 @@ flowplayer("player", "/swf/flowplayer", {
 </p>
 
 <div class="box code">
-<pre><code class="javascript">// a global variable that references our info box
-var info = document.getElementById("info");
+<pre><code class="javascript">
 
 flowplayer("player", "/swf/flowplayer", {
 	log: { level: 'debug', filter: 'org.flowplayer.shareembed.*' },
@@ -192,9 +191,8 @@ flowplayer("player", "/swf/flowplayer", {
 
 		share: {
 			url:'/swf/flowplayer.shareembed.swf',
-			emailScriptURL: "http://localhost/Flash/flowplayer/shareembed/src/server/php/zendfw/html/",
-			emailScriptTokenURL: "http://localhost/Flash/flowplayer/shareembed/src/server/php/zendfw/html/token",
-			emailScriptToken: "3435952382509853908250925",
+			emailScriptURL: "http://shareembed.flowplayer.electroteque.org/email/",
+			emailScriptTokenURL: "http://shareembed.flowplayer.electroteque.org/index/token",
 			emailSubject: "Video you might be interested in",
 			emailTemplate: "{0} \n\n Video Link: <a href=\"{1}\">{2}</a>",
 			shareTitle: "The Video Title",
@@ -363,8 +361,8 @@ flowplayer("player2", "/swf/flowplayer", {
 		// share plugin configuration
 		share: {
                 url:'/swf/flowplayer.shareembed.swf',
-                emailScriptURL: "http://localhost/Flash/flowplayer/shareembed/src/server/php/zendfw/html/",
-                emailScriptToken: "3435952382509853908250925",
+                emailScriptURL: "http://shareembed.flowplayer.electroteque.org/email/",
+                emailScriptToken: <?php $this->emailToken;?>,
                 emailSubject: "Video you might be interested in",
                 emailTemplate: "{0} \n\n Video Link: <a href=\"{1}\">{2}</a>",
                 shareTitle: "The Video Title",
@@ -408,8 +406,8 @@ flowplayer("player2", "/swf/flowplayer", {
 
 		share: {
 			url:'/swf/flowplayer.shareembed.swf',
-			emailScriptURL: "http://localhost/Flash/flowplayer/shareembed/src/server/php/zendfw/html/",
-            emailScriptToken: "3435952382509853908250925",
+			emailScriptURL: "http://shareembed.flowplayer.electroteque.org/email/",
+            emailScriptToken: <?php $this->emailToken;?>,
 			emailSubject: "Video you might be interested in",
 			emailTemplate: "{0} \n\n Video Link: <a href=\"{1}\">{2}</a>",
 			shareTitle: "The Video Title",
@@ -511,9 +509,6 @@ flowplayer("player3", "/swf/flowplayer", {
 
 		share: {
 			url:'/swf/flowplayer.shareembed.swf',
-			emailScriptURL: "http://localhost/Flash/flowplayer/shareembed/src/server/php/zendfw/html/",
-			emailScriptTokenURL: "http://localhost/Flash/flowplayer/shareembed/src/server/php/zendfw/html/token",
-			emailScriptToken: "3435952382509853908250925",
 			emailSubject: "Video you might be interested in",
 			emailTemplate: "{0} \n\n Video Link: <a href=\"{1}\">{2}</a>",
 			shareTitle: "The Video Title",
