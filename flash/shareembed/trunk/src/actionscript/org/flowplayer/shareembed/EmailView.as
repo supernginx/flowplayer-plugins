@@ -376,7 +376,7 @@ package org.flowplayer.shareembed {
 			
 			
 			log.debug(loader.data.toString());
-			var message:Object;
+			var message:Object = null;
 			
 			try {
 				message = JSON.decode(loader.data.toString());
@@ -387,18 +387,20 @@ package org.flowplayer.shareembed {
 			loader.close();
 			loader = null;
 			
-			
-			
-			if (message.error)
+			if (message !=null)
 			{
-				log.debug(message.error);
-				_emailSuccessLabel.text = message.error;
-			}
 			
-			if (message.success)
-			{
-				log.debug(message.success);
-				_emailSuccessLabel.text = message.success;
+				if (message.error)
+				{
+					log.debug(message.error);
+					_emailSuccessLabel.text = message.error;
+				}
+				
+				if (message.success)
+				{
+					log.debug(message.success);
+					_emailSuccessLabel.text = message.success;
+				}
 			}
 			
 		}
@@ -421,7 +423,7 @@ package org.flowplayer.shareembed {
 			
 			log.debug(loader.data.toString());
 			
-			var data:Object;
+			var data:Object = null;
 			
 			try {
 				data = JSON.decode(loader.data.toString());
@@ -434,13 +436,15 @@ package org.flowplayer.shareembed {
 			loader.close();
 			loader = null;
 			
-			
-			if (data.error)
+			if (data !=null)
 			{
-				_emailSuccessLabel.text = data.error;	
-			} else {
-				_config.emailScriptToken = data.token;
-				sendServerEmail();
+				if (data.error)
+				{
+					_emailSuccessLabel.text = data.error;	
+				} else {
+					_config.emailScriptToken = data.token;
+					sendServerEmail();
+				}
 			}
 			
 		}

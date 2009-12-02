@@ -4,33 +4,23 @@ require_once 'Zend/Session/Namespace.php';
 
 class ErrorController extends Zend_Controller_Action
 {
-	protected $auth;
 	protected $config;
 	protected $session;
 	private  $exception = null;
 	private $errors;
 	
-	protected function initAuth()
-    {
-    	$this->auth = Zend_Registry::get('auth');
-    }
+
     
     protected function initConfig()
     {
     	$this->config = Zend_Registry::get('config');
     }
     
-    protected function initSession()
-    {
-    	$this->session = $this->auth->getStorage()->read();
-    }
+
     
     public function init()
     {
     	$this->initConfig();
-        //$this->checkAuth();
-        $this->initAuth();
-        $this->initSession();
     }
     
     public function indexAction()
