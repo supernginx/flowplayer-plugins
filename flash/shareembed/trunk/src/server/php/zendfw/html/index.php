@@ -2,7 +2,7 @@
 
 set_include_path(get_include_path() . PATH_SEPARATOR . "../application/lib");
 
-require_once 'Zend/Loader/AutoLoader.php';
+require_once 'Zend/Loader/Autoloader.php';
 require_once 'Zend/Controller/Front.php';
 require_once 'Zend/Config/Xml.php';
 require_once 'Zend/Controller/Router/Route.php';
