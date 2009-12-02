@@ -55,8 +55,6 @@ class IndexController extends Zend_Controller_Action
     	
     	if ($this->_session->referringURL == $_SERVER["HTTP_REFERER"] && isset($_SERVER["HTTP_REFERER"]))
     	{
-    		
-        throw new Zend_Service_Exception(Zend_Json::encode(array("error"=>'No referer')));
         	$this->getResponse()->appendBody(Zend_Json::encode(array("token"=>$this->_helper->csrf->getToken())));
     	} elseif (!isset($_SERVER["HTTP_REFERER"])) {
     		throw new Zend_Service_Exception(Zend_Json::encode(array("error"=>'No referer')));
