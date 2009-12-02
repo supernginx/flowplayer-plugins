@@ -374,8 +374,15 @@ package org.flowplayer.shareembed {
 			loader.removeEventListener(Event.COMPLETE, onSendSuccess);
 			loader.removeEventListener(IOErrorEvent.IO_ERROR, onSendError);
 			
-			var message:Object = JSON.decode(loader.data.toString());
+			
 			log.debug(loader.data.toString());
+			var message:Object;
+			
+			try {
+				message = JSON.decode(loader.data.toString());
+			} catch(e:Error) {
+				_emailSuccessLabel.text = "Error sending mail";	
+			}
 			
 			loader.close();
 			loader = null;
@@ -412,9 +419,17 @@ package org.flowplayer.shareembed {
 			
 			log.debug("Loading Token");
 			
+			log.debug(loader.data.toString());
+			
+			var data:Object;
+			
+			try {
+				data = JSON.decode(loader.data.toString());
+			} catch(e:Error) {
+				_emailSuccessLabel.text = "Error requesting token";	
+			}
 			
 			
-			var data:Object = JSON.decode(loader.data.toString());
 			
 			loader.close();
 			loader = null;
