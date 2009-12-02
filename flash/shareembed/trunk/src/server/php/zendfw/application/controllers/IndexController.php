@@ -50,7 +50,7 @@ class IndexController extends Zend_Controller_Action
     
     public function tokenAction()
     {
-    	error_reporting(0);
+    	//error_reporting(0);
     	$this->_helper->viewRenderer->setNoRender();
     	
     	if ($this->_session->referringURL == $_SERVER["HTTP_REFERER"] && isset($_SERVER["HTTP_REFERER"]))
