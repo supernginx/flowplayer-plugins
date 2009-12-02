@@ -15,6 +15,8 @@ package org.flowplayer.shareembed {
 	import org.flowplayer.view.StyleableSprite;
 	import org.flowplayer.util.URLUtil;
 	
+	import com.adobe.serialization.json.JSON;
+	
 	import com.ediblecode.util.StringUtil;
 	
 
@@ -30,6 +32,7 @@ package org.flowplayer.shareembed {
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
 	import flash.net.URLLoaderDataFormat;
+	import flash.net.navigateToURL;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	
@@ -59,6 +62,7 @@ package org.flowplayer.shareembed {
 		private var _nameFromInput:TextField;
 		private var _emailFromLabel:TextField;
 		private var _emailFromInput:TextField;
+		private var _emailSuccessLabel:TextField;
 		
 		private var _sendBtn:Sprite;
 		
@@ -231,6 +235,14 @@ package org.flowplayer.shareembed {
             field.height = 20;    
             return field;
 		}
+		
+		private function emailSuccessLabel():TextField
+		{
+			var field:TextField = createLabelField();     
+			field.width = 100;
+            field.height = 15;       
+            return field;
+		}
 
 		private function setupForm():void
 		{
@@ -267,6 +279,9 @@ package org.flowplayer.shareembed {
             _nameFromInput = nameFromInput();
             _formContainer.addChild(_nameFromInput);
             
+            _emailSuccessLabel = emailSuccessLabel();
+            _formContainer.addChild(_emailSuccessLabel);
+            
             
             _emailFromInput = emailFromInput();
             _formContainer.addChild(_emailFromInput);
@@ -283,40 +298,135 @@ package org.flowplayer.shareembed {
 
 		}
 		
-		private function onSubmit(event:MouseEvent):void
+		private function getEmailToken():void
+		{
+			log.debug("Requesting " + _config.emailScriptTokenURL);
+			var loader:URLLoader = new URLLoader();
+			var request:URLRequest = new URLRequest(_config.emailScriptTokenURL);
+			request.method = URLRequestMethod.GET;	
+			
+			loader.load(request);
+		
+			loader.addEventListener(Event.COMPLETE, onTokenSuccess);
+			loader.addEventListener(IOErrorEvent.IO_ERROR, onTokenError);
+			
+		}
+		
+		private function sendServerEmail():void
 		{
 			var loader:URLLoader = new URLLoader();
 			var request:URLRequest = new URLRequest(_config.emailScriptURL);
 			request.method = URLRequestMethod.POST;	
 			
 	
-			
 			var param:URLVariables = new URLVariables();
 			param.name = _nameFromInput.text;
 			param.email = _emailFromInput.text;
 			param.to = _emailToInput.text;
 			param.message = StringUtil.formatString(_config.emailTemplate, _messageInput.text, _videoURL, _videoURL);
 			param.subject = _config.emailSubject;
-
+			param.token = _config.emailScriptToken;
 			
 			param.dataFormat = URLLoaderDataFormat.VARIABLES;
 			request.data = param;
 			
+			log.debug("Loading request");
 			loader.load(request);
 			loader.addEventListener(Event.COMPLETE, onSendSuccess);
 			loader.addEventListener(IOErrorEvent.IO_ERROR, onSendError);
 		}
 		
+		private function sendLocalEmail():void
+		{
+			var request:URLRequest = new URLRequest(StringUtil.formatString("mailto:{0}?subject={1}&body={2}",_emailToInput.text, escape(_config.emailSubject), escape(StringUtil.formatString(_config.emailTemplate, _messageInput.text, _videoURL, _videoURL))));
+			navigateToURL(request, "_self");
+		}
+		
+		private function onSubmit(event:MouseEvent):void
+		{
+			if (_config.emailScriptURL)
+			{
+				if (_config.emailScriptToken && !_config.emailScriptTokenURL)
+				{
+					sendServerEmail();
+				} else if (_config.emailScriptTokenURL) {
+					getEmailToken();
+				} else {
+					sendServerEmail();
+				}
+				
+			} else {
+				sendLocalEmail();
+			}
+		}
+		
 		private function onSendError(event:IOErrorEvent):void
 		{
-			log.debug(event.text);
+			log.debug("Error: " + event.text);
+			
+			_emailSuccessLabel.text = event.text;
 		}
 		
 		private function onSendSuccess(event:Event):void
 		{
 			var loader:URLLoader = event.target as URLLoader;
 			
+			loader.removeEventListener(Event.COMPLETE, onSendSuccess);
+			loader.removeEventListener(IOErrorEvent.IO_ERROR, onSendError);
+			
+			var message:Object = JSON.decode(loader.data.toString());
 			log.debug(loader.data.toString());
+			
+			loader.close();
+			loader = null;
+			
+			
+			
+			if (message.error)
+			{
+				log.debug(message.error);
+				_emailSuccessLabel.text = message.error;
+			}
+			
+			if (message.success)
+			{
+				log.debug(message.success);
+				_emailSuccessLabel.text = message.success;
+			}
+			
+		}
+		
+		private function onTokenError(event:IOErrorEvent):void
+		{
+			log.debug("Error: " + event.text);
+			
+			_emailSuccessLabel.text = event.text;
+		}
+		
+		private function onTokenSuccess(event:Event):void
+		{
+			var loader:URLLoader = event.target as URLLoader;
+			
+			loader.removeEventListener(Event.COMPLETE, onTokenSuccess);
+			loader.removeEventListener(IOErrorEvent.IO_ERROR, onTokenError);
+			
+			log.debug("Loading Token");
+			
+			
+			
+			var data:Object = JSON.decode(loader.data.toString());
+			
+			loader.close();
+			loader = null;
+			
+			
+			if (data.error)
+			{
+				_emailSuccessLabel.text = data.error;	
+			} else {
+				_config.emailScriptToken = data.token;
+				sendServerEmail();
+			}
 			
 		}
 		
@@ -350,6 +460,9 @@ package org.flowplayer.shareembed {
             
             _sendBtn.x = _xPadding;
             _sendBtn.y = _nameFromInput.y + _nameFromInput.height + (_yPadding * 2);
+            
+            _emailSuccessLabel.x = _sendBtn.x + _sendBtn.width + _xPadding;
+            _emailSuccessLabel.y = _sendBtn.y;
 		}
 
 		override protected function onResize():void {

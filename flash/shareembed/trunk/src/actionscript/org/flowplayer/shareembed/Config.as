@@ -15,7 +15,9 @@ package org.flowplayer.shareembed
 	public class Config {
 		
 		// max amount of visible items
-		private var _emailScriptURL:String = "email.php";
+		private var _emailScriptURL:String;
+		private var _emailScriptTokenURL:String;
+		private var _emailScriptToken:String;
 		private var _emailSubject:String = "Video you might be interested in";
 		private var _emailTemplate:String = "{0} \n\n Video Link: <a href=\"{1}\">{2}</a>";
 		private var _usePopup:Boolean = true;
@@ -78,6 +80,23 @@ package org.flowplayer.shareembed
 		public function set emailScriptURL(url:String):void {
 			_emailScriptURL = url;
 		}
+		
+		public function get emailScriptTokenURL():String {
+			return _emailScriptTokenURL;
+		}
+		
+		public function set emailScriptTokenURL(token:String):void {
+			_emailScriptTokenURL = token;
+		}
+		
+		public function get emailScriptToken():String {
+			return _emailScriptToken;
+		}
+		
+		public function set emailScriptToken(token:String):void {
+			_emailScriptToken = token;
+		}
+		
 		
 		public function get emailSubject():String {
 			return _emailSubject;
