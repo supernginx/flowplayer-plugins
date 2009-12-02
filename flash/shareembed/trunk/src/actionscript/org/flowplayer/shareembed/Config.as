@@ -24,6 +24,7 @@ package org.flowplayer.shareembed
 		private var _shareTitle:String;
 		private var _shareBody:String = "";
 		private var _shareCategory:String = "";
+		private var _requiredFields:Array = ["name","email","to","message","subject"];
 		
 		private var _baseURL:String = URLUtil.pageUrl;
 		
@@ -69,10 +70,22 @@ package org.flowplayer.shareembed
 			},
 			small: {
 				fontSize: 8		
+			},
+			error: {
+				color: '#FF0000'
+			},
+			embed: {
+				textAlign: 'left'
+			},
+			info: {
+				color: '#CCCCCC'
 			}
 		}
 		
-
+		public function get requiredFields():Array {
+			return _requiredFields;
+		}
+		
 		public function get emailScriptURL():String {
 			return _emailScriptURL;
 		}

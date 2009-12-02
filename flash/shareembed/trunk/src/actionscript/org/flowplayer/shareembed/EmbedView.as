@@ -8,8 +8,8 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 package org.flowplayer.shareembed {
-    import flash.filters.GlowFilter;
-import org.flowplayer.model.DisplayPluginModel;
+	import flash.system.System;
+	import org.flowplayer.model.DisplayPluginModel;
 	import org.flowplayer.view.FlowStyleSheet;
 	import org.flowplayer.view.Flowplayer;
 	import org.flowplayer.view.StyleableSprite;
@@ -20,7 +20,9 @@ import org.flowplayer.model.DisplayPluginModel;
 	import flash.events.MouseEvent;
 	import flash.text.AntiAliasType;
 	import flash.text.TextField;
-	import flash.text.TextFieldAutoSize;		
+	import flash.text.TextFieldAutoSize;	
+
+	import org.flowplayer.shareembed.assets.CopyBtn;	
 
 	/**
 	 * @author api
@@ -28,12 +30,13 @@ import org.flowplayer.model.DisplayPluginModel;
 	internal class EmbedView extends StyleableSprite {
 
 		private var _text:TextField;
-		private var _textMask:Sprite;
 		private var _closeButton:CloseButton;
 		private var _htmlText:String;
 		private var _player:Flowplayer;
 		private var _plugin:DisplayPluginModel;
-		private var _originalAlpha:Number;
+		
+		private var _copyBtn:Sprite;
+		private var _infoText:TextField;
 
 		public function EmbedView(plugin:DisplayPluginModel, player:Flowplayer) {
 			super(null, player, player.createLoader());
@@ -41,6 +44,8 @@ import org.flowplayer.model.DisplayPluginModel;
 			_player = player;
 
 			createCloseButton();
+			createCopyButton();
+			
 		
 		}
 
@@ -59,7 +64,7 @@ import org.flowplayer.model.DisplayPluginModel;
 			if (! _htmlText) {
 				_htmlText = "";
 			}
-			_text.htmlText = "<body>" + _htmlText + "</body>";
+			_text.htmlText = '<span class="embed">' + _htmlText + '</span>';
 			log.debug("set html to " + _text.htmlText);
 		}
 		
@@ -79,27 +84,40 @@ import org.flowplayer.model.DisplayPluginModel;
 			}
 			createCloseButton(image);
 		}
+		
+		private function createLabelField():TextField
+		{
+			var field:TextField = _player.createTextField();
+			field.selectable = false;
+			field.autoSize = TextFieldAutoSize.NONE;
+			field.styleSheet = style.styleSheet;
+			return field;
+		}
+		
+		private function createInfoText():void
+		{
+			_infoText = createLabelField();
+			_infoText.width = 150;
+			_infoText.height = 20;
+			addChild(_infoText);
+		}
 
 		private function createTextField(htmlText:String = null):void {
 			log.debug("creating text field for text " + htmlText);
 			if (_text) {
 				removeChild(_text);
 			} 
-			_text = _player.createTextField();
+			_text = createLabelField();
 			_text.blendMode = BlendMode.LAYER;
-			_text.autoSize = TextFieldAutoSize.CENTER;
+			//_text.autoSize = TextFieldAutoSize.LEFT;
 			_text.wordWrap = true;
 			_text.multiline = true;
+			_text.selectable = true;
 			_text.antiAliasType = AntiAliasType.ADVANCED;
 			_text.condenseWhite = true;
-
-            log.info("style.textDecoration " + style.textDecoration);
-            if (style.textDecoration == "outline") {
-                log.debug("setting textDecoration")
-                var glow:GlowFilter = new GlowFilter(0, .80, 2, 4, 6);
-                var filters:Array = [glow];
-                _text.filters = filters;
-            }
+			_text.width = width;
+			_text.height = height - _copyBtn.height - 5;
+       
 
 			addChild(_text);
 			if (style.styleSheet) {
@@ -109,22 +127,11 @@ import org.flowplayer.model.DisplayPluginModel;
 				log.debug("setting html to " + htmlText);
 				html = htmlText;
 			}
-			_textMask = createMask();
-			addChild(_textMask);
-			_text.mask = _textMask;
-			arrangeText();
+			
+			createInfoText();
 		}
 		
-		private function arrangeText():void {
-			if (! (_text && style)) return;
-			var padding:Array = style.padding;
-			log.debug("arranging text with padding " + padding + " height is " + height);
-			// only reset values if they change, otherwise there will be visual "blinking" of text/images
-			setTextProperty("y", padding[0]);
-			setTextProperty("x", padding[3]);
-			setTextProperty("height", height - padding[0] - padding[2]);
-			setTextProperty("width", width - padding[1] - padding[3]);
-		}
+		
 		
 		private function setTextProperty(prop:String, value:Number):void {
 			if (_text[prop] != value) {
@@ -135,17 +142,17 @@ import org.flowplayer.model.DisplayPluginModel;
 
 		override protected function onResize():void {
 			arrangeCloseButton();
-			if (_textMask) {
-				_textMask.width = width;
-				_textMask.height = height;
-			}
+			arrangeCopyButton();
+			arrangeInfoText();
 			this.x = 0;
 			this.y = 0;
 		}
 
 		override protected function onRedraw():void {
-			arrangeText();
+		
 			arrangeCloseButton();
+			arrangeCopyButton();
+			arrangeInfoText();
 		}
 		
 		private function arrangeCloseButton():void {
@@ -156,10 +163,39 @@ import org.flowplayer.model.DisplayPluginModel;
 			}
 		}
 		
+		private function arrangeCopyButton():void {
+			if (_copyBtn) {
+				_copyBtn.y = height - _copyBtn.height - 5;
+				_copyBtn.x = 10;		
+			}
+		}
+		
+		private function arrangeInfoText():void {
+			if (_infoText && _copyBtn) {
+				_infoText.y = height - _infoText.height - 5;
+				_infoText.x = _copyBtn.x + _copyBtn.width + 40;		
+			}
+		}
+		
 		private function createCloseButton(icon:DisplayObject = null):void {
 			_closeButton = new CloseButton(icon);
 			addChild(_closeButton);
 			_closeButton.addEventListener(MouseEvent.CLICK, onCloseClicked);
+		}
+		
+		private function createCopyButton():void {
+			_copyBtn = new CopyBtn() as Sprite;
+            _copyBtn.buttonMode = true;
+            _copyBtn.addEventListener(MouseEvent.MOUSE_DOWN, onCopyToClipboard);
+            addChild(_copyBtn);	
+		}
+		
+		private function onCopyToClipboard(event:MouseEvent):void
+		{
+			System.setClipboard(_text.text);
+			_text.setSelection(0, _text.text.length);
+			_infoText.htmlText = '<span class="info">Copied to clipboard</span>';
+			
 		}
 		
 		private function onCloseClicked(event:MouseEvent):void {

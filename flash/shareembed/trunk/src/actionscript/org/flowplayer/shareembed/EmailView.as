@@ -344,7 +344,22 @@ package org.flowplayer.shareembed {
 		
 		private function onSubmit(event:MouseEvent):void
 		{
-			if (_config.emailScriptURL)
+			var required:Array = _config.requiredFields;
+			var requiredFields:Array = [];
+			
+			if (required.length > 0)
+			{
+				if (!_nameFromInput.text && required.indexOf("name") !== -1) requiredFields.push("name");
+				if (!_emailFromInput.text && required.indexOf("email") !== -1) requiredFields.push("email");
+				if (!_emailToInput.text && required.indexOf("to") !== -1) requiredFields.push("to");
+				if (!_messageInput.text && required.indexOf("message") !== -1) requiredFields.push("message");
+				if (!_config.emailSubject && required.indexOf("subject") !== -1) requiredFields.push("subject");	
+			}
+			
+			if (requiredFields.length > 0)
+			{
+				_emailSuccessLabel.text = "Following are required " + requiredFields.join(",");
+			} else if (_config.emailScriptURL)
 			{
 				if (_config.emailScriptToken && !_config.emailScriptTokenURL)
 				{

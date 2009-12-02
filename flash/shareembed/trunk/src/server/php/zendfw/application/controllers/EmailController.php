@@ -76,18 +76,23 @@ class EmailController extends Zend_Controller_Action
 
 			
 		   if ($this->input->hasInvalid()) {
+                          $missing = "";
+                          $notalnum = "";
+                          $message = "";
+                          foreach ($this->input->getInvalid() as $key=>$value)
+                          {
+                                  if (isset($value["isEmpty"])) $missing .= $key.",";
+                                  if (isset($value["notAlnum"])) $notalnum .= $key.",";
 
-		   	  $message = "";
-		   	  foreach ($this->input->getInvalid() as $value)
-		   	  {
-		   	  	  if (isset($value["isEmpty"])) $message .= $value["isEmpty"]."\n";
-		   	  	  if (isset($value["notAlnum"])) $message .= $value["notAlnum"]."\n";
-		   	  	  
-		   	  }
-		
-		   	  throw new Zend_Service_Exception(Zend_Json::encode(array("error"=>$message)));
+                          }
 
-		   }
+                          if ($missing) $message.= "Following are required $missing \n";
+                          if ($notalnum) $message.= "Following are alpha numeric only $notalnum";
+
+                          throw new Zend_Service_Exception(Zend_Json::encode(array("error"=>$message)));
+         
+           }
+			
 
 			
 			if(!$this->_helper->csrf->isValidToken($this->token))

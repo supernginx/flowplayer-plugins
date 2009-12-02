@@ -24,4 +24,5 @@
     <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">src/flash/livespacesicon.swc</AS3Classpath>
     <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">src/flash/orkuticon.swc</AS3Classpath>
     <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">src/flash/stumbleupon.swc</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">src/flash/copybtn.swc</AS3Classpath>
 </AS3Classpath>
