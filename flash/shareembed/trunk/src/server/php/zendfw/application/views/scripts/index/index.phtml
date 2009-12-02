@@ -553,13 +553,13 @@ flowplayer("player3", "/swf/flowplayer.swf", {
 <script language="JavaScript">
 
 
-flowplayer("player4", "@PLAYER_SWF@", {
+flowplayer("player4", "/swf/flowplayer.swf", {
 	log: { level: 'debug', filter: 'org.flowplayer.shareembed.*' },
     plugins:  {
 
 		// share plugin configuration
 		share: {
-                url:'@MAIN_PLAYER_SWF@',
+				url:'/swf/flowplayer.shareembed.swf',
                 emailSubject: "Video you might be interested in",
                 emailTemplate: "{0} \n\n Video Link: <a href=\"{1}\">{2}</a>",
                 shareTitle: "The Video Title",
@@ -598,12 +598,12 @@ flowplayer("player4", "@PLAYER_SWF@", {
 <div class="box code">
 <pre><code class="javascript">
 
-flowplayer("player4", "@PLAYER_SWF@", {
+flowplayer("player4", "/swf/flowplayer.swf",, {
 	log: { level: 'debug', filter: 'org.flowplayer.shareembed.*' },
     plugins:  {
 
 		share: {
-			url:'@MAIN_PLAYER_SWF@',
+			url:'/swf/flowplayer.shareembed.swf',
 			emailSubject: "Video you might be interested in",
 			emailTemplate: "{0} \n\n Video Link: <a href=\"{1}\">{2}</a>",
 			shareTitle: "The Video Title",
