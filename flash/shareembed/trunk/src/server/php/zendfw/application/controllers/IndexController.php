@@ -44,18 +44,9 @@ class IndexController extends Zend_Controller_Action
     {		
 		
 		$this->_session->referringURL =  "http://".$_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"];
-    	
-    }
-    
-    public function directAction()
-    {
     	$this->view->emailToken = $this->_helper->csrf->getToken();	
     }
     
-    public function localAction()
-    {
-    	
-    }
     
     public function tokenAction()
     {
