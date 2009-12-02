@@ -527,6 +527,110 @@ flowplayer("player3", "/swf/flowplayer.swf", {
     }
 });</code></pre>
 </div>
+
+
+
+<h2>Configuration With Panel Styling</h2>
+
+
+<div style="width:425px;margin:30px auto">
+
+<!-- player container-->
+
+<a
+	href="flowplayer.flv"
+	style="display:block;width:425px;height:300px;"
+	id="player4">
+
+	<!-- splash image inside the container -->
+	<img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" />
+
+</a>
+
+
+
+<!-- Flowplayer installation and configuration -->
+<script language="JavaScript">
+
+
+flowplayer("player4", "@PLAYER_SWF@", {
+	log: { level: 'debug', filter: 'org.flowplayer.shareembed.*' },
+    plugins:  {
+
+		// share plugin configuration
+		share: {
+                url:'@MAIN_PLAYER_SWF@',
+                emailSubject: "Video you might be interested in",
+                emailTemplate: "{0} \n\n Video Link: <a href=\"{1}\">{2}</a>",
+                shareTitle: "The Video Title",
+                shareBody: "The video text",
+                shareCategory: "music",
+                usePopup: true,
+                backgroundColor:'#CCCCCC',
+                style: {
+                    'body': {
+                    fontSize: '14',
+                    fontFamily: 'Arial',
+                    textAlign: 'center',
+                    color: '#ffffff'
+                    //backgroundColor:'#000000'
+                    }
+                }
+            }
+
+    },
+
+	 // use our cluster plugin as a "URL resolver"
+    clip: {
+        baseUrl: 'http://e1h13.simplecdn.net/flowplayer/',  
+        autoPlay: false    
+    }
+});
+
+</script>
+
+</div>
+
+<p>
+	The configuration is shown below. 
+</p>
+
+<div class="box code">
+<pre><code class="javascript">
+
+flowplayer("player4", "@PLAYER_SWF@", {
+	log: { level: 'debug', filter: 'org.flowplayer.shareembed.*' },
+    plugins:  {
+
+		share: {
+			url:'@MAIN_PLAYER_SWF@',
+			emailSubject: "Video you might be interested in",
+			emailTemplate: "{0} \n\n Video Link: <a href=\"{1}\">{2}</a>",
+			shareTitle: "The Video Title",
+			shareBody: "The video text",
+			shareCategory: "music",
+			usePopup: true,	
+			backgroundColor:'#CCCCCC',	
+			style: {
+	       			'body': {
+	                fontSize: '14',
+	                fontFamily: 'Arial',
+	                textAlign: 'center',
+	                color: '#ffffff'
+	                //backgroundColor:'#000000'
+	                }
+	        }
+        }			
+
+    },
+
+	 // use our cluster plugin as a "URL resolver"
+    clip: {
+        baseUrl: 'http://e1h13.simplecdn.net/flowplayer/',  
+        autoPlay: false    
+    }
+});</code></pre>
+</div>
 		</div>
 		
 		<div class="clear"></div> 
