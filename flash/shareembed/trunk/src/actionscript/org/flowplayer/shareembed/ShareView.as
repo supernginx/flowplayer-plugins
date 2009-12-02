@@ -153,25 +153,25 @@ package org.flowplayer.shareembed {
 		
 		private function shareFacebook(event:MouseEvent):void
 		{
-			var url:String = StringUtil.formatString(_facebookURL, _config.shareSubject, _videoURL);
+			var url:String = StringUtil.formatString(_facebookURL, _config.shareTitle, _videoURL);
 			launchURL(url, _config.popUpDimensions.facebook);
 		}
 		
 		private function shareMyspace(event:MouseEvent):void
 		{
-			var url:String = StringUtil.formatString(_myspaceURL,_config.shareSubject, _embedCode, _videoURL);
+			var url:String = StringUtil.formatString(_myspaceURL,_config.shareTitle, _embedCode, _videoURL);
 			launchURL(url,_config.popUpDimensions.myspace);
 		}
 		
 		private function shareDigg(event:MouseEvent):void
 		{
-			var url:String = StringUtil.formatString(_diggURL, _config.shareSubject, _videoURL,_config.shareBody, _config.shareCategory);
+			var url:String = StringUtil.formatString(_diggURL, _config.shareTitle, _videoURL,_config.shareBody, _config.shareCategory);
 			launchURL(url,_config.popUpDimensions.digg);
 		}
 		
 		private function shareBebo(event:MouseEvent):void
 		{
-			var url:String = StringUtil.formatString(_beboURL, _config.shareSubject, _videoURL);
+			var url:String = StringUtil.formatString(_beboURL, _config.shareTitle, _videoURL);
 			launchURL(url,_config.popUpDimensions.bebo);
 		}
 		
@@ -183,19 +183,19 @@ package org.flowplayer.shareembed {
 		
 		private function shareTwitter(event:MouseEvent):void
 		{
-			var url:String = StringUtil.formatString(_twitterURL, _config.shareSubject, _videoURL);
+			var url:String = StringUtil.formatString(_twitterURL, _config.shareTitle, _videoURL);
 			launchURL(url, _config.popUpDimensions.twitter);
 		}
 		
 		private function shareStumbleUpon(event:MouseEvent):void
 		{
-			var url:String = StringUtil.formatString(_stumbleUponURL, _config.shareSubject, _videoURL);
+			var url:String = StringUtil.formatString(_stumbleUponURL, _config.shareTitle, _videoURL);
 			launchURL(url, _config.popUpDimensions.stumbleupon);
 		}
 		
 		private function shareLiveSpaces(event:MouseEvent):void
 		{
-			var url:String = StringUtil.formatString(_liveSpacesURL, _config.shareSubject, _videoURL, _embedCode);
+			var url:String = StringUtil.formatString(_liveSpacesURL, _config.shareTitle, _videoURL, _embedCode);
 			launchURL(url, _config.popUpDimensions.livespaces);
 		}
 		

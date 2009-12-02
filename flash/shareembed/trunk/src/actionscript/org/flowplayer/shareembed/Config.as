@@ -21,9 +21,9 @@ package org.flowplayer.shareembed
 		private var _emailSubject:String = "Video you might be interested in";
 		private var _emailTemplate:String = "{0} \n\n Video Link: <a href=\"{1}\">{2}</a>";
 		private var _usePopup:Boolean = true;
-		private var _shareSubject:String = "The video";
-		private var _shareBody:String = "Share Body";
-		private var _shareCategory:String = "video";
+		private var _shareTitle:String;
+		private var _shareBody:String = "";
+		private var _shareCategory:String = "";
 		
 		private var _baseURL:String = URLUtil.pageUrl;
 		
@@ -123,12 +123,12 @@ package org.flowplayer.shareembed
 			return _usePopup;
 		}
 		
-		public function set shareSubject(value:String):void {
-			_shareSubject = value;
+		public function set shareTitle(value:String):void {
+			_shareTitle = value;
 		}
 		
-		public function get shareSubject():String {
-			return _shareSubject;
+		public function get shareTitle():String {
+			return _shareTitle;
 		}
 		
 		public function set shareBody(value:String):void {

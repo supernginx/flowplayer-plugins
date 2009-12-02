@@ -323,7 +323,7 @@ package org.flowplayer.shareembed {
 			param.name = _nameFromInput.text;
 			param.email = _emailFromInput.text;
 			param.to = _emailToInput.text;
-			param.message = StringUtil.formatString(_config.emailTemplate, _messageInput.text, _videoURL, _videoURL);
+			param.message = StringUtil.formatString(_config.emailTemplate, _messageInput.text, _videoURL, _config.shareTitle ? _config.shareTitle : _videoURL);
 			param.subject = _config.emailSubject;
 			param.token = _config.emailScriptToken;
 			
