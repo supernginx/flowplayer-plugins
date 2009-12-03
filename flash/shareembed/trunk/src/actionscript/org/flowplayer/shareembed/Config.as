@@ -14,7 +14,6 @@ package org.flowplayer.shareembed
 	
 	public class Config {
 		
-		// max amount of visible items
 		private var _emailScriptURL:String;
 		private var _emailScriptTokenURL:String;
 		private var _emailScriptToken:String;
@@ -25,6 +24,9 @@ package org.flowplayer.shareembed
 		private var _shareBody:String = "";
 		private var _shareCategory:String = "";
 		private var _requiredFields:Array = ["name","email","to","message","subject"];
+		private var _enableEmail:Boolean = true;
+		private var _enableShare:Boolean = true;
+		private var _enableEmbed:Boolean = true;
 		
 		private var _baseURL:String = URLUtil.pageUrl;
 		
@@ -72,13 +74,27 @@ package org.flowplayer.shareembed
 				fontSize: 8		
 			},
 			error: {
-				color: '#FF0000'
+				color: '#FF0000',
+				fontSize: 10, 
+				fontWeight: 'normal',
+				fontFamily: 'Arial'
+			},
+			success: {
+				color: '#000000',
+				fontSize: 10, 
+				fontWeight: 'normal',
+				fontFamily: 'Arial'
 			},
 			embed: {
+				color: '#000000',
+				fontSize: 8, 
+				fontWeight: 'normal',
+				fontFamily: 'Arial',
 				textAlign: 'left'
 			},
 			info: {
-				color: '#CCCCCC'
+				color: '#CCCCCC',
+				fontSize: 10
 			}
 		}
 		
@@ -186,6 +202,33 @@ package org.flowplayer.shareembed
 		
 		public function get popUpDimensions():Object {
 			return _popUpDimensions;
+		}
+		
+		public function set enableEmail(value:Boolean):void {
+			_enableEmail = value;
+		}
+		
+		public function get enableEmail():Boolean
+		{
+			return _enableEmail;
+		}
+		
+		public function set enableEmbed(value:Boolean):void {
+			_enableEmbed = value;
+		}
+		
+		public function get enableEmbed():Boolean
+		{
+			return _enableEmbed;
+		}
+		
+		public function set enableShare(value:Boolean):void {
+			_enableShare = value;
+		}
+		
+		public function get enableShare():Boolean
+		{
+			return _enableShare;
 		}
 	}
 }

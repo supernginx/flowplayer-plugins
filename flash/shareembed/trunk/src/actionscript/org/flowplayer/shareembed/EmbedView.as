@@ -1,8 +1,8 @@
 /*
  * This file is part of Flowplayer, http://flowplayer.org
  *
- * By: Anssi Piirainen, <support@flowplayer.org>
- * Copyright (c) 2008, 2009 Flowplayer Oy
+ * By: Daniel Rossi, <electroteque@gmail.com>
+ * Copyright (c) 2009 Electroteque Multimedia
  *
  * Released under the MIT License:
  * http://www.opensource.org/licenses/mit-license.php
@@ -25,7 +25,7 @@ package org.flowplayer.shareembed {
 	import org.flowplayer.shareembed.assets.CopyBtn;	
 
 	/**
-	 * @author api
+	 * @author danielr
 	 */
 	internal class EmbedView extends StyleableSprite {
 
@@ -45,8 +45,7 @@ package org.flowplayer.shareembed {
 
 			createCloseButton();
 			createCopyButton();
-			
-		
+
 		}
 
 		override protected function onSetStyle(style:FlowStyleSheet):void {
@@ -72,18 +71,6 @@ package org.flowplayer.shareembed {
 			return _htmlText;
 		}
 		
-		public function append(htmlText:String):String {
-			html = _htmlText + htmlText;
-			log.debug("appended html to " + _text.htmlText);
-			return _htmlText;
-		}
-
-		public function set closeImage(image:DisplayObject):void {
-			if (_closeButton) {
-				removeChild(_closeButton);
-			}
-			createCloseButton(image);
-		}
 		
 		private function createLabelField():TextField
 		{
@@ -115,9 +102,10 @@ package org.flowplayer.shareembed {
 			_text.selectable = true;
 			_text.antiAliasType = AntiAliasType.ADVANCED;
 			_text.condenseWhite = true;
-			_text.width = width;
-			_text.height = height - _copyBtn.height - 5;
-       
+			_text.width = width - 15;
+			_text.height = height - _copyBtn.height - 10;
+      		_text.x = 5;
+      		_text.y = 5;
 
 			addChild(_text);
 			if (style.styleSheet) {
@@ -131,14 +119,7 @@ package org.flowplayer.shareembed {
 			createInfoText();
 		}
 		
-		
-		
-		private function setTextProperty(prop:String, value:Number):void {
-			if (_text[prop] != value) {
-				log.debug("setting text property " + prop + " to value " + value);
-				_text[prop] = value;
-			}
-		}
+	
 
 		override protected function onResize():void {
 			arrangeCloseButton();
@@ -193,9 +174,9 @@ package org.flowplayer.shareembed {
 		private function onCopyToClipboard(event:MouseEvent):void
 		{
 			System.setClipboard(_text.text);
+			stage.focus = _text;
 			_text.setSelection(0, _text.text.length);
 			_infoText.htmlText = '<span class="info">Copied to clipboard</span>';
-			
 		}
 		
 		private function onCloseClicked(event:MouseEvent):void {
@@ -206,10 +187,5 @@ package org.flowplayer.shareembed {
 			ShareEmbed(_plugin.getDisplayObject()).removeChild(this);
 		}
 
-		override public function set alpha(value:Number):void {
-			super.alpha = value;
-			if (! _text) return;
-			_text.alpha = value;
-		}
 	}
 }
