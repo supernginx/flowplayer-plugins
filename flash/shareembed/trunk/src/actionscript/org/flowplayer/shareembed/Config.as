@@ -61,38 +61,38 @@ package org.flowplayer.shareembed
 				textAlign: 'left',
 				color: '#ffffff'
 			},
-			title: {
+			'.title': {
 				fontSize: 23	
 			},
-			label: {
+			'.label': {
 				fontSize: 12	
 			},
-			input: {
+			'.input': {
 				fontSize: 12
 			},
-			small: {
+			'.small': {
 				fontSize: 8		
 			},
-			error: {
-				color: '#FF0000',
-				fontSize: 10, 
-				fontWeight: 'normal',
-				fontFamily: 'Arial'
-			},
-			success: {
+			'.error': {
 				color: '#000000',
 				fontSize: 10, 
 				fontWeight: 'normal',
 				fontFamily: 'Arial'
 			},
-			embed: {
+			'.success': {
+				color: '#000000',
+				fontSize: 10, 
+				fontWeight: 'normal',
+				fontFamily: 'Arial'
+			},
+			'.embed': {
 				color: '#000000',
 				fontSize: 8, 
 				fontWeight: 'normal',
 				fontFamily: 'Arial',
 				textAlign: 'left'
 			},
-			info: {
+			'.info': {
 				color: '#CCCCCC',
 				fontSize: 10
 			}
