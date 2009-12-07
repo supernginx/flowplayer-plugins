@@ -739,7 +739,7 @@ package org.flowplayer.viralvid {
 		 * @return void
 		 */
 		private function onFadeOut():void {
-			ShareEmbed(_plugin.getDisplayObject()).removeChild(this);
+			ViralVideo(_plugin.getDisplayObject()).removeChild(this);
 		}
 	}
 }
