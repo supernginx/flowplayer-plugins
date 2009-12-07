@@ -57,7 +57,7 @@
 
 </head>
 
-<body id="plugins_shareembed">
+<body id="plugins_viralvid">
 
 		
 	
@@ -87,7 +87,7 @@
 
 
 <h1 style="background-image:url(http://www.flowplayer.org/img/title/streaminge.png)">
-	Flash plugin: <strong>shareembed</strong>
+	Flash plugin: <strong>viralvid</strong>
 	<em>Video sharing plugin</em>
 </h1>
 
@@ -174,14 +174,14 @@
 <script language="JavaScript">
 
 flowplayer("player", "/swf/flowplayer.swf", {
-	log: { level: 'debug', filter: 'org.flowplayer.shareembed.*' },
+	log: { level: 'debug', filter: 'org.flowplayer.viralvid.*' },
     plugins:  {
 
 		// share plugin configuration
 		share: {
-                url:'/swf/flowplayer.shareembed.swf',
-                emailScriptURL: "http://localhost/Flash/flowplayer/shareembed/src/server/php/zendfw/html/",
-                emailScriptTokenURL: "http://localhost/Flash/flowplayer/shareembed/src/server/php/zendfw/html/token",
+                url:'/swf/flowplayer.viralvid.swf',
+                emailScriptURL: "http://localhost/Flash/flowplayer/viralvid/src/server/php/zendfw/html/",
+                emailScriptTokenURL: "http://localhost/Flash/flowplayer/viralvid/src/server/php/zendfw/html/token",
                 emailSubject: "Video you might be interested in",
                 emailTemplate: "{0} \n\n Video Link: <a href=\"{1}\">{2}</a>",
                 shareTitle: "The Video Title",
@@ -223,13 +223,13 @@ flowplayer("player", "/swf/flowplayer.swf", {
 <pre><code class="javascript">
 
 flowplayer("player", "/swf/flowplayer.swf", {
-	log: { level: 'debug', filter: 'org.flowplayer.shareembed.*' },
+	log: { level: 'debug', filter: 'org.flowplayer.viralvid.*' },
     plugins:  {
 
 		share: {
-			url:'/swf/flowplayer.shareembed.swf',
-			emailScriptURL: "http://localhost/Flash/flowplayer/shareembed/src/server/php/zendfw/html/",
-			emailScriptTokenURL: "http://localhost/Flash/flowplayer/shareembed/src/server/php/zendfw/html/token",
+			url:'/swf/flowplayer.viralvid.swf',
+			emailScriptURL: "http://localhost/Flash/flowplayer/viralvid/src/server/php/zendfw/html/",
+			emailScriptTokenURL: "http://localhost/Flash/flowplayer/viralvid/src/server/php/zendfw/html/token",
 			emailSubject: "Video you might be interested in",
 			emailTemplate: "{0} \n\n Video Link: <a href=\"{1}\">{2}</a>",
 			shareTitle: "The Video Title",
@@ -421,13 +421,13 @@ flowplayer("player", "/swf/flowplayer.swf", {
 
 
 flowplayer("player2", "/swf/flowplayer.swf", {
-	log: { level: 'debug', filter: 'org.flowplayer.shareembed.*' },
+	log: { level: 'debug', filter: 'org.flowplayer.viralvid.*' },
     plugins:  {
 
 		// share plugin configuration
 		share: {
-                url:'/swf/flowplayer.shareembed.swf',
-                emailScriptURL: "http://localhost/Flash/flowplayer/shareembed/src/server/php/zendfw/html/",
+                url:'/swf/flowplayer.viralvid.swf',
+                emailScriptURL: "http://localhost/Flash/flowplayer/viralvid/src/server/php/zendfw/html/",
                 emailScriptToken: "<?=$this->emailToken;?>",
                 emailSubject: "Video you might be interested in",
                 emailTemplate: "{0} \n\n Video Link: <a href=\"{1}\">{2}</a>",
@@ -467,12 +467,12 @@ flowplayer("player2", "/swf/flowplayer.swf", {
 <pre><code class="javascript">
 
 flowplayer("player2", "/swf/flowplayer.swf", {
-	log: { level: 'debug', filter: 'org.flowplayer.shareembed.*' },
+	log: { level: 'debug', filter: 'org.flowplayer.viralvid.*' },
     plugins:  {
 
 		share: {
-			url:'/swf/flowplayer.shareembed.swf',
-			emailScriptURL: "http://localhost/Flash/flowplayer/shareembed/src/server/php/zendfw/html/",
+			url:'/swf/flowplayer.viralvid.swf',
+			emailScriptURL: "http://localhost/Flash/flowplayer/viralvid/src/server/php/zendfw/html/",
             emailScriptToken: "<?=$this->emailToken;?>",
 			emailSubject: "Video you might be interested in",
 			emailTemplate: "{0} \n\n Video Link: <a href=\"{1}\">{2}</a>",
@@ -530,12 +530,12 @@ flowplayer("player2", "/swf/flowplayer.swf", {
 
 
 flowplayer("player3", "/swf/flowplayer.swf", {
-	log: { level: 'debug', filter: 'org.flowplayer.shareembed.*' },
+	log: { level: 'debug', filter: 'org.flowplayer.viralvid.*' },
     plugins:  {
 
 		// share plugin configuration
 		share: {
-                url:'/swf/flowplayer.shareembed.swf',
+                url:'/swf/flowplayer.viralvid.swf',
                 emailSubject: "Video you might be interested in",
                 emailTemplate: "{0} \n\n Video Link: <a href=\"{1}\">{2}</a>",
                 shareTitle: "The Video Title",
@@ -574,11 +574,11 @@ flowplayer("player3", "/swf/flowplayer.swf", {
 <pre><code class="javascript">
 
 flowplayer("player3", "/swf/flowplayer.swf", {
-	log: { level: 'debug', filter: 'org.flowplayer.shareembed.*' },
+	log: { level: 'debug', filter: 'org.flowplayer.viralvid.*' },
     plugins:  {
 
 		share: {
-			url:'/swf/flowplayer.shareembed.swf',
+			url:'/swf/flowplayer.viralvid.swf',
 			emailSubject: "Video you might be interested in",
 			emailTemplate: "{0} \n\n Video Link: <a href=\"{1}\">{2}</a>",
 			shareTitle: "The Video Title",
@@ -637,12 +637,12 @@ flowplayer("player3", "/swf/flowplayer.swf", {
 
 
 flowplayer("player4", "/swf/flowplayer.swf", {
-	log: { level: 'debug', filter: 'org.flowplayer.shareembed.*' },
+	log: { level: 'debug', filter: 'org.flowplayer.viralvid.*' },
     plugins:  {
 
 		// share plugin configuration
 		share: {
-                url:'/swf/flowplayer.shareembed.swf',
+                url:'/swf/flowplayer.viralvid.swf',
                 emailSubject: "Video you might be interested in",
                 emailTemplate: "{0} \n\n Video Link: <a href=\"{1}\">{2}</a>",
                 shareTitle: "The Video Title",
@@ -684,11 +684,11 @@ flowplayer("player4", "/swf/flowplayer.swf", {
 <pre><code class="javascript">
 
 flowplayer("player4", "/swf/flowplayer.swf", {
-	log: { level: 'debug', filter: 'org.flowplayer.shareembed.*' },
+	log: { level: 'debug', filter: 'org.flowplayer.viralvid.*' },
     plugins:  {
 
 		share: {
-			url:'/swf/flowplayer.shareembed.swf',
+			url:'/swf/flowplayer.viralvid.swf',
 			emailSubject: "Video you might be interested in",
 			emailTemplate: "{0} \n\n Video Link: <a href=\"{1}\">{2}</a>",
 			shareTitle: "The Video Title",
