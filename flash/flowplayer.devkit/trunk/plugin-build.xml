@@ -1,6 +1,7 @@
 <project name="Flowplayer plugin base build file (included in the actual plugin specific build.xml files)">
 
 	<import file="remotecopy.xml" />
+	<property file="${user.home}/plugin.properties" />
 	<property file="plugin-build.properties" />
 	<property name="src" value="src" />
 	<property name="src-as" value="${src}/actionscript" />
