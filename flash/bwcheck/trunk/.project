@@ -10,9 +10,37 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
+		<buildCommand>
+			<name>com.powerflasher.fdt.core.FlashBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
 	</buildSpec>
 	<natures>
 		<nature>com.adobe.flexbuilder.project.flexnature</nature>
 		<nature>com.adobe.flexbuilder.project.actionscriptnature</nature>
+		<nature>com.powerflasher.fdt.core.FlashNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>flex.swc</name>
+			<type>1</type>
+			<locationURI>Flex_3_SDK_1/frameworks/libs/flex.swc</locationURI>
+		</link>
+		<link>
+			<name>framework.swc</name>
+			<type>1</type>
+			<locationURI>Flex_3_SDK_1/frameworks/libs/framework.swc</locationURI>
+		</link>
+		<link>
+			<name>rpc.swc</name>
+			<type>1</type>
+			<locationURI>Flex_3_SDK_1/frameworks/libs/rpc.swc</locationURI>
+		</link>
+		<link>
+			<name>utilities.swc</name>
+			<type>1</type>
+			<locationURI>Flex_3_SDK_1/frameworks/libs/utilities.swc</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>
