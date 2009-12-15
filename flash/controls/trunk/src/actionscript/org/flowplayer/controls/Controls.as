@@ -164,7 +164,7 @@ package org.flowplayer.controls {
 
         [External]
         public function autoHide(props:Object = null):void  {
-            if (! props || (props && props.status  == "never")) {
+            if (! props || (props && props.state  == "never")) {
                 log.debug("setting autoHide to 'never'");
                 _config.autoHide = 'never';
                 if (_controlBarMover) {
@@ -174,14 +174,14 @@ package org.flowplayer.controls {
             }
 
             if (props.delay >= 0) {
-                _config.hideDelay = props.delay;
+                _config.hideDelay = props.delay * 1000;
             }
             if (props.state) {
                 log.debug("setting autoHide to '" + props.state + "'");
                 _config.autoHide = props.state;
-                createControlBarMover();
-                _controlBarMover.start();
             }
+            createControlBarMover();
+            _controlBarMover.start();
         }
 		
 		/**
