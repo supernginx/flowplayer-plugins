@@ -144,24 +144,13 @@ package org.flowplayer.controls.slider {
                     function(event:TimerEvent):void {
                         if (Math.abs(_config.player.status.time - time) > 0) {
                             _startDetectTimer.stop();
-                            var endPos:Number = forwards ? width - _dragger.width : 0;
-                            var duration:Number = ((forwards ? clip.duration - time : time) * 1000) / speedMultiplier;  
+                            var endPos:Number = width - _dragger.width;
+                            var duration:Number = (clip.duration - time) * 1000;  
                             log.debug("doStart(), starting an animation to x pos " + endPos + ", the duration is " + clip.duration + ", current pos is " + _dragger.x);
                             animationEngine.animateProperty(_dragger, "x", endPos, duration, null, Linear.easeOut);
                         }
                     });
             _startDetectTimer.start();
-        }
-
-        private function get forwards():Boolean {
-            if (! _slowMotionInfo) return true
-            return _slowMotionInfo["forwardDirection"];
-        }
-
-        private function get speedMultiplier():Number {
-            if (! _slowMotionInfo) return 1;
-            log.debug("speed multiplier is " + _slowMotionInfo["speedMultiplier"]);
-            return _slowMotionInfo["speedMultiplier"];
         }
 
         private function adjustedTime(time:Number):Number {
