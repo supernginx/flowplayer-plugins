@@ -30,11 +30,15 @@ package org.flowplayer.controls {
         public function get autoHide():String {
 			return _autoHide;
 		}
-		
-		public function set autoHide(autoHide:String):void {
-			_autoHide = autoHide;
-		}
-		
+
+        public function set autoHide(autoHide:String):void {
+            _autoHide = autoHide;
+        }
+
+        public function set state(autoHide:String):void {
+            _autoHide = autoHide;
+        }
+
 		public function get style():Style {
 			return _style || new Style();
 		}
@@ -46,11 +50,15 @@ package org.flowplayer.controls {
 		public function get hideDelay():Number {
 			return _hideDelay;
 		}
-		
-		public function set hideDelay(hideDelay:Number):void {
-			_hideDelay = hideDelay;
-		}
-		
+
+        public function set hideDelay(hideDelay:Number):void {
+            _hideDelay = hideDelay;
+        }
+
+        public function set delay(hideDelay:Number):void {
+            _hideDelay = hideDelay;
+        }
+
 		public function get visible():WidgetBooleanStates {
 			return _visible;
 		}
