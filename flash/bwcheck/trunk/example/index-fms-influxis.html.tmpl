@@ -44,6 +44,9 @@
             duration: 0,
             accelerated: true,
             bufferLength: 8,
+            onMetaData: function(clip) {
+            	console.log(clip);
+            },
             onBegin: function(index) {
                 console.info("onBegin: " + index);
             },
@@ -55,47 +58,30 @@
             }
         },
         playlist: [
-            "skyandice", "honda_accord"
+            {
+              url: "skyandice", 
+              customProperties: {
+              					bitrates: [
+              								{url: "skyandice-150", width: 1280, height: 720, bitrate: 150},
+              								{url: "skyandice-400", width: 1280, height: 720, bitrate: 400},
+              								{url: "skyandice-700", width: 1280, height: 720, bitrate: 700},
+              								{url: "skyandice-1000", width: 640, height: 480, bitrate: 1000}
+              							  ]
+              					}
+            },
+            {
+             url: "honda_accord",
+              customProperties: {
+              					bitrates: [
+              								{url: "honda_accord-150", width: 1280, height: 720, bitrate: 150},
+              								{url: "honda_accord-400", width: 1280, height: 720, bitrate: 400},
+              								{url: "honda_accord-700", width: 1280, height: 720, bitrate: 700},
+              								{url: "honda_accord-1000", width: 640, height: 480, bitrate: 1000}
+              							  ]
+              					},
+            }
         ],
 
-        // streaming plugins are configured under the plugins node
-        plugins:  {
-            // here is our rtpm plugin configuration
-            rtmp: {
-                url: '../flowplayer.rtmp.swf',
-                netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
-                objectEncoding: 0
-
-            },
-            bwcheck: {
-                url: '@MAIN_PLAYER_SWF@',
-                serverType: 'fms',
-                netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
-                // rtmp://69.16.188.164/i5w9b4e5/_definst_
-                defaultBitrate: 150,
-                enableDynamicSwitching: true,
-                bitrates: [
-                    150,400,700,1000
-                ],
-                //{0} is filename, {1} is bitrate, {2} is extension
-                urlPattern: '{0}-{1}',
-
-
-                onConnectFailed: function(host, index) {
-                    console.log("onConnectFailed " + host + ", host# " + index);
-                },
-
-                onConnect: function(host, index) {
-                    console.log("onConnect " + host + ", host# " + index);
-                },
-
-                onBwDone: function(url, chosenBitrate, bitrate) {
-                    console.info("Bandwidth detected " + bitrate + ", mapped to " + chosenBitrate + ", url is " + url);
-                }
-		    },
-			playlist: [
-                "skyandice", "honda_accord"
-            ],
 			
 			// streaming plugins are configured under the plugins node 
 			plugins:  {
@@ -122,7 +108,14 @@
                     },
                     onBwDone: function(url, chosenBitrate, bitrate) {
                         console.info("Bandwidth detected " + bitrate + ", mapped to " + chosenBitrate + ", url is " + url);
-                    }
+                    },
+                     onConnectFailed: function(host, index) {
+	                    console.log("onConnectFailed " + host + ", host# " + index);
+	                },
+	
+	                onConnect: function(host, index) {
+	                    console.log("onConnect " + host + ", host# " + index);
+	                }
 		        },
                 controls: { stop: true, playlist: true }
 			
