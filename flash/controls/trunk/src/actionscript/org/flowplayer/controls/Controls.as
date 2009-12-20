@@ -62,10 +62,8 @@ package org.flowplayer.controls {
         private var _stopButton:DisplayObject;
         private var _scrubber:Scrubber;
         private var _timeView:TimeView;
-        //		private var _tallestWidget:DisplayObject;
 
         private var _widgetMaxHeight:Number = 0;
-        //        private var _margins:Array = [2, 6, 2, 6];
         private var _config:Config;
         private var _timeUpdateTimer:Timer;
         private var _floating:Boolean = false;
@@ -110,7 +108,6 @@ package org.flowplayer.controls {
         [External]
         public function enable(enabledWidgets:Object):void {
             log.debug("enable()");
-            //			if (_animationTimer && _animationTimer.running) return;
             setConfigBooleanStates("enabled", enabledWidgets);
             enableWidgets();
             enableFullscreenButton(_player.playlist.current);
@@ -164,6 +161,7 @@ package org.flowplayer.controls {
 
         [External]
         public function autoHide(props:Object = null):void {
+            log.debug("autoHide()");
             if (props) {
                 new PropertyBinder(_config).copyProperties(props);
             }
@@ -172,6 +170,7 @@ package org.flowplayer.controls {
                 log.debug("autoHide set to 'never'");
                 if (_controlBarMover) {
                     _controlBarMover.stop();
+                    _controlBarMover.resetScreen();
                 }
                 return;
             }
@@ -194,7 +193,6 @@ package org.flowplayer.controls {
         override protected function onResize():void {
             if (! _initialized) return;
             log.debug("arranging, width is " + width);
-            //			resizeTallestWidget();
             var leftEdge:Number = arrangeLeftEdgeControls();
             arrangeRightEdgeControls(leftEdge);
             initializeVolume();
@@ -266,8 +264,6 @@ package org.flowplayer.controls {
             loader = player.createLoader();
             createTimeView();
             addListeners(player.playlist);
-            //            enableFullscreenButton(player.playlist.current);
-            //            enableScrubber(player.playlist.current);
             if (_playButton) {
                 _playButton.down = player.isPlaying();
             }
@@ -427,7 +423,6 @@ package org.flowplayer.controls {
             var status:Status = getPlayerStatus();
             if (! status) return;
             var duration:Number = status.clip ? status.clip.duration : 0;
-            //			log.debug("duration " + duration + ", bufferStart " + status.bufferStart + ", bufferEnd " + status.bufferEnd + ", clip " + status.clip);
             if (_scrubber) {
                 if (duration > 0) {
                     _scrubber.value = (status.time / duration) * 100;

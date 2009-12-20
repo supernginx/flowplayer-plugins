@@ -23,7 +23,9 @@ package org.flowplayer.controls {
 		private var _style:Style;
 		private var _autoHide:String = "fullscreen"; // never | fullscreen | always
 		private var _hideDelay:Number = 4000;
-		private var _visible:WidgetBooleanStates = new WidgetBooleanStates();
+        private var _hideDuration:Number = 800;
+        private var _hideStyle:String = "move";
+        private var _visible:WidgetBooleanStates = new WidgetBooleanStates();
 		private var _enabled:WidgetBooleanStates = new WidgetEnabledStates();
 		private var _tooltips:ToolTips = new ToolTips();
 
@@ -97,6 +99,35 @@ package org.flowplayer.controls {
 
         public function set player(value:Flowplayer):void {
             _player = value;
+        }
+
+        public function get hideDuration():Number {
+            return _hideDuration;
+        }
+
+        public function set hideDuration(value:Number):void {
+            _hideDuration = value;
+        }
+
+        public function set duration(value:Number):void {
+            _hideDuration = value;
+        }
+
+        public function get hideStyle():String {
+            return _hideStyle;
+        }
+
+        public function set hideStyle(value:String):void {
+            _hideStyle = value;
+        }
+
+        /**
+         * Synonym for set hideStyle()
+         * @param value
+         * @return
+         */
+        public function setStyle(value:String):void {
+            _hideStyle = value;
         }
     }
 }
