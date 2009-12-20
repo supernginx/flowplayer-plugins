@@ -19,6 +19,7 @@ package org.flowplayer.controls {
     import flash.geom.Rectangle;
     import flash.utils.Timer;
 
+    import org.flowplayer.model.DisplayPluginModel;
     import org.flowplayer.model.DisplayProperties;
     import org.flowplayer.model.Playlist;
     import org.flowplayer.model.PluginEventType;
@@ -43,6 +44,7 @@ package org.flowplayer.controls {
         private var _mouseOver:Boolean = false;
         private var _hwFullScreen:Boolean;
         private var _model:PluginModel;
+        private var _screenOrigProps:DisplayProperties;
 
         public function ControlsAutoHide(model:PluginModel, config:Config, player:Flowplayer, stage:Stage, controlBar:DisplayObject) {
             Assert.notNull(model, "model cannot be null");
@@ -61,33 +63,6 @@ package org.flowplayer.controls {
                 startTimerAndInitializeListeners();
             }
             _stage.addEventListener(FullScreenEvent.FULL_SCREEN, onFullScreen);
-        }
-
-        private function get hiddenPos():DisplayProperties {
-            _originalPos = DisplayProperties(_player.pluginRegistry.getPlugin(_model.name)).clone() as DisplayProperties;
-            var hiddenPos:DisplayProperties = _originalPos.clone() as DisplayProperties;
-            if (isHardwareScaledFullsreen()) {
-                _hwFullScreen = true;
-                hiddenPos.alpha = 0;
-            } else {
-                _hwFullScreen = false;
-                hiddenPos.top = getControlBarHiddenTopPosition();
-            }
-            return hiddenPos;
-        }
-
-        private function onFullScreen(event:FullScreenEvent):void {
-            if (event.fullScreen) {
-                startTimerAndInitializeListeners();
-                showControlBar();
-            } else {
-                if (_config.autoHide != 'always') {
-                    stop();
-                }
-                _controlBar.alpha = 0;
-                _player.animationEngine.cancel(_controlBar);
-                showControlBar();
-            }
         }
 
         public function stop():void {
@@ -114,6 +89,46 @@ package org.flowplayer.controls {
             if (_config.autoHide == "always") {
                 startTimerAndInitializeListeners();
                 return;
+            }
+        }
+
+        public function resetScreen():void {
+            log.debug("resetScreen()");
+            if (! _screenOrigProps) return;
+            _player.animationEngine.animate(_screenOrigProps.getDisplayObject(), _screenOrigProps, _config.hideDuration);
+        }
+
+        private function get screenMaximizedPos():DisplayProperties {
+            var props:DisplayProperties = _player.screen.clone() as DisplayProperties;
+            props.height = "100%";
+            props.top = 0;
+            return props;
+        }
+
+        private function get hiddenPos():DisplayProperties {
+            _originalPos = DisplayProperties(_player.pluginRegistry.getPlugin(_model.name)).clone() as DisplayProperties;
+            var hiddenPos:DisplayProperties = _originalPos.clone() as DisplayProperties;
+            if (useFadeOut) {
+                _hwFullScreen = true;
+                hiddenPos.alpha = 0;
+            } else {
+                _hwFullScreen = false;
+                hiddenPos.top = getControlBarHiddenTopPosition();
+            }
+            return hiddenPos;
+        }
+
+        private function onFullScreen(event:FullScreenEvent):void {
+            if (event.fullScreen) {
+                startTimerAndInitializeListeners();
+                showControlBar();
+            } else {
+                if (_config.autoHide != 'always') {
+                    stop();
+                }
+                _controlBar.alpha = 0;
+                _player.animationEngine.cancel(_controlBar);
+                showControlBar();
             }
         }
 
@@ -169,7 +184,7 @@ package org.flowplayer.controls {
         }
 
         private function startHideTimer():void {
-            log.debug("startHideTimer()");
+            log.debug("startHideTimer(), delay is " + _config.hideDelay);
             if (! _hideTimer) {
                 _hideTimer = new Timer(_config.hideDelay);
             }
@@ -178,10 +193,8 @@ package org.flowplayer.controls {
                 log.debug("startHideTimer(), using new delay " + _config.hideDelay);
                 _hideTimer.stop();
                 _hideTimer = new Timer(_config.hideDelay);
-            } else {
-                // hideTimer exists and has correct delay
-                return;
             }
+            
             _hideTimer.addEventListener(TimerEvent.TIMER, hideControlBar);
             _hideTimer.start();
         }
@@ -208,8 +221,20 @@ package org.flowplayer.controls {
                 return;
             }
 
-            _player.animationEngine.animate(_controlBar, hiddenPos, 1000, onHidden);
+            _player.animationEngine.animate(_controlBar, hiddenPos, _config.hideDuration, onHidden);
             _hideTimer.stop();
+
+            maximizeScreen();
+        }
+
+        private function maximizeScreen():void {
+            if (DisplayPluginModel(_model).position.bottom.px > 0) {
+                log.debug("controlbar has configured bottom position, will not resize screen");
+            }
+            _screenOrigProps = _player.screen.clone() as DisplayProperties;
+
+            _player.animationEngine.animate(screenMaximizedPos.getDisplayObject(), screenMaximizedPos, _config.hideDuration);
+
         }
 
         private function onHidden():void {
@@ -249,8 +274,9 @@ package org.flowplayer.controls {
             log.debug("onShowed()");
             _model.dispatch(PluginEventType.PLUGIN_EVENT, "onShowed");
 
+            _stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+            
             if (_config.autoHide == "fullscreen") {
-                _stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
                 fullscreenStart();
             }
             if (_config.autoHide == "always") {
@@ -258,7 +284,9 @@ package org.flowplayer.controls {
             }
         }
 
-        private function isHardwareScaledFullsreen():Boolean {
+        private function get useFadeOut():Boolean {
+            if (_config.hideStyle == "fade") return true;
+            // always use fading when using accelerated fullscreen
             return isInFullscreen() && _stage.hasOwnProperty("fullScreenSourceRect") && _stage.fullScreenSourceRect != null;
         }
 
