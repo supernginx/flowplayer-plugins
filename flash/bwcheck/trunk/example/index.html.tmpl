@@ -1,182 +1,813 @@
-<html><head>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<!-- A minimal Flowplayer setup to get you started -->
-  
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">  
 
-	<!-- 
-		include flowplayer JavaScript file that does  
-		Flash embedding and provides the Flowplayer API.
-	-->
-	<script type="text/javascript" src="flowplayer-@FLOWPLAYER_JS_VERSION_INFO@.min.js"></script>
+<!-- 
+	Flowplayer website, forums & jQuery Tools by Tero Piirainen 
 	
-	<!-- some minimal styling, can be removed -->
-	<link rel="stylesheet" type="text/css" href="style.css">
+	Prefer web standards over Flash. Video is the only exception.	
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+
+		<title>Flowplayer - Flash Video Player for the Web</title>
+		<meta name="Description" content="Embed video streams to your website. Superior alternative to YouTube. Open Sourced under the GPL license. No other software makes this smoother." />	
+		<meta name="Keywords" content="video player for the web, flash video player,web media player,free video player,free flv player,mp4 flash player,mp4 player,open source video player,flash 9 video,flash video,web video,flv player,flv video" />		
 	
-	<!-- page title -->
-	<title>Minimal Flowplayer setup</title>
 
-</head><body>
-
-	<div id="page">
-		
-		<h1>Clustering and Fallback Flowplayer setup</h1>
 	
-		<p>View commented source code to get familiar with Flowplayer installation.</p>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+	<meta name="Distribution" content="Global" />
+	<meta name="Author" content="Tero Piirainen" />
+	<meta name="Robots" content="index,follow" /> 
+ 
+	<link rel="shortcut icon" href="/img/favicon.png" type="image/png" />
 		
-		<!-- this A tag is where your Flowplayer will be placed. it can be anywhere -->
-		<a  
-			 style="display:block;width:400px;height:300px"  
-			 id="fms"> 
-		</a> 
+		<link rel="stylesheet" type="text/css" href="http://static.flowplayer.org/css/global-0.25.css" />
 	
-		<!-- this will install flowplayer inside previous A- tag. -->
+	<script type="text/javascript" src="jquery-1.2.6.min.js"></script>
+	<script type="text/javascript" src="flowplayer-3.1.4.min.js"></script>
+	 
 
-		<script>
-		$f("fms", {src:"@PLAYER_SWF@",bgcolor:'#333333'}, {
 
-			// configure clip to use "rtmp" plugin for providing video data 
-		    clip: {  
-		        url: 'metacafe',  
-		        provider: 'rtmp',
-		        urlResolvers: 'bwcheck',
-		        autoPlay: true,
-			    start: 0,
-			    duration: 0,
-			    accelerated: true,
-			    bufferLength: 8
-		    }, 
-			
-			
-			// streaming plugins are configured under the plugins node 
-			plugins:  {
-				// here is our rtpm plugin configuration
-				rtmp: {
-					 url: 'flowplayer.rtmp.swf',
-					 netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
-     				 
-				},
-				bwcheck: {  
-		            url: '@MAIN_PLAYER_SWF@',  
-		            serverType: 'red5',
-		            netBWConnectionUrl: 'rtmp://localhost/bwcheck',
-		            bwHosts: [
-		            	'rtmp://localhostt/bwcheck',
-		            	'rtmp://localhos/bwcheck',
-		            	'rtmp://localhost/bwcheck',
-		            ],
-		            defaultBitrate: 300,
-		            bitrates: [
-		            	100,300,500,700
-		            ],
-		            //{0} is filename, {1} is bitrate, {2} is extension
-		            urlPattern: '{0}-{1}.{2}' 
-		            
-		        },
-			
-			}, 
-			log:  {         
-			     
-				     // other levels are: 'info', 'warning', 'error' which will cause less output 
-				     level: 'info' 
-				},
-			
-		});
-		</script>
+
+	<script type="text/javascript"
+		src="http://www.flowplayer.org/js/tools/1.1.2/all/jquery.tools.min.js?v=1"></script>
+		
+	<script type="text/javascript" src="http://static.flowplayer.org/js/global-0.36.js"></script>
 	
-		
-		
-		<!-- 
-			after this line is purely informational stuff. 
-			does not affect on Flowplayer functionality 
-		-->
+	<script>var account = {admin: false };</script>
+	
+	
+	
 
-		<p>		
-			If you are running these examples <strong>locally</strong> and not on some webserver you must edit your 
-			<a href="http://www.macromedia.com/support/documentation/en/flashplayer/help/settings_manager04.html">
-				Flash security settings</a>. 
-		</p>
+	<!--[if lt IE 7]>
+		<style>
+			@import "http://static.flowplayer.org/css/ie6.css?v=0.2";
+		</style>
+	<![endif]-->
+	
+	<!--[if lt IE 8]>
+		<style>
+			html { overflow-x:hidden; }
+			#content ol, #content ul  {margin-left: 50px; }
+		</style>
+	<![endif]-->	
+
+</head>
+
+<body id="plugins_bwcheck">
+
+
+	
+	<div id="wrap">			 
 		
-		<p class="less">
-			Select "Edit locations" &gt; "Add location" &gt; "Browse for files" and select
-			flowplayer-x.x.x.swf you just downloaded.
-		</p>
+		
+		<div id="content"> 
 		
 		
-		<h2>Documentation</h2>
+
+
+
+
+
+
+<h1 style="background-image:url(http://www.flowplayer.org/img/title/streaminge.png)">
+	<strong>Bandwidth</strong> detection
+	<em>Selecting the best bitrate based on available bandwidth</em>
+</h1>
+
+
+
+<h2>Introduction</h2>
+
+<p>
+    The Bandwidth Check plugin is used to detect the bandwidth that is available to the player. Based on the result of
+    this detection the plugin selects the stream or file that is best suited for the available bandwidth. This way the
+    viewing experience of the user is optimal without unnecessary buffering in the middle of the stream. If the user
+    has a broadband connection (large bandwidth) he will be served with a HD quality stream and will have a good viewing
+    experience, and with slower connection speeds a file with a smaller bitrate will be selected.
+</p>
+<p>
+    Video (and audio) files are encoded with several different bitrates so that good matches are available for the
+    connection speeds that are being targeted.
+</p>
+
+<p>
+	<button class="custom low medium" onclick="location.href = '#download'">Download</button>
+	<small>(Version <strong>3.1.3</strong>)</small>
+</p>
+
+<h2>Features</h2>
+
+<ul>
+	<li>
+		 Support for HTTP, pseudostreaming, and RTMP with Wowza, Red5, and Adobe FMS.
+	</li>
+	<li>
+		 Remembers the detected bandwidth so that it is checked only once for each user.
+	</li>
+	<li>
+		 Dynamic stream switching with Adobe FMS. Allows for seamless switching of the bitrate <em>in the middle of viewing the stream</em>.
+	</li>
+	<li>
+		 Manual selection of the bitrate. Users will be able to manually select the bitrate, overriding the detected value.
+	</li>
+	<li>
+		 Clustering of hosts. The plugin can be configured with a set of hosts it connects to when checking
+		 bandwidth. Failing servers are skipped and a working server is selected.
+	</li>
+</ul>
+
+<a name="http"></a>
+<h2><em>HTTP</em> Example</h2>
+
+<p>
+    This example demonstrates HTTP-based bandwidth checking:
+</p>
+
+<div style="width:425px;margin:30px auto">
+   
+
+
+
+
+
+
+</head>
+
+
+
+
+<!-- player container-->
+
+
+<a 
+	href="http://video.flowplayer.org/skyandice.flv" 
+	style="display:block;width:425px;height:300px;" 
+	id="player">
+	
+	<!-- splash image inside the container -->
+	<img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" />
+	
+</a>
+
+<div class="box info" id="info">
+	Your speed appears here.
+</div>
+
+<!-- Flowplayer installation and configuration -->
+<script language="JavaScript">
+
+flowplayer("player", "@PLAYER_SWF@", {
+	playlist: [
+            {
+              url: "bbb_640x360.flv", 
+              customProperties: {
+              					bitrates: [
+              								{url: "bbb_160x90.flv", width: 160, height: 90, bitrate: 100},
+              								{url: "bbb_320x180.flv", width: 320, height: 180, bitrate: 180},
+              								{url: "bbb_480x270.flv", width: 480, height: 270, bitrate: 270},
+              								{url: "bbb_640x360.flv", width: 640, height: 360, bitrate: 360}
+              							  ]
+              					}
+            }
+        ],
+	// configure the required plugin
+	plugins:  {
 		
-		<p>
-			Configuration:
-		</p>
-		<pre>
-			plugins:  {
-				// here is our rtpm plugin configuration
-				rtmpCluster: {  
-		            url: '../flowplayer.rtmp.cluster-3.0.0-alpha1.swf',  
-		            netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
-		            hosts: [
-		            	'rtmp://cyzy7r959.badhost1.com/flowplayer',
-		            	'rtmp://cyzy7r959.badhost2.com/flowplayer',
-		            	'rtmp://cyzy7r959.rtmphost.com/flowplayer'
-		            ],
-		            encoding: 0,
-		            connectCount: 2,
-		            connectTimeout: 5000,
-		            failureExpiry: 3000,
-		            loadBalanceServers: false
-		        }
+		// bandwidth check plugin
+		bwcheck: {  
+			url: '@MAIN_PLAYER_SWF@',   
+			netConnectionUrl: 'http://releases.flowplayer.org/swf/expressinstall.swf',
+			//bitrates: [40, 150, 400, 700, 1000],
+		
+			// this method is called when the bandwidth check is done
+			onBwDone: function(url, chosenBitrate, bitrate) {
+				var el = document.getElementById("info");
+				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
+			}
+		}
+		
+	},
+	clip: {
+		urlResolvers: 'bwcheck',
+		baseUrl: 'http://flashy.flowplayer.org/video/'
+	},
+	log: { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.cluster.*' }
+	
+});
+</script>	
+
+
+
+</div>
+
+<p>
+    The configuration is shown below. This example uses HTTP to detect the bandwidth. It loads a reference file from the URL
+    configured with <samp>netConnectionUrl</samp> and calculates the bandwidth based on the download speed and file size.
+</p>
+
+<div class="box code">
+<pre><code class="javascript">flowplayer("player", "@PLAYER_SWF@", {
+		
+	// configure the required plugin
+	plugins:  {
+		
+		// bandwidth check plugin
+		bwcheck: {  
+			url: '@MAIN_PLAYER_SWF@',   
+			netConnectionUrl: 'http://releases.flowplayer.org/swf/expressinstall.swf',
+			bitrates: [40, 150, 400, 700, 1000],
+		
+			// this method is called when the bandwidth check is done
+			onBwDone: function(url, chosenBitrate, bitrate) {
+				var el = document.getElementById("info");
+				el.innerHTML = "Your speed is: " +bitrate+ "&lt;br /&gt;Video file served: " +url;
+			}
+		}
+		
+	},
+	clip: {
+		urlResolvers: 'bwcheck'
+	}
+	
+});</code></pre>
+</div>
+
+
+
+<p>
+   You need to have different video files for each bitrate you wish to target. This configuration uses the following files and these need to
+   all be available on the server:
+</p>
+
+<ul>
+   <li>skyandice-150.flv</li>
+   <li>skyandice-400.flv</li>
+   <li>skyandice-700.flv</li>
+   <li>skyandice-1000.flv</li>
+</ul>
+
+<h2>Configuration</h2>
+
+<p>
+    Here is a list of the configuration options:
+</p>
+<table class="listing">
+	<thead>
+		<tr>
+			<th nowrap>property / datatype</th>
+			<th>default</th>
+			<th>description</th>
+		</tr>
+	</thead>
+
+    <tr>
+        <td class="code">checkOnBegin <div class="type">boolean</div></td>
+        <td class="code default">true</td>
+        <td class="description">
+            If <samp>true</samp> (the default) the plugin checks the bandwidth for every clip once their playback starts <em>even when the clips don't specify this plugin as their <samp>urlResolver</samp>.</em> Specify <samp>false</samp> here if you have clips in the playlist for which the bandwidth should not be checked.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">netConnectionUrl <div class="type">string</div></td>
+        <td class="code default"></td>
+        <td class="description">
+            The URL used to check the bandwidth. For HTTP-based checking this should point to a reference file that is
+            loaded as part of the check. For RTMP this should be a RMTP url pointing to a streaming server.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">serverType <div class="type">string</div></td>
+        <td class="code default">http</td>
+        <td class="description">
+				Identifies the type of server that we will be checking against. Available values are 'http', 'red5', 'wowza', and 'fms'.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">bitrates <div class="type">array or object</div></td>
+        <td class="code default"></td>
+        <td class="description">
+				List of available bitrates. The server should have video files encoded in each of these specified bitrates. The detected bandwidth is mapped to the closest value found in this array and the stream file name is resolved based on the mapped bitrate value. See also below on <a href="#bitratelabels">how to give labels to bitrates</a>.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">cacheExpiry <div class="type">number</div>86400</td>
+        <td class="code default"></td>
+        <td class="description">
+        	The expiry time for cached bitrates. The default value is 24 hours (86400 seconds). After the expiry period has passed the bandwidth
+        	is re-detected. See also the <a href="#rememberBitrate">rememberBitrate</a> setting.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">defaultBitrate <div class="type">int</div></td>
+        <td class="code default"></td>
+        <td class="description">
+            The bitrate used if the detection fails. This should be one of the values contained in the <samp>bitrates</samp> array.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">urlPattern <div class="type">array</div></td>
+        <td class="code default">{0}-{1}.{2}</td>
+        <td class="description">
+				A pattern used to resolve the file name based on the bitrate. First the detected bitrate is mapped to an
+				available bitrate using the <samp>bitrates</samp> array (see above) and then the URL is resolved by applying this pattern. For example, if the URL configured for Flowplayer is "skyandice.flv" and the mapped bitrate is 400, then the resolved URL is "skyandice-400.flv". {0} refers to the clip basename, {1} is the mapped bitrate, and {2} is file extension.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">urlExtension <div class="type">string</div></td>
+        <td class="code default"></td>
+        <td class="description">
+        	The file extension used when applying the <samp>urlPattern</samp>. You need to specify this if the URL's don't have common extensions like '.flv' or '.mp4' which can be determined by looking for the last '.' in the filename and using the characters following its position to be the extension. With the Highwinds CDN this extension is currently <samp>flv.smil</samp> when FLV files are used.
+        </td>
+    </tr>
+    <tr>
+    	<a name="rememberBitrate"></a>
+        <td class="code">rememberBitrate <div class="type">boolean</div></td>
+        <td class="code default">true</td>
+        <td class="description">
+				Should the detected bandwidth be remembered for the client browser. If <samp>true</samp> the detection is performed only once per domain and stored on the client browser. If <samp>false</samp> the detection is done every time a clip starts playing.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">dynamic <div class="type">boolean</div></td>
+        <td class="code default">false</td>
+        <td class="description">
+				Enables dynamic stream switching for Adobe Flash Media Interactive Server. <a href="dynamic">See below</a> for more details.
+        </td>
+    </tr>
+    <!--<tr>-->
+        <!--<td class="code">_bitrateProfileName <div class="type">string</div></td>-->
+        <!--<td class="code default">bitrateProfile</td>-->
+        <!--<td class="description">-->
+            <!--The name of the Shared Object where the bitrates is saved. You might want to change this if you have different-->
+            <!--sets of files and you want to keep the detected bandwidths separate for those sets.-->
+        <!--</td>-->
+    <!--</tr>-->
+</table>
+
+<p>
+    Bandwidth checking hosts can be <em>clustered</em> so that you can have many of them available to serve your files. If any of the checks fails, then another host is selected. The following configuration options are related to clustering:
+</p>
+
+<table class="listing">
+	<thead>
+		<tr>
+			<th nowrap>property / datatype</th>
+			<th>default</th>
+			<th>description</th>
+		</tr>
+	</thead>
+
+	 <tr>
+		  <td class="code">hosts <div class="type">array</div></td>
+		  <td class="code default"></td>
+		  <td class="description">
+				The hosts that are part of the cluster. These should be base URLs for each host to be used together with the clip's URL.
+				The complete URL will be formed by concatenating the host URL and the clip's URL.
+		  </td>
+	 </tr>
+	 <tr>
+		  <td class="code">connectTimeout<div class="type">int</div></td>
+		  <td class="code default">2000</td>
+		  <td class="description">
+				Connection timeout for a single connection attempt, given in milliseconds. After this timeout has been
+				reached, the connection attempt is considered a failure and the next host in the cluster is evaluated.
+		  </td>
+	 </tr>
+	 <tr>
+		  <td class="code">connectCount<div class="type">int</div></td>
+		  <td class="code default">3</td>
+		  <td class="description">
+				Number of times to loop through all the hosts in the cluster before giving up.
+		  </td>
+	 </tr>
+	 <tr>
+		  <td class="code">failureExpiry<div class="type">int</div></td>
+		  <td class="code default">2000</td>
+		  <td class="description">
+				The expiry time (in milliseconds) to wait before a failed server is attempted again. The failure timestamp is stored in the
+				client browser and a new connection attempt is only attempted after this time has expired.
+		  </td>
+	 </tr>
+	 <tr>
+		  <td class="code">loadBalance<div class="type">boolean</div></td>
+		  <td class="code default">false</td>
+		  <td class="description">
+				When this is set to <samp>true</samp> the plugin accesses the configured hosts randomly providing the ability to balance the streaming load more evenly between each host to improve overall performance. If any of the hosts does not work, then another host is chosen.
+		  </td>
+	 </tr>
+</table>
+
+
+<a name="bitratelabels"></a>
+<p>
+	You can assign labels to the bitrate values. These labels will be used when the filename is resolved. The labels are specified in the <samp>bitrates</samp> configuration variable:
+</p>
+<div class="box code">
+<pre><code class="javascript">// bitrates with their labels
+	bitrates: { low: 256, mid: 512, high: 1024 },
+	// our URL's have following extension
+	urlExtension: 'mp4.smil'</code></pre>
+</div>
+
+<p>
+	With this configuration we get the following URLs when the original URL before bwcheck is "video.mp4.smil":
+</p>
+<ul>
+	<li>video-low.mp4.smil</li>
+	<li>video-mid.mp4.smil</li>
+	<li>video-high.mp4.smil</li>
+</ul>
+<p>
+	The use of labels allows us to change the bitrates corresponding to the labels and the names of the files continue to make sense. Additionally the player configuration does not need to change.
+</p>
+
+<a name="rtmp"></a>
+<h2><em>RTMP</em> Example</h2>
+
+<p>
+	The bwcheck plugin supports RTMP servers such as Wowza, Red5 and Adobe FMS. Below is an example:
+</p>
+
+<div style="width:425px;margin:30px auto">
+   
+
+
+
+
+
+
+
+
+</head>
+
+
+
+
+<!-- player container-->
+
+
+<a
+	href="skyandice"
+	style="display:block;width:425px;height:300px;"
+	id="rtmpPlayer">
+
+	<!-- splash image inside the container -->
+	<img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" />
+
+</a>
+
+<div class="box info" id="rtmpInfo">
+	Click on the splash image above.
+</div>
+
+<!-- Flowplayer installation and configuration -->
+<script language="JavaScript">
+
+flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
+	playlist: [
+            {
+              url: "bbb", 
+              customProperties: {
+              					bitrates: [
+              								{url: "bbb_160x90", width: 160, height: 90, bitrate: 100},
+              								{url: "bbb_320x180", width: 320, height: 180, bitrate: 180},
+              								{url: "bbb_480x270", width: 480, height: 270, bitrate: 270},
+              								{url: "bbb_640x360", width: 640, height: 360, bitrate: 360}
+              							  ]
+              					}
+            }
+        ],
+	// configure the required plugins
+	plugins:  {
+
+		// RTMP streaming plugin
+		rtmp: {
+			url: 'http://releases.flowplayer.org/swf/flowplayer.rtmp-3.1.3.swf',
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org/fastplay'
+		},
+
+		// bandwidth check plugin
+		bwcheck: {
+			url: '@MAIN_PLAYER_SWF@',
+
+			// Influxis uses Flash Media Servers
+			serverType: 'wowza',
+
+			// Use this connection for bandwidth detection
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org/fastplay',
+
+			// available bitrates for file names
+			//bitrates: [40, 150, 400, 700, 1000],
+
+			// use a customized urlPattern for file names
+			urlPattern: '{0}-{1}',
+
+			// this method is called when the bandwidth check is done
+			onBwDone: function(url, chosenBitrate, bitrate) {
+				var el = document.getElementById("rtmpInfo");
+				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
+			}
+		}
+
+	},
+
+	// configure the clip to use the rtmp plugin for providing video data
+	// and the bwcheck plugin in resolving the URLs
+	clip: {
+		provider: 'rtmp',
+		
+		// use bwcheck for all clips
+		urlResolvers: 'bwcheck'
+	}
+
+});
+
+</script>
+
+
+
+</div>
+
+<p>
+    The configuration is shown below. Note that the <samp>serverType</samp> and <samp>urlPattern</samp> values that need to
+    be defined for Adobe FMS.
+</p>
+
+<div class="box code">
+<pre><code class="javascript">flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
+
+	// configure the required plugins
+	plugins:  {
+
+		// RTMP streaming plugin
+		rtmp: {
+			url: 'flowplayer.rtmp-3.1.3.swf',
+			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer'
+		},
+
+		// bandwidth check plugin
+		bwcheck: {
+			url: '@MAIN_PLAYER_SWF@',
+
+			// Influxis uses Flash Media Servers
+			serverType: 'fms',
+
+			// Use this connection for bandwidth detection
+			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
+
+			// available bitrates for file names
+			bitrates: [40, 150, 400, 700, 1000],
+
+			// use a customized urlPattern for file names
+			urlPattern: '{0}-{1}',
+
+			// this method is called when the bandwidth check is done
+			onBwDone: function(url, chosenBitrate, bitrate) {
+				var el = document.getElementById("rtmpInfo");
+				el.innerHTML = "Your speed is: " +bitrate+ "&lt;br /&gt;Video file served: " +url;
+			}
+		}
+
+	},
+
+	// configure the clip to use the rtmp plugin for providing video data
+	// and the bwcheck plugin in resolving the URLs
+	clip: {
+		provider: 'rtmp',
+		
+		// use bwcheck for all clips
+		urlResolvers: 'bwcheck'
+	}
+
+});</code></pre>
+</div>
+
+
+<p>
+	With the <strong>Wowza</strong> server you need to install the bwcheck app that is bundled in the Wowza distribution. Similarily
+	with <strong>Red5</strong> you need to install its bwcheck application that can be installed using Red5's installer. With
+	<strong>Adobe FMS</strong> bandwidth checking works without any extra steps.
+</p>
+
+
+<a name="clustering"></a>
+<h3>Clustering of bandwidth checks</h3>
+
+<p>
+    You can configure an array of hosts to be used for the bandwidth check. The plugin chooses a live host from this array until it finds one that does not fail. This provides a way to add failover. Here is an example configuration on how to configure clustering for the bandwidht check:
+</p>
+
+<div class="box code">
+<pre><code class="javascript">bwcheck: {
+        url: 'flowplayer.rtmp-3.1.3.swf',
+        serverType: 'red5',
+
+        // the actual streaming happens from this host. In reality you would
+        // probably configure a cluster of hosts here too.
+        netConnectionUrl: 'rtmp://electroteque.org/bwcheck',
+
+        // the hosts used for bandwidth checking
+        hosts: [
+            {host:'rtmp://electroteque1.org/bwcheck'},
+            {host:'rtmp://electroteque2.org/bwcheck'},
+            {host:'rtmp://electroteque.org/bwcheck'}
+        ],
+
+        defaultBitrate: 300,
+        bitrates: [
+            100,300,500,700
+        ],
+        //{0} is the filename, {1} is the bitrate, {2} is the extension
+        urlPattern: '{0}-{1}.{2}'
+    }</code></pre>
+</div>
+
+
+<p>
+	The configuration above is for clustering the bandwidth checking connections only. If you want to cluster your streaming connections, then you need to use our <a href="cluster.html">clustering plugin</a>.
+</p>
+
+<div class="box petrol">
+	The clustering configuration for bandwidth checking and for the actual streaming are separate. This is because in many cases the RMTP applications used for bandwidth checking are different from the applications that are used for streaming, and therefore their host URLs are also different.
+</div>
+
+
+<a name="dynamic"></a>
+<h3>Dynamic stream switching</h3>
+
+<p>
+    Dynamic stream switching is available in Adobe's FMS 3.5. In dynamic switching the available bandwidth is monitored
+    while the stream plays and the stream is switched on-the-fly if the available bandwidth decreases or increases.
+    See more information about dynamic stream switching in <a href="http://www.adobe.com/devnet/flashmediaserver/articles/dynamic_stream_switching.html" class="external">Dynamic stream switching with Flash Media Server 3</a>.
+</p>
+
+<p>
+    Dynamic stream switching is configured just like <a href="#rtmp">RTMP bandwidth checking</a> for Adobe FMS and by adding
+    the option <samp>dynamic: true</samp> to the plugin's configuration. Here is a
+    <a href="/demos/plugins/streaming/bwcheck-dynamic.html">page demonstrating this in action</a>.
+</p>
+
+<h3>Using it together with other plugins</h3>
+
+<p>
+	You can use bandwidth checking together with other plugins like the <a href="/plugins/streaming/secure.html">secure streaming plugin</a>. In fact it is possible to chain together 2 or more URL resolver plugins.
+</p>
+
+<a name="api"></a>
+<h2>JavaScript API</h2>
+
+<h3>Methods</h3>
+
+<table class="listing">
+    <thead>
+		<tr>
+			<th class="col1">method</th>
+			<th class="col2">returns</th>
+			<th class="col3">description</th>
+		</tr>
+    </thead>
+    <tr>
+        <td class="code">
+				<strong>getBitrate</strong>
+        </td>
+        <td class="code type">int</td>
+        <td class="description">
+			Returns the mapped bitrate after it has been detected. If playback is not started then this method tries to return the remembered bitrate if the <samp>rememberBitrate</samp> configuration option is enabled.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">
+            <strong>setBitrate</strong>(bitrate)
+        </td>
+        <td class="code type"></td>
+        <td class="description">
+			Changes the stream to the specified bitrate. The specified value should be one of the values contained in the <samp>bitrates</samp> array. If the player is currently playing a clip, the stream corresponding to the specified bitrate is started. If <a href="#dynamic">dynamic stream switching</a> is enabled, the stream switches dynamically while playing, otherwise the stream plays from the start of the clip. <strong>Note:</strong> Dynamic stream switching is disabled when this method is called so that the dynamic adaption does not override the bitrate specified using this method. You can enable dynamic switching again using the <samp>dynamic()</samp> method (see below).
+        </td>
+    </tr>
+    <tr>
+        <td class="code">
+            <strong>dynamic</strong>(enabled)
+        </td>
+        <td class="code type"></td>
+        <td class="description">
+        	Enables or disables dynamic stream switching. The specified <samp>enabled</samp> value is a Boolean specifying the enabled state.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">
+            <strong>checkBandwidth</strong>()
+        </td>
+        <td class="code type"></td>
+        <td class="description">
+            Initiates a new bandwidth check. The detected bandwidth is stored in the client browser if the config option
+            <samp>rememberBitrate</samp> is set to <samp>true</samp>. If the player is currently playing a clip, a new stream based on the detected bandwidth is selected and started. If <a href="#dynamic">dynamic stream switching</a> is enabled, the stream switches dynamicaly while playing, otherwise, the stream plays from the start of the clip. When the bandwidth check is successfully called the <samp>onBwDone</samp> event is called allowing you to get the results.
+        </td>
+    </tr>
+</table>
+
+<h3>Events</h3>
+
+<table class="listing">
+	<thead>
+		<tr>
+			<th nowrap>Event</th>
+			<th style="width:450px">When does it fire?</th>
+		</tr>
+	</thead>
+
+    <tr>
+        <td class="code"><em>onBwDone()</em></td>
+        <td class="description">
+				Fires when the bandwidth has been detected. The callback is fed with the following arguments:
+
+				<ul>
+					<li><samp>url</samp> the complete URL that was resolved for playback</li>
+					<li><samp>mappedBitrate</samp> the bitrate selected from the <samp>bitrates</samp> array</li>
+					<li><samp>detectedBitrate</samp> the detected bitrate used to resolve the <samp>mappedBitrate</samp></li>
+				</ul>
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>onStreamSwitch()</em></td>
+        <td class="description">
+				Fires when the bandwidth has been dynamically switched. This event is called only when the <samp>dynamic</samp> configuration property is enabled. The callback is fed with the following arguments:
+
+				<ul>
+					<li><samp>bitrate</samp> the bitrate selected from the <samp>bitrates</samp> array</li>
+					<li><samp>newUrl</samp> the complete URL that was resolved for playback</li>
+					<li><samp>oldUrl</samp> the previous URL being used before the switch</li>
+				</ul>
+
+				<p>
+					You can see this event in action in the <a href="/demos/plugins/streaming/bwcheck-dynamic.html">dynamic switching demo</a>.
+				</p>
+        </td>
+    </tr>
+</table>
+
+<p>
+    Here are the events related to establishing a connection and clustering. Note that if you are not clustering the hosts used for bandwidth checking, the <samp>host index</samp>
+    will always have a value of zero.
+</p>
+
+
+<table class="listing">
+	<thead>
+		<tr>
+			<th nowrap>Event</th>
+			<th style="width:450px">When does it fire?</th>
+		</tr>
+	</thead>
+    <tr>
+        <td class="code"><em>onConnect()</em></td>
+        <td class="description">
+				Fires when the plugin starts a new connection attempt. The callback is fed with two arguments:
+
+				<ul>
+					<li><samp>host</samp> the URL from the hosts list where the connection is attempted from.</li>
+					<li><samp>hostIndex</samp> the index of the <samp>host</samp> in the hosts list.</li>
+				</ul>
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>onConnectFailed()</em></td>
+        <td class="description">
+				Fires when a connection attempt has failed. The callback is fed with two arguments:
+
+				<ul>
+					<li><samp>host</samp> the URL from the hosts list where the failure happened.</li>
+					<li><samp>hostIndex</samp> the index of the <samp>host</samp> in the hosts list.</li>
+				</ul>
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>onFailed()</em></td>
+        <td class="description">
+				Fires when all hosts in the cluster have failed. See also the <a href="#config">connectCount option</a>, that specifies how many times the hosts are evaluated before failing.
+        </td>
+    </tr>
+</table>
+</div>
+		
+		<div class="clear"></div> 
+		
+		<div id="footer">
 			
-		</pre>
-		<p> 
-	 	To enable server fallback a hosts config property is required in the plugins config like this:
-	  
-	 	hosts: [
-	 	       'rtmp://server1.host.com/myapp',
-	 	       'rtmp://server2.host.com/myapp',
-	 	       'rtmp://server3.host.com/myapp',
-	 	      ]
-	  
-	  <p>
-	  To enable the fallback feature to store (client side) failed servers to prevent reattempting those connections the failureExpiry config property is required like so:
-	  failureExpiry: 3000,
-	  
-	  <p> This tells the feature to wait for 3000 milliseconds before allowing connection attempts again. 
-	  
-	  <p>
-	  To enable round robin connections the loadBalanceServers config property requires to be enabled like so:
-	  
-	  loadBalanceServers: true
-	  
-	  <p>
-	  Advanced configurations for the fallback feature can be enabled like so:
-	  
-	  connectTimeout: 5000,
-	  connectCount: 3
-	  encoding: 0
-	  
-	  <p> connectTimeout is the time in milliseconds before each reconnection attempt.
-	  connectCount is the ammount of times connection reattmps will occur before giving up.
-	  encoding is the AMF encoding version either 0 or 3 for AMF3.
-	  
-	  <p> Two custom events a fired during connection attempts and fallback, these are:
-	  
-	  <ul>
-	  <li>RTMPEventType.RECONNECTED - onReconnect</li>
-	  <li>RTMPEventType.FAILED - onFailed</li>
-	  </ul>
-	  </p>
-		<p>
-			<a href="http://beta.flowplayer.org/documentation/installation.html">Flowplayer installation</a>
-		</p>
-
-		<p>
-			<a href="http://beta.flowplayer.org/documentation/configuration.html">Flowplayer configuration</a>
-		</p>
-
-		<p>
-			See this identical page on <a href="http://beta.flowplayer.org/demos/example/index.htm">Flowplayer website</a> 
-		</p>
+		</div> 
+		
 		
 	</div>
+
+
 	
 	
-</body></html>
+	
+	
+			
+</body>
+
+</html>
