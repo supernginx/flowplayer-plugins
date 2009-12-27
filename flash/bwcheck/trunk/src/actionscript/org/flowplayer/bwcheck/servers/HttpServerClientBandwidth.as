@@ -14,31 +14,33 @@ package org.flowplayer.bwcheck.servers
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.events.ProgressEvent;
-	import flash.net.Responder;
+	//import flash.net.Responder;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	import flash.net.URLRequestHeader;
+	import flash.net.URLRequestMethod;
 	import flash.utils.getTimer;
 	
 	import org.red5.flash.bwcheck.BandwidthDetection;
 	
 	public class HttpServerClientBandwidth extends BandwidthDetection
 	{
-		private var info:Object = new Object();
-		private var res:Responder;
-		private var _counter:int = 0;
+		//private var info:Object = new Object();
+		//private var res:Responder;
+		//private var _counter:int = 0;
 		private var loader:URLLoader;
-		private var request:URLRequest;
+		//private var request:URLRequest;
 		private var _startTime:Number;
 		private var _bytes:Number;
 		private var _bandwidth:Number;
 		private var _downloadTime:Number;
 		public var maximumBytes:uint;
 		private var _url:String;
+		private var _nocache:URLRequestHeader;
 		
 		public function HttpServerClientBandwidth()
 		{
-	
+			
 			loader = new URLLoader();
 			loader.addEventListener(ProgressEvent.PROGRESS, onProgress);
 			loader.addEventListener(Event.COMPLETE, onComplete);
@@ -54,9 +56,18 @@ package org.flowplayer.bwcheck.servers
 		public function onComplete(event:Event):void
 		{
             log.debug("reference file successfully downloaded");
-			this._downloadTime = getTimer() - this._startTime;
+			//this._downloadTime = getTimer() - this._startTime;
+			//this._bytes = event.currentTarget.bytesLoaded;
+			//this._bandwidth = this._bytes * 8 / this._downloadTime;
 			this._bytes = event.currentTarget.bytesLoaded;
-			this._bandwidth = this._bytes * 8 / this._downloadTime;
+			this._downloadTime = getDownloadTime(getTimer(), this._startTime);
+			this._bandwidth = getBandwidth(getKbytes(_bytes), this._downloadTime);
+			
+			log.debug("Current Time: " + getTimer().toString());
+			log.debug("Download Time: " + this._downloadTime);
+			log.debug("KBytes: " + getKbytes(_bytes));
+			log.debug("Bytes: " + _bytes.toString());
+			log.debug("Bandwidth: " + _bandwidth.toString());
 			
 			loader.removeEventListener(ProgressEvent.PROGRESS, onProgress);
 			loader.removeEventListener(Event.COMPLETE, onComplete);
@@ -68,11 +79,28 @@ package org.flowplayer.bwcheck.servers
 			dispatchComplete(obj);
 		}
 		
+		private function getDownloadTime(current:Number, start:Number):Number
+		{
+			return (current - start) / 1000;
+		}
+		
+		private function getKbytes(bytes:Number):Number
+		{
+			return ((bytes * 8) / 1024);
+		}
+		
+		private function getBandwidth(kBytes:Number, downloadTime:Number):Number
+		{
+			return (kBytes / downloadTime) * 0.93;
+		}
+		
 		public function onProgress(event:ProgressEvent):void
 		{
-			this._downloadTime = getTimer() - this._startTime;
+			//this._downloadTime = (getTimer() - this._startTime) / 1000;
+			//this._bandwidth = ((this._bytes * 8) / 1024) / this._downloadTime;
 			this._bytes = event.currentTarget.bytesLoaded;
-			this._bandwidth = this._bytes * 8 / this._downloadTime;
+			this._downloadTime = getDownloadTime(getTimer(), this._startTime);
+			this._bandwidth = getBandwidth(getKbytes(_bytes), this._downloadTime);
 			
 			if (this.maximumBytes && (this._bytes >= this.maximumBytes))
 			{
@@ -98,7 +126,14 @@ package org.flowplayer.bwcheck.servers
 			log.debug("requesting reference file " + _url);
 			
 			this._startTime = getTimer();
-			loader.load(new URLRequest(_url));
+			log.debug("start: " + _startTime.toString());
+			
+			var request:URLRequest = new URLRequest(_url);
+			_nocache = new URLRequestHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+			var headers:Array = new Array(_nocache);
+			request.requestHeaders = headers;
+			request.method = URLRequestMethod.GET;
+			loader.load(request);
 		}
 		
 		protected function onResult(obj:Object):void
