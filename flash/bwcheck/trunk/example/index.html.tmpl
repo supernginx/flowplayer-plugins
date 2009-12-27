@@ -163,7 +163,7 @@
 flowplayer("player", "@PLAYER_SWF@", {
 	playlist: [
             {
-              url: "bbb_640x360.flv", 
+              url: "bbb.flv", 
               customProperties: {
               					bitrates: [
               								{url: "bbb_160x90.flv", width: 160, height: 90, bitrate: 100},
@@ -181,6 +181,7 @@ flowplayer("player", "@PLAYER_SWF@", {
 		bwcheck: {  
 			url: '@MAIN_PLAYER_SWF@',   
 			netConnectionUrl: 'http://releases.flowplayer.org/swf/expressinstall.swf',
+			bitrateProfileName: 'HTTPBitrateProfile',
 			//bitrates: [40, 150, 400, 700, 1000],
 		
 			// this method is called when the bandwidth check is done
@@ -402,28 +403,6 @@ flowplayer("player", "@PLAYER_SWF@", {
 </table>
 
 
-<a name="bitratelabels"></a>
-<p>
-	You can assign labels to the bitrate values. These labels will be used when the filename is resolved. The labels are specified in the <samp>bitrates</samp> configuration variable:
-</p>
-<div class="box code">
-<pre><code class="javascript">// bitrates with their labels
-	bitrates: { low: 256, mid: 512, high: 1024 },
-	// our URL's have following extension
-	urlExtension: 'mp4.smil'</code></pre>
-</div>
-
-<p>
-	With this configuration we get the following URLs when the original URL before bwcheck is "video.mp4.smil":
-</p>
-<ul>
-	<li>video-low.mp4.smil</li>
-	<li>video-mid.mp4.smil</li>
-	<li>video-high.mp4.smil</li>
-</ul>
-<p>
-	The use of labels allows us to change the bitrates corresponding to the labels and the names of the files continue to make sense. Additionally the player configuration does not need to change.
-</p>
 
 <a name="rtmp"></a>
 <h2><em>RTMP</em> Example</h2>
@@ -434,17 +413,6 @@ flowplayer("player", "@PLAYER_SWF@", {
 
 <div style="width:425px;margin:30px auto">
    
-
-
-
-
-
-
-
-
-</head>
-
-
 
 
 <!-- player container-->
@@ -470,13 +438,13 @@ flowplayer("player", "@PLAYER_SWF@", {
 flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 	playlist: [
             {
-              url: "bbb", 
+              url: "flv:bbb", 
               customProperties: {
               					bitrates: [
-              								{url: "bbb_160x90", width: 160, height: 90, bitrate: 100},
-              								{url: "bbb_320x180", width: 320, height: 180, bitrate: 180},
-              								{url: "bbb_480x270", width: 480, height: 270, bitrate: 270},
-              								{url: "bbb_640x360", width: 640, height: 360, bitrate: 360}
+              								{url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
+              								{url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
+              								{url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
+              								{url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
               							  ]
               					}
             }
@@ -486,8 +454,8 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 
 		// RTMP streaming plugin
 		rtmp: {
-			url: 'http://releases.flowplayer.org/swf/flowplayer.rtmp-3.1.3.swf',
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org/fastplay'
+			url: '../flowplayer.rtmp.swf',
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/fastplay'
 		},
 
 		// bandwidth check plugin
@@ -498,13 +466,13 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 			serverType: 'wowza',
 
 			// Use this connection for bandwidth detection
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org/fastplay',
-
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
+			bitrateProfileName: 'RTMPBitrateProfile',
 			// available bitrates for file names
 			//bitrates: [40, 150, 400, 700, 1000],
 
 			// use a customized urlPattern for file names
-			urlPattern: '{0}-{1}',
+			//urlPattern: '{0}-{1}',
 
 			// this method is called when the bandwidth check is done
 			onBwDone: function(url, chosenBitrate, bitrate) {
@@ -522,7 +490,8 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 		
 		// use bwcheck for all clips
 		urlResolvers: 'bwcheck'
-	}
+	},
+	log: { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.rtmp.*, org.flowplayer.cluster.*' }
 
 });
 
@@ -581,7 +550,8 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 		
 		// use bwcheck for all clips
 		urlResolvers: 'bwcheck'
-	}
+	},
+	log: { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.rtmp.*, org.flowplayer.cluster.*' }
 
 });</code></pre>
 </div>
@@ -593,6 +563,144 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 	<strong>Adobe FMS</strong> bandwidth checking works without any extra steps.
 </p>
 
+<a name="psuedo"></a>
+<h2><em>Psuedo Streaming</em> Example</h2>
+
+<p>
+	The bwcheck plugin supports dynamic switching with Psuedo Streaming servers such as Lighttpd. Below is an example:
+</p>
+
+<div style="width:425px;margin:30px auto">
+   
+
+
+<!-- player container-->
+
+
+<a
+	href="skyandice"
+	style="display:block;width:425px;height:300px;"
+	id="psuedoPlayer">
+
+	<!-- splash image inside the container -->
+	<img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" />
+
+</a>
+
+<div class="box info" id="rtmpInfo">
+	Click on the splash image above.
+</div>
+
+<!-- Flowplayer installation and configuration -->
+<script language="JavaScript">
+
+flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
+	playlist: [
+            {
+              url: "bbb.flv", 
+              customProperties: {
+              					bitrates: [
+              								{url: "bbb_160x90.flv", width: 160, height: 90, bitrate: 100},
+              								{url: "bbb_320x180.flv", width: 320, height: 180, bitrate: 180},
+              								{url: "bbb_480x270.flv", width: 480, height: 270, bitrate: 270},
+              								{url: "bbb_640x360.flv", width: 640, height: 360, bitrate: 360}
+              							  ]
+              					}
+            }
+        ],
+	// configure the required plugin
+	plugins:  {
+		pseudoInStream: {
+			url: '../flowplayer.pseudostreaming.swf'
+		},
+		// bandwidth check plugin
+		bwcheck: {  
+			url: '@MAIN_PLAYER_SWF@',   
+			netConnectionUrl: 'http://releases.flowplayer.org/swf/flowplayer-3.1.5.swf',
+			//bitrates: [40, 150, 400, 700, 1000],
+			bitrateProfileName: 'PseudoBitrateProfile',
+			// this method is called when the bandwidth check is done
+			onBwDone: function(url, chosenBitrate, bitrate) {
+				var el = document.getElementById("info");
+				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
+			}
+		}
+		
+	},
+	clip: {
+		provider: 'pseudoInStream',
+		urlResolvers: 'bwcheck',
+		baseUrl: 'http://flashy.flowplayer.org/video/'
+	},
+	log: { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.pseudostreaming.*, org.flowplayer.cluster.*' }
+	
+});
+</script>	
+
+
+
+</div>
+
+<p>
+    The configuration is shown below. Note that the <samp>serverType</samp> and <samp>urlPattern</samp> values that need to
+    be defined for Adobe FMS.
+</p>
+
+<div class="box code">
+<pre><code class="javascript">flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
+
+	// configure the required plugins
+	plugins:  {
+
+		// RTMP streaming plugin
+		rtmp: {
+			url: 'flowplayer.rtmp-3.1.3.swf',
+			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer'
+		},
+
+		// bandwidth check plugin
+		bwcheck: {
+			url: '@MAIN_PLAYER_SWF@',
+
+			// Influxis uses Flash Media Servers
+			serverType: 'fms',
+
+			// Use this connection for bandwidth detection
+			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
+
+			// available bitrates for file names
+			bitrates: [40, 150, 400, 700, 1000],
+
+			// use a customized urlPattern for file names
+			//urlPattern: '{0}-{1}',
+
+			// this method is called when the bandwidth check is done
+			onBwDone: function(url, chosenBitrate, bitrate) {
+				var el = document.getElementById("rtmpInfo");
+				el.innerHTML = "Your speed is: " +bitrate+ "&lt;br /&gt;Video file served: " +url;
+			}
+		}
+
+	},
+
+	// configure the clip to use the rtmp plugin for providing video data
+	// and the bwcheck plugin in resolving the URLs
+	clip: {
+		provider: 'rtmp',
+		
+		// use bwcheck for all clips
+		urlResolvers: 'bwcheck'
+	}
+
+});</code></pre>
+</div>
+
+
+<p>
+	With the <strong>Wowza</strong> server you need to install the bwcheck app that is bundled in the Wowza distribution. Similarily
+	with <strong>Red5</strong> you need to install its bwcheck application that can be installed using Red5's installer. With
+	<strong>Adobe FMS</strong> bandwidth checking works without any extra steps.
+</p>
 
 <a name="clustering"></a>
 <h3>Clustering of bandwidth checks</h3>
