@@ -130,16 +130,6 @@
 <div style="width:425px;margin:30px auto">
    
 
-
-
-
-
-
-</head>
-
-
-
-
 <!-- player container-->
 
 
@@ -176,13 +166,18 @@ flowplayer("player", "@PLAYER_SWF@", {
         ],
 	// configure the required plugin
 	plugins:  {
+		content: {
+			url: '../flowplayer.content.swf',
+			top: 0,
+			left: 0,
+			width: 200 
+		},
 		
 		// bandwidth check plugin
 		bwcheck: {  
 			url: '@MAIN_PLAYER_SWF@',   
 			netConnectionUrl: 'http://releases.flowplayer.org/swf/expressinstall.swf',
 			bitrateProfileName: 'HTTPBitrateProfile',
-			//bitrates: [40, 150, 400, 700, 1000],
 		
 			// this method is called when the bandwidth check is done
 			onBwDone: function(url, chosenBitrate, bitrate) {
@@ -194,7 +189,12 @@ flowplayer("player", "@PLAYER_SWF@", {
 	},
 	clip: {
 		urlResolvers: 'bwcheck',
-		baseUrl: 'http://flashy.flowplayer.org/video/'
+		baseUrl: 'http://flashy.flowplayer.org/video/',
+		onMetaData: function(clip) {
+			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
+			var content = $f().getPlugin('content');
+			content.setHtml(dimensions);
+		}
 	},
 	log: { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.cluster.*' }
 	
@@ -212,27 +212,52 @@ flowplayer("player", "@PLAYER_SWF@", {
 
 <div class="box code">
 <pre><code class="javascript">flowplayer("player", "@PLAYER_SWF@", {
-		
+	playlist: [
+            {
+              url: "bbb.flv", 
+              customProperties: {
+              					bitrates: [
+              								{url: "bbb_160x90.flv", width: 160, height: 90, bitrate: 100},
+              								{url: "bbb_320x180.flv", width: 320, height: 180, bitrate: 180},
+              								{url: "bbb_480x270.flv", width: 480, height: 270, bitrate: 270},
+              								{url: "bbb_640x360.flv", width: 640, height: 360, bitrate: 360}
+              							  ]
+              					}
+            }
+        ],
 	// configure the required plugin
 	plugins:  {
+		content: {
+			url: '../flowplayer.content.swf',
+			top: 0,
+			left: 0,
+			width: 200 
+		},
 		
 		// bandwidth check plugin
 		bwcheck: {  
 			url: '@MAIN_PLAYER_SWF@',   
 			netConnectionUrl: 'http://releases.flowplayer.org/swf/expressinstall.swf',
-			bitrates: [40, 150, 400, 700, 1000],
+			bitrateProfileName: 'HTTPBitrateProfile',
 		
 			// this method is called when the bandwidth check is done
 			onBwDone: function(url, chosenBitrate, bitrate) {
 				var el = document.getElementById("info");
-				el.innerHTML = "Your speed is: " +bitrate+ "&lt;br /&gt;Video file served: " +url;
+				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
 			}
 		}
 		
 	},
 	clip: {
-		urlResolvers: 'bwcheck'
-	}
+		urlResolvers: 'bwcheck',
+		baseUrl: 'http://flashy.flowplayer.org/video/',
+		onMetaData: function(clip) {
+			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
+			var content = $f().getPlugin('content');
+			content.setHtml(dimensions);
+		}
+	},
+	log: { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.cluster.*' }
 	
 });</code></pre>
 </div>
@@ -245,10 +270,10 @@ flowplayer("player", "@PLAYER_SWF@", {
 </p>
 
 <ul>
-   <li>skyandice-150.flv</li>
-   <li>skyandice-400.flv</li>
-   <li>skyandice-700.flv</li>
-   <li>skyandice-1000.flv</li>
+   <li>bbb_160x90.flv</li>
+   <li>bbb_320x180.flv</li>
+   <li>bbb_480x270.flv</li>
+   <li>bbb_640x360.flv</li>
 </ul>
 
 <h2>Configuration</h2>
@@ -468,17 +493,12 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 		bwcheck: {
 			url: '@MAIN_PLAYER_SWF@',
 
-			// Influxis uses Flash Media Servers
+			// Wowza media server bandwidth checking type
 			serverType: 'wowza',
 
 			// Use this connection for bandwidth detection
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
-			// available bitrates for file names
-			//bitrates: [40, 150, 400, 700, 1000],
-
-			// use a customized urlPattern for file names
-			//urlPattern: '{0}-{1}',
 			
 			onStreamSwitch: function() {
 				var el = document.getElementById("rtmpInfo");
@@ -503,7 +523,6 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 		// use bwcheck for all clips
 		urlResolvers: 'bwcheck',
 		onMetaData: function(clip) {
-			console.log("SWITCHED !!!");
 			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
 			var content = $f().getPlugin('content');
 			content.setHtml(dimensions);
@@ -520,42 +539,61 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 </div>
 
 <p>
-    The configuration is shown below. Note that the <samp>serverType</samp> and <samp>urlPattern</samp> values that need to
-    be defined for Adobe FMS.
+    The configuration is shown below. Note that the <samp>serverType</samp>  value that needs to
+    be defined for streaming server connecting to, either fms, red5 or wowza.
 </p>
 
 <div class="box code">
 <pre><code class="javascript">flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
-
+	playlist: [
+            {
+              url: "flv:bbb", 
+              customProperties: {
+              					bitrates: [
+              								{url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
+              								{url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
+              								{url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
+              								{url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
+              							  ]
+              					}
+            }
+        ],
 	// configure the required plugins
 	plugins:  {
 
 		// RTMP streaming plugin
 		rtmp: {
-			url: 'flowplayer.rtmp-3.1.3.swf',
-			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer'
+			url: '../flowplayer.rtmp.swf',
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/fastplay'
+		},
+		content: {
+			url: '../flowplayer.content.swf',
+			top: 0,
+			left: 0,
+			width: 200 
 		},
 
 		// bandwidth check plugin
 		bwcheck: {
 			url: '@MAIN_PLAYER_SWF@',
 
-			// Influxis uses Flash Media Servers
-			serverType: 'fms',
+			// Wowza media server bandwidth checking type
+			serverType: 'wowza',
 
 			// Use this connection for bandwidth detection
-			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
-
-			// available bitrates for file names
-			bitrates: [40, 150, 400, 700, 1000],
-
-			// use a customized urlPattern for file names
-			urlPattern: '{0}-{1}',
-
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
+			bitrateProfileName: 'RTMPBitrateProfile',
+			
+			onStreamSwitch: function() {
+				var el = document.getElementById("rtmpInfo");
+				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
+				
+			},
 			// this method is called when the bandwidth check is done
 			onBwDone: function(url, chosenBitrate, bitrate) {
 				var el = document.getElementById("rtmpInfo");
-				el.innerHTML = "Your speed is: " +bitrate+ "&lt;br /&gt;Video file served: " +url;
+				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
+				
 			}
 		}
 
@@ -567,7 +605,12 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 		provider: 'rtmp',
 		
 		// use bwcheck for all clips
-		urlResolvers: 'bwcheck'
+		urlResolvers: 'bwcheck',
+		onMetaData: function(clip) {
+			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
+			var content = $f().getPlugin('content');
+			content.setHtml(dimensions);
+		}
 	},
 	log: { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.rtmp.*, org.flowplayer.cluster.*' }
 
@@ -641,7 +684,6 @@ flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
 		bwcheck: {  
 			url: '@MAIN_PLAYER_SWF@',   
 			netConnectionUrl: 'http://releases.flowplayer.org/swf/flowplayer-3.1.5.swf',
-			//bitrates: [40, 150, 400, 700, 1000],
 			bitrateProfileName: 'PseudoBitrateProfile',
 			onStreamSwitch: function() {
 				var el = document.getElementById("psuedoInfo");
@@ -661,13 +703,12 @@ flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
 		urlResolvers: 'bwcheck',
 		baseUrl: 'http://flashy.flowplayer.org/video/',
 		onMetaData: function(clip) {
-			console.log("SWITCHED !!!");
 			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
 			var content = $f().getPlugin('content');
 			content.setHtml(dimensions);
 		}
 	},
-	log: { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.pseudostreaming.*, org.flowplayer.cluster.*' }
+	log: { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.pseudostreaming.*, org.flowplayer.cluster.*, org.flowplayer.view.FlowplayerBase, org.flowplayer.controller.PlayingState, org.flowplayer.controller.StreamProviderController' }
 	
 });
 </script>	
@@ -677,56 +718,65 @@ flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
 </div>
 
 <p>
-    The configuration is shown below. Note that the <samp>serverType</samp> and <samp>urlPattern</samp> values that need to
-    be defined for Adobe FMS.
+    The configuration is shown below. 
 </p>
 
 <div class="box code">
-<pre><code class="javascript">flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
-
-	// configure the required plugins
+<pre><code class="javascript">flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
+	playlist: [
+            {
+              url: "bbb.flv", 
+              customProperties: {
+              					bitrates: [
+              								{url: "bbb_160x90.flv", width: 160, height: 90, bitrate: 100},
+              								{url: "bbb_320x180.flv", width: 320, height: 180, bitrate: 180},
+              								{url: "bbb_480x270.flv", width: 480, height: 270, bitrate: 270},
+              								{url: "bbb_640x360.flv", width: 640, height: 360, bitrate: 360}
+              							  ]
+              					}
+            }
+        ],
+	// configure the required plugin
 	plugins:  {
-
-		// RTMP streaming plugin
-		rtmp: {
-			url: 'flowplayer.rtmp-3.1.3.swf',
-			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer'
+		content: {
+			url: '../flowplayer.content.swf',
+			top: 0,
+			left: 0,
+			width: 200 
 		},
-
+		psuedo: {
+			url: '../flowplayer.pseudostreaming.swf'
+		},
 		// bandwidth check plugin
-		bwcheck: {
-			url: '@MAIN_PLAYER_SWF@',
-
-			// Influxis uses Flash Media Servers
-			serverType: 'fms',
-
-			// Use this connection for bandwidth detection
-			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
-
-			// available bitrates for file names
-			bitrates: [40, 150, 400, 700, 1000],
-
-			// use a customized urlPattern for file names
-			//urlPattern: '{0}-{1}',
-
+		bwcheck: {  
+			url: '@MAIN_PLAYER_SWF@',   
+			netConnectionUrl: 'http://releases.flowplayer.org/swf/flowplayer-3.1.5.swf',
+			bitrateProfileName: 'PseudoBitrateProfile',
+			onStreamSwitch: function() {
+				var el = document.getElementById("psuedoInfo");
+				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
+				
+			},
 			// this method is called when the bandwidth check is done
 			onBwDone: function(url, chosenBitrate, bitrate) {
-				var el = document.getElementById("rtmpInfo");
-				el.innerHTML = "Your speed is: " +bitrate+ "&lt;br /&gt;Video file served: " +url;
+				var el = document.getElementById("psuedoInfo");
+				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
 			}
 		}
-
-	},
-
-	// configure the clip to use the rtmp plugin for providing video data
-	// and the bwcheck plugin in resolving the URLs
-	clip: {
-		provider: 'rtmp',
 		
-		// use bwcheck for all clips
-		urlResolvers: 'bwcheck'
-	}
-
+	},
+	clip: {
+		provider: 'psuedo',
+		urlResolvers: 'bwcheck',
+		baseUrl: 'http://flashy.flowplayer.org/video/',
+		onMetaData: function(clip) {
+			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
+			var content = $f().getPlugin('content');
+			content.setHtml(dimensions);
+		}
+	},
+	log: { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.pseudostreaming.*, org.flowplayer.cluster.*' }
+	
 });</code></pre>
 </div>
 
@@ -796,34 +846,20 @@ flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
 		bwcheck: {
 			url: '@MAIN_PLAYER_SWF@',
 
-			// Influxis uses Flash Media Servers
 			serverType: 'wowza',
 
 			// Use this connection for bandwidth detection
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
-			// available bitrates for file names
-			//bitrates: [40, 150, 400, 700, 1000],
-
-			// use a customized urlPattern for file names
-			//urlPattern: '{0}-{1}',
 			
 			onStreamSwitch: function() {
 				var el = document.getElementById("rtmpManualInfo");
 				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
-				var dimensions = "Clip Width: " + $f().getClip().width + " Clip Height: " + $f().getClip().height;
-				var content = $f().getPlugin('content');
-				content.setHtml(dimensions);
 			},
 			// this method is called when the bandwidth check is done
 			onBwDone: function(url, chosenBitrate, bitrate) {
-		//	console.log($f().getClip());
-			consoe.log($f().getClip().width);
 				var el = document.getElementById("rtmpManualInfo");
 				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
-				var dimensions = "Clip Width: " + $f().getClip().width + " Clip Height: " + $f().getClip().height;
-				var content = $f().getPlugin('content');
-				content.setHtml(dimensions);
 			}
 		}
 
@@ -838,6 +874,11 @@ flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
 		urlResolvers: 'bwcheck',
 		onBeforeBegin: function (clip) {
 			showBitrates(clip);
+		},
+		onMetaData: function(clip) {
+			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
+			var content = $f().getPlugin('content');
+			content.setHtml(dimensions);
 		}
 	},
 	log: { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.rtmp.*, org.flowplayer.cluster.*' }
@@ -868,8 +909,7 @@ flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
 
 			
 		$('#changeBitrate .bitrateBtns').click(function() {
-		alert("yes");
-		//	$f().getPlugin("bwcheck").setBitrate($(this).val());
+			$f().getPlugin("bwcheck").setBitrate($(this).val());
 		});
 		
 		$('.checkBtn').click(function() {
@@ -891,42 +931,57 @@ flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
 </div>
 		
 <p>
-    The configuration is shown below. Note that the <samp>serverType</samp> and <samp>urlPattern</samp> values that need to
-    be defined for Adobe FMS.
+    The configuration is shown below. 
 </p>
 
 <div class="box code">
-<pre><code class="javascript">flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
-
+<pre><code class="javascript">flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
+	playlist: [
+            {
+              url: "flv:bbb", 
+              customProperties: {
+              					bitrates: [
+              								{url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
+              								{url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
+              								{url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
+              								{url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
+              							  ]
+              					}
+            }
+        ],
 	// configure the required plugins
 	plugins:  {
 
 		// RTMP streaming plugin
 		rtmp: {
-			url: 'flowplayer.rtmp-3.1.3.swf',
-			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer'
+			url: '../flowplayer.rtmp.swf',
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/fastplay'
+		},
+		content: {
+			url: '../flowplayer.content.swf',
+			top: 0,
+			left: 0,
+			width: 200 
 		},
 
 		// bandwidth check plugin
 		bwcheck: {
 			url: '@MAIN_PLAYER_SWF@',
 
-			// Influxis uses Flash Media Servers
-			serverType: 'fms',
+			serverType: 'wowza',
 
 			// Use this connection for bandwidth detection
-			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
-
-			// available bitrates for file names
-			bitrates: [40, 150, 400, 700, 1000],
-
-			// use a customized urlPattern for file names
-			urlPattern: '{0}-{1}',
-
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
+			bitrateProfileName: 'RTMPBitrateProfile',
+			
+			onStreamSwitch: function() {
+				var el = document.getElementById("rtmpManualInfo");
+				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
+			},
 			// this method is called when the bandwidth check is done
 			onBwDone: function(url, chosenBitrate, bitrate) {
-				var el = document.getElementById("rtmpInfo");
-				el.innerHTML = "Your speed is: " +bitrate+ "&lt;br /&gt;Video file served: " +url;
+				var el = document.getElementById("rtmpManualInfo");
+				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
 			}
 		}
 
@@ -938,18 +993,59 @@ flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
 		provider: 'rtmp',
 		
 		// use bwcheck for all clips
-		urlResolvers: 'bwcheck'
+		urlResolvers: 'bwcheck',
+		onBeforeBegin: function (clip) {
+			showBitrates(clip);
+		},
+		onMetaData: function(clip) {
+			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
+			var content = $f().getPlugin('content');
+			content.setHtml(dimensions);
+		}
 	},
 	log: { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.rtmp.*, org.flowplayer.cluster.*' }
 
-});</code></pre>
+});
+
+	function showBitrates(clip)
+	{
+			var bitrates = clip.customProperties.bitrates;
+     		var form = "";
+			jQuery.each( bitrates, function(index, item){
+			
+				form += '<label><input type="radio" name="bitrate" value="' + item.bitrate + '" class="bitrateBtns" />' + item.bitrate + ' K</label><br>';
+			});
+     		$('#changeBitrate').append(form);
+     		
+     
+	}
+	
+	function detect()
+	{
+		$f().getPlugin("bwcheck").checkBandwidth();
+	}
+		
+		
+		
+	$(document).ready(function () {
+
+			
+		$('#changeBitrate .bitrateBtns').click(function() {
+			$f().getPlugin("bwcheck").setBitrate($(this).val());
+		});
+		
+		$('.checkBtn').click(function() {
+			detect();
+		});
+		
+	});</code></pre>
 </div>
 
 <a name="rtmp_selection"></a>
-<h2><em>RTMP</em> With Manual Selection Example</h2>
+<h2><em>RTMP</em> With Dynamic Buffering Example</h2>
 
 <p>
-	RTMP Example with bitrate manual selection.
+	RTMP Example with dynamic buffer time calculation.
 </p>
 
 <div style="width:425px;margin:30px auto">
@@ -1016,28 +1112,15 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
 			enableDynamicBuffer: true,
-			// available bitrates for file names
-			//bitrates: [40, 150, 400, 700, 1000],
-
-			// use a customized urlPattern for file names
-			//urlPattern: '{0}-{1}',
 			
 			onStreamSwitch: function() {
 				var el = document.getElementById("rtmpBufferInfo");
 				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
-				var dimensions = "Clip Width: " + $f().getClip().width + " Clip Height: " + $f().getClip().height;
-				var content = $f().getPlugin('content');
-				content.setHtml(dimensions);
 			},
 			// this method is called when the bandwidth check is done
 			onBwDone: function(url, chosenBitrate, bitrate) {
-		//	console.log($f().getClip());
-			consoe.log($f().getClip().width);
 				var el = document.getElementById("rtmpBufferInfo");
 				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
-				var dimensions = "Clip Width: " + $f().getClip().width + " Clip Height: " + $f().getClip().height;
-				var content = $f().getPlugin('content');
-				content.setHtml(dimensions);
 			}
 		}
 
@@ -1050,47 +1133,17 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
 		
 		// use bwcheck for all clips
 		urlResolvers: 'bwcheck',
-		onBeforeBegin: function (clip) {
-			showBitrates(clip);
+		onMetaData: function(clip) {
+			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
+			var content = $f().getPlugin('content');
+			content.setHtml(dimensions);
 		}
 	},
 	log: { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.rtmp.*, org.flowplayer.cluster.*' }
 
 });
 
-	function showBitrates(clip)
-	{
-			var bitrates = clip.customProperties.bitrates;
-     		var form = "";
-			jQuery.each( bitrates, function(index, item){
-			
-				form += '<label><input type="radio" name="bitrate" value="' + item.bitrate + '" class="bitrateBtns" />' + item.bitrate + ' K</label><br>';
-			});
-     		$('#changeBitrate').append(form);
-     		
-     
-	}
 	
-	function detect()
-	{
-		$f().getPlugin("bwcheck").checkBandwidth();
-	}
-		
-		
-		
-	$(document).ready(function () {
-
-			
-		$('#changeBitrate .bitrateBtns').click(function() {
-		alert("yes");
-		//	$f().getPlugin("bwcheck").setBitrate($(this).val());
-		});
-		
-		$('.checkBtn').click(function() {
-			detect();
-		});
-		
-	});
 
 </script>
 
@@ -1098,27 +1151,40 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
 
 </div>
 
-<a href="#" class="checkBtn">Detect Bandwidth</a>
-		
-<div id="changeBitrate">
-	<b>Change Bitrate:</b><br/>
-</div>
+
 		
 <p>
-    The configuration is shown below. Note that the <samp>serverType</samp> and <samp>urlPattern</samp> values that need to
-    be defined for Adobe FMS.
+    The configuration is shown below.
 </p>
 
 <div class="box code">
-<pre><code class="javascript">flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
-
+<pre><code class="javascript">flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
+	playlist: [
+            {
+              url: "flv:bbb", 
+              customProperties: {
+              					bitrates: [
+              								{url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
+              								{url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
+              								{url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
+              								{url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
+              							  ]
+              					}
+            }
+        ],
 	// configure the required plugins
 	plugins:  {
 
 		// RTMP streaming plugin
 		rtmp: {
-			url: 'flowplayer.rtmp-3.1.3.swf',
-			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer'
+			url: '../flowplayer.rtmp.swf',
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/fastplay'
+		},
+		content: {
+			url: '../flowplayer.content.swf',
+			top: 0,
+			left: 0,
+			width: 200 
 		},
 
 		// bandwidth check plugin
@@ -1126,21 +1192,21 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
 			url: '@MAIN_PLAYER_SWF@',
 
 			// Influxis uses Flash Media Servers
-			serverType: 'fms',
+			serverType: 'wowza',
 
 			// Use this connection for bandwidth detection
-			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
-
-			// available bitrates for file names
-			bitrates: [40, 150, 400, 700, 1000],
-
-			// use a customized urlPattern for file names
-			urlPattern: '{0}-{1}',
-
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
+			bitrateProfileName: 'RTMPBitrateProfile',
+			enableDynamicBuffer: true,
+			
+			onStreamSwitch: function() {
+				var el = document.getElementById("rtmpBufferInfo");
+				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
+			},
 			// this method is called when the bandwidth check is done
 			onBwDone: function(url, chosenBitrate, bitrate) {
-				var el = document.getElementById("rtmpInfo");
-				el.innerHTML = "Your speed is: " +bitrate+ "&lt;br /&gt;Video file served: " +url;
+				var el = document.getElementById("rtmpBufferInfo");
+				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
 			}
 		}
 
@@ -1152,7 +1218,12 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
 		provider: 'rtmp',
 		
 		// use bwcheck for all clips
-		urlResolvers: 'bwcheck'
+		urlResolvers: 'bwcheck',
+		onMetaData: function(clip) {
+			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
+			var content = $f().getPlugin('content');
+			content.setHtml(dimensions);
+		}
 	},
 	log: { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.rtmp.*, org.flowplayer.cluster.*' }
 
