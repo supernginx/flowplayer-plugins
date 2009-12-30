@@ -21,6 +21,7 @@ package org.flowplayer.controls.slider {
     import org.flowplayer.controls.Config;
     import org.flowplayer.model.Clip;
     import org.flowplayer.model.ClipEvent;
+    import org.flowplayer.model.ClipType;
     import org.flowplayer.model.Playlist;
     import org.flowplayer.model.PluginEvent;
     import org.flowplayer.model.PluginModel;
@@ -47,16 +48,17 @@ package org.flowplayer.controls.slider {
 
         public function ScrubberSlider(config:Config, animationEngine:AnimationEngine, controlbar:DisplayObject) {
             super(config, animationEngine, controlbar);
-            lookupSlowMotionPlugin(config.player);
+            lookupPluginAndBindEvent(config.player, "slowmotion", onSlowMotionEvent);
+            lookupPluginAndBindEvent(config.player, "audio", onAudioEvent);
             createBars();
             addPlaylistListeners(config.player.playlist);
         }
 
-        private function lookupSlowMotionPlugin(player:Flowplayer):void {
-            var slowMotionPlugin:PluginModel = player.pluginRegistry.getPlugin("slowmotion") as PluginModel;
-            if (slowMotionPlugin) {
-                log.debug("found SlowMotion plugin " +slowMotionPlugin+ ", will track slow motion events");
-                slowMotionPlugin.onPluginEvent(onSlowMotionEvent);
+        private function lookupPluginAndBindEvent(player:Flowplayer, pluginName:String, eventHandler:Function):void {
+            var plugin:PluginModel = player.pluginRegistry.getPlugin(pluginName) as PluginModel;
+            if (plugin) {
+                log.debug("found plugin " +plugin);
+                plugin.onPluginEvent(eventHandler);
             }
         }
 
@@ -86,6 +88,13 @@ package org.flowplayer.controls.slider {
             } else {
                 stratTrickPlayTracking();
             }
+        }
+
+        private function onAudioEvent(event:PluginEvent):void {
+            log.debug("onAudioEvent()");
+            stop();
+            doStart(_config.player.playlist.current);
+
         }
 
         private function stopTrickPlayTracking():void {
@@ -123,8 +132,10 @@ package org.flowplayer.controls.slider {
         }
 
         private function start(event:ClipEvent):void {
-            log.debug("start()");
-            doStart(event.target as Clip);
+            var clip:Clip = event.target as Clip;
+            log.debug("start() " + clip);
+            if (clip.duration == 0 && clip.type == ClipType.IMAGE) return;
+            doStart(clip);
 //            animationEngine.animateProperty(_dragger, "x", 0, 300, function():void { doStart(event.target as Clip); });
         }
 
@@ -133,6 +144,7 @@ package org.flowplayer.controls.slider {
         }
 
         private function doStart(clip:Clip, startTime:Number = 0):void {
+            log.debug("doStart()");
             var status:Status = _config.player.status;
             var time:Number = startTime > 0 ? startTime : status.time;
 
@@ -168,6 +180,9 @@ package org.flowplayer.controls.slider {
 
         private function stop(event:ClipEvent = null):void {
             log.debug("stop()");
+            if (_startDetectTimer) {
+                _startDetectTimer.stop();
+            }
             animationEngine.cancel(_dragger);
         }
 
