@@ -1,0 +1,13 @@
+<project name="Flowplayer Google Tracker plugin" default="build">
+
+	<property file="../flowplayer.devkit//plugin-build.properties" />
+	<import file="../flowplayer.devkit/plugin-build.xml"/>
+	<property name="flowplayer_lib" value="../flowplayer.core/build/flowplayer.swc" />
+	
+	<property name="version" value="3.1.5" />
+	<property name="basename" value="flowplayer.GoogleTracker" />
+	<property name="plugin-binary" value="${basename}.swf" />
+	<property name="plugin-binary-versioned" value="${basename}-${version}.swf" />
+	<property name="plugin-main-class" value="org/flowplayer/analytics/GoogleTracker.as" />
+
+</project>
