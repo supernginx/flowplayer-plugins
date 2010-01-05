@@ -170,7 +170,7 @@ flowplayer("player", "@PLAYER_SWF@", {
 			url: '../flowplayer.content.swf',
 			top: 0,
 			left: 0,
-			width: 200 
+			width: 250 
 		},
 		
 		// bandwidth check plugin
@@ -178,11 +178,15 @@ flowplayer("player", "@PLAYER_SWF@", {
 			url: '@MAIN_PLAYER_SWF@',   
 			netConnectionUrl: 'http://releases.flowplayer.org/swf/expressinstall.swf',
 			bitrateProfileName: 'HTTPBitrateProfile',
-		
-			// this method is called when the bandwidth check is done
-			onBwDone: function(url, chosenBitrate, bitrate) {
+			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
 				var el = document.getElementById("info");
-				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
+				el.innerHTML = "Chosen bitrate is: " + mappedBitrate.bitrate + "<br /> Video file served: " + streamName + "<br /> Old Video file served: " + oldStreamName;
+				
+			},
+			// this method is called when the bandwidth check is done
+			onBwDone: function(mappedBitrate, detectedBitrate) {
+				var el = document.getElementById("info");
+				el.innerHTML = "Your speed is: " + detectedBitrate + "<br /> Your chosen bitrate: " + mappedBitrate.bitrate + "<br /> Video file served: " + mappedBitrate.url;
 			}
 		}
 		
@@ -231,7 +235,7 @@ flowplayer("player", "@PLAYER_SWF@", {
 			url: '../flowplayer.content.swf',
 			top: 0,
 			left: 0,
-			width: 200 
+			width: 250 
 		},
 		
 		// bandwidth check plugin
@@ -239,11 +243,15 @@ flowplayer("player", "@PLAYER_SWF@", {
 			url: '@MAIN_PLAYER_SWF@',   
 			netConnectionUrl: 'http://releases.flowplayer.org/swf/expressinstall.swf',
 			bitrateProfileName: 'HTTPBitrateProfile',
-		
-			// this method is called when the bandwidth check is done
-			onBwDone: function(url, chosenBitrate, bitrate) {
+			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
 				var el = document.getElementById("info");
-				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
+				el.innerHTML = "Chosen bitrate is: " + mappedBitrate.bitrate + "<br /> Video file served: " + streamName + "<br /> Old Video file served: " + oldStreamName;
+				
+			},
+			// this method is called when the bandwidth check is done
+			onBwDone: function(mappedBitrate, detectedBitrate) {
+				var el = document.getElementById("info");
+				el.innerHTML = "Your speed is: " + detectedBitrate + "<br /> Your chosen bitrate: " + mappedBitrate.bitrate + "<br /> Video file served: " + mappedBitrate.url;
 			}
 		}
 		
@@ -313,13 +321,6 @@ flowplayer("player", "@PLAYER_SWF@", {
         </td>
     </tr>
     <tr>
-        <td class="code">bitrates <div class="type">array or object</div></td>
-        <td class="code default"></td>
-        <td class="description">
-				List of available bitrates. The server should have video files encoded in each of these specified bitrates. The detected bandwidth is mapped to the closest value found in this array and the stream file name is resolved based on the mapped bitrate value. See also below on <a href="#bitratelabels">how to give labels to bitrates</a>.
-        </td>
-    </tr>
-    <tr>
         <td class="code">cacheExpiry <div class="type">number</div>86400</td>
         <td class="code default"></td>
         <td class="description">
@@ -335,21 +336,6 @@ flowplayer("player", "@PLAYER_SWF@", {
         </td>
     </tr>
     <tr>
-        <td class="code">urlPattern <div class="type">array</div></td>
-        <td class="code default">{0}-{1}.{2}</td>
-        <td class="description">
-				A pattern used to resolve the file name based on the bitrate. First the detected bitrate is mapped to an
-				available bitrate using the <samp>bitrates</samp> array (see above) and then the URL is resolved by applying this pattern. For example, if the URL configured for Flowplayer is "skyandice.flv" and the mapped bitrate is 400, then the resolved URL is "skyandice-400.flv". {0} refers to the clip basename, {1} is the mapped bitrate, and {2} is file extension.
-        </td>
-    </tr>
-    <tr>
-        <td class="code">urlExtension <div class="type">string</div></td>
-        <td class="code default"></td>
-        <td class="description">
-        	The file extension used when applying the <samp>urlPattern</samp>. You need to specify this if the URL's don't have common extensions like '.flv' or '.mp4' which can be determined by looking for the last '.' in the filename and using the characters following its position to be the extension. With the Highwinds CDN this extension is currently <samp>flv.smil</samp> when FLV files are used.
-        </td>
-    </tr>
-    <tr>
     	<a name="rememberBitrate"></a>
         <td class="code">rememberBitrate <div class="type">boolean</div></td>
         <td class="code default">true</td>
@@ -358,7 +344,7 @@ flowplayer("player", "@PLAYER_SWF@", {
         </td>
     </tr>
     <tr>
-        <td class="code">dynamic <div class="type">boolean</div></td>
+        <td class="code">enableDynamic <div class="type">boolean</div></td>
         <td class="code default">false</td>
         <td class="description">
 				Enables dynamic stream switching for Adobe Flash Media Interactive Server. <a href="dynamic">See below</a> for more details.
@@ -486,7 +472,7 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 			url: '../flowplayer.content.swf',
 			top: 0,
 			left: 0,
-			width: 200 
+			width: 250 
 		},
 
 		// bandwidth check plugin
@@ -500,16 +486,15 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
 			
-			onStreamSwitch: function() {
+			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
 				var el = document.getElementById("rtmpInfo");
-				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
+				el.innerHTML = "Chosen bitrate is: " + mappedBitrate.bitrate + "<br /> Video file served: " + streamName + "<br /> Old Video file served: " + oldStreamName;
 				
 			},
 			// this method is called when the bandwidth check is done
-			onBwDone: function(url, chosenBitrate, bitrate) {
+			onBwDone: function(mappedBitrate, detectedBitrate) {
 				var el = document.getElementById("rtmpInfo");
-				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
-				
+				el.innerHTML = "Your speed is: " + detectedBitrate + "<br /> Your chosen bitrate: " + mappedBitrate.bitrate + "<br /> Video file served: " + mappedBitrate.url;
 			}
 		}
 
@@ -570,7 +555,7 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 			url: '../flowplayer.content.swf',
 			top: 0,
 			left: 0,
-			width: 200 
+			width: 250 
 		},
 
 		// bandwidth check plugin
@@ -584,16 +569,15 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
 			
-			onStreamSwitch: function() {
+			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
 				var el = document.getElementById("rtmpInfo");
-				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
+				el.innerHTML = "Chosen bitrate is: " + mappedBitrate.bitrate + "<br /> Video file served: " + streamName + "<br /> Old Video file served: " + oldStreamName;
 				
 			},
 			// this method is called when the bandwidth check is done
-			onBwDone: function(url, chosenBitrate, bitrate) {
+			onBwDone: function(mappedBitrate, detectedBitrate) {
 				var el = document.getElementById("rtmpInfo");
-				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
-				
+				el.innerHTML = "Your speed is: " + detectedBitrate + "<br /> Your chosen bitrate: " + mappedBitrate.bitrate + "<br /> Video file served: " + mappedBitrate.url;
 			}
 		}
 
@@ -675,7 +659,7 @@ flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
 			url: '../flowplayer.content.swf',
 			top: 0,
 			left: 0,
-			width: 200 
+			width: 250 
 		},
 		psuedo: {
 			url: '../flowplayer.pseudostreaming.swf'
@@ -685,15 +669,15 @@ flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
 			url: '@MAIN_PLAYER_SWF@',   
 			netConnectionUrl: 'http://releases.flowplayer.org/swf/flowplayer-3.1.5.swf',
 			bitrateProfileName: 'PseudoBitrateProfile',
-			onStreamSwitch: function() {
+			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
 				var el = document.getElementById("psuedoInfo");
-				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
+				el.innerHTML = "Chosen bitrate is: " + mappedBitrate.bitrate + "<br /> Video file served: " + streamName + "<br /> Old Video file served: " + oldStreamName;
 				
 			},
 			// this method is called when the bandwidth check is done
-			onBwDone: function(url, chosenBitrate, bitrate) {
+			onBwDone: function(mappedBitrate, detectedBitrate) {
 				var el = document.getElementById("psuedoInfo");
-				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
+				el.innerHTML = "Your speed is: " + detectedBitrate + "<br /> Your chosen bitrate: " + mappedBitrate.bitrate + "<br /> Video file served: " + mappedBitrate.url;
 			}
 		}
 		
@@ -742,7 +726,7 @@ flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
 			url: '../flowplayer.content.swf',
 			top: 0,
 			left: 0,
-			width: 200 
+			width: 250 
 		},
 		psuedo: {
 			url: '../flowplayer.pseudostreaming.swf'
@@ -752,15 +736,15 @@ flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
 			url: '@MAIN_PLAYER_SWF@',   
 			netConnectionUrl: 'http://releases.flowplayer.org/swf/flowplayer-3.1.5.swf',
 			bitrateProfileName: 'PseudoBitrateProfile',
-			onStreamSwitch: function() {
+			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
 				var el = document.getElementById("psuedoInfo");
-				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
+				el.innerHTML = "Chosen bitrate is: " + mappedBitrate.bitrate + "<br /> Video file served: " + streamName + "<br /> Old Video file served: " + oldStreamName;
 				
 			},
 			// this method is called when the bandwidth check is done
-			onBwDone: function(url, chosenBitrate, bitrate) {
+			onBwDone: function(mappedBitrate, detectedBitrate) {
 				var el = document.getElementById("psuedoInfo");
-				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
+				el.innerHTML = "Your speed is: " + detectedBitrate + "<br /> Your chosen bitrate: " + mappedBitrate.bitrate + "<br /> Video file served: " + mappedBitrate.url;
 			}
 		}
 		
@@ -779,196 +763,6 @@ flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
 	
 });</code></pre>
 </div>
-
-
-<a name="rtmp_selection"></a>
-<h2><em>RTMP</em> With Custom Stream Selection Strategy Example</h2>
-
-<p>
-	RTMP Example with a custom stream selection strategy allowing for player containers to be resized on bandwidth detection. 
-	It will choose a video that is under the maximum player container width.
-</p>
-
-<div style="width:425px;margin:30px auto">
-   
-
-
-<!-- player container-->
-
-
-<a
-	href="skyandice"
-	style="display:block;width:425px;height:300px;"
-	id="rtmpSelectionPlayer">
-
-	<!-- splash image inside the container -->
-	<img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" />
-
-</a>
-
-<div class="box info" id="rtmpSelectionInfo">
-	Click on the splash image above.
-</div>
-
-<!-- Flowplayer installation and configuration -->
-<script language="JavaScript">
-
-flowplayer("rtmpSelectionPlayer", "@PLAYER_SWF@", {
-	playlist: [
-            {
-              url: "flv:bbb", 
-              customProperties: {
-              					bitrates: [
-              								{url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
-              								{url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
-              								{url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
-              								{url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
-              							  ]
-              					}
-            }
-        ],
-	// configure the required plugins
-	plugins:  {
-
-		// RTMP streaming plugin
-		rtmp: {
-			url: '../flowplayer.rtmp.swf',
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/fastplay'
-		},
-		content: {
-			url: '../flowplayer.content.swf',
-			top: 0,
-			left: 0,
-			width: 200 
-		},
-
-		// bandwidth check plugin
-		bwcheck: {
-			url: '@MAIN_PLAYER_SWF@',
-
-			serverType: 'wowza',
-			
-			maxContainerWidth: 640,
-			streamSelectionStrategy: 'resizable',
-
-			// Use this connection for bandwidth detection
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
-			bitrateProfileName: 'RTMPBitrateProfile',
-			
-			onStreamSwitch: function() {
-				var el = document.getElementById("rtmpSelectionInfo");
-				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
-			},
-			// this method is called when the bandwidth check is done
-			onBwDone: function(url, chosenBitrate, bitrate) {
-				var el = document.getElementById("rtmpSelectionInfo");
-				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
-			}
-		}
-
-	},
-
-	// configure the clip to use the rtmp plugin for providing video data
-	// and the bwcheck plugin in resolving the URLs
-	clip: {
-		provider: 'rtmp',
-		
-		// use bwcheck for all clips
-		urlResolvers: 'bwcheck',
-		onMetaData: function(clip) {
-			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
-			var content = $f().getPlugin('content');
-			content.setHtml(dimensions);
-		}
-	},
-	log: { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.rtmp.*, org.flowplayer.cluster.*' }
-
-});
-
-
-
-</script>
-
-
-
-</div>
-
-		
-<p>
-    The configuration is shown below. 
-</p>
-
-<div class="box code">
-<pre><code class="javascript">flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
-	playlist: [
-            {
-              url: "flv:bbb", 
-              customProperties: {
-              					bitrates: [
-              								{url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
-              								{url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
-              								{url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
-              								{url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
-              							  ]
-              					}
-            }
-        ],
-	// configure the required plugins
-	plugins:  {
-
-		// RTMP streaming plugin
-		rtmp: {
-			url: '../flowplayer.rtmp.swf',
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/fastplay'
-		},
-		content: {
-			url: '../flowplayer.content.swf',
-			top: 0,
-			left: 0,
-			width: 200 
-		},
-
-		// bandwidth check plugin
-		bwcheck: {
-			url: '@MAIN_PLAYER_SWF@',
-
-			serverType: 'wowza',
-
-			// Use this connection for bandwidth detection
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
-			bitrateProfileName: 'RTMPBitrateProfile',
-			
-			onStreamSwitch: function() {
-				var el = document.getElementById("rtmpManualInfo");
-				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
-			},
-			// this method is called when the bandwidth check is done
-			onBwDone: function(url, chosenBitrate, bitrate) {
-				var el = document.getElementById("rtmpManualInfo");
-				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
-			}
-		}
-
-	},
-
-	// configure the clip to use the rtmp plugin for providing video data
-	// and the bwcheck plugin in resolving the URLs
-	clip: {
-		provider: 'rtmp',
-		
-		// use bwcheck for all clips
-		urlResolvers: 'bwcheck',
-		onMetaData: function(clip) {
-			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
-			var content = $f().getPlugin('content');
-			content.setHtml(dimensions);
-		}
-	},
-	log: { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.rtmp.*, org.flowplayer.cluster.*' }
-
-});</code></pre>
-</div>
-
 
 
 <a name="rtmp_selection"></a>
@@ -1028,7 +822,7 @@ flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
 			url: '../flowplayer.content.swf',
 			top: 0,
 			left: 0,
-			width: 200 
+			width: 250 
 		},
 
 		// bandwidth check plugin
@@ -1041,14 +835,15 @@ flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
 			
-			onStreamSwitch: function() {
+			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
 				var el = document.getElementById("rtmpManualInfo");
-				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
+				el.innerHTML = "Chosen bitrate is: " + mappedBitrate.bitrate + "<br /> Video file served: " + streamName + "<br /> Old Video file served: " + oldStreamName;
+				
 			},
 			// this method is called when the bandwidth check is done
-			onBwDone: function(url, chosenBitrate, bitrate) {
+			onBwDone: function(mappedBitrate, detectedBitrate) {
 				var el = document.getElementById("rtmpManualInfo");
-				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
+				el.innerHTML = "Your speed is: " + detectedBitrate + "<br /> Your chosen bitrate: " + mappedBitrate.bitrate + "<br /> Video file served: " + mappedBitrate.url;
 			}
 		}
 
@@ -1084,20 +879,19 @@ flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
 			});
      		$('#changeManualBitrate').append(form);
      		
-     
 	}
 
 		
 	function changeManualBitrate(bitrate) {
 		$f().getPlugin("bwcheck").setBitrate(bitrate);
 	}
-		
+	
 		
 	$(document).ready(function () {
 	
 	
 		$('.checkManualBtn').click(function() {
-			detect();
+			$f().getPlugin("bwcheck").checkBandwidth();
 		});
 		
 	});
@@ -1145,7 +939,7 @@ flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
 			url: '../flowplayer.content.swf',
 			top: 0,
 			left: 0,
-			width: 200 
+			width: 250 
 		},
 
 		// bandwidth check plugin
@@ -1158,14 +952,15 @@ flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
 			
-			onStreamSwitch: function() {
+			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
 				var el = document.getElementById("rtmpManualInfo");
-				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
+				el.innerHTML = "Chosen bitrate is: " + mappedBitrate.bitrate + "<br /> Video file served: " + streamName + "<br /> Old Video file served: " + oldStreamName;
+				
 			},
 			// this method is called when the bandwidth check is done
-			onBwDone: function(url, chosenBitrate, bitrate) {
+			onBwDone: function(mappedBitrate, detectedBitrate) {
 				var el = document.getElementById("rtmpManualInfo");
-				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
+				el.innerHTML = "Your speed is: " + detectedBitrate + "<br /> Your chosen bitrate: " + mappedBitrate.bitrate + "<br /> Video file served: " + mappedBitrate.url;
 			}
 		}
 
@@ -1179,7 +974,7 @@ flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
 		// use bwcheck for all clips
 		urlResolvers: 'bwcheck',
 		onBeforeBegin: function (clip) {
-			showBitrates(clip);
+			showManualBitrates(clip);
 		},
 		onMetaData: function(clip) {
 			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
@@ -1191,38 +986,33 @@ flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
 
 });
 
-	function showBitrates(clip)
+	function showManualBitrates(clip)
 	{
 			var bitrates = clip.customProperties.bitrates;
      		var form = "";
 			jQuery.each( bitrates, function(index, item){
 			
-				form += '<label><input type="radio" name="bitrate" value="' + item.bitrate + '" class="bitrateBtns" />' + item.bitrate + ' K</label><br>';
+				form += '<label><input type="radio" name="bitrateBtn" value="' + item.bitrate + '"  onclick="changeManualBitrate(' + item.bitrate + ')" />' + item.bitrate + ' K</label><br>';
 			});
-     		$('#changeBitrate').append(form);
+     		$('#changeManualBitrate').append(form);
      		
-     
+	}
+
+		
+	function changeManualBitrate(bitrate) {
+		$f().getPlugin("bwcheck").setBitrate(bitrate);
 	}
 	
-	function detect()
-	{
-		$f().getPlugin("bwcheck").checkBandwidth();
-	}
-		
-		
 		
 	$(document).ready(function () {
-
-			
-		$('#changeBitrate .bitrateBtns').click(function() {
-			$f().getPlugin("bwcheck").setBitrate($(this).val());
+	
+	
+		$('.checkManualBtn').click(function() {
+			$f().getPlugin("bwcheck").checkBandwidth();
 		});
 		
-		$('.checkBtn').click(function() {
-			detect();
-		});
-		
-	});</code></pre>
+	});
+</code></pre>
 </div>
 
 <a name="rtmp_dynamicswitching"></a>
@@ -1273,10 +1063,10 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
               url: "flv:skyandice", 
               customProperties: {
               					bitrates: [
-              								{url: "flv:skyandice", width: 150, height: 90, bitrate: 100},
-              								{url: "flv:skyandice", width: 400, height: 180, bitrate: 180},
-              								{url: "flv:skyandice", width: 700, height: 270, bitrate: 270},
-              								{url: "flv:skyandice", width: 1000, height: 360, bitrate: 360}
+              								{url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
+              								{url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
+              								{url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
+              								{url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
               							  ]
               					}
             }
@@ -1293,7 +1083,7 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 			url: '../flowplayer.content.swf',
 			top: 0,
 			left: 0,
-			width: 200 
+			width: 250 
 		},
 
 		// bandwidth check plugin
@@ -1308,14 +1098,15 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 			bitrateProfileName: 'RTMPBitrateProfile',
 			enableDynamic: true,
 			
-			onStreamSwitch: function() {
-				var el = document.getElementById("rtmpBufferInfo");
-				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
+			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
+				var el = document.getElementById("rtmpDynamicInfo");
+				el.innerHTML = "Chosen bitrate is: " + mappedBitrate.bitrate + "<br /> Video file served: " + streamName + "<br /> Old Video file served: " + oldStreamName;
+				
 			},
 			// this method is called when the bandwidth check is done
-			onBwDone: function(url, chosenBitrate, bitrate) {
-				var el = document.getElementById("rtmpBufferInfo");
-				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
+			onBwDone: function(mappedBitrate, detectedBitrate) {
+				var el = document.getElementById("rtmpDynamicInfo");
+				el.innerHTML = "Your speed is: " + detectedBitrate + "<br /> Your chosen bitrate: " + mappedBitrate.bitrate + "<br /> Video file served: " + mappedBitrate.url;
 			}
 		}
 
@@ -1328,6 +1119,9 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 		
 		// use bwcheck for all clips
 		urlResolvers: 'bwcheck',
+		onBeforeBegin: function (clip) {
+			showDynamicBitrates(clip);
+		},
 		onMetaData: function(clip) {
 			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
 			var content = $f().getPlugin('content');
@@ -1338,29 +1132,29 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 
 });
 
-function showBitrates(clip)
+function showDynamicBitrates(clip)
 {
 			var bitrates = clip.customProperties.bitrates;
      		var form = "";
 			jQuery.each( bitrates, function(index, item){
 			
-				form += '<label><input type="radio" name="bitrate" value="' + item.bitrate + '" class="bitrateDynamicBtn" onclick="changeBitrate(' + item.bitrate + ')" />' + item.bitrate + ' K</label><br>';
+				form += '<label><input type="radio" name="bitrate" value="' + item.bitrate + '" class="bitrateDynamicBtn" onclick="changeDynamicBitrate(' + item.bitrate + ')" />' + item.bitrate + ' K</label><br>';
 			});
-     		//$('#changeBitrate').append(form);
+     		$('#changeDynamicBitrate').append(form);
      		
      
 }
 
 		
-function changeBitrate(bitrate) {
-	//$f().getPlugin("bwcheck").setBitrate(bitrate);
+function changeDynamicBitrate(bitrate) {
+	$f().getPlugin("bwcheck").setBitrate(bitrate);
 }
 		
 		
 $(document).ready(function () {
 	
 	$('.checkDynamicBtn').click(function() {
-		//detect();
+		$f().getPlugin("bwcheck").checkBandwidth();
 	});
 		
 });
@@ -1410,7 +1204,7 @@ $(document).ready(function () {
 			url: '../flowplayer.content.swf',
 			top: 0,
 			left: 0,
-			width: 200 
+			width: 250 
 		},
 
 		// bandwidth check plugin
@@ -1425,14 +1219,15 @@ $(document).ready(function () {
 			bitrateProfileName: 'RTMPBitrateProfile',
 			enableDynamic: true,
 			
-			onStreamSwitch: function() {
-				var el = document.getElementById("rtmpBufferInfo");
-				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
+			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
+				var el = document.getElementById("rtmpDynamicInfo");
+				el.innerHTML = "Chosen bitrate is: " + mappedBitrate.bitrate + "<br /> Video file served: " + streamName + "<br /> Old Video file served: " + oldStreamName;
+				
 			},
 			// this method is called when the bandwidth check is done
-			onBwDone: function(url, chosenBitrate, bitrate) {
-				var el = document.getElementById("rtmpBufferInfo");
-				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
+			onBwDone: function(mappedBitrate, detectedBitrate) {
+				var el = document.getElementById("rtmpDynamicInfo");
+				el.innerHTML = "Your speed is: " + detectedBitrate + "<br /> Your chosen bitrate: " + mappedBitrate.bitrate + "<br /> Video file served: " + mappedBitrate.url;
 			}
 		}
 
@@ -1445,6 +1240,9 @@ $(document).ready(function () {
 		
 		// use bwcheck for all clips
 		urlResolvers: 'bwcheck',
+		onBeforeBegin: function (clip) {
+			showDynamicBitrates(clip);
+		},
 		onMetaData: function(clip) {
 			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
 			var content = $f().getPlugin('content');
@@ -1455,6 +1253,274 @@ $(document).ready(function () {
 
 });</code></pre>
 </div>
+
+
+<a name="rtmp_selection"></a>
+<h2><em>RTMP</em> With Custom Stream Selection Strategy Example</h2>
+
+<p>
+	RTMP Example with a custom stream selection strategy allowing for player containers to be resized on bandwidth detection. 
+	It will choose a video that is under the maximum player container width.
+</p>
+
+<div style="width:425px;margin:30px auto">
+   
+
+
+<!-- player container-->
+
+
+<a
+	href="skyandice"
+	style="display:block;width:425px;height:300px;"
+	id="rtmpSelectionPlayer">
+
+	<!-- splash image inside the container -->
+	<img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" />
+
+</a>
+
+<div class="box info" id="rtmpSelectionInfo">
+	Click on the splash image above.
+</div>
+
+<!-- Flowplayer installation and configuration -->
+<script language="JavaScript">
+flowplayer("rtmpSelectionPlayer", "@PLAYER_SWF@", {
+	playlist: [
+            {
+              url: "flv:skyandice", 
+              customProperties: {
+              					bitrates: [
+              								{url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
+              								{url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
+              								{url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
+              								{url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
+              							  ]
+              					}
+            }
+        ],
+	// configure the required plugins
+	plugins:  {
+
+		// RTMP streaming plugin
+		rtmp: {
+			url: '../flowplayer.rtmp.swf',
+			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer'
+		},
+		content: {
+			url: '../flowplayer.content.swf',
+			top: 0,
+			left: 0,
+			width: 250 
+		},
+
+		// bandwidth check plugin
+		bwcheck: {
+			url: '@MAIN_PLAYER_SWF@',
+
+			// Influxis uses Flash Media Servers
+			serverType: 'wowza',
+
+			// Use this connection for bandwidth detection
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
+			bitrateProfileName: 'RTMPBitrateProfile',
+			enableDynamic: true,
+			streamSelectionStrategy: 'resizable',
+			maxContainerWidth: 640,
+			
+			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
+				var el = document.getElementById("rtmpSelectionInfo");
+				el.innerHTML = "Chosen bitrate is: " + mappedBitrate.bitrate + "<br /> Video file served: " + streamName + "<br /> Old Video file served: " + oldStreamName;
+				/*$("#rtmpSelectionPlayer")
+						.width(parseInt(mappedBitrate.width))
+						.height(parseInt(mappedBitrate.height));*/
+			},
+			// this method is called when the bandwidth check is done
+			onBwDone: function(mappedBitrate, detectedBitrate) {
+				var el = document.getElementById("rtmpSelectionInfo");
+				el.innerHTML = "Your speed is: " + detectedBitrate + "<br /> Your chosen bitrate: " + mappedBitrate.bitrate + "<br /> Video file served: " + mappedBitrate.url;
+				/*$("#rtmpSelectionPlayer")
+					.width(parseInt(mappedBitrate.width))
+					.height(parseInt(mappedBitrate.height));*/
+			}
+		}
+
+	},
+
+	// configure the clip to use the rtmp plugin for providing video data
+	// and the bwcheck plugin in resolving the URLs
+	clip: {
+		provider: 'rtmp',
+		
+		// use bwcheck for all clips
+		urlResolvers: 'bwcheck',
+		onBeforeBegin: function (clip) {
+			showSelectionBitrates(clip);
+		},
+		onMetaData: function(clip) {
+			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
+			var content = $f().getPlugin('content');
+			content.setHtml(dimensions);
+		}
+	},
+	log: { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.rtmp.*, org.flowplayer.cluster.*' }
+
+});
+
+function showSelectionBitrates(clip)
+{
+			var bitrates = clip.customProperties.bitrates;
+     		var form = "";
+			jQuery.each( bitrates, function(index, item){
+			
+				form += '<label><input type="radio" name="bitrate" value="' + item.bitrate + '" class="bitrateSelectionBtn" onclick="changeSelectionBitrate(' + item.bitrate + ')" />' + item.bitrate + ' K</label><br>';
+			});
+     		$('#changeSelectionBitrate').append(form);
+     		
+     
+}
+
+		
+function changeSelectionBitrate(bitrate) {
+	$f().getPlugin("bwcheck").setBitrate(bitrate);
+}
+		
+		
+$(document).ready(function () {
+	
+	$('.checkSelectionBtn').click(function() {
+		$f().getPlugin("bwcheck").checkBandwidth();
+	});
+		
+});
+
+	
+
+</script>
+
+
+
+</div>
+
+<a href="#" class="checkSelectionBtn">Detect Bandwidth</a>
+		
+<div id="changeSelectionBitrate">
+	<b>Change Bitrate:</b><br/>
+</div>
+
+		
+<p>
+    The configuration is shown below. 
+</p>
+
+<div class="box code">
+<pre><code class="javascript">flowplayer("rtmpSelectionPlayer", "@PLAYER_SWF@", {
+	playlist: [
+            {
+              url: "flv:skyandice", 
+              customProperties: {
+              					bitrates: [
+              								{url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
+              								{url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
+              								{url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
+              								{url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
+              							  ]
+              					}
+            }
+        ],
+	// configure the required plugins
+	plugins:  {
+
+		// RTMP streaming plugin
+		rtmp: {
+			url: '../flowplayer.rtmp.swf',
+			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer'
+		},
+		content: {
+			url: '../flowplayer.content.swf',
+			top: 0,
+			left: 0,
+			width: 250 
+		},
+
+		// bandwidth check plugin
+		bwcheck: {
+			url: '@MAIN_PLAYER_SWF@',
+
+			// Influxis uses Flash Media Servers
+			serverType: 'wowza',
+
+			// Use this connection for bandwidth detection
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
+			bitrateProfileName: 'RTMPBitrateProfile',
+			enableDynamic: true,
+			streamSelectionStrategy: 'resizable',
+			maxContainerWidth: 640
+			
+			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
+				var el = document.getElementById("rtmpSelectionInfo");
+				el.innerHTML = "Chosen bitrate is: " + mappedBitrate.bitrate + "<br /> Video file served: " + streamName + "<br /> Old Video file served: " + oldStreamName;
+				
+			},
+			// this method is called when the bandwidth check is done
+			onBwDone: function(mappedBitrate, detectedBitrate) {
+				var el = document.getElementById("rtmpSelectionInfo");
+				el.innerHTML = "Your speed is: " + detectedBitrate + "<br /> Your chosen bitrate: " + mappedBitrate.bitrate + "<br /> Video file served: " + mappedBitrate.url;
+			}
+		}
+
+	},
+
+	// configure the clip to use the rtmp plugin for providing video data
+	// and the bwcheck plugin in resolving the URLs
+	clip: {
+		provider: 'rtmp',
+		
+		// use bwcheck for all clips
+		urlResolvers: 'bwcheck',
+		onBeforeBegin: function (clip) {
+			showSelectionBitrates(clip);
+		},
+		onMetaData: function(clip) {
+			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
+			var content = $f().getPlugin('content');
+			content.setHtml(dimensions);
+		}
+	},
+	log: { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.rtmp.*, org.flowplayer.cluster.*' }
+
+});
+
+function showSelectionBitrates(clip)
+{
+			var bitrates = clip.customProperties.bitrates;
+     		var form = "";
+			jQuery.each( bitrates, function(index, item){
+			
+				form += '<label><input type="radio" name="bitrate" value="' + item.bitrate + '" class="bitrateSelectionBtn" onclick="changeSelectionBitrate(' + item.bitrate + ')" />' + item.bitrate + ' K</label><br>';
+			});
+     		$('#changeSelectionBitrate').append(form);
+     		
+     
+}
+
+		
+function changeSelectionBitrate(bitrate) {
+	$f().getPlugin("bwcheck").setBitrate(bitrate);
+}
+		
+		
+$(document).ready(function () {
+	
+	$('.checkSelectionBtn').click(function() {
+		$f().getPlugin("bwcheck").checkBandwidth();
+	});
+		
+});
+</code></pre>
+</div>
+
 
 
 <a name="rtmp_dynamicbuffer"></a>
@@ -1514,7 +1580,7 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
 			url: '../flowplayer.content.swf',
 			top: 0,
 			left: 0,
-			width: 200 
+			width: 250 
 		},
 
 		// bandwidth check plugin
@@ -1529,14 +1595,15 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
 			bitrateProfileName: 'RTMPBitrateProfile',
 			enableDynamicBuffer: true,
 			
-			onStreamSwitch: function() {
+			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
 				var el = document.getElementById("rtmpBufferInfo");
-				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
+				el.innerHTML = "Chosen bitrate is: " + mappedBitrate.bitrate + "<br /> Video file served: " + streamName + "<br /> Old Video file served: " + oldStreamName;
+				
 			},
 			// this method is called when the bandwidth check is done
-			onBwDone: function(url, chosenBitrate, bitrate) {
+			onBwDone: function(mappedBitrate, detectedBitrate) {
 				var el = document.getElementById("rtmpBufferInfo");
-				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
+				el.innerHTML = "Your speed is: " + detectedBitrate + "<br /> Your chosen bitrate: " + mappedBitrate.bitrate + "<br /> Video file served: " + mappedBitrate.url;
 			}
 		}
 
@@ -1600,7 +1667,7 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
 			url: '../flowplayer.content.swf',
 			top: 0,
 			left: 0,
-			width: 200 
+			width: 250 
 		},
 
 		// bandwidth check plugin
@@ -1615,14 +1682,15 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
 			bitrateProfileName: 'RTMPBitrateProfile',
 			enableDynamicBuffer: true,
 			
-			onStreamSwitch: function() {
+			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
 				var el = document.getElementById("rtmpBufferInfo");
-				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
+				el.innerHTML = "Chosen bitrate is: " + mappedBitrate.bitrate + "<br /> Video file served: " + streamName + "<br /> Old Video file served: " + oldStreamName;
+				
 			},
 			// this method is called when the bandwidth check is done
-			onBwDone: function(url, chosenBitrate, bitrate) {
+			onBwDone: function(mappedBitrate, detectedBitrate) {
 				var el = document.getElementById("rtmpBufferInfo");
-				el.innerHTML = "Your speed is: " +bitrate+ "<br />Video file served: " +url;
+				el.innerHTML = "Your speed is: " + detectedBitrate + "<br /> Your chosen bitrate: " + mappedBitrate.bitrate + "<br /> Video file served: " + mappedBitrate.url;
 			}
 		}
 
