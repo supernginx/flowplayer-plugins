@@ -2,14 +2,14 @@ package org.flowplayer.bwcheck.strategy {
 
 
 	import org.flowplayer.view.Flowplayer;
-	import org.flowplayer.bwcheck.Bitrate;
-	import org.flowplayer.bwcheck.BWConfig;
+	import org.flowplayer.bwcheck.model.BitrateItem;
+	import org.flowplayer.bwcheck.Config;
 	
 	public class StreamSelectionResizable implements StreamSelection {
 		
-		private var _config:BWConfig;
+		private var _config:Config;
 		
-		public function StreamSelectionResizable(config:BWConfig) {
+		public function StreamSelectionResizable(config:Config) {
 			_config = config;
 		}
 		
@@ -25,7 +25,8 @@ package org.flowplayer.bwcheck.strategy {
 				if (!player.isFullscreen()) {
 					if (bitrateProperties[i].width <= _config.maxContainerWidth && 
 					    bandwidth >= bitrateProperties[i].bitrate && bitrateProperties[i].bitrate) {
-					    	
+					    return i;
+					    break;
 				    }
 				} else {
 					if (screenWidth >= bitrateProperties[i].width && 
@@ -38,8 +39,8 @@ package org.flowplayer.bwcheck.strategy {
 			return index;
 		}
 		
-		public function getStream(bandwidth:Number, bitrateProperties:Array, player:Flowplayer):Bitrate {
-			return bitrateProperties[getStreamIndex(bandwidth, bitrateProperties, player)] as Bitrate;
+		public function getStream(bandwidth:Number, bitrateProperties:Array, player:Flowplayer):BitrateItem {
+			return bitrateProperties[getStreamIndex(bandwidth, bitrateProperties, player)] as BitrateItem;
 		}
 		
 	

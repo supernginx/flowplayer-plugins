@@ -8,7 +8,7 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
-package org.flowplayer.bwcheck.event
+package org.flowplayer.bwcheck.detect.event
 {
 	import org.flowplayer.model.EventType;
 	

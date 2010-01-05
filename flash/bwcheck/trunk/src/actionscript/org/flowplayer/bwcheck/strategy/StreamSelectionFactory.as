@@ -1,12 +1,9 @@
 package org.flowplayer.bwcheck.strategy {
-
-	/**
-	 * @author danielr
-	 */
-	import flash.utils.getDefinitionByName;
+	
+	import org.flowplayer.bwcheck.util.FactoryMethodUtil;
 	import org.flowplayer.view.Flowplayer;
-	import org.flowplayer.bwcheck.Bitrate;
-	import org.flowplayer.bwcheck.BWConfig;
+	import org.flowplayer.bwcheck.model.BitrateItem;
+	import org.flowplayer.bwcheck.Config;
 	
 	public class StreamSelectionFactory implements StreamSelection {
 		
@@ -14,7 +11,7 @@ package org.flowplayer.bwcheck.strategy {
 		private var stategyDefaultImpl:StreamSelectionDefault;
 		private var stategyResizableImpl:StreamSelectionResizable;
 		
-		public function StreamSelectionFactory(config:BWConfig) {
+		public function StreamSelectionFactory(config:Config) {
 			var strategyCls:Class = getStrategy(config.streamSelectionStrategy);
 			_strategy = new strategyCls(config);
 			
@@ -25,19 +22,13 @@ package org.flowplayer.bwcheck.strategy {
 			return _strategy.getStreamIndex(bandwidth, bitrateProperties, player);
 		}
 		
-		public function getStream(bandwidth:Number, bitrateProperties:Array, player:Flowplayer):Bitrate {
+		public function getStream(bandwidth:Number, bitrateProperties:Array, player:Flowplayer):BitrateItem {
 			return _strategy.getStream(bandwidth, bitrateProperties, player);
 		}
 		
 		private function getStrategy(strategy:String):Class {
-			 return Class(getDefinitionByName("org.flowplayer.bwcheck.strategy.StreamSelection" + ucFirst(strategy)));
+			return FactoryMethodUtil.getFactoryMethod("org.flowplayer.bwcheck.strategy.StreamSelection", strategy);
 		}
-		
-		private function ucFirst(value:String):String {
-			return String(value.toLowerCase().charAt( 0 ).toUpperCase() + value.substr( 1, value.length ).toLowerCase());
-		}
-		
-		
 		
 	}
 }

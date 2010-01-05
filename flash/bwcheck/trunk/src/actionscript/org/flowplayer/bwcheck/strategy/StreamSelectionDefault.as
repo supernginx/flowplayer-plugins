@@ -2,14 +2,14 @@ package org.flowplayer.bwcheck.strategy {
 
 
 	import org.flowplayer.view.Flowplayer;
-	import org.flowplayer.bwcheck.Bitrate;
-	import org.flowplayer.bwcheck.BWConfig;
+	import org.flowplayer.bwcheck.model.BitrateItem;
+	import org.flowplayer.bwcheck.Config;
 	
 	public class StreamSelectionDefault implements StreamSelection {
 		
 
 		
-		public function StreamSelectionDefault(config:BWConfig) {
+		public function StreamSelectionDefault(config:Config) {
 	
 		}
 		
@@ -30,8 +30,8 @@ package org.flowplayer.bwcheck.strategy {
 			return index;
 		}
 		
-		public function getStream(bandwidth:Number, bitrateProperties:Array, player:Flowplayer):Bitrate {
-			return bitrateProperties[getStreamIndex(bandwidth, bitrateProperties, player)] as Bitrate;
+		public function getStream(bandwidth:Number, bitrateProperties:Array, player:Flowplayer):BitrateItem {
+			return bitrateProperties[getStreamIndex(bandwidth, bitrateProperties, player)] as BitrateItem;
 		}
 		
 	

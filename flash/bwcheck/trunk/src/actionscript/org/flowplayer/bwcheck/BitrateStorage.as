@@ -1,16 +1,12 @@
 package org.flowplayer.bwcheck {
 
 	import flash.net.SharedObject;
-	/**
-	 * @author danielr
-	 */
 	 
-	public class BWProfile {
+	public class BitrateStorage {
 		private var _profile:SharedObject;
 		private var _expiry:Number;
-		private var _timestamp:Number;
 			
-		public function BWProfile(profileName:String, path:String) {
+		public function BitrateStorage(profileName:String, path:String) {
 			_profile = SharedObject.getLocal(profileName, path);
 		}
 		
@@ -56,16 +52,6 @@ package org.flowplayer.bwcheck {
 			_profile.clear();
 		}
 		
-		/*		
-		public function set timestamp(value:Number):void
-		{
-			_profile.data.timestamp = value;
-		}
-	
-		public function get timestamp():Number
-		{
-			return _profile.data.timestamp;
-		}*/
 		
 		public function get age():Number {
 			return ((new Date()).getTime() - _profile.data.timestamp) / 1000;

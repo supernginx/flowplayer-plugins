@@ -8,13 +8,12 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
-package org.flowplayer.bwcheck.servers
+package org.flowplayer.bwcheck.detect.servers
 {
 
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.events.ProgressEvent;
-	//import flash.net.Responder;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	import flash.net.URLRequestHeader;
@@ -23,22 +22,18 @@ package org.flowplayer.bwcheck.servers
 	
 	import org.red5.flash.bwcheck.BandwidthDetection;
 	
-	public class HttpServerClientBandwidth extends BandwidthDetection
+	public class ServerClientBandwidthHttp extends BandwidthDetection
 	{
-		//private var info:Object = new Object();
-		//private var res:Responder;
-		//private var _counter:int = 0;
+
 		private var loader:URLLoader;
-		//private var request:URLRequest;
 		private var _startTime:Number;
 		private var _bytes:Number;
 		private var _bandwidth:Number;
 		private var _downloadTime:Number;
 		public var maximumBytes:uint;
-		private var _url:String;
 		private var _nocache:URLRequestHeader;
 		
-		public function HttpServerClientBandwidth()
+		public function ServerClientBandwidthHttp()
 		{
 			
 			loader = new URLLoader();
@@ -48,17 +43,9 @@ package org.flowplayer.bwcheck.servers
 
 		}
 		
-		public function set url(url:String):void
-		{
-			_url = url;
-		}
-		
 		public function onComplete(event:Event):void
 		{
             log.debug("reference file successfully downloaded");
-			//this._downloadTime = getTimer() - this._startTime;
-			//this._bytes = event.currentTarget.bytesLoaded;
-			//this._bandwidth = this._bytes * 8 / this._downloadTime;
 			this._bytes = event.currentTarget.bytesLoaded;
 			this._downloadTime = getDownloadTime(getTimer(), this._startTime);
 			this._bandwidth = getBandwidth(getKbytes(_bytes), this._downloadTime);
@@ -96,8 +83,6 @@ package org.flowplayer.bwcheck.servers
 		
 		public function onProgress(event:ProgressEvent):void
 		{
-			//this._downloadTime = (getTimer() - this._startTime) / 1000;
-			//this._bandwidth = ((this._bytes * 8) / 1024) / this._downloadTime;
 			this._bytes = event.currentTarget.bytesLoaded;
 			this._downloadTime = getDownloadTime(getTimer(), this._startTime);
 			this._bandwidth = getBandwidth(getKbytes(_bytes), this._downloadTime);
@@ -148,13 +133,7 @@ package org.flowplayer.bwcheck.servers
 			obj.application = "";
 			obj.description = event.text;
 			dispatchFailed(obj);
-			/*
-			switch (obj.code)
-			{
-				case "NetConnection.Call.Failed":
-					dispatchFailed(obj);
-				break;
-			}*/
+
 
 		}
 	}
