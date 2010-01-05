@@ -15,7 +15,7 @@
 	<property name="plugin-swc" value="${basename}.swc" />
 	<property name="plugin-binary-versioned" value="${basename}-${version}.swf" />
 	
-	<property name="plugin-main-class" value="org/flowplayer/bwcheck/BwPlugin.as" />
+	<property name="plugin-main-class" value="org/flowplayer/bwcheck/BwCheckPlugin.as" />
 
 	<target name="release" description="makes a release" depends="build">
 		<copyrelease targetdir="flowplayer.bwcheck">
