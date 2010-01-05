@@ -8,12 +8,12 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
-package org.flowplayer.bwcheck.servers
+package org.flowplayer.bwcheck.detect.servers
 {
 
 	import org.red5.flash.bwcheck.BandwidthDetection;
 	
-	public class FMSServerClientBandwidth extends BandwidthDetection {
+	public class ServerClientBandwidthFms extends BandwidthDetection {
 
 		private var _host:String;
 		

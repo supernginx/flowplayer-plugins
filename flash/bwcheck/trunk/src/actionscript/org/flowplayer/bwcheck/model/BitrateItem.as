@@ -1,9 +1,7 @@
-package org.flowplayer.bwcheck {
+package org.flowplayer.bwcheck.model {
 
-	/**
-	 * @author danielr
-	 */
-	public class Bitrate {
+
+	public class BitrateItem {
 		
 		public var url:String;
 		public var width:Number;

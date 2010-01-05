@@ -13,7 +13,7 @@ package org.red5.flash.bwcheck
 	import flash.events.EventDispatcher;
 	import flash.net.NetConnection;
     import org.flowplayer.util.Log;
-import org.red5.flash.bwcheck.events.BandwidthDetectEvent;
+    import org.red5.flash.bwcheck.events.BandwidthDetectEvent;
 	import org.red5.flash.bwcheck.IBandwidthDetection;
 
 	[Event(name=BandwidthDetectEvent.DETECT_STATUS, type="org.red5.flash.bwcheck.events.BandwidthDetectEvent")]
@@ -24,6 +24,7 @@ import org.red5.flash.bwcheck.events.BandwidthDetectEvent;
         protected var log:Log = new Log(this);
 		protected var nc:NetConnection;
 		protected var _service:String = "checkBandwidth";
+		protected var _url:String;
 		
 		public function BandwidthDetection()
 		{
@@ -61,6 +62,11 @@ import org.red5.flash.bwcheck.events.BandwidthDetectEvent;
 		public function set connection(connect:NetConnection):void
 		{
 			nc = connect;
+		}
+		
+		public function set url(url:String):void
+		{
+			_url = url;
 		}
 		
 		public function start():void

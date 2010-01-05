@@ -8,29 +8,24 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
-package org.flowplayer.bwcheck.servers
+package org.flowplayer.bwcheck.detect.servers
 {
 
 	import flash.net.Responder;
 
 	import org.red5.flash.bwcheck.BandwidthDetection;
 
-	public class WowzaServerClientBandwidth extends BandwidthDetection
+	public class ServerClientBandwidthWowza extends BandwidthDetection
 	{
 		private var info:Object = new Object();
 		private var res:Responder;
 		private var _counter:int = 0;
 		
-		public function WowzaServerClientBandwidth()
+		public function ServerClientBandwidthWowza()
 		{
 			res = new Responder(onResult, onStatus);
 		}
-//
-//        public function onBWCheck(... rest):Number
-//        {
-//            dispatchStatus(rest);
-//            return 0;
-//        }
+
 
         public function onBwCheck(obj:Object):Boolean
         {
