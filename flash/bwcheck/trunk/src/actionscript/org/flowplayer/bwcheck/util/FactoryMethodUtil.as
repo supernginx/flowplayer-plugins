@@ -1,7 +1,20 @@
+/*
+ * This file is part of Flowplayer, http://flowplayer.org
+ *
+ * By: Daniel Rossi, <electroteque@gmail.com>
+ * Copyright (c) 2009 Electroteque Multimedia
+ *
+ * Released under the MIT License:
+ * http://www.opensource.org/licenses/mit-license.php
+ */
+ 
 package org.flowplayer.bwcheck.util {
 
 	import flash.utils.getDefinitionByName;
 	
+	/**
+	 * @author danielr
+	 */
 	public class FactoryMethodUtil {
 		
 		public static function getFactoryMethod(base:String, method:String):Class {

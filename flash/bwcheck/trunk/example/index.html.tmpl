@@ -95,9 +95,14 @@
 </p>
 
 <p>
-	<button class="custom low medium" onclick="location.href = '#download'">Download</button>
-	<small>(Version <strong>3.1.3</strong>)</small>
+	The bandwidth check plugin now incorporates a stream selection stategy rule to determine the right video from the available bandwidth
+	while also matching the correct dimensions of the player container. When the player dimensions has changed, ie fullscreen a different video matching those dimensions will be chosen.
+	
+	Stream switching is now available for http, psuedo, rtmp as non-seamless switching and dynamic stream switching connections for seamless switching support.
+	
+	Quality of service monitoring is now available for normal rtmp and dynamic stream switching connections.
 </p>
+
 
 <h2>Features</h2>
 
@@ -109,10 +114,26 @@
 		 Remembers the detected bandwidth so that it is checked only once for each user.
 	</li>
 	<li>
-		 Dynamic stream switching with Adobe FMS. Allows for seamless switching of the bitrate <em>in the middle of viewing the stream</em>.
+		 Dynamic stream switching with Adobe FMS and a supporting version of Wowza Server. Allows for seamless switching of the bitrate <em>in the middle of viewing the stream</em>.
 	</li>
 	<li>
 		 Manual selection of the bitrate. Users will be able to manually select the bitrate, overriding the detected value.
+	</li>
+	<li>
+		Selection strategy rule system, choosing the right bitrate and the right video matching the player dimensions. 
+		This is useful to cancel out playing higher bitrate videos if the player dimensions are smaller than the video saving bandwidth.
+		When the player is in fullscreen mode a different video will be chosen to match those dimensions. <br><br>
+	
+		Sometimes this strategy rule system is not suitable ie if the player is resized to suit the dimensions so a secondary resizable 
+		strategy is available to choose a video that is under the maximum available width the player can resize to on the page.	
+	</li>
+	<li>
+		Quality of service monitoring is available for both non-dynamic stream switching rtmp connections and dynamic stream switching rtmp connections.
+		The quality of service monitor will upgrade / downgrade the stream in realtime. For non-dynamic stream switching rtmp connections the switching
+		of the stream happens in realtime but it is not seamless.
+	</li>
+	<li>
+		Dynamic buffer feature to dynamically calculate a suitable buffer time to suit the available bandwidth.
 	</li>
 	<li>
 		 Clustering of hosts. The plugin can be configured with a set of hosts it connects to when checking
@@ -287,6 +308,42 @@ flowplayer("player", "@PLAYER_SWF@", {
 <h2>Configuration</h2>
 
 <p>
+ For this plugin to function correctly all clips in a playlist require an object list of available bitrates in a bitrate property to be set on the clip customProperties property config.
+ 
+ Each bitrate config must have the following properties
+ <ul>
+   <li>url</li>
+   <li>bitrate</li>
+   <li>width</li>
+</ul>
+
+And optional
+
+ <ul>
+   <li>height</li>
+</ul>
+ 
+</p>
+
+<p>Example clip config</p>
+
+<pre>
+playlist: [
+            {
+              url: "flv:bbb", 
+              customProperties: {
+              	bitrates: [
+              				{url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
+              				{url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
+              				{url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
+              				{url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
+              			  ]
+              }
+            }
+        ],
+</pre>
+
+<p>
     Here is a list of the configuration options:
 </p>
 <table class="listing">
@@ -350,14 +407,53 @@ flowplayer("player", "@PLAYER_SWF@", {
 				Enables dynamic stream switching for Adobe Flash Media Interactive Server. <a href="dynamic">See below</a> for more details.
         </td>
     </tr>
-    <!--<tr>-->
-        <!--<td class="code">_bitrateProfileName <div class="type">string</div></td>-->
-        <!--<td class="code default">bitrateProfile</td>-->
-        <!--<td class="description">-->
-            <!--The name of the Shared Object where the bitrates is saved. You might want to change this if you have different-->
-            <!--sets of files and you want to keep the detected bandwidths separate for those sets.-->
-        <!--</td>-->
-    <!--</tr>-->
+	<tr>
+        <td class="code">bitrateProfileName <div class="type">string</div></td>
+        <td class="code default">bitrateProfile</td>
+        <td class="description">
+            The name of the Shared Object where the bitrates is saved. You might want to change this if you have different-
+            sets of files and you want to keep the detected bandwidths separate for those sets.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">streamSelectionStrategy<div class="type">string</div></td>
+        <td class="code default">default</td>
+        <td class="description">
+        	Possible values: (default, resizable)<br>
+            The strategy to use for the stream selection rule. The default rule will choose a bitrate matching the available bitrate
+            while also matching a video that is less than or equal to the player screen size. When the player goes fullscreen the same rule is applied
+            but matches the player screen size in fullscreen therefore will choose a higher bitrate if possible.
+            <p>
+            The resizable selection strategy allows to choose a bitrate and video dimension less than or equal the config setting of maxContainerWidth which is the maximum width the player can be.
+            This allows for dynamic resizing of the player container to match the size of the video.
+            <p>
+            Even without resizing, this strategy is possibly a better option if the default rule isn't flexible enough for delivering the best quality stream for the end user.
+            
+        </td>
+    </tr>
+    <tr>
+        <td class="code">maxContainerWidth<div class="type">int</div></td>
+        <td class="code default"></td>
+        <td class="description">
+        	Used in conjunction with the resizable strategy, sets the maxium width the player can be resized to, or the maximum video width that should be selected when not in fullscreen mode.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">enableDynamicBuffer<div class="type">boolean</div></td>
+        <td class="code default">false</td>
+        <td class="description">
+        	When enabled, this feature will dynamically calculate the best buffer time to suit the available bandwidth.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">enableQosMonitor<div class="type">boolean</div></td>
+        <td class="code default">false</td>
+        <td class="description">
+        	When enabled, this feature will enable the quality of service monitor for both non-dynamic rtmp and dynamic rtmp streams. 
+        	The quality of service monitor dynamically upgrades / downgrades the stream in realtime. 
+        	If using the non-dynamic rtmp stream, the stream switching is possible but not seamless. 
+        </td>
+    </tr>
 </table>
 
 <p>
@@ -1600,7 +1696,7 @@ flowplayer("rtmpQosPlayer", "@PLAYER_SWF@", {
 			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
 				var el = document.getElementById("rtmpQosInfo");
 				el.innerHTML = "Chosen bitrate is: " + mappedBitrate.bitrate + "<br /> Video file served: " + streamName + "<br /> Old Video file served: " + oldStreamName;
-				$("#rtmpSelectionPlayer")
+				$("#rtmpQosPlayer")
 						.width(parseInt(mappedBitrate.width))
 						.height(parseInt(mappedBitrate.height));
 			},
@@ -1608,7 +1704,7 @@ flowplayer("rtmpQosPlayer", "@PLAYER_SWF@", {
 			onBwDone: function(mappedBitrate, detectedBitrate) {
 				var el = document.getElementById("rtmpQosInfo");
 				el.innerHTML = "Your speed is: " + detectedBitrate + "<br /> Your chosen bitrate: " + mappedBitrate.bitrate + "<br /> Video file served: " + mappedBitrate.url;
-				$("#rtmpSelectionPlayer")
+				$("#rtmpQosPlayer")
 					.width(parseInt(mappedBitrate.width))
 					.height(parseInt(mappedBitrate.height));
 			}
@@ -1624,7 +1720,7 @@ flowplayer("rtmpQosPlayer", "@PLAYER_SWF@", {
 		// use bwcheck for all clips
 		urlResolvers: 'bwcheck',
 		onBeforeBegin: function(clip) {
-        	$f().getPlugin("bwcheck").setAutoBitrate(180);
+        	$f().getPlugin("bwcheck").setAutoBitrate(270);
         },
 		
 		onMetaData: function(clip) {
@@ -2007,12 +2103,21 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
         </td>
         <td class="code type"></td>
         <td class="description">
-			Changes the stream to the specified bitrate. The specified value should be one of the values contained in the <samp>bitrates</samp> array. If the player is currently playing a clip, the stream corresponding to the specified bitrate is started. If <a href="#dynamic">dynamic stream switching</a> is enabled, the stream switches dynamically while playing, otherwise the stream plays from the start of the clip. <strong>Note:</strong> Dynamic stream switching is disabled when this method is called so that the dynamic adaption does not override the bitrate specified using this method. You can enable dynamic switching again using the <samp>dynamic()</samp> method (see below).
+			Changes the stream to the specified bitrate. The specified value should be one of the values contained in the <samp>bitrates</samp> array. If the player is currently playing a clip, the stream corresponding to the specified bitrate is started. If <a href="#dynamic">dynamic stream switching</a> is enabled, the stream switches dynamically while playing, otherwise the stream plays from the start of the clip. <strong>Note:</strong> Dynamic stream switching is disabled when this method is called so that the dynamic adaption does not override the bitrate specified using this method. You can enable dynamic switching again using the <samp>enableDynamic()</samp> method (see below).
         </td>
     </tr>
     <tr>
         <td class="code">
-            <strong>dynamic</strong>(enabled)
+            <strong>setAutoBitrate</strong>(bitrate)
+        </td>
+        <td class="code type"></td>
+        <td class="description">
+			Like setBitrate changes the stream to the specified bitrate, but to be used as the initial stream. To be used in conjunction with quality of service monitoring to manage the stream in realtime.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">
+            <strong>enableDynamic</strong>(enabled)
         </td>
         <td class="code type"></td>
         <td class="description">
