@@ -1,7 +1,20 @@
+/*
+ * This file is part of Flowplayer, http://flowplayer.org
+ *
+ * By: Daniel Rossi, <electroteque@gmail.com>
+ * Copyright (c) 2009 Electroteque Multimedia
+ *
+ * Released under the MIT License:
+ * http://www.opensource.org/licenses/mit-license.php
+ */
+ 
 package org.flowplayer.bwcheck {
 
 	import flash.net.SharedObject;
-	 
+	
+	/**
+	 * @author danielr
+	 */
 	public class BitrateStorage {
 		private var _profile:SharedObject;
 		private var _expiry:Number;

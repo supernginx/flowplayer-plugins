@@ -1,9 +1,22 @@
+/*
+ * This file is part of Flowplayer, http://flowplayer.org
+ *
+ * By: Daniel Rossi, <electroteque@gmail.com>
+ * Copyright (c) 2009 Electroteque Multimedia
+ *
+ * Released under the MIT License:
+ * http://www.opensource.org/licenses/mit-license.php
+ */
+ 
 package org.flowplayer.bwcheck.detect.servers {
 
 	import org.red5.flash.bwcheck.IBandwidthDetection;
 	import org.flowplayer.bwcheck.util.FactoryMethodUtil;
 	import flash.net.NetConnection;
-
+	
+	/**
+	 * @author danielr
+	 */
 	public class ServerClientBandwidthFactory implements IBandwidthDetection {
 		
 		private var wowzaImpl:ServerClientBandwidthWowza;

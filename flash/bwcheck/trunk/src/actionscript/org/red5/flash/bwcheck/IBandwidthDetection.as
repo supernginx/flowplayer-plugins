@@ -10,11 +10,8 @@
 
 package org.red5.flash.bwcheck
 {
-	import flash.events.EventDispatcher;
 	import flash.net.NetConnection;
-	import org.red5.flash.bwcheck.events.BandwidthDetectEvent;
 	
-
 	public interface IBandwidthDetection
 	{
 		

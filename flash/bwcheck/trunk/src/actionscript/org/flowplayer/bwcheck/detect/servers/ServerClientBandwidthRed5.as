@@ -13,6 +13,9 @@ package org.flowplayer.bwcheck.detect.servers
 	import flash.net.Responder;
 	import org.red5.flash.bwcheck.BandwidthDetection;
 	
+	/**
+	 * @author danielr
+	 */
 	public class ServerClientBandwidthRed5 extends BandwidthDetection
 	{
 		

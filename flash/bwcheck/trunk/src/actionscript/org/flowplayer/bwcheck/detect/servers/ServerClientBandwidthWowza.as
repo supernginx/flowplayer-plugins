@@ -14,7 +14,10 @@ package org.flowplayer.bwcheck.detect.servers
 	import flash.net.Responder;
 
 	import org.red5.flash.bwcheck.BandwidthDetection;
-
+	
+	/**
+	 * @author danielr
+	 */
 	public class ServerClientBandwidthWowza extends BandwidthDetection
 	{
 		private var info:Object = new Object();
