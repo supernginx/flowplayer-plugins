@@ -2,6 +2,7 @@ Version history:
 
 3.1.6
 -----
+- Smoother movement of the scrubber, especially with short clips.
 - Added new autoHide() external method, for example autoHide({ state: 'always', delay: 1000, duration: 1000, style: 'fade' }) 
 - Controlbar is now by default centered horizontally. Now when you specify a widht that is less than 100% it by default is
 centered nicely.
