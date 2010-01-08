@@ -984,6 +984,9 @@ flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
 			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
 			var content = $f().getPlugin('content');
 			content.setHtml(dimensions);
+		},
+		onSwitch: function(clip) {
+			alert("yes");
 		}
 	},
 	log: { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.rtmp.*, org.flowplayer.cluster.*' }
@@ -992,7 +995,10 @@ flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
 
 	function showManualBitrates(clip)
 	{
-			var bitrates = clip.customProperties.bitrates;
+
+			var bitrates = clip.bitrates;
+			
+			console.log(bitrates);
      		var form = "";
 			jQuery.each( bitrates, function(index, item){
 			
@@ -1096,6 +1102,9 @@ bandwidth</button>
 		onBeforeBegin: function (clip) {
 			showManualBitrates(clip);
 		},
+		onSwitch: function () {
+			alert("yes");
+		},
 		onMetaData: function(clip) {
 			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
 			var content = $f().getPlugin('content');
@@ -1108,7 +1117,7 @@ bandwidth</button>
 
 	function showManualBitrates(clip)
 	{
-			var bitrates = clip.customProperties.bitrates;
+			var bitrates = clip.bitrates;
      		var form = "";
 			jQuery.each( bitrates, function(index, item){
 			
@@ -1253,7 +1262,7 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 
 function showDynamicBitrates(clip)
 {
-			var bitrates = clip.customProperties.bitrates;
+			var bitrates = clip.bitrates;
      		var form = "";
 			jQuery.each( bitrates, function(index, item){
 			
@@ -1490,7 +1499,7 @@ flowplayer("rtmpSelectionPlayer", "@PLAYER_SWF@", {
 
 function showSelectionBitrates(clip)
 {
-			var bitrates = clip.customProperties.bitrates;
+			var bitrates = clip.bitrates;
      		var form = "";
 			jQuery.each( bitrates, function(index, item){
 			
@@ -1611,7 +1620,7 @@ bandwidth</button>
 
 function showSelectionBitrates(clip)
 {
-			var bitrates = clip.customProperties.bitrates;
+			var bitrates = clip.bitrates;
      		var form = "";
 			jQuery.each( bitrates, function(index, item){
 			
