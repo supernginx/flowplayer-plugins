@@ -28,7 +28,7 @@
 	
 	<script type="text/javascript" src="jquery-1.2.6.min.js"></script>
 	<script type="text/javascript" src="flowplayer-3.1.4.min.js"></script>
-	 
+	<script type="text/javascript" src="jquery.tools.min.js"></script>	
 
 
 
@@ -37,9 +37,39 @@
 		
 	<script type="text/javascript" src="http://static.flowplayer.org/js/global-0.36.js"></script>
 	
-	<script>var account = {admin: false };</script>
+	<script>
+
+$(function() {		
+		
+	// positions for each overlay
+
+		
+	// setup triggers
+	$("button[rel]").each(function(i) {
+			
+		$(this).overlay({
+
+			// common configuration for each overlay
+			oneInstance: false, 
+			closeOnClick: false, 
+			 
+
+			// use apple effect
+			effect: 'apple'
+			
+		});			
+	});
 	
+});
+</script>
 	
+	<style>
+		div.overlay {
+		width:1024px; 
+		height:432px;
+
+		}
+	</style>
 	
 
 	<!--[if lt IE 7]>
@@ -136,6 +166,9 @@
 		Dynamic buffer feature to dynamically calculate a suitable buffer time to suit the available bandwidth.
 	</li>
 	<li>
+		Configuring list of video bitrate options via RSS Yahoo Media Extension support. 
+	</li>
+	<li>
 		 Clustering of hosts. The plugin can be configured with a set of hosts it connects to when checking
 		 bandwidth. Failing servers are skipped and a working server is selected.
 	</li>
@@ -175,14 +208,12 @@ flowplayer("player", "@PLAYER_SWF@", {
 	playlist: [
             {
               url: "bbb.flv", 
-              customProperties: {
-              					bitrates: [
-              								{url: "bbb_160x90.flv", width: 160, height: 90, bitrate: 100},
-              								{url: "bbb_320x180.flv", width: 320, height: 180, bitrate: 180},
-              								{url: "bbb_480x270.flv", width: 480, height: 270, bitrate: 270},
-              								{url: "bbb_640x360.flv", width: 640, height: 360, bitrate: 360}
-              							  ]
-              					}
+              bitrates: [
+              			{url: "bbb_160x90.flv", width: 160, height: 90, bitrate: 100},
+              			{url: "bbb_320x180.flv", width: 320, height: 180, bitrate: 180},
+              			{url: "bbb_480x270.flv", width: 480, height: 270, bitrate: 270},
+              			{url: "bbb_640x360.flv", width: 640, height: 360, bitrate: 360}
+              		    ]
             }
         ],
 	// configure the required plugin
@@ -231,23 +262,24 @@ flowplayer("player", "@PLAYER_SWF@", {
 </div>
 
 <p>
-    The configuration is shown below. This example uses HTTP to detect the bandwidth. It loads a reference file from the URL
+   This example uses HTTP to detect the bandwidth. It loads a reference file from the URL
     configured with <samp>netConnectionUrl</samp> and calculates the bandwidth based on the download speed and file size.
 </p>
 
+<button rel="div.overlay:eq(0)" type="button">Configuration For This Example</button>
+
+<div class="overlay">
 <div class="box code">
 <pre><code class="javascript">flowplayer("player", "@PLAYER_SWF@", {
 	playlist: [
             {
               url: "bbb.flv", 
-              customProperties: {
-              					bitrates: [
-              								{url: "bbb_160x90.flv", width: 160, height: 90, bitrate: 100},
-              								{url: "bbb_320x180.flv", width: 320, height: 180, bitrate: 180},
-              								{url: "bbb_480x270.flv", width: 480, height: 270, bitrate: 270},
-              								{url: "bbb_640x360.flv", width: 640, height: 360, bitrate: 360}
-              							  ]
-              					}
+              bitrates: [
+              			{url: "bbb_160x90.flv", width: 160, height: 90, bitrate: 100},
+              			{url: "bbb_320x180.flv", width: 320, height: 180, bitrate: 180},
+              			{url: "bbb_480x270.flv", width: 480, height: 270, bitrate: 270},
+              			{url: "bbb_640x360.flv", width: 640, height: 360, bitrate: 360}
+              		    ]
             }
         ],
 	// configure the required plugin
@@ -290,6 +322,7 @@ flowplayer("player", "@PLAYER_SWF@", {
 	
 });</code></pre>
 </div>
+</div>
 
 
 
@@ -308,7 +341,7 @@ flowplayer("player", "@PLAYER_SWF@", {
 <h2>Configuration</h2>
 
 <p>
- For this plugin to function correctly all clips in a playlist require an object list of available bitrates in a bitrate property to be set on the clip customProperties property config.
+ For this plugin to function correctly all clips in a playlist require an object list of available bitrates in a bitrate property to be set on the clip bitrates property config which maps to customProperties.bitrates.
  
  Each bitrate config must have the following properties
  <ul>
@@ -331,14 +364,13 @@ And optional
 playlist: [
             {
               url: "flv:bbb", 
-              customProperties: {
-              	bitrates: [
+              bitrates: [
               				{url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
               				{url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
               				{url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
               				{url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
               			  ]
-              }
+          
             }
         ],
 </pre>
@@ -546,15 +578,13 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 	playlist: [
             {
               url: "flv:bbb", 
-              customProperties: {
-              					bitrates: [
-              								{url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
-              								{url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
-              								{url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
-              								{url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
-              							  ]
-              					}
-            }
+              bitrates: [
+                        {url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
+                        {url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
+                        {url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
+                        {url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
+			           ]
+			}
         ],
 	// configure the required plugins
 	plugins:  {
@@ -620,24 +650,26 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 </div>
 
 <p>
-    The configuration is shown below. Note that the <samp>serverType</samp>  value that needs to
+     Note that the <samp>serverType</samp>  value that needs to
     be defined for streaming server connecting to, either fms, red5 or wowza.
 </p>
 
+<button rel="div.overlay:eq(1)" type="button">Configuration For This Example</button>
+
+
+<div class="overlay">
 <div class="box code">
 <pre><code class="javascript">flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 	playlist: [
             {
               url: "flv:bbb", 
-              customProperties: {
-              					bitrates: [
-              								{url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
-              								{url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
-              								{url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
-              								{url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
-              							  ]
-              					}
-            }
+              bitrates: [
+                        {url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
+                        {url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
+                        {url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
+                        {url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
+			           ]
+			}
         ],
 	// configure the required plugins
 	plugins:  {
@@ -696,7 +728,7 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 
 });</code></pre>
 </div>
-
+</div>
 
 <p>
 	With the <strong>Wowza</strong> server you need to install the bwcheck app that is bundled in the Wowza distribution. Similarily
@@ -739,14 +771,12 @@ flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
 	playlist: [
             {
               url: "bbb.flv", 
-              customProperties: {
-              					bitrates: [
-              								{url: "bbb_160x90.flv", width: 160, height: 90, bitrate: 100},
-              								{url: "bbb_320x180.flv", width: 320, height: 180, bitrate: 180},
-              								{url: "bbb_480x270.flv", width: 480, height: 270, bitrate: 270},
-              								{url: "bbb_640x360.flv", width: 640, height: 360, bitrate: 360}
-              							  ]
-              					}
+              bitrates: [
+              			{url: "bbb_160x90.flv", width: 160, height: 90, bitrate: 100},
+              			{url: "bbb_320x180.flv", width: 320, height: 180, bitrate: 180},
+              			{url: "bbb_480x270.flv", width: 480, height: 270, bitrate: 270},
+              			{url: "bbb_640x360.flv", width: 640, height: 360, bitrate: 360}
+              		    ]
             }
         ],
 	// configure the required plugin
@@ -797,23 +827,20 @@ flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
 
 </div>
 
-<p>
-    The configuration is shown below. 
-</p>
+<button rel="div.overlay:eq(2)" type="button">Configuration For This Example</button>
 
+<div class="overlay">
 <div class="box code">
 <pre><code class="javascript">flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
 	playlist: [
             {
               url: "bbb.flv", 
-              customProperties: {
-              					bitrates: [
-              								{url: "bbb_160x90.flv", width: 160, height: 90, bitrate: 100},
-              								{url: "bbb_320x180.flv", width: 320, height: 180, bitrate: 180},
-              								{url: "bbb_480x270.flv", width: 480, height: 270, bitrate: 270},
-              								{url: "bbb_640x360.flv", width: 640, height: 360, bitrate: 360}
-              							  ]
-              					}
+              bitrates: [
+              			{url: "bbb_160x90.flv", width: 160, height: 90, bitrate: 100},
+              			{url: "bbb_320x180.flv", width: 320, height: 180, bitrate: 180},
+              			{url: "bbb_480x270.flv", width: 480, height: 270, bitrate: 270},
+              			{url: "bbb_640x360.flv", width: 640, height: 360, bitrate: 360}
+              		    ]
             }
         ],
 	// configure the required plugin
@@ -859,7 +886,7 @@ flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
 	
 });</code></pre>
 </div>
-
+</div>
 
 <a name="rtmp_selection"></a>
 <h2><em>RTMP</em> With Manual Selection Example</h2>
@@ -896,15 +923,13 @@ flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
 	playlist: [
             {
               url: "flv:bbb", 
-              customProperties: {
-              					bitrates: [
-              								{url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
-              								{url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
-              								{url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
-              								{url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
-              							  ]
-              					}
-            }
+              bitrates: [
+                        {url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
+                        {url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
+                        {url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
+                        {url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
+			           ]
+			}
         ],
 	// configure the required plugins
 	plugins:  {
@@ -998,30 +1023,29 @@ flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
 
 </div>
 
-<a href="#" class="checkManualBtn">Detect Bandwidth</a>
+
+<button type="button" class="checkManualBtn">Check
+bandwidth</button>
 		
 <div id="changeManualBitrate">
 	<b>Change Bitrate:</b><br/>
 </div>
 		
-<p>
-    The configuration is shown below. 
-</p>
+<button rel="div.overlay:eq(3)" type="button">Configuration For This Example</button>
 
+<div class="overlay">
 <div class="box code">
 <pre><code class="javascript">flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
 	playlist: [
             {
               url: "flv:bbb", 
-              customProperties: {
-              					bitrates: [
-              								{url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
-              								{url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
-              								{url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
-              								{url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
-              							  ]
-              					}
-            }
+              bitrates: [
+                        {url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
+                        {url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
+                        {url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
+                        {url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
+			           ]
+			}
         ],
 	// configure the required plugins
 	plugins:  {
@@ -1110,6 +1134,7 @@ flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
 	});
 </code></pre>
 </div>
+</div>
 
 <a name="rtmp_dynamicswitching"></a>
 <h2><em>RTMP</em> With Dynamic Stream Switching Example</h2>
@@ -1156,16 +1181,14 @@ flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
 flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 	playlist: [
             {
-              url: "flv:skyandice", 
-              customProperties: {
-              					bitrates: [
-              								{url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
-              								{url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
-              								{url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
-              								{url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
-              							  ]
-              					}
-            }
+              url: "flv:bbb", 
+              bitrates: [
+                        {url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
+                        {url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
+                        {url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
+                        {url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
+			           ]
+			}
         ],
 	// configure the required plugins
 	plugins:  {
@@ -1263,29 +1286,29 @@ $(document).ready(function () {
 
 </div>
 
-<a href="#" class="checkDynamicBtn">Detect Bandwidth</a>
+
+<button type="button" class="checkDynamicBtn">Check
+bandwidth</button>
 		
 <div id="changeDynamicBitrate">
 	<b>Change Bitrate:</b><br/>
 </div>
 		
-<p>
-    The configuration is shown below.
-</p>
+<button rel="div.overlay:eq(4)" type="button">Configuration For This Example</button>
 
+<div class="overlay">
 <div class="box code">
 <pre><code class="javascript">flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 	playlist: [
             {
               url: "flv:skyandice", 
-              customProperties: {
-              					bitrates: [
-              								{url: "flv:skyandice", width: 150, height: 90, bitrate: 100},
-              								{url: "flv:skyandice", width: 400, height: 180, bitrate: 180},
-              								{url: "flv:skyandice", width: 700, height: 270, bitrate: 270},
-              								{url: "flv:skyandice", width: 1000, height: 360, bitrate: 360}
-              							  ]
-              					}
+  					bitrates: [
+  								{url: "flv:skyandice", width: 150, height: 90, bitrate: 100},
+  								{url: "flv:skyandice", width: 400, height: 180, bitrate: 180},
+  								{url: "flv:skyandice", width: 700, height: 270, bitrate: 270},
+  								{url: "flv:skyandice", width: 1000, height: 360, bitrate: 360}
+  							  ]
+  					}
             }
         ],
 	// configure the required plugins
@@ -1349,7 +1372,7 @@ $(document).ready(function () {
 
 });</code></pre>
 </div>
-
+</div>
 
 <a name="rtmp_selection"></a>
 <h2><em>RTMP</em> With Custom Stream Selection Strategy Example</h2>
@@ -1500,31 +1523,28 @@ $(document).ready(function () {
 
 </div>
 
-<a href="#" class="checkSelectionBtn">Detect Bandwidth</a>
+<button type="button" class="checkSelectionBtn">Check
+bandwidth</button>
 		
 <div id="changeSelectionBitrate">
 	<b>Change Bitrate:</b><br/>
 </div>
 
 		
-<p>
-    The configuration is shown below. 
-</p>
+<button rel="div.overlay:eq(5)" type="button">Configuration For This Example</button>
 
+<div class="overlay">
 <div class="box code">
 <pre><code class="javascript">flowplayer("rtmpSelectionPlayer", "@PLAYER_SWF@", {
 	playlist: [
             {
               url: "flv:skyandice", 
-              customProperties: {
-              					bitrates: [
-              								{url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
-              								{url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
-              								{url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
-              								{url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
-              							  ]
-              					}
-            }
+             bitrates: [
+           {url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
+           {url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
+           {url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
+           {url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
+]
         ],
 	// configure the required plugins
 	plugins:  {
@@ -1616,6 +1636,7 @@ $(document).ready(function () {
 		
 });
 </code></pre>
+</div>
 </div>
 
 
@@ -1720,7 +1741,7 @@ flowplayer("rtmpQosPlayer", "@PLAYER_SWF@", {
 		// use bwcheck for all clips
 		urlResolvers: 'bwcheck',
 		onBeforeBegin: function(clip) {
-        	$f().getPlugin("bwcheck").setAutoBitrate(270);
+        	$f().getPlugin("bwcheck").setInitialBitrate(270);
         },
 		
 		onMetaData: function(clip) {
@@ -1743,26 +1764,21 @@ flowplayer("rtmpQosPlayer", "@PLAYER_SWF@", {
 </div>
 
 
+<button rel="div.overlay:eq(6)" type="button">Configuration For This Example</button>
 
-		
-<p>
-    The configuration is shown below. 
-</p>
-
+<div class="overlay">
 <div class="box code">
 <pre><code class="javascript">flowplayer("rtmpQosPlayer", "@PLAYER_SWF@", {
 	playlist: [
             {
               url: "flv:skyandice", 
-              customProperties: {
-              					bitrates: [
+              bitrates: [
               								{url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
               								{url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
               								{url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
               								//{url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
               								{url: "flv:bbb_480x270", width: 640, height: 360, bitrate: 360}
-              							  ]
-              					}
+              			 ]
             }
         ],
 	// configure the required plugins
@@ -1831,8 +1847,225 @@ flowplayer("rtmpQosPlayer", "@PLAYER_SWF@", {
 });
 </code></pre>
 </div>
+</div>
+
+<a name="rtmp_rss"></a>
+<h2><em>RTMP</em> With RSS Yahoo Media Extension Playlist Example</h2>
+
+<p>
+	RTMP Example using a <a href="http://amazon.flowplayer.org/documentation/configuration/playlists.html#rss">RSS playlist</a> with the <a href="http://en.wikipedia.org/wiki/Media_RSS">Yahoo Media RSS</a> extension to configure the bitrates. 
+</p>
+<p>
+The media:content tag needs to be grouped in a media:group tag like so:
+
+</p>
+
+<div class="box code">
+<pre><code class="html">
+&lt;media:group&gt;
+   &lt;media:content type="video/x-flv" url="flv:bbb_160x90" width="160" height="90" bitrate="100"/&gt;
+&lt;/media:group&gt;
+</code></pre>
+</div>
 
 
+<p>
+  The Following table lists how the RSS data is mapped to playlist clip bitrates property:
+</p>
+<table class="listing">
+	<tr>
+		<th>RSS</th>
+		<th>Bitrate property</th>
+	</tr>
+    <tr>
+        <td class="code">media:content / url</td>
+        <td>
+            The clip's URL. Does not require the absolute url, will use the baseUrl for the http provider, may require the full prefix for flv and a prefix for mp4 files. 
+        </td>
+    </tr>
+    <tr>
+        <td class="code">media:content / width</td>
+        <td>
+            The clip's width (required)
+        </td>
+    </tr>
+    <tr>
+        <td class="code">media:content / bitrate</td>
+        <td>
+            The clip's bitrate (required)
+        </td>
+    </tr>
+    <tr>
+        <td class="code">media:content / type</td>
+        <td>
+            The clip's content type (required)
+        </td>
+    </tr>
+    <tr>
+        <td class="code">media:content / height</td>
+        <td>
+            The clip's height (optional)
+        </td>
+    </tr>
+</table>
+
+<div style="width:425px;margin:30px auto">
+   
+
+
+<!-- player container-->
+
+
+<a
+	href="skyandice"
+	style="display:block;width:425px;height:300px;"
+	id="rtmpRSSPlayer">
+
+	<!-- splash image inside the container -->
+	<img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" />
+
+</a>
+
+<div class="box info" id="rtmpRSSInfo">
+	Click on the splash image above.
+</div>
+
+<!-- Flowplayer installation and configuration -->
+<script language="JavaScript">
+flowplayer("rtmpRSSPlayer", "@PLAYER_SWF@", {
+	playlist: "example.rss",
+	// configure the required plugins
+	plugins:  {
+
+		// RTMP streaming plugin
+		rtmp: {
+			url: '../flowplayer.rtmp.swf',
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/fastplay'
+		},
+		content: {
+			url: '../flowplayer.content.swf',
+			top: 0,
+			left: 0,
+			width: 250 
+		},
+
+		// bandwidth check plugin
+		bwcheck: {
+			url: '@MAIN_PLAYER_SWF@',
+
+			serverType: 'wowza',
+
+			// Use this connection for bandwidth detection
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
+			bitrateProfileName: 'RTMPBitrateProfile',
+
+			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
+				var el = document.getElementById("rtmpRSSInfo");
+				el.innerHTML = "Chosen bitrate is: " + mappedBitrate.bitrate + "<br /> Video file served: " + streamName + "<br /> Old Video file served: " + oldStreamName;
+				
+			},
+			// this method is called when the bandwidth check is done
+			onBwDone: function(mappedBitrate, detectedBitrate) {
+				var el = document.getElementById("rtmpRSSInfo");
+				el.innerHTML = "Your speed is: " + detectedBitrate + "<br /> Your chosen bitrate: " + mappedBitrate.bitrate + "<br /> Video file served: " + mappedBitrate.url;
+				
+			}
+		}
+
+	},
+
+	// configure the clip to use the rtmp plugin for providing video data
+	// and the bwcheck plugin in resolving the URLs
+	clip: {
+		provider: 'rtmp',
+		
+		// use bwcheck for all clips
+		urlResolvers: 'bwcheck',
+		onMetaData: function(clip) {
+			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
+			var content = $f().getPlugin('content');
+			content.setHtml(dimensions);
+		}
+	},
+	log: { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.rtmp.*, org.flowplayer.cluster.*' }
+
+});
+
+
+	
+
+</script>
+
+
+
+</div>
+
+<button rel="div.overlay:eq(7)" type="button">Configuration For This Example</button>
+
+<div class="overlay">
+<div class="box code">
+<pre><code class="javascript">
+flowplayer("rtmpRSSPlayer", "@PLAYER_SWF@", {
+	playlist: "example.rss"
+	// configure the required plugins
+	plugins:  {
+
+		// RTMP streaming plugin
+		rtmp: {
+			url: '../flowplayer.rtmp.swf',
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/fastplay'
+		},
+		content: {
+			url: '../flowplayer.content.swf',
+			top: 0,
+			left: 0,
+			width: 250 
+		},
+
+		// bandwidth check plugin
+		bwcheck: {
+			url: '@MAIN_PLAYER_SWF@',
+
+			serverType: 'wowza',
+
+			// Use this connection for bandwidth detection
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
+			bitrateProfileName: 'RTMPBitrateProfile',
+
+			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
+				var el = document.getElementById("rtmpRSSInfo");
+				el.innerHTML = "Chosen bitrate is: " + mappedBitrate.bitrate + "<br /> Video file served: " + streamName + "<br /> Old Video file served: " + oldStreamName;
+				
+			},
+			// this method is called when the bandwidth check is done
+			onBwDone: function(mappedBitrate, detectedBitrate) {
+				var el = document.getElementById("rtmpRSSInfo");
+				el.innerHTML = "Your speed is: " + detectedBitrate + "<br /> Your chosen bitrate: " + mappedBitrate.bitrate + "<br /> Video file served: " + mappedBitrate.url;
+				
+			}
+		}
+
+	},
+
+	// configure the clip to use the rtmp plugin for providing video data
+	// and the bwcheck plugin in resolving the URLs
+	clip: {
+		provider: 'rtmp',
+		
+		// use bwcheck for all clips
+		urlResolvers: 'bwcheck',
+		onMetaData: function(clip) {
+			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
+			var content = $f().getPlugin('content');
+			content.setHtml(dimensions);
+		}
+	},
+	log: { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.rtmp.*, org.flowplayer.cluster.*' }
+
+});
+</code></pre>
+</div>
+</div>
 
 <a name="rtmp_dynamicbuffer"></a>
 <h2><em>RTMP</em> With Dynamic Buffering Example</h2>
@@ -1869,15 +2102,13 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
 	playlist: [
             {
               url: "flv:bbb", 
-              customProperties: {
-              					bitrates: [
-              								{url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
-              								{url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
-              								{url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
-              								{url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
-              							  ]
-              					}
-            }
+              bitrates: [
+                        {url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
+                        {url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
+                        {url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
+                        {url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
+			           ]
+			}
         ],
 	// configure the required plugins
 	plugins:  {
@@ -1946,25 +2177,21 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
 </div>
 
 
-		
-<p>
-    The configuration is shown below.
-</p>
+<button rel="div.overlay:eq(8)" type="button">Configuration For This Example</button>
 
+<div class="overlay">
 <div class="box code">
 <pre><code class="javascript">flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
 	playlist: [
             {
               url: "flv:bbb", 
-              customProperties: {
-              					bitrates: [
-              								{url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
-              								{url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
-              								{url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
-              								{url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
-              							  ]
-              					}
-            }
+              bitrates: [
+                        {url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
+                        {url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
+                        {url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
+                        {url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
+			           ]
+			}
         ],
 	// configure the required plugins
 	plugins:  {
@@ -2024,7 +2251,7 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
 
 });</code></pre>
 </div>
-
+</div>
 
 <a name="clustering"></a>
 <h3>Clustering of bandwidth checks</h3>
@@ -2108,7 +2335,7 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
     </tr>
     <tr>
         <td class="code">
-            <strong>setAutoBitrate</strong>(bitrate)
+            <strong>setInitialBitrate</strong>(bitrate)
         </td>
         <td class="code type"></td>
         <td class="description">
