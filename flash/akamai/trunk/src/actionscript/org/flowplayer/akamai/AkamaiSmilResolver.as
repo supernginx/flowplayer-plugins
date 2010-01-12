@@ -67,25 +67,10 @@ package org.flowplayer.akamai{
         // Handles the notification that the BOSS feed was successfully parsed
 		private function bossParsedHandler(e:AkamaiNotificationEvent):void {
 
-            log.debug("BOSS parsed successfully:");
-            log.debug("  Server name: " + bossMetafile.serverName);
-            log.debug("  App name: " + bossMetafile.appName);
-            log.debug("  Stream name: " + bossMetafile.streamName);
-            log.debug("  Protocol: " + bossMetafile.protocol);
-            log.debug("  Is live: " + bossMetafile.isLive);
-            log.debug("  Title: " + bossMetafile.title);
-            log.debug("  Source: " + bossMetafile.source);
-            log.debug("  Author: " + bossMetafile.author);
-            log.debug("  Clip begin: " + bossMetafile.clipBegin);
-            log.debug("  Clip end: " + bossMetafile.clipEnd);
-            log.debug("  Duration: " + bossMetafile.duration);
-            log.debug("  Connect Auth Params: " + bossMetafile.connectAuthParams);
-            log.debug("  Play Auth Params: " + bossMetafile.playAuthParams);
-            log.debug("  Secondary Encoder Source: " + bossMetafile.secondaryEncoderSrc);
-            log.debug("  Keywords: " + bossMetafile.keywords);
+            log.debug("BOSS parsed successfully", bossMetafile);
             log.debug("======= End of Metafile data ===========");
 
-            var protocol:String = bossMetafile.protocol.indexOf("rtmpe") != -1 ? "rtmpe,rtmpte" : "rtmp";
+            var protocol:String = ( bossMetafile.protocol && bossMetafile.protocol.indexOf("rtmpe") != -1) ? "rtmpe,rtmpte" : "rtmp";
             _clip.setCustomProperty("netConnectionUrl", protocol + "://" + bossMetafile.serverName + "/" + bossMetafile.appName + (bossMetafile.connectAuthParams ? "?" + bossMetafile.connectAuthParams : ""));
             _clip.live = bossMetafile.isLive;
             if (bossMetafile.isLive) {

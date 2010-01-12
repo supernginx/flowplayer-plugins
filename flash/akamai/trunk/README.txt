@@ -1,5 +1,10 @@
 Version history:
 
+3.1.4
+-----
+Fixes:
+- Fix for parsing a BOSS smil file (was firing error #1009 if protocol was not specified in the file)
+
 3.1.3
 -----
 - compatible with the new ConnectionProvider and URLResolver API
