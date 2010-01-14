@@ -154,29 +154,47 @@ package org.flowplayer.controls {
         }
 
         [External]
-        public function tooltips(props:Object):void {
+        public function setTooltips(props:Object):void {
             initTooltipConfig(_config, props);
             redraw(props);
         }
 
         [External]
-        public function autoHide(props:Object = null):void {
+        public function setAutoHide(props:Object = null):void {
             log.debug("autoHide()");
             if (props) {
                 new PropertyBinder(_config).copyProperties(props);
+
+                if (props.hasOwnProperty("enabled")) {
+                    if (props.enabled) {
+                        setAutoHideFullscreenOnly(_config, props);
+                    } else {
+                        _config.autoHide = "never";
+                    }
+                } else if (_config.autoHide != "never") {
+                    setAutoHideFullscreenOnly(_config, props);
+                }
             }
+            _pluginModel.config.autoHide = _config.autoHide;
 
             if (! props || _config.autoHide == "never") {
                 log.debug("autoHide set to 'never'");
                 if (_controlBarMover) {
                     _controlBarMover.stop();
-                    _controlBarMover.resetScreen();
                 }
                 return;
             }
 
             createControlBarMover();
             _controlBarMover.start();
+        }
+
+        private function setAutoHideFullscreenOnly(config:Config, props:Object):void {
+            if (props.hasOwnProperty("fullscreenOnly")) {
+                _config.autoHide = props.fullscreenOnly ? "fullscreen" : "always";
+            } else if (config.autoHide == "never") {
+                _config.autoHide = "fullscreen";
+            }
         }
 
         /**

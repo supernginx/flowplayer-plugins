@@ -44,7 +44,6 @@ package org.flowplayer.controls {
         private var _mouseOver:Boolean = false;
         private var _hwFullScreen:Boolean;
         private var _model:PluginModel;
-        private var _screenOrigProps:DisplayProperties;
 
         public function ControlsAutoHide(model:PluginModel, config:Config, player:Flowplayer, stage:Stage, controlBar:DisplayObject) {
             Assert.notNull(model, "model cannot be null");
@@ -90,19 +89,6 @@ package org.flowplayer.controls {
                 startTimerAndInitializeListeners();
                 return;
             }
-        }
-
-        public function resetScreen():void {
-            log.debug("resetScreen()");
-            if (! _screenOrigProps) return;
-            _player.animationEngine.animate(_screenOrigProps.getDisplayObject(), _screenOrigProps, _config.hideDuration);
-        }
-
-        private function get screenMaximizedPos():DisplayProperties {
-            var props:DisplayProperties = _player.screen.clone() as DisplayProperties;
-            props.height = "100%";
-            props.top = 0;
-            return props;
         }
 
         private function get hiddenPos():DisplayProperties {
@@ -185,6 +171,10 @@ package org.flowplayer.controls {
 
         private function startHideTimer():void {
             log.debug("startHideTimer(), delay is " + _config.hideDelay);
+            if (_config.hideDelay == 0) {
+                hideControlBar();
+                return;
+            }
             if (! _hideTimer) {
                 _hideTimer = new Timer(_config.hideDelay);
             }
@@ -222,19 +212,9 @@ package org.flowplayer.controls {
             }
 
             _player.animationEngine.animate(_controlBar, hiddenPos, _config.hideDuration, onHidden);
-            _hideTimer.stop();
-
-            maximizeScreen();
-        }
-
-        private function maximizeScreen():void {
-            if (DisplayPluginModel(_model).position.bottom.px > 0) {
-                log.debug("controlbar has configured bottom position, will not resize screen");
+            if (_hideTimer) {
+                _hideTimer.stop();
             }
-            _screenOrigProps = _player.screen.clone() as DisplayProperties;
-
-            _player.animationEngine.animate(screenMaximizedPos.getDisplayObject(), screenMaximizedPos, _config.hideDuration);
-
         }
 
         private function onHidden():void {
