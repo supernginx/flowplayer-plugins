@@ -38,8 +38,6 @@ package org.flowplayer.slowmotion {
             playlist.onStart(onStart, function(clip:Clip):Boolean { return clip.type == ClipType.VIDEO; });
         }
 
-
-
         public function getTime(netStream:NetStream):Number {
             var time:Number = _provider.netStream.time;
             if (! _info) return time;
@@ -47,6 +45,10 @@ package org.flowplayer.slowmotion {
                 return _info.adjustedTime(time);
             }
             return time;
+        }
+
+        public function info():SlowMotionInfo {
+            return _info;
         }
 
         private function onStart(event:ClipEvent):void {

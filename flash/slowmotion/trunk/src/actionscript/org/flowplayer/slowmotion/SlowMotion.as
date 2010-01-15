@@ -73,6 +73,11 @@ package org.flowplayer.slowmotion {
             _provider.netStream.seek(_timeProvider.getTime(netStream));
         }
 
+        [External]
+        public function get info():SlowMotionInfo {
+            return _timeProvider.info();
+        }
+
         /*
          [External]
          public function
