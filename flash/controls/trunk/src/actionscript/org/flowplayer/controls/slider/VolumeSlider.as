@@ -10,6 +10,7 @@
 
 package org.flowplayer.controls.slider {
     import flash.display.DisplayObject;
+	import flash.display.Sprite;
 import org.flowplayer.view.AnimationEngine;
 	import org.flowplayer.controls.Config;
 	import org.flowplayer.controls.slider.AbstractSlider;	
@@ -19,6 +20,8 @@ import org.flowplayer.view.AnimationEngine;
 	 */
 	public class VolumeSlider extends AbstractSlider {
 		public static const DRAG_EVENT:String = AbstractSlider.DRAG_EVENT;
+
+		private var _volumeBar:Sprite;
 
         override public function get name():String {
             return "volume";
@@ -31,11 +34,27 @@ import org.flowplayer.view.AnimationEngine;
                 if (percentage < 0) return "0%";
 				return Math.round(percentage) + "%";
 			};
+			
+			createBars();
 		}
-
+		
+		private function createBars():void {
+			_volumeBar = new Sprite();
+			addChild(_volumeBar);
+			swapChildren(_dragger, _volumeBar);
+		}
+		
+		override public function redraw(config:Config):void {
+			super.redraw(config);
+			
+			onSetValue();
+		}
+		
         override protected function onSetValue():void {
 			var pos:Number = value/100 * (width - _dragger.width);
             animationEngine.animateProperty(_dragger, "x", pos, 200);
+
+			drawBar(_volumeBar, volumeColor, _config.style.bufferGradient, 0, pos + _dragger.width / 2);
         }
 
 		override protected function isToolTipEnabled():Boolean {
@@ -54,6 +73,11 @@ import org.flowplayer.view.AnimationEngine;
 
         override protected function get sliderColor():Number {
             return _config.style.volumeSliderColor;
+        }
+
+		protected function get volumeColor():Number {
+			if (isNaN(_config.style.volumeColor) || _config.style.volumeColor == -2 ) return sliderColor;
+            return _config.style.volumeColor;
         }
 
         override protected function get barCornerRadius():Number {

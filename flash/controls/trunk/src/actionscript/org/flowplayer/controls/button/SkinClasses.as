@@ -17,6 +17,13 @@ import flash.utils.getDefinitionByName;
         private static var log:Log = new Log("org.flowplayer.controls.button::SkinClasses");
         private static var _skinClasses:ApplicationDomain;
 
+		CONFIG::hasSlowMotion {
+			private var slowMotionFwd:fp.SlowMotionFwdButton;
+			private var slowMotionBwd:fp.SlowMotionBwdButton;
+			private var slowMotionFFwd:fp.SlowMotionFFwdButton;
+			private var slowMotionFBwd:fp.SlowMotionFBwdButton;
+		}
+
         CONFIG::skin {
             private var foo:fp.FullScreenOnButton;
             private var bar:fp.FullScreenOffButton;
@@ -147,6 +154,38 @@ import flash.utils.getDefinitionByName;
 
         public static function getPrevButton():DisplayObjectContainer {
             return DisplayObjectContainer(getDisplayObject("fp.PrevButton"));
+        }
+
+		public static function getSlowMotionFwdButton():DisplayObjectContainer {
+			CONFIG::hasSlowMotion {
+            	return DisplayObjectContainer(getDisplayObject("fp.SlowMotionFwdButton"));
+			}
+			
+			return null;
+        }
+
+        public static function getSlowMotionBwdButton():DisplayObjectContainer {
+			CONFIG::hasSlowMotion {
+            	return DisplayObjectContainer(getDisplayObject("fp.SlowMotionBwdButton"));
+			}
+			
+			return null;
+        }
+
+		public static function getSlowMotionFFwdButton():DisplayObjectContainer {
+			CONFIG::hasSlowMotion {
+            	return DisplayObjectContainer(getDisplayObject("fp.SlowMotionFFwdButton"));
+			}
+			
+			return null;
+        }
+
+        public static function getSlowMotionFBwdButton():DisplayObjectContainer {
+			CONFIG::hasSlowMotion {
+            	return DisplayObjectContainer(getDisplayObject("fp.SlowMotionFBwdButton"));
+			}
+			
+			return null;
         }
 
         public static function getStopButton():DisplayObjectContainer {

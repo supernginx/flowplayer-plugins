@@ -15,6 +15,7 @@ package org.flowplayer.controls.slider {
     import flash.events.MouseEvent;
     import flash.events.TimerEvent;
     import flash.utils.Timer;
+	import flash.display.Sprite;
 
     import org.flowplayer.controls.Config;
     import org.flowplayer.controls.DefaultToolTip;
@@ -305,8 +306,22 @@ package org.flowplayer.controls.slider {
 
         protected function get barHeight():Number {
             return height;
-
         }
+
+		protected function drawBar(bar:Sprite, color:Number, gradientAlphas:Array, leftEdge:Number, rightEdge:Number):void {
+			bar.graphics.clear();
+			if (leftEdge > rightEdge) return;
+			bar.scaleX = 1;
+			bar.graphics.beginFill(color);
+			bar.graphics.drawRoundRect(leftEdge, height/2 - barHeight/2, rightEdge - leftEdge, barHeight, barCornerRadius, barCornerRadius);
+			bar.graphics.endFill();
+			
+			if (gradientAlphas) {
+				GraphicsUtil.addGradient(bar, 0, gradientAlphas, height/1.5, leftEdge);
+			} else {
+				GraphicsUtil.removeGradient(bar);
+			}
+		}
 
         protected final function get animationEngine():AnimationEngine {
             return _animationEngine;

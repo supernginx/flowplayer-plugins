@@ -225,21 +225,7 @@ package org.flowplayer.controls.slider {
 			addChild(_bufferBar);
 			swapChildren(_dragger, _bufferBar);
 		}
-
-		private function drawBar(bar:Sprite, color:Number, gradientAlphas:Array, leftEdge:Number, rightEdge:Number):void {
-			bar.graphics.clear();
-			if (leftEdge > rightEdge) return;
-			bar.scaleX = 1;
-			bar.graphics.beginFill(color);
-			bar.graphics.drawRoundRect(leftEdge, height/2 - barHeight/2, rightEdge - leftEdge, barHeight, barCornerRadius, barCornerRadius);
-			bar.graphics.endFill();
-			
-			if (gradientAlphas) {
-				GraphicsUtil.addGradient(bar, 0, gradientAlphas, height/1.5, leftEdge);
-			} else {
-				GraphicsUtil.removeGradient(bar);
-			}
-		}
+		
 //
 //		override protected function onSetValue():void {
 //			if (_seekInProgress) return;

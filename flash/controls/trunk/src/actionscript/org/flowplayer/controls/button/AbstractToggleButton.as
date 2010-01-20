@@ -10,6 +10,7 @@
 package org.flowplayer.controls.button {
 	import org.flowplayer.view.AnimationEngine;	
 	
+	import flash.display.MovieClip;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.events.MouseEvent;
@@ -75,6 +76,16 @@ package org.flowplayer.controls.button {
 			showTooltip();
             showMouseOverState(_upStateFace);
             showMouseOverState(_downStateFace);
+		}
+		
+		protected override function onMouseDown(event:MouseEvent):void {
+			var overClip:DisplayObject = _upStateFace.getChildByName(HIGHLIGHT_INSTANCE_NAME);
+			if ( overClip && overClip is MovieClip )
+				MovieClip(overClip).gotoAndPlay("down");
+				
+			overClip = _downStateFace.getChildByName(HIGHLIGHT_INSTANCE_NAME);
+			if ( overClip && overClip is MovieClip )
+				MovieClip(overClip).gotoAndPlay("down");
 		}
 		
 		public function get isDown():Boolean {
