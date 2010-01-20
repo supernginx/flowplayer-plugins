@@ -600,7 +600,7 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 		// RTMP streaming plugin
 		rtmp: {
 			url: '../flowplayer.rtmp.swf',
-			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer'
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/fastplay'
 		},
 		content: {
 			url: '../flowplayer.content.swf',
@@ -614,10 +614,10 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 			url: '@MAIN_PLAYER_SWF@',
 
 			// Wowza media server bandwidth checking type
-			serverType: 'fms',
+			serverType: 'wowza',
 
 			// Use this connection for bandwidth detection
-			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
 			
 			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
@@ -685,7 +685,7 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 		// RTMP streaming plugin
 		rtmp: {
 			url: '../flowplayer.rtmp.swf',
-			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer'
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/fastplay'
 		},
 		content: {
 			url: '../flowplayer.content.swf',
@@ -699,10 +699,10 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 			url: '@MAIN_PLAYER_SWF@',
 
 			// Wowza media server bandwidth checking type
-			serverType: 'fms',
+			serverType: 'wowza',
 
 			// Use this connection for bandwidth detection
-			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
 			
 			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
@@ -945,7 +945,7 @@ flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
 		// RTMP streaming plugin
 		rtmp: {
 			url: '../flowplayer.rtmp.swf',
-			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer'
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/fastplay'
 		},
 		content: {
 			url: '../flowplayer.content.swf',
@@ -961,7 +961,7 @@ flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
 			serverType: 'fms',
 
 			// Use this connection for bandwidth detection
-			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			
 
 			bitrateProfileName: 'RTMPBitrateProfile',
@@ -1069,7 +1069,7 @@ bandwidth</button>
 		// RTMP streaming plugin
 		rtmp: {
 			url: '../flowplayer.rtmp.swf',
-			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer'
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/fastplay'
 		},
 		content: {
 			url: '../flowplayer.content.swf',
@@ -1085,7 +1085,7 @@ bandwidth</button>
 			serverType: 'fms',
 
 			// Use this connection for bandwidth detection
-			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
 			
 			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
@@ -1205,10 +1205,10 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
             {
               url: "flv:bbb", 
               bitrates: [
-                        {url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
-                        {url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
-                        {url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
-                        {url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
+                        {url: "vod/demo.flowplayer/bbb_160x90", width: 160, height: 90, bitrate: 100},
+                        {url: "vod/demo.flowplayer/bbb_320x180", width: 320, height: 180, bitrate: 180},
+                        {url: "vod/demo.flowplayer/bbb_480x270", width: 480, height: 270, bitrate: 270},
+                        {url: "vod/demo.flowplayer/bbb_640x360", width: 640, height: 360, bitrate: 360}
 			           ]
 			}
         ],
@@ -1316,10 +1316,10 @@ function changeDynamicBitrate(bitrate) {
             {
               url: "flv:bbb", 
               bitrates: [
-                        {url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
-                        {url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
-                        {url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
-                        {url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
+                        {url: "vod/demo.flowplayer/bbb_160x90", width: 160, height: 90, bitrate: 100},
+                        {url: "vod/demo.flowplayer/bbb_320x180", width: 320, height: 180, bitrate: 180},
+                        {url: "vod/demo.flowplayer/bbb_480x270", width: 480, height: 270, bitrate: 270},
+                        {url: "vod/demo.flowplayer/bbb_640x360", width: 640, height: 360, bitrate: 360}
 			           ]
 			}
         ],
@@ -1421,10 +1421,10 @@ flowplayer("rtmpSelectionPlayer", "@PLAYER_SWF@", {
             {
               url: "flv:bbb", 
               bitrates: [
-                        {url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
-                        {url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
-                        {url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
-                        {url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
+                        {url: "vod/demo.flowplayer/bbb_160x90", width: 160, height: 90, bitrate: 100},
+                        {url: "vod/demo.flowplayer/bbb_320x180", width: 320, height: 180, bitrate: 180},
+                        {url: "vod/demo.flowplayer/bbb_480x270", width: 480, height: 270, bitrate: 270},
+                        {url: "vod/demo.flowplayer/bbb_640x360", width: 640, height: 360, bitrate: 360}
 			           ]
 			}
         ],
@@ -1540,10 +1540,10 @@ function changeSelectionBitrate(bitrate) {
             {
               url: "flv:bbb", 
               bitrates: [
-                        {url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
-                        {url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
-                        {url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
-                        {url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
+                        {url: "vod/demo.flowplayer/bbb_160x90", width: 160, height: 90, bitrate: 100},
+                        {url: "vod/demo.flowplayer/bbb_320x180", width: 320, height: 180, bitrate: 180},
+                        {url: "vod/demo.flowplayer/bbb_480x270", width: 480, height: 270, bitrate: 270},
+                        {url: "vod/demo.flowplayer/bbb_640x360", width: 640, height: 360, bitrate: 360}
 			           ]
 			}
         ],
@@ -1682,7 +1682,7 @@ flowplayer("rtmpQosPlayer", "@PLAYER_SWF@", {
 		// RTMP streaming plugin
 		rtmp: {
 			url: '../flowplayer.rtmp.swf',
-			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer'
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/fastplay'
 		},
 		content: {
 			url: '../flowplayer.content.swf',
@@ -1695,11 +1695,10 @@ flowplayer("rtmpQosPlayer", "@PLAYER_SWF@", {
 		bwcheck: {
 			url: '@MAIN_PLAYER_SWF@',
 
-			// Influxis uses Flash Media Servers
-			serverType: 'fms',
+			serverType: 'wowza',
 
 			// Use this connection for bandwidth detection
-			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
 			enableQosMonitor: true,
 			streamSelectionStrategy: 'resizable',
@@ -1777,7 +1776,7 @@ flowplayer("rtmpQosPlayer", "@PLAYER_SWF@", {
 		// RTMP streaming plugin
 		rtmp: {
 			url: '../flowplayer.rtmp.swf',
-			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer'
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/fastplay'
 		},
 		content: {
 			url: '../flowplayer.content.swf',
@@ -1790,11 +1789,11 @@ flowplayer("rtmpQosPlayer", "@PLAYER_SWF@", {
 		bwcheck: {
 			url: '@MAIN_PLAYER_SWF@',
 
-			// Influxis uses Flash Media Servers
-			serverType: 'fms  ',
+	
+			serverType: 'wowza',
 
 			// Use this connection for bandwidth detection
-			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
 			enableQosMonitor: true,
 			streamSelectionStrategy: 'resizable',
@@ -2102,7 +2101,7 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
 		// RTMP streaming plugin
 		rtmp: {
 			url: '../flowplayer.rtmp.swf',
-			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer'
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/fastplay'
 		},
 		content: {
 			url: '../flowplayer.content.swf',
@@ -2116,10 +2115,10 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
 			url: '@MAIN_PLAYER_SWF@',
 
 			// Influxis uses Flash Media Servers
-			serverType: 'fms',
+			serverType: 'wowza',
 
 			// Use this connection for bandwidth detection
-			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
 			enableDynamicBuffer: true,
 			
