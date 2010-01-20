@@ -21,6 +21,10 @@ package org.flowplayer.controls {
     import org.flowplayer.controls.button.ButtonEvent;
     import org.flowplayer.controls.button.NextButton;
     import org.flowplayer.controls.button.PrevButton;
+	import org.flowplayer.controls.button.SlowMotionFwdButton;
+    import org.flowplayer.controls.button.SlowMotionBwdButton;
+	import org.flowplayer.controls.button.SlowMotionFFwdButton;
+    import org.flowplayer.controls.button.SlowMotionFBwdButton;
     import org.flowplayer.controls.button.SkinClasses;
     import org.flowplayer.controls.button.StopButton;
     import org.flowplayer.controls.button.ToggleFullScreenButton;
@@ -59,6 +63,10 @@ package org.flowplayer.controls {
         private var _progressTracker:DisplayObject;
         private var _prevButton:DisplayObject;
         private var _nextButton:DisplayObject;
+		private var _slowMotionFwdButton:DisplayObject;
+        private var _slowMotionBwdButton:DisplayObject;
+		private var _slowMotionFFwdButton:DisplayObject;
+        private var _slowMotionFBwdButton:DisplayObject;
         private var _stopButton:DisplayObject;
         private var _scrubber:Scrubber;
         private var _timeView:TimeView;
@@ -154,47 +162,29 @@ package org.flowplayer.controls {
         }
 
         [External]
-        public function setTooltips(props:Object):void {
+        public function tooltips(props:Object):void {
             initTooltipConfig(_config, props);
             redraw(props);
         }
 
         [External]
-        public function setAutoHide(props:Object = null):void {
+        public function autoHide(props:Object = null):void {
             log.debug("autoHide()");
             if (props) {
                 new PropertyBinder(_config).copyProperties(props);
-
-                if (props.hasOwnProperty("enabled")) {
-                    if (props.enabled) {
-                        setAutoHideFullscreenOnly(_config, props);
-                    } else {
-                        _config.autoHide = "never";
-                    }
-                } else if (_config.autoHide != "never") {
-                    setAutoHideFullscreenOnly(_config, props);
-                }
             }
-            _pluginModel.config.autoHide = _config.autoHide;
 
             if (! props || _config.autoHide == "never") {
                 log.debug("autoHide set to 'never'");
                 if (_controlBarMover) {
                     _controlBarMover.stop();
+                    _controlBarMover.resetScreen();
                 }
                 return;
             }
 
             createControlBarMover();
             _controlBarMover.start();
-        }
-
-        private function setAutoHideFullscreenOnly(config:Config, props:Object):void {
-            if (props.hasOwnProperty("fullscreenOnly")) {
-                _config.autoHide = props.fullscreenOnly ? "fullscreen" : "always";
-            } else if (config.autoHide == "never") {
-                _config.autoHide = "fullscreen";
-            }
         }
 
         /**
@@ -274,10 +264,13 @@ package org.flowplayer.controls {
         public function onLoad(player:Flowplayer):void {
             log.info("received player API! autohide == " + _config.autoHide);
             _player = player;
-            _config.player = player;
+            
             if (_config.skin) {
                 initSkin();
             }
+			
+			_config.player = player;
+
             createChildren();
             loader = player.createLoader();
             createTimeView();
@@ -299,9 +292,52 @@ package org.flowplayer.controls {
             var skin:PluginModel = _player.pluginRegistry.getPlugin(_config.skin) as PluginModel;
             log.debug("using skin " + skin);
             SkinClasses.skinClasses = skin.pluginObject as ApplicationDomain;
+
+
+			var qwe:Object =  {
+                bottom: 0, 
+				left: 0, 
+				height: 72, 
+				width: "100%", 
+				zIndex: 2,
+                backgroundColor: "#545454",
+                backgroundGradient: [.6, 0.3, 0, 0, 0],
+                border: "0px",
+                borderRadius: "0px",
+                timeColor: "#01DAFF",
+                durationColor: "#ffffff",
+                sliderColor: "#000000",
+                sliderGradient: "none",
+                volumeSliderColor: "#000000",
+                volumeSliderGradient: "none",
+                buttonColor: "#5F747C",
+                buttonOverColor: "#728B94",
+                progressColor: "#015B7A",
+                progressGradient: "medium",
+                bufferColor: "#6c9cbc",
+                bufferGradient: "none",
+                tooltipColor: "#5F747C",
+                tooltipTextColor: "#ffffff",
+                timeBgColor: '#555555',
+
+                // what percentage the scrubber handle should take of the controlbar total height
+                scrubberHeightRatio: 0.4,
+                // what percentage the scrubber horizontal bar should take of the controlbar total height
+                scrubberBarHeightRatio: 1,
+
+                // what percentage the volume slider handle should take of the controlbar total height
+                volumeSliderHeightRatio: 0.4,
+                // what percentage the horizontal volume bar should take of the controlbar total height
+                volumeBarHeightRatio: 1,
+
+                // how much the time view colored box is of the total controlbar height
+                timeBgHeightRatio: 0.7
+            };
+
+
             log.debug("skin has defaults", SkinClasses.defaults);
-            Arrange.fixPositionSettings(_pluginModel as DisplayPluginModel, SkinClasses.defaults);
-            new PropertyBinder(_pluginModel, "config").copyProperties(SkinClasses.defaults, false);
+            Arrange.fixPositionSettings(_pluginModel as DisplayPluginModel, qwe /*SkinClasses.defaults*/);
+            new PropertyBinder(_pluginModel, "config").copyProperties(qwe/*SkinClasses.defaults*/, false);
             _config = createConfig(_pluginModel.config);
         }
 
@@ -334,6 +370,11 @@ package org.flowplayer.controls {
             _floating = float;
         }
 
+		private function hasSlowMotion():Boolean
+		{
+			return _player.pluginRegistry.getPlugin("slowmotion") != null;
+		}
+
         private function createChildren():void {
             log.debug("creating fullscren ", _config);
             var animationEngine:AnimationEngine = _player.animationEngine;
@@ -344,6 +385,18 @@ package org.flowplayer.controls {
             _stopButton = addChildWidget(createWidget(_stopButton, "stop", StopButton, _config, animationEngine), ButtonEvent.CLICK, onStopClicked);
             _nextButton = addChildWidget(createWidget(_nextButton, "playlist", NextButton, _config, animationEngine), ButtonEvent.CLICK, "next");
             _prevButton = addChildWidget(createWidget(_prevButton, "playlist", PrevButton, _config, animationEngine), ButtonEvent.CLICK, "previous");
+
+			// slowmotion thingie
+			if ( hasSlowMotion() && SkinClasses.getSlowMotionBwdButton() != null )
+			{
+				_slowMotionFwdButton = addChildWidget(createWidget(_slowMotionFwdButton, "slowmotion", SlowMotionFwdButton, _config, animationEngine), ButtonEvent.CLICK, function(e:ButtonEvent):void { onSlowMotionClicked(false, true); });
+				_slowMotionBwdButton = addChildWidget(createWidget(_slowMotionBwdButton, "slowmotion", SlowMotionBwdButton, _config, animationEngine), ButtonEvent.CLICK, function(e:ButtonEvent):void { onSlowMotionClicked(false, false); });
+				_slowMotionFFwdButton = addChildWidget(createWidget(_slowMotionFFwdButton, "slowmotion", SlowMotionFFwdButton, _config, animationEngine), ButtonEvent.CLICK, function(e:ButtonEvent):void { onSlowMotionClicked(true, true); });
+				_slowMotionFBwdButton = addChildWidget(createWidget(_slowMotionFBwdButton, "slowmotion", SlowMotionFBwdButton, _config, animationEngine), ButtonEvent.CLICK, function(e:ButtonEvent):void { onSlowMotionClicked(true, false); });
+			}
+
+
+
             _muteVolumeButton = addChildWidget(createWidget(_muteVolumeButton, "mute", ToggleVolumeMuteButton, _config, animationEngine), ButtonEvent.CLICK, onMuteVolumeClicked) as AbstractToggleButton;
             _volumeSlider = addChildWidget(createWidget(_volumeSlider, "volume", VolumeScrubber, _config, animationEngine, this), VolumeSlider.DRAG_EVENT, onVolumeSlider) as VolumeScrubber;
 
@@ -629,6 +682,43 @@ package org.flowplayer.controls {
             _player.muted = ! _player.muted;
         }
 
+		private function onSlowMotionClicked(fast:Boolean, forward:Boolean):void
+		{
+			if ( ! hasSlowMotion() )
+				return;
+				
+			var fastSpeeds:Array = [2, 4, 8, 1];
+			var slowSpeeds:Array = [1/2, 1/4, 1/8, 1];
+			
+			var slowMotionPlugin:*  = _player.pluginRegistry.getPlugin("slowmotion").pluginObject;
+			var currentSpeed:Number = slowMotionPlugin.info ? slowMotionPlugin.info.speedMultiplier  : 1;
+			var isForward:Boolean   = slowMotionPlugin.info ? slowMotionPlugin.info.forwardDirection : true;
+			
+			var nextSpeed:Number = 1;
+			
+			if ( forward == isForward )	// same direction
+			{
+				if ( fast ) // fast
+					nextSpeed   = fastSpeeds[((fastSpeeds.indexOf(currentSpeed)+1)%fastSpeeds.length)];
+				else  // slow
+					nextSpeed   = slowSpeeds[((slowSpeeds.indexOf(currentSpeed)+1)%slowSpeeds.length)];
+			}
+			else if ( fast )
+				nextSpeed = fastSpeeds[0];
+			else
+				nextSpeed = slowSpeeds[0];
+				
+			log.debug("Next speed "+ nextSpeed + " forward ? "+ forward);	
+				
+			if ( nextSpeed == 0 )
+				slowMotionPlugin.normal();
+			else if ( forward )
+				slowMotionPlugin.forward(nextSpeed);
+			else
+				slowMotionPlugin.backward(nextSpeed);
+		}
+
+
         private function onVolumeSlider(event:Event):void {
             log.debug("volume slider changed to pos " + VolumeSlider(event.target).value);
             _player.volume = VolumeSlider(event.target).value;
@@ -640,7 +730,25 @@ package org.flowplayer.controls {
 
         private function arrangeLeftEdgeControls():Number {
             var leftEdge:Number = margins[3];
-            var leftControls:Array = [_stopButton, _playButton, _prevButton, _nextButton];
+            var leftControls:Array = [_stopButton];
+			
+			if ( hasSlowMotion() && _slowMotionBwdButton && _slowMotionFBwdButton)
+			{
+				leftControls.push(_slowMotionFBwdButton);
+				leftControls.push(_slowMotionBwdButton);		
+			}
+			
+			leftControls.push(_playButton);
+			
+			if ( hasSlowMotion() && _slowMotionFwdButton && _slowMotionFFwdButton)
+			{
+				leftControls.push(_slowMotionFwdButton);	
+				leftControls.push(_slowMotionFFwdButton);	
+			}
+			
+			leftControls.push(_prevButton);
+			leftControls.push(_nextButton);
+			
             leftEdge = arrangeControls(leftEdge, leftControls, arrangeToLeftEdge);
             return leftEdge;
         }

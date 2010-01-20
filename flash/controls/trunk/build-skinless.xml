@@ -13,7 +13,7 @@
 	<property name="plugin-main-class" value="org/flowplayer/controls/Controls.as" />
 	<property name="plugin-runtime-lib-swc1" value="src/flash/tube/buttons_tube.swc" />
 	<property name="library-path" value="" />
-    <property name="compiler-define" value="CONFIG::skin,'false'" />
+    <property name="compiler-define" value="CONFIG::skin,'false' -define=CONFIG::hasSlowMotion,'false'" />
 
     <target name="release-remote">
     </target>
