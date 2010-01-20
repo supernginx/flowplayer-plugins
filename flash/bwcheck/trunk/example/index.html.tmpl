@@ -436,7 +436,15 @@ playlist: [
         <td class="code">enableDynamic <div class="type">boolean</div></td>
         <td class="code default">false</td>
         <td class="description">
-				Enables dynamic stream switching for Adobe Flash Media Interactive Server. <a href="dynamic">See below</a> for more details.
+				Enables dynamic stream switching for Adobe Flash Media Server 3 and Wowza Media Server 2. <a href="#dynamic">See below</a> for more details.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">checkOnStart <div class="type">boolean</div></td>
+        <td class="code default">true</td>
+        <td class="description">
+				Explicitly set to check bandwidth on startup if dynamic stream switching is enabled. This allows for initial bandwidth checking on startup for Flash Media Server when dynamic stream switching is enabled.
+				This is due to no bandwidth checking support on Wowza Media Server 2.
         </td>
     </tr>
 	<tr>
@@ -592,7 +600,7 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 		// RTMP streaming plugin
 		rtmp: {
 			url: '../flowplayer.rtmp.swf',
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/fastplay'
+			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer'
 		},
 		content: {
 			url: '../flowplayer.content.swf',
@@ -606,10 +614,10 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 			url: '@MAIN_PLAYER_SWF@',
 
 			// Wowza media server bandwidth checking type
-			serverType: 'wowza',
+			serverType: 'fms',
 
 			// Use this connection for bandwidth detection
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
+			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
 			bitrateProfileName: 'RTMPBitrateProfile',
 			
 			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
@@ -677,7 +685,7 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 		// RTMP streaming plugin
 		rtmp: {
 			url: '../flowplayer.rtmp.swf',
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/fastplay'
+			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer'
 		},
 		content: {
 			url: '../flowplayer.content.swf',
@@ -691,10 +699,10 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 			url: '@MAIN_PLAYER_SWF@',
 
 			// Wowza media server bandwidth checking type
-			serverType: 'wowza',
+			serverType: 'fms',
 
 			// Use this connection for bandwidth detection
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
+			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
 			bitrateProfileName: 'RTMPBitrateProfile',
 			
 			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
@@ -937,7 +945,7 @@ flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
 		// RTMP streaming plugin
 		rtmp: {
 			url: '../flowplayer.rtmp.swf',
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/fastplay'
+			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer'
 		},
 		content: {
 			url: '../flowplayer.content.swf',
@@ -950,10 +958,12 @@ flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
 		bwcheck: {
 			url: '@MAIN_PLAYER_SWF@',
 
-			serverType: 'wowza',
+			serverType: 'fms',
 
 			// Use this connection for bandwidth detection
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
+			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
+			
+
 			bitrateProfileName: 'RTMPBitrateProfile',
 			
 			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
@@ -1059,7 +1069,7 @@ bandwidth</button>
 		// RTMP streaming plugin
 		rtmp: {
 			url: '../flowplayer.rtmp.swf',
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/fastplay'
+			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer'
 		},
 		content: {
 			url: '../flowplayer.content.swf',
@@ -1072,10 +1082,10 @@ bandwidth</button>
 		bwcheck: {
 			url: '@MAIN_PLAYER_SWF@',
 
-			serverType: 'wowza',
+			serverType: 'fms',
 
 			// Use this connection for bandwidth detection
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
+			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
 			bitrateProfileName: 'RTMPBitrateProfile',
 			
 			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
@@ -1153,15 +1163,18 @@ bandwidth</button>
 <h3>Dynamic stream switching</h3>
 
 <p>
-    Dynamic stream switching is available in Adobe's FMS 3.5. In dynamic switching the available bandwidth is monitored
-    while the stream plays and the stream is switched on-the-fly if the available bandwidth decreases or increases.
+    Dynamic stream switching is available in Adobe's FMS 3.5 and Wowza Media Server 2. In dynamic switching the available bandwidth is monitored
+    while the stream plays and the stream is switched on-the-fly if the available bandwidth decreases or increases, it will also switch the stream in realtime when a bitrate is manually selected using setBitrate.
     See more information about dynamic stream switching in <a href="http://www.adobe.com/devnet/flashmediaserver/articles/dynamic_stream_switching.html" class="external">Dynamic stream switching with Flash Media Server 3</a>.
 </p>
 
 <p>
-    Dynamic stream switching is configured just like <a href="#rtmp">RTMP bandwidth checking</a> for Adobe FMS and by adding
-    the option <samp>dynamic: true</samp> to the plugin's configuration. Here is a
-    <a href="/demos/plugins/streaming/bwcheck-dynamic.html">page demonstrating this in action</a>.
+    If dynamic stream switching is enabled, a bandwidth check at the start is not required, only an initial bitrate with the defaultBitrate should be set 
+    and the quality of service monitor will upgrade the stream in realtime. 
+</p>
+<p>
+    Due to the fact Wowza Media Server 2 has removed support for a bandwidth check application it will solely rely on the quality of service monitoring.
+    If however on Flash Media Server you still require initial bandwidth check services set checkOnStart to true and set the netConnectionUrl to the FMS application. 
 </p>
 
 <div style="width:425px;margin:30px auto">
@@ -1205,7 +1218,7 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 		// RTMP streaming plugin
 		rtmp: {
 			url: '../flowplayer.rtmp.swf',
-			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer'
+			netConnectionUrl: 'rtmp://vod01.netdna.com/play'
 		},
 		content: {
 			url: '../flowplayer.content.swf',
@@ -1218,13 +1231,12 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 		bwcheck: {
 			url: '@MAIN_PLAYER_SWF@',
 
-			// Influxis uses Flash Media Servers
 			serverType: 'wowza',
 
 			// Use this connection for bandwidth detection
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
 			enableDynamic: true,
+			defaultBitrate: 270,
 			
 			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
 				var el = document.getElementById("rtmpDynamicInfo");
@@ -1279,13 +1291,7 @@ function changeDynamicBitrate(bitrate) {
 }
 		
 		
-$(document).ready(function () {
-	
-	$('.checkDynamicBtn').click(function() {
-		$f().getPlugin("bwcheck").checkBandwidth();
-	});
-		
-});
+
 
 	
 
@@ -1296,8 +1302,6 @@ $(document).ready(function () {
 </div>
 
 
-<button type="button" class="checkDynamicBtn">Check
-bandwidth</button>
 		
 <div id="changeDynamicBitrate">
 	<b>Change Bitrate:</b><br/>
@@ -1310,15 +1314,14 @@ bandwidth</button>
 <pre><code class="javascript">flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 	playlist: [
             {
-              url: "flv:skyandice", 
-  					bitrates: [
-  								{url: "flv:skyandice", width: 150, height: 90, bitrate: 100},
-  								{url: "flv:skyandice", width: 400, height: 180, bitrate: 180},
-  								{url: "flv:skyandice", width: 700, height: 270, bitrate: 270},
-  								{url: "flv:skyandice", width: 1000, height: 360, bitrate: 360}
-  							  ]
-  					}
-            }
+              url: "flv:bbb", 
+              bitrates: [
+                        {url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
+                        {url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
+                        {url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
+                        {url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
+			           ]
+			}
         ],
 	// configure the required plugins
 	plugins:  {
@@ -1326,7 +1329,7 @@ bandwidth</button>
 		// RTMP streaming plugin
 		rtmp: {
 			url: '../flowplayer.rtmp.swf',
-			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer'
+			netConnectionUrl: 'rtmp://vod01.netdna.com/play'
 		},
 		content: {
 			url: '../flowplayer.content.swf',
@@ -1342,10 +1345,9 @@ bandwidth</button>
 			// Influxis uses Flash Media Servers
 			serverType: 'wowza',
 
-			// Use this connection for bandwidth detection
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
 			enableDynamic: true,
+			defaultBitrate: 270,
 			
 			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
 				var el = document.getElementById("rtmpDynamicInfo");
@@ -1417,17 +1419,14 @@ bandwidth</button>
 flowplayer("rtmpSelectionPlayer", "@PLAYER_SWF@", {
 	playlist: [
             {
-              url: "flv:skyandice", 
-              customProperties: {
-              					bitrates: [
-              								{url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
-              								{url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
-              								{url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
-              								//{url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
-              								{url: "flv:bbb_480x270", width: 640, height: 360, bitrate: 360}
-              							  ]
-              					}
-            }
+              url: "flv:bbb", 
+              bitrates: [
+                        {url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
+                        {url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
+                        {url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
+                        {url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
+			           ]
+			}
         ],
 	// configure the required plugins
 	plugins:  {
@@ -1435,7 +1434,7 @@ flowplayer("rtmpSelectionPlayer", "@PLAYER_SWF@", {
 		// RTMP streaming plugin
 		rtmp: {
 			url: '../flowplayer.rtmp.swf',
-			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer'
+			netConnectionUrl: 'rtmp://vod01.netdna.com/play'
 		},
 		content: {
 			url: '../flowplayer.content.swf',
@@ -1448,13 +1447,12 @@ flowplayer("rtmpSelectionPlayer", "@PLAYER_SWF@", {
 		bwcheck: {
 			url: '@MAIN_PLAYER_SWF@',
 
-			// Influxis uses Flash Media Servers
 			serverType: 'wowza',
 
 			// Use this connection for bandwidth detection
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
 			enableDynamic: true,
+			defaultBitrate: 270,
 			streamSelectionStrategy: 'resizable',
 			maxContainerWidth: 640,
 			
@@ -1516,13 +1514,7 @@ function changeSelectionBitrate(bitrate) {
 }
 		
 		
-$(document).ready(function () {
-	
-	$('.checkSelectionBtn').click(function() {
-		$f().getPlugin("bwcheck").checkBandwidth();
-	});
-		
-});
+
 
 	
 
@@ -1532,8 +1524,7 @@ $(document).ready(function () {
 
 </div>
 
-<button type="button" class="checkSelectionBtn">Check
-bandwidth</button>
+
 		
 <div id="changeSelectionBitrate">
 	<b>Change Bitrate:</b><br/>
@@ -1547,13 +1538,14 @@ bandwidth</button>
 <pre><code class="javascript">flowplayer("rtmpSelectionPlayer", "@PLAYER_SWF@", {
 	playlist: [
             {
-              url: "flv:skyandice", 
-             bitrates: [
-           {url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
-           {url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
-           {url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
-           {url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
-]
+              url: "flv:bbb", 
+              bitrates: [
+                        {url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
+                        {url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
+                        {url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
+                        {url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
+			           ]
+			}
         ],
 	// configure the required plugins
 	plugins:  {
@@ -1561,7 +1553,7 @@ bandwidth</button>
 		// RTMP streaming plugin
 		rtmp: {
 			url: '../flowplayer.rtmp.swf',
-			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer'
+			netConnectionUrl: 'rtmp://vod01.netdna.com/play'
 		},
 		content: {
 			url: '../flowplayer.content.swf',
@@ -1577,10 +1569,9 @@ bandwidth</button>
 			// Influxis uses Flash Media Servers
 			serverType: 'wowza',
 
-			// Use this connection for bandwidth detection
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
 			enableDynamic: true,
+			defaultBitrate: 270,
 			streamSelectionStrategy: 'resizable',
 			maxContainerWidth: 640
 			
@@ -1637,13 +1628,7 @@ function changeSelectionBitrate(bitrate) {
 }
 		
 		
-$(document).ready(function () {
-	
-	$('.checkSelectionBtn').click(function() {
-		$f().getPlugin("bwcheck").checkBandwidth();
-	});
-		
-});
+
 </code></pre>
 </div>
 </div>
@@ -1682,17 +1667,14 @@ $(document).ready(function () {
 flowplayer("rtmpQosPlayer", "@PLAYER_SWF@", {
 	playlist: [
             {
-              url: "flv:skyandice", 
-              customProperties: {
-              					bitrates: [
-              								{url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
-              								{url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
-              								{url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
-              								//{url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
-              								{url: "flv:bbb_480x270", width: 640, height: 360, bitrate: 360}
-              							  ]
-              					}
-            }
+              url: "flv:bbb", 
+              bitrates: [
+                        {url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
+                        {url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
+                        {url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
+                        {url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
+			           ]
+			}
         ],
 	// configure the required plugins
 	plugins:  {
@@ -1700,7 +1682,7 @@ flowplayer("rtmpQosPlayer", "@PLAYER_SWF@", {
 		// RTMP streaming plugin
 		rtmp: {
 			url: '../flowplayer.rtmp.swf',
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/fastplay'
+			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer'
 		},
 		content: {
 			url: '../flowplayer.content.swf',
@@ -1714,10 +1696,10 @@ flowplayer("rtmpQosPlayer", "@PLAYER_SWF@", {
 			url: '@MAIN_PLAYER_SWF@',
 
 			// Influxis uses Flash Media Servers
-			serverType: 'wowza',
+			serverType: 'fms',
 
 			// Use this connection for bandwidth detection
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
+			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
 			bitrateProfileName: 'RTMPBitrateProfile',
 			enableQosMonitor: true,
 			streamSelectionStrategy: 'resizable',
@@ -1780,15 +1762,14 @@ flowplayer("rtmpQosPlayer", "@PLAYER_SWF@", {
 <pre><code class="javascript">flowplayer("rtmpQosPlayer", "@PLAYER_SWF@", {
 	playlist: [
             {
-              url: "flv:skyandice", 
+              url: "flv:bbb", 
               bitrates: [
-              								{url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
-              								{url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
-              								{url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
-              								//{url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
-              								{url: "flv:bbb_480x270", width: 640, height: 360, bitrate: 360}
-              			 ]
-            }
+                        {url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
+                        {url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
+                        {url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
+                        {url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
+			           ]
+			}
         ],
 	// configure the required plugins
 	plugins:  {
@@ -1796,7 +1777,7 @@ flowplayer("rtmpQosPlayer", "@PLAYER_SWF@", {
 		// RTMP streaming plugin
 		rtmp: {
 			url: '../flowplayer.rtmp.swf',
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/fastplay'
+			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer'
 		},
 		content: {
 			url: '../flowplayer.content.swf',
@@ -1810,10 +1791,10 @@ flowplayer("rtmpQosPlayer", "@PLAYER_SWF@", {
 			url: '@MAIN_PLAYER_SWF@',
 
 			// Influxis uses Flash Media Servers
-			serverType: 'wowza',
+			serverType: 'fms  ',
 
 			// Use this connection for bandwidth detection
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
+			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
 			bitrateProfileName: 'RTMPBitrateProfile',
 			enableQosMonitor: true,
 			streamSelectionStrategy: 'resizable',
@@ -1949,7 +1930,7 @@ flowplayer("rtmpRSSPlayer", "@PLAYER_SWF@", {
 		// RTMP streaming plugin
 		rtmp: {
 			url: '../flowplayer.rtmp.swf',
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/fastplay'
+			netConnectionUrl: 'rtmp://vod01.netdna.com/play'
 		},
 		content: {
 			url: '../flowplayer.content.swf',
@@ -1963,11 +1944,9 @@ flowplayer("rtmpRSSPlayer", "@PLAYER_SWF@", {
 			url: '@MAIN_PLAYER_SWF@',
 
 			serverType: 'wowza',
-
-			// Use this connection for bandwidth detection
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
-
+			enableDynamic: true,
+			defaultBitrate: 270,
 			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
 				var el = document.getElementById("rtmpRSSInfo");
 				el.innerHTML = "Chosen bitrate is: " + mappedBitrate.bitrate + "<br /> Video file served: " + streamName + "<br /> Old Video file served: " + oldStreamName;
@@ -2022,7 +2001,7 @@ flowplayer("rtmpRSSPlayer", "@PLAYER_SWF@", {
 		// RTMP streaming plugin
 		rtmp: {
 			url: '../flowplayer.rtmp.swf',
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/fastplay'
+			netConnectionUrl: 'rtmp://vod01.netdna.com/play'
 		},
 		content: {
 			url: '../flowplayer.content.swf',
@@ -2036,11 +2015,9 @@ flowplayer("rtmpRSSPlayer", "@PLAYER_SWF@", {
 			url: '@MAIN_PLAYER_SWF@',
 
 			serverType: 'wowza',
-
-			// Use this connection for bandwidth detection
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
-
+			enableDynamic: true,
+			defaultBitrate: 270,
 			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
 				var el = document.getElementById("rtmpRSSInfo");
 				el.innerHTML = "Chosen bitrate is: " + mappedBitrate.bitrate + "<br /> Video file served: " + streamName + "<br /> Old Video file served: " + oldStreamName;
@@ -2080,7 +2057,7 @@ flowplayer("rtmpRSSPlayer", "@PLAYER_SWF@", {
 <h2><em>RTMP</em> With Dynamic Buffering Example</h2>
 
 <p>
-	RTMP Example with dynamic buffer time calculation.
+	RTMP Example with dynamic buffer time calculation. Expects a bitrate to be detected / set before playback. 
 </p>
 
 <div style="width:425px;margin:30px auto">
@@ -2125,7 +2102,7 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
 		// RTMP streaming plugin
 		rtmp: {
 			url: '../flowplayer.rtmp.swf',
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/fastplay'
+			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer'
 		},
 		content: {
 			url: '../flowplayer.content.swf',
@@ -2139,10 +2116,10 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
 			url: '@MAIN_PLAYER_SWF@',
 
 			// Influxis uses Flash Media Servers
-			serverType: 'wowza',
+			serverType: 'fms',
 
 			// Use this connection for bandwidth detection
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
+			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
 			bitrateProfileName: 'RTMPBitrateProfile',
 			enableDynamicBuffer: true,
 			
@@ -2222,10 +2199,10 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
 			url: '@MAIN_PLAYER_SWF@',
 
 			// Influxis uses Flash Media Servers
-			serverType: 'wowza',
+			serverType: 'fms',
 
 			// Use this connection for bandwidth detection
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
+			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
 			bitrateProfileName: 'RTMPBitrateProfile',
 			enableDynamicBuffer: true,
 			
@@ -2285,12 +2262,7 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
             {host:'rtmp://electroteque.org/bwcheck'}
         ],
 
-        defaultBitrate: 300,
-        bitrates: [
-            100,300,500,700
-        ],
-        //{0} is the filename, {1} is the bitrate, {2} is the extension
-        urlPattern: '{0}-{1}.{2}'
+        defaultBitrate: 300
     }</code></pre>
 </div>
 
