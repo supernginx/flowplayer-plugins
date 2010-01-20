@@ -21,9 +21,9 @@ package org.flowplayer.controls {
     import org.flowplayer.controls.button.ButtonEvent;
     import org.flowplayer.controls.button.NextButton;
     import org.flowplayer.controls.button.PrevButton;
-	import org.flowplayer.controls.button.SlowMotionFwdButton;
+		import org.flowplayer.controls.button.SlowMotionFwdButton;
     import org.flowplayer.controls.button.SlowMotionBwdButton;
-	import org.flowplayer.controls.button.SlowMotionFFwdButton;
+		import org.flowplayer.controls.button.SlowMotionFFwdButton;
     import org.flowplayer.controls.button.SlowMotionFBwdButton;
     import org.flowplayer.controls.button.SkinClasses;
     import org.flowplayer.controls.button.StopButton;
@@ -63,9 +63,9 @@ package org.flowplayer.controls {
         private var _progressTracker:DisplayObject;
         private var _prevButton:DisplayObject;
         private var _nextButton:DisplayObject;
-		private var _slowMotionFwdButton:DisplayObject;
+				private var _slowMotionFwdButton:DisplayObject;
         private var _slowMotionBwdButton:DisplayObject;
-		private var _slowMotionFFwdButton:DisplayObject;
+				private var _slowMotionFFwdButton:DisplayObject;
         private var _slowMotionFBwdButton:DisplayObject;
         private var _stopButton:DisplayObject;
         private var _scrubber:Scrubber;
@@ -162,29 +162,47 @@ package org.flowplayer.controls {
         }
 
         [External]
-        public function tooltips(props:Object):void {
+        public function setTooltips(props:Object):void {
             initTooltipConfig(_config, props);
             redraw(props);
         }
 
         [External]
-        public function autoHide(props:Object = null):void {
+        public function setAutoHide(props:Object = null):void {
             log.debug("autoHide()");
-            if (props) {
+		    		if (props) {
                 new PropertyBinder(_config).copyProperties(props);
+
+                if (props.hasOwnProperty("enabled")) {
+                    if (props.enabled) {
+                        setAutoHideFullscreenOnly(_config, props);
+                    } else {
+                        _config.autoHide = "never";
+                    }
+                } else if (_config.autoHide != "never") {
+                    setAutoHideFullscreenOnly(_config, props);
+                }
             }
+            _pluginModel.config.autoHide = _config.autoHide;
 
             if (! props || _config.autoHide == "never") {
                 log.debug("autoHide set to 'never'");
                 if (_controlBarMover) {
                     _controlBarMover.stop();
-                    _controlBarMover.resetScreen();
                 }
                 return;
             }
 
             createControlBarMover();
             _controlBarMover.start();
+        }
+
+				private function setAutoHideFullscreenOnly(config:Config, props:Object):void {
+		    		if (props.hasOwnProperty("fullscreenOnly")) {
+                _config.autoHide = props.fullscreenOnly ? "fullscreen" : "always";
+            } else if (config.autoHide == "never") {
+                _config.autoHide = "fullscreen";
+            }
         }
 
         /**
@@ -293,51 +311,9 @@ package org.flowplayer.controls {
             log.debug("using skin " + skin);
             SkinClasses.skinClasses = skin.pluginObject as ApplicationDomain;
 
-
-			var qwe:Object =  {
-                bottom: 0, 
-				left: 0, 
-				height: 72, 
-				width: "100%", 
-				zIndex: 2,
-                backgroundColor: "#545454",
-                backgroundGradient: [.6, 0.3, 0, 0, 0],
-                border: "0px",
-                borderRadius: "0px",
-                timeColor: "#01DAFF",
-                durationColor: "#ffffff",
-                sliderColor: "#000000",
-                sliderGradient: "none",
-                volumeSliderColor: "#000000",
-                volumeSliderGradient: "none",
-                buttonColor: "#5F747C",
-                buttonOverColor: "#728B94",
-                progressColor: "#015B7A",
-                progressGradient: "medium",
-                bufferColor: "#6c9cbc",
-                bufferGradient: "none",
-                tooltipColor: "#5F747C",
-                tooltipTextColor: "#ffffff",
-                timeBgColor: '#555555',
-
-                // what percentage the scrubber handle should take of the controlbar total height
-                scrubberHeightRatio: 0.4,
-                // what percentage the scrubber horizontal bar should take of the controlbar total height
-                scrubberBarHeightRatio: 1,
-
-                // what percentage the volume slider handle should take of the controlbar total height
-                volumeSliderHeightRatio: 0.4,
-                // what percentage the horizontal volume bar should take of the controlbar total height
-                volumeBarHeightRatio: 1,
-
-                // how much the time view colored box is of the total controlbar height
-                timeBgHeightRatio: 0.7
-            };
-
-
             log.debug("skin has defaults", SkinClasses.defaults);
-            Arrange.fixPositionSettings(_pluginModel as DisplayPluginModel, qwe /*SkinClasses.defaults*/);
-            new PropertyBinder(_pluginModel, "config").copyProperties(qwe/*SkinClasses.defaults*/, false);
+            Arrange.fixPositionSettings(_pluginModel as DisplayPluginModel, SkinClasses.defaults);
+            new PropertyBinder(_pluginModel, "config").copyProperties(SkinClasses.defaults, false);
             _config = createConfig(_pluginModel.config);
         }
 
