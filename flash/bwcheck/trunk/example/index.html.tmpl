@@ -247,7 +247,7 @@ flowplayer("player", "@PLAYER_SWF@", {
 		urlResolvers: 'bwcheck',
 		baseUrl: 'http://flashy.flowplayer.org/video/',
 		onMetaData: function(clip) {
-			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
+			var dimensions = "Clip Width: " + clip.metaData.width + " Clip Height: " + clip.metaData.height;
 			var content = $f().getPlugin('content');
 			content.setHtml(dimensions);
 		}
@@ -313,7 +313,7 @@ flowplayer("player", "@PLAYER_SWF@", {
 		urlResolvers: 'bwcheck',
 		baseUrl: 'http://flashy.flowplayer.org/video/',
 		onMetaData: function(clip) {
-			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
+			var dimensions = "Clip Width: " + clip.metaData.width + " Clip Height: " + clip.metaData.height;
 			var content = $f().getPlugin('content');
 			content.setHtml(dimensions);
 		}
@@ -587,10 +587,10 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
             {
               url: "flv:bbb", 
               bitrates: [
-                        {url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
-                        {url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
-                        {url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
-                        {url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
+                        {url: "vod/demo.flowplayer/bbb_160x90", width: 160, height: 90, bitrate: 100},
+                        {url: "vod/demo.flowplayer/bbb_320x180", width: 320, height: 180, bitrate: 180},
+                        {url: "vod/demo.flowplayer/bbb_480x270", width: 480, height: 270, bitrate: 270},
+                        {url: "vod/demo.flowplayer/bbb_640x360", width: 640, height: 360, bitrate: 360}
 			           ]
 			}
         ],
@@ -600,7 +600,7 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 		// RTMP streaming plugin
 		rtmp: {
 			url: '../flowplayer.rtmp.swf',
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/fastplay'
+			netConnectionUrl: 'rtmp://vod01.netdna.com/play'
 		},
 		content: {
 			url: '../flowplayer.content.swf',
@@ -642,7 +642,7 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 		// use bwcheck for all clips
 		urlResolvers: 'bwcheck',
 		onMetaData: function(clip) {
-			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
+			var dimensions = "Clip Width: " + clip.metaData.width + " Clip Height: " + clip.metaData.height;
 			var content = $f().getPlugin('content');
 			content.setHtml(dimensions);
 		}
@@ -672,10 +672,10 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
             {
               url: "flv:bbb", 
               bitrates: [
-                        {url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
-                        {url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
-                        {url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
-                        {url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
+                        {url: "vod/demo.flowplayer/bbb_160x90", width: 160, height: 90, bitrate: 100},
+                        {url: "vod/demo.flowplayer/bbb_320x180", width: 320, height: 180, bitrate: 180},
+                        {url: "vod/demo.flowplayer/bbb_480x270", width: 480, height: 270, bitrate: 270},
+                        {url: "vod/demo.flowplayer/bbb_640x360", width: 640, height: 360, bitrate: 360}
 			           ]
 			}
         ],
@@ -685,7 +685,7 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 		// RTMP streaming plugin
 		rtmp: {
 			url: '../flowplayer.rtmp.swf',
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/fastplay'
+			netConnectionUrl: 'rtmp://vod01.netdna.com/play'
 		},
 		content: {
 			url: '../flowplayer.content.swf',
@@ -727,7 +727,7 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 		// use bwcheck for all clips
 		urlResolvers: 'bwcheck',
 		onMetaData: function(clip) {
-			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
+			var dimensions = "Clip Width: " + clip.metaData.width + " Clip Height: " + clip.metaData.height;
 			var content = $f().getPlugin('content');
 			content.setHtml(dimensions);
 		}
@@ -821,7 +821,7 @@ flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
 		urlResolvers: 'bwcheck',
 		baseUrl: 'http://flashy.flowplayer.org/video/',
 		onMetaData: function(clip) {
-			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
+			var dimensions = "Clip Width: " + clip.metaData.width + " Clip Height: " + clip.metaData.height;
 			var content = $f().getPlugin('content');
 			content.setHtml(dimensions);
 		}
@@ -885,7 +885,7 @@ flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
 		urlResolvers: 'bwcheck',
 		baseUrl: 'http://flashy.flowplayer.org/video/',
 		onMetaData: function(clip) {
-			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
+			var dimensions = "Clip Width: " + clip.metaData.width + " Clip Height: " + clip.metaData.height;
 			var content = $f().getPlugin('content');
 			content.setHtml(dimensions);
 		}
@@ -932,10 +932,10 @@ flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
             {
               url: "flv:bbb", 
               bitrates: [
-                        {url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
-                        {url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
-                        {url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
-                        {url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
+                        {url: "vod/demo.flowplayer/bbb_160x90", width: 160, height: 90, bitrate: 100},
+                        {url: "vod/demo.flowplayer/bbb_320x180", width: 320, height: 180, bitrate: 180},
+                        {url: "vod/demo.flowplayer/bbb_480x270", width: 480, height: 270, bitrate: 270},
+                        {url: "vod/demo.flowplayer/bbb_640x360", width: 640, height: 360, bitrate: 360}
 			           ]
 			}
         ],
@@ -945,7 +945,7 @@ flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
 		// RTMP streaming plugin
 		rtmp: {
 			url: '../flowplayer.rtmp.swf',
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/fastplay'
+			netConnectionUrl: 'rtmp://vod01.netdna.com/play'
 		},
 		content: {
 			url: '../flowplayer.content.swf',
@@ -958,7 +958,7 @@ flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
 		bwcheck: {
 			url: '@MAIN_PLAYER_SWF@',
 
-			serverType: 'fms',
+			serverType: 'wowza',
 
 			// Use this connection for bandwidth detection
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
@@ -991,7 +991,7 @@ flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
 			showManualBitrates(clip);
 		},
 		onMetaData: function(clip) {
-			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
+			var dimensions = "Clip Width: " + clip.metaData.width + " Clip Height: " + clip.metaData.height;
 			var content = $f().getPlugin('content');
 			content.setHtml(dimensions);
 		},
@@ -1009,12 +1009,12 @@ flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
 			var bitrates = clip.bitrates;
 			
 			console.log(bitrates);
-     		var form = "";
+     		var form = "<b>Change Bitrate:</b><br/>";
 			jQuery.each( bitrates, function(index, item){
 			
 				form += '<label><input type="radio" name="bitrateBtn" value="' + item.bitrate + '"  onclick="changeManualBitrate(' + item.bitrate + ')" />' + item.bitrate + ' K</label><br>';
 			});
-     		$('#changeManualBitrate').append(form);
+     		$('#changeManualBitrate').html(form);
      		
 	}
 
@@ -1056,10 +1056,10 @@ bandwidth</button>
             {
               url: "flv:bbb", 
               bitrates: [
-                        {url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
-                        {url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
-                        {url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
-                        {url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
+                        {url: "vod/demo.flowplayer/bbb_160x90", width: 160, height: 90, bitrate: 100},
+                        {url: "vod/demo.flowplayer/bbb_320x180", width: 320, height: 180, bitrate: 180},
+                        {url: "vod/demo.flowplayer/bbb_480x270", width: 480, height: 270, bitrate: 270},
+                        {url: "vod/demo.flowplayer/bbb_640x360", width: 640, height: 360, bitrate: 360}
 			           ]
 			}
         ],
@@ -1069,7 +1069,7 @@ bandwidth</button>
 		// RTMP streaming plugin
 		rtmp: {
 			url: '../flowplayer.rtmp.swf',
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/fastplay'
+			netConnectionUrl: 'rtmp://vod01.netdna.com/play'
 		},
 		content: {
 			url: '../flowplayer.content.swf',
@@ -1082,7 +1082,7 @@ bandwidth</button>
 		bwcheck: {
 			url: '@MAIN_PLAYER_SWF@',
 
-			serverType: 'fms',
+			serverType: 'wowza',
 
 			// Use this connection for bandwidth detection
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
@@ -1116,7 +1116,7 @@ bandwidth</button>
 			alert("yes");
 		},
 		onMetaData: function(clip) {
-			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
+			var dimensions = "Clip Width: " + clip.metaData.width + " Clip Height: " + clip.metaData.height;
 			var content = $f().getPlugin('content');
 			content.setHtml(dimensions);
 		}
@@ -1128,12 +1128,12 @@ bandwidth</button>
 	function showManualBitrates(clip)
 	{
 			var bitrates = clip.bitrates;
-     		var form = "";
+     		var form = "<b>Change Bitrate:</b><br/>";
 			jQuery.each( bitrates, function(index, item){
 			
 				form += '<label><input type="radio" name="bitrateBtn" value="' + item.bitrate + '"  onclick="changeManualBitrate(' + item.bitrate + ')" />' + item.bitrate + ' K</label><br>';
 			});
-     		$('#changeManualBitrate').append(form);
+     		$('#changeManualBitrate').html(form);
      		
 	}
 
@@ -1169,15 +1169,14 @@ bandwidth</button>
 </p>
 
 <p>
-    If dynamic stream switching is enabled, a bandwidth check at the start is not required, only an initial bitrate with the defaultBitrate should be set 
+    If dynamic stream switching is enabled, a bandwidth check at the start is not required, only an initial bitrate with the defaultBitrate can be set 
     and the quality of service monitor will upgrade the stream in realtime. 
 </p>
 <p>
-    Due to the fact Wowza Media Server 2 has removed support for a bandwidth check application it will solely rely on the quality of service monitoring.
-    If however on Flash Media Server you still require initial bandwidth check services set checkOnStart to true and set the netConnectionUrl to the FMS application. 
+   In Wowza and Red5 the bandwidth check applications require to be installed as they are not enabled by default. 
 </p>
 
-<div style="width:425px;margin:30px auto">
+<div style="width:320px;height:205px;margin:30px auto">
    
 
 
@@ -1186,11 +1185,11 @@ bandwidth</button>
 
 <a
 	href="skyandice"
-	style="display:block;width:425px;height:300px;"
+	style="display:block;width:320px;height:205px;"
 	id="rtmpDynamicPlayer">
 
 	<!-- splash image inside the container -->
-	<img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" />
+	<img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" width="320" height="205" />
 
 </a>
 
@@ -1234,9 +1233,10 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 			serverType: 'wowza',
 
 			// Use this connection for bandwidth detection
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
 			enableDynamic: true,
-			defaultBitrate: 270,
+			//checkOnStart:true, 
 			
 			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
 				var el = document.getElementById("rtmpDynamicInfo");
@@ -1263,7 +1263,7 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 			showDynamicBitrates(clip);
 		},
 		onMetaData: function(clip) {
-			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
+			var dimensions = "Clip Width: " + clip.metaData.width + " Clip Height: " + clip.metaData.height;
 			var content = $f().getPlugin('content');
 			content.setHtml(dimensions);
 		}
@@ -1275,12 +1275,12 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 function showDynamicBitrates(clip)
 {
 			var bitrates = clip.bitrates;
-     		var form = "";
+     		var form = "<b>Change Bitrate:</b><br/>";
 			jQuery.each( bitrates, function(index, item){
 			
 				form += '<label><input type="radio" name="bitrate" value="' + item.bitrate + '" class="bitrateDynamicBtn" onclick="changeDynamicBitrate(' + item.bitrate + ')" />' + item.bitrate + ' K</label><br>';
 			});
-     		$('#changeDynamicBitrate').append(form);
+     		$('#changeDynamicBitrate').html(form);
      		
      
 }
@@ -1342,12 +1342,12 @@ function changeDynamicBitrate(bitrate) {
 		bwcheck: {
 			url: '@MAIN_PLAYER_SWF@',
 
-			// Influxis uses Flash Media Servers
 			serverType: 'wowza',
-
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
+			
 			bitrateProfileName: 'RTMPBitrateProfile',
 			enableDynamic: true,
-			defaultBitrate: 270,
+			checkOnStart:true, 
 			
 			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
 				var el = document.getElementById("rtmpDynamicInfo");
@@ -1374,7 +1374,7 @@ function changeDynamicBitrate(bitrate) {
 			showDynamicBitrates(clip);
 		},
 		onMetaData: function(clip) {
-			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
+			var dimensions = "Clip Width: " + clip.metaData.width + " Clip Height: " + clip.metaData.height;
 			var content = $f().getPlugin('content');
 			content.setHtml(dimensions);
 		}
@@ -1448,11 +1448,11 @@ flowplayer("rtmpSelectionPlayer", "@PLAYER_SWF@", {
 			url: '@MAIN_PLAYER_SWF@',
 
 			serverType: 'wowza',
-
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			// Use this connection for bandwidth detection
 			bitrateProfileName: 'RTMPBitrateProfile',
 			enableDynamic: true,
-			defaultBitrate: 270,
+			checkOnStart:true, 
 			streamSelectionStrategy: 'resizable',
 			maxContainerWidth: 640,
 			
@@ -1486,7 +1486,7 @@ flowplayer("rtmpSelectionPlayer", "@PLAYER_SWF@", {
 			showSelectionBitrates(clip);
 		},
 		onMetaData: function(clip) {
-			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
+			var dimensions = "Clip Width: " + clip.metaData.width + " Clip Height: " + clip.metaData.height;
 			var content = $f().getPlugin('content');
 			content.setHtml(dimensions);
 		}
@@ -1498,12 +1498,12 @@ flowplayer("rtmpSelectionPlayer", "@PLAYER_SWF@", {
 function showSelectionBitrates(clip)
 {
 			var bitrates = clip.bitrates;
-     		var form = "";
+     		var form = "<b>Change Bitrate:</b><br/>";
 			jQuery.each( bitrates, function(index, item){
 			
 				form += '<label><input type="radio" name="bitrate" value="' + item.bitrate + '" class="bitrateSelectionBtn" onclick="changeSelectionBitrate(' + item.bitrate + ')" />' + item.bitrate + ' K</label><br>';
 			});
-     		$('#changeSelectionBitrate').append(form);
+     		$('#changeSelectionBitrate').html(form);
      		
      
 }
@@ -1566,12 +1566,12 @@ function changeSelectionBitrate(bitrate) {
 		bwcheck: {
 			url: '@MAIN_PLAYER_SWF@',
 
-			// Influxis uses Flash Media Servers
 			serverType: 'wowza',
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 
 			bitrateProfileName: 'RTMPBitrateProfile',
 			enableDynamic: true,
-			defaultBitrate: 270,
+			checkOnStart:true, 
 			streamSelectionStrategy: 'resizable',
 			maxContainerWidth: 640
 			
@@ -1600,7 +1600,7 @@ function changeSelectionBitrate(bitrate) {
 			showSelectionBitrates(clip);
 		},
 		onMetaData: function(clip) {
-			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
+			var dimensions = "Clip Width: " + clip.metaData.width + " Clip Height: " + clip.metaData.height;
 			var content = $f().getPlugin('content');
 			content.setHtml(dimensions);
 		}
@@ -1612,12 +1612,12 @@ function changeSelectionBitrate(bitrate) {
 function showSelectionBitrates(clip)
 {
 			var bitrates = clip.bitrates;
-     		var form = "";
+     		var form = "<b>Change Bitrate:</b><br/>";
 			jQuery.each( bitrates, function(index, item){
 			
 				form += '<label><input type="radio" name="bitrate" value="' + item.bitrate + '" class="bitrateSelectionBtn" onclick="changeSelectionBitrate(' + item.bitrate + ')" />' + item.bitrate + ' K</label><br>';
 			});
-     		$('#changeSelectionBitrate').append(form);
+     		$('#changeSelectionBitrate').html(form);
      		
      
 }
@@ -1669,10 +1669,10 @@ flowplayer("rtmpQosPlayer", "@PLAYER_SWF@", {
             {
               url: "flv:bbb", 
               bitrates: [
-                        {url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
-                        {url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
-                        {url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
-                        {url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
+                        {url: "vod/demo.flowplayer/bbb_160x90", width: 160, height: 90, bitrate: 100},
+                        {url: "vod/demo.flowplayer/bbb_320x180", width: 320, height: 180, bitrate: 180},
+                        {url: "vod/demo.flowplayer/bbb_480x270", width: 480, height: 270, bitrate: 270},
+                        {url: "vod/demo.flowplayer/bbb_640x360", width: 640, height: 360, bitrate: 360}
 			           ]
 			}
         ],
@@ -1682,7 +1682,7 @@ flowplayer("rtmpQosPlayer", "@PLAYER_SWF@", {
 		// RTMP streaming plugin
 		rtmp: {
 			url: '../flowplayer.rtmp.swf',
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/fastplay'
+			netConnectionUrl: 'rtmp://vod01.netdna.com/play'
 		},
 		content: {
 			url: '../flowplayer.content.swf',
@@ -1735,7 +1735,7 @@ flowplayer("rtmpQosPlayer", "@PLAYER_SWF@", {
         },
 		
 		onMetaData: function(clip) {
-			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
+			var dimensions = "Clip Width: " + clip.metaData.width + " Clip Height: " + clip.metaData.height;
 			var content = $f().getPlugin('content');
 			content.setHtml(dimensions);
 		}
@@ -1763,10 +1763,10 @@ flowplayer("rtmpQosPlayer", "@PLAYER_SWF@", {
             {
               url: "flv:bbb", 
               bitrates: [
-                        {url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
-                        {url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
-                        {url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
-                        {url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
+                        {url: "vod/demo.flowplayer/bbb_160x90", width: 160, height: 90, bitrate: 100},
+                        {url: "vod/demo.flowplayer/bbb_320x180", width: 320, height: 180, bitrate: 180},
+                        {url: "vod/demo.flowplayer/bbb_480x270", width: 480, height: 270, bitrate: 270},
+                        {url: "vod/demo.flowplayer/bbb_640x360", width: 640, height: 360, bitrate: 360}
 			           ]
 			}
         ],
@@ -1776,7 +1776,7 @@ flowplayer("rtmpQosPlayer", "@PLAYER_SWF@", {
 		// RTMP streaming plugin
 		rtmp: {
 			url: '../flowplayer.rtmp.swf',
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/fastplay'
+			netConnectionUrl: 'rtmp://vod01.netdna.com/play'
 		},
 		content: {
 			url: '../flowplayer.content.swf',
@@ -1826,7 +1826,7 @@ flowplayer("rtmpQosPlayer", "@PLAYER_SWF@", {
 		// use bwcheck for all clips
 		urlResolvers: 'bwcheck',
 		onMetaData: function(clip) {
-			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
+			var dimensions = "Clip Width: " + clip.metaData.width + " Clip Height: " + clip.metaData.height;
 			var content = $f().getPlugin('content');
 			content.setHtml(dimensions);
 		}
@@ -1943,9 +1943,9 @@ flowplayer("rtmpRSSPlayer", "@PLAYER_SWF@", {
 			url: '@MAIN_PLAYER_SWF@',
 
 			serverType: 'wowza',
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
 			enableDynamic: true,
-			defaultBitrate: 270,
 			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
 				var el = document.getElementById("rtmpRSSInfo");
 				el.innerHTML = "Chosen bitrate is: " + mappedBitrate.bitrate + "<br /> Video file served: " + streamName + "<br /> Old Video file served: " + oldStreamName;
@@ -1969,7 +1969,7 @@ flowplayer("rtmpRSSPlayer", "@PLAYER_SWF@", {
 		// use bwcheck for all clips
 		urlResolvers: 'bwcheck',
 		onMetaData: function(clip) {
-			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
+			var dimensions = "Clip Width: " + clip.metaData.width + " Clip Height: " + clip.metaData.height;
 			var content = $f().getPlugin('content');
 			content.setHtml(dimensions);
 		}
@@ -2040,7 +2040,7 @@ flowplayer("rtmpRSSPlayer", "@PLAYER_SWF@", {
 		// use bwcheck for all clips
 		urlResolvers: 'bwcheck',
 		onMetaData: function(clip) {
-			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
+			var dimensions = "Clip Width: " + clip.metaData.width + " Clip Height: " + clip.metaData.height;
 			var content = $f().getPlugin('content');
 			content.setHtml(dimensions);
 		}
@@ -2088,10 +2088,10 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
             {
               url: "flv:bbb", 
               bitrates: [
-                        {url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
-                        {url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
-                        {url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
-                        {url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
+                        {url: "vod/demo.flowplayer/bbb_160x90", width: 160, height: 90, bitrate: 100},
+                        {url: "vod/demo.flowplayer/bbb_320x180", width: 320, height: 180, bitrate: 180},
+                        {url: "vod/demo.flowplayer/bbb_480x270", width: 480, height: 270, bitrate: 270},
+                        {url: "vod/demo.flowplayer/bbb_640x360", width: 640, height: 360, bitrate: 360}
 			           ]
 			}
         ],
@@ -2101,7 +2101,7 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
 		// RTMP streaming plugin
 		rtmp: {
 			url: '../flowplayer.rtmp.swf',
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/fastplay'
+			netConnectionUrl: 'rtmp://vod01.netdna.com/play'
 		},
 		content: {
 			url: '../flowplayer.content.swf',
@@ -2114,7 +2114,6 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
 		bwcheck: {
 			url: '@MAIN_PLAYER_SWF@',
 
-			// Influxis uses Flash Media Servers
 			serverType: 'wowza',
 
 			// Use this connection for bandwidth detection
@@ -2144,7 +2143,7 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
 		// use bwcheck for all clips
 		urlResolvers: 'bwcheck',
 		onMetaData: function(clip) {
-			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
+			var dimensions = "Clip Width: " + clip.metaData.width + " Clip Height: " + clip.metaData.height;
 			var content = $f().getPlugin('content');
 			content.setHtml(dimensions);
 		}
@@ -2171,10 +2170,10 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
             {
               url: "flv:bbb", 
               bitrates: [
-                        {url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
-                        {url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
-                        {url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
-                        {url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
+                        {url: "vod/demo.flowplayer/bbb_160x90", width: 160, height: 90, bitrate: 100},
+                        {url: "vod/demo.flowplayer/bbb_320x180", width: 320, height: 180, bitrate: 180},
+                        {url: "vod/demo.flowplayer/bbb_480x270", width: 480, height: 270, bitrate: 270},
+                        {url: "vod/demo.flowplayer/bbb_640x360", width: 640, height: 360, bitrate: 360}
 			           ]
 			}
         ],
@@ -2184,7 +2183,7 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
 		// RTMP streaming plugin
 		rtmp: {
 			url: '../flowplayer.rtmp.swf',
-			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/fastplay'
+			netConnectionUrl: 'rtmp://vod01.netdna.com/play'
 		},
 		content: {
 			url: '../flowplayer.content.swf',
@@ -2197,11 +2196,10 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
 		bwcheck: {
 			url: '@MAIN_PLAYER_SWF@',
 
-			// Influxis uses Flash Media Servers
-			serverType: 'fms',
+			serverType: 'wowza',
 
 			// Use this connection for bandwidth detection
-			netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
 			enableDynamicBuffer: true,
 			
@@ -2227,7 +2225,7 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
 		// use bwcheck for all clips
 		urlResolvers: 'bwcheck',
 		onMetaData: function(clip) {
-			var dimensions = "Clip Width: " + clip.width + " Clip Height: " + clip.height;
+			var dimensions = "Clip Width: " + clip.metaData.width + " Clip Height: " + clip.metaData.height;
 			var content = $f().getPlugin('content');
 			content.setHtml(dimensions);
 		}
