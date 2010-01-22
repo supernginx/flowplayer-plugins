@@ -1209,6 +1209,7 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
                         {url: "vod/demo.flowplayer/bbb_480x270", width: 480, height: 270, bitrate: 270},
                         {url: "vod/demo.flowplayer/bbb_640x360", width: 640, height: 360, bitrate: 360}
 			           ]
+			  
 			}
         ],
 	// configure the required plugins
@@ -1223,7 +1224,8 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 			url: '../flowplayer.content.swf',
 			top: 0,
 			left: 0,
-			width: 250 
+			width: 250, 
+			height: 100
 		},
 
 		// bandwidth check plugin
@@ -1236,12 +1238,16 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
 			enableDynamic: true,
-			//checkOnStart:true, 
+			checkOnStart:true, 
 			
 			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
 				var el = document.getElementById("rtmpDynamicInfo");
-				el.innerHTML = "Chosen bitrate is: " + mappedBitrate.bitrate + "<br /> Video file served: " + streamName + "<br /> Old Video file served: " + oldStreamName;
 				
+				
+				var info = "Chosen bitrate is: " + mappedBitrate.bitrate + "<br /> Video file served: " + streamName + "<br /> Old Video file served: " + oldStreamName;
+				el.innerHTML = info;
+				var content = $f().getPlugin('content');
+				content.setHtml(info);
 			},
 			// this method is called when the bandwidth check is done
 			onBwDone: function(mappedBitrate, detectedBitrate) {
@@ -1384,6 +1390,264 @@ function changeDynamicBitrate(bitrate) {
 });</code></pre>
 </div>
 </div>
+
+<a name="rtmp_dynamicswitching"></a>
+<h2><em>RTMP</em> With Dynamic Stream Switching FMS Example</h2>
+
+
+<a name="dynamic"></a>
+<h3>Dynamic stream switching FMS Example</h3>
+
+
+<div style="width:320px;height:205px;margin:30px auto">
+   
+
+
+<!-- player container-->
+
+
+<a
+	href="skyandice"
+	style="display:block;width:320px;height:205px;"
+	id="rtmpDynamicFMSPlayer">
+
+	<!-- splash image inside the container -->
+	<img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" width="320" height="205" />
+
+</a>
+
+<div class="box info" id="rtmpDynamicFMSInfo">
+	Click on the splash image above.
+</div>
+
+<!-- Flowplayer installation and configuration -->
+<script language="JavaScript">
+flowplayer("rtmpDynamicFMSPlayer", "@PLAYER_SWF@", {
+	playlist: [
+            {
+              url: "flv:bbb", 
+              bitrates: [
+                        {url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
+                        {url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
+                        {url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
+                        {url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
+			           ]
+			}
+        ],
+	// configure the required plugins
+	plugins:  {
+
+		// RTMP streaming plugin
+		rtmp: {
+			url: '../flowplayer.rtmp.swf',
+			netConnectionUrl: 'rtmp://electroteque.org:1937/play'
+		},
+		content: {
+			url: '../flowplayer.content.swf',
+			top: 0,
+			left: 0,
+			width: 250 
+		},
+
+		// bandwidth check plugin
+		bwcheck: {
+			url: '@MAIN_PLAYER_SWF@',
+
+			serverType: 'wowza',
+
+			// Use this connection for bandwidth detection
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
+			bitrateProfileName: 'RTMPBitrateProfile',
+			enableDynamic: true,
+			checkOnStart:true, 
+			
+			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
+				var el = document.getElementById("rtmpDynamicFMSInfo");
+				el.innerHTML = "Chosen bitrate is: " + mappedBitrate.bitrate + "<br /> Video file served: " + streamName + "<br /> Old Video file served: " + oldStreamName;
+				
+			},
+			// this method is called when the bandwidth check is done
+			onBwDone: function(mappedBitrate, detectedBitrate) {
+				var el = document.getElementById("rtmpDynamicFMSInfo");
+				el.innerHTML = "Your speed is: " + detectedBitrate + "<br /> Your chosen bitrate: " + mappedBitrate.bitrate + "<br /> Video file served: " + mappedBitrate.url;
+			}
+		}
+
+	},
+
+	// configure the clip to use the rtmp plugin for providing video data
+	// and the bwcheck plugin in resolving the URLs
+	clip: {
+		provider: 'rtmp',
+		
+		// use bwcheck for all clips
+		urlResolvers: 'bwcheck',
+		onBeforeBegin: function (clip) {
+			showDynamicBitrates(clip);
+		},
+		onMetaData: function(clip) {
+			var dimensions = "Clip Width: " + clip.metaData.width + " Clip Height: " + clip.metaData.height;
+			var content = $f().getPlugin('content');
+			content.setHtml(dimensions);
+		}
+	},
+	log: { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.rtmp.*, org.flowplayer.cluster.*' }
+
+});
+
+function showDynamicFMSBitrates(clip)
+{
+			var bitrates = clip.bitrates;
+     		var form = "<b>Change Bitrate:</b><br/>";
+			jQuery.each( bitrates, function(index, item){
+			
+				form += '<label><input type="radio" name="bitrate" value="' + item.bitrate + '" class="bitrateDynamicBtn" onclick="changeDynamicFMSBitrate(' + item.bitrate + ')" />' + item.bitrate + ' K</label><br>';
+			});
+     		$('#changeDynamicFMSBitrate').html(form);
+     		
+     
+}
+
+		
+function changeDynamicFMSBitrate(bitrate) {
+	$f().getPlugin("bwcheck").setBitrate(bitrate);
+}
+		
+		
+
+
+	
+
+</script>
+
+
+
+</div>
+
+<div id="changeDynamicFMSBitrate">
+	<b>Change Bitrate:</b><br/>
+</div>
+
+<a name="rtmp_dynamicswitching"></a>
+<h2><em>RTMP</em> With Dynamic Stream Switching With No Initial Bandwidth Check Example</h2>
+
+
+<a name="dynamic"></a>
+<h3>Dynamic stream switching</h3>
+
+
+
+<div style="width:320px;height:205px;margin:30px auto">
+   
+
+
+<!-- player container-->
+
+
+<a
+	href="skyandice"
+	style="display:block;width:320px;height:205px;"
+	id="rtmpDynamicNoCheckPlayer">
+
+	<!-- splash image inside the container -->
+	<img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" width="320" height="205" />
+
+</a>
+
+<div class="box info" id="rtmpDynamicNoCheckInfo">
+	Click on the splash image above.
+</div>
+
+<!-- Flowplayer installation and configuration -->
+<script language="JavaScript">
+flowplayer("rtmpDynamicNoCheckPlayer", "@PLAYER_SWF@", {
+	playlist: [
+            {
+              url: "flv:bbb", 
+			   bitrates: [
+                        {url: "vod/demo.flowplayer/bbb_160x90", width: 160, height: 90, bitrate: 100},
+                        {url: "vod/demo.flowplayer/bbb_320x180", width: 320, height: 180, bitrate: 180},
+                        {url: "vod/demo.flowplayer/bbb_480x270", width: 480, height: 270, bitrate: 270},
+                        {url: "vod/demo.flowplayer/bbb_640x360", width: 640, height: 360, bitrate: 360}
+			           ]
+			}
+        ],
+	// configure the required plugins
+	plugins:  {
+
+		// RTMP streaming plugin
+		rtmp: {
+			url: '../flowplayer.rtmp.swf',
+			netConnectionUrl: 'rtmp://vod01.netdna.com/play'
+		},
+		content: {
+			url: '../flowplayer.content.swf',
+			top: 0,
+			left: 0,
+			width: 250, 
+			height: 100
+		},
+
+		// bandwidth check plugin
+		bwcheck: {
+			url: '@MAIN_PLAYER_SWF@',
+
+			serverType: 'wowza',
+
+			// Use this connection for bandwidth detection
+			//netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
+			bitrateProfileName: 'RTMPBitrateProfile',
+			enableDynamic: true,
+			//checkOnStart:true, 
+			
+			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
+				var el = document.getElementById("rtmpDynamicNoCheckInfo");
+				
+				
+				var info = "Chosen bitrate is: " + mappedBitrate.bitrate + "<br /> Video file served: " + streamName + "<br /> Old Video file served: " + oldStreamName;
+				el.innerHTML = info;
+				var content = $f().getPlugin('content');
+				content.setHtml(info);
+			},
+			// this method is called when the bandwidth check is done
+			onBwDone: function(mappedBitrate, detectedBitrate) {
+				var el = document.getElementById("rtmpDynamicNoCheckInfo");
+				el.innerHTML = "Your speed is: " + detectedBitrate + "<br /> Your chosen bitrate: " + mappedBitrate.bitrate + "<br /> Video file served: " + mappedBitrate.url;
+			}
+		}
+
+	},
+
+	// configure the clip to use the rtmp plugin for providing video data
+	// and the bwcheck plugin in resolving the URLs
+	clip: {
+		provider: 'rtmp',
+		
+		// use bwcheck for all clips
+		urlResolvers: 'bwcheck',
+
+		onMetaData: function(clip) {
+			var dimensions = "Clip Width: " + clip.metaData.width + " Clip Height: " + clip.metaData.height;
+			var content = $f().getPlugin('content');
+			content.setHtml(dimensions);
+		}
+	},
+	log: { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.rtmp.*, org.flowplayer.cluster.*' }
+
+});
+
+	
+		
+
+
+	
+
+</script>
+
+
+
+</div>
+
 
 <a name="rtmp_selection"></a>
 <h2><em>RTMP</em> With Custom Stream Selection Strategy Example</h2>
@@ -2160,6 +2424,193 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
 
 </div>
 
+
+<button rel="div.overlay:eq(8)" type="button">Configuration For This Example</button>
+
+<div class="overlay">
+<div class="box code">
+<pre><code class="javascript">flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
+	playlist: [
+            {
+              url: "flv:bbb", 
+              bitrates: [
+                        {url: "vod/demo.flowplayer/bbb_160x90", width: 160, height: 90, bitrate: 100},
+                        {url: "vod/demo.flowplayer/bbb_320x180", width: 320, height: 180, bitrate: 180},
+                        {url: "vod/demo.flowplayer/bbb_480x270", width: 480, height: 270, bitrate: 270},
+                        {url: "vod/demo.flowplayer/bbb_640x360", width: 640, height: 360, bitrate: 360}
+			           ]
+			}
+        ],
+	// configure the required plugins
+	plugins:  {
+
+		// RTMP streaming plugin
+		rtmp: {
+			url: '../flowplayer.rtmp.swf',
+			netConnectionUrl: 'rtmp://vod01.netdna.com/play'
+		},
+		content: {
+			url: '../flowplayer.content.swf',
+			top: 0,
+			left: 0,
+			width: 250 
+		},
+
+		// bandwidth check plugin
+		bwcheck: {
+			url: '@MAIN_PLAYER_SWF@',
+
+			serverType: 'wowza',
+
+			// Use this connection for bandwidth detection
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
+			bitrateProfileName: 'RTMPBitrateProfile',
+			enableDynamicBuffer: true,
+			
+			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
+				var el = document.getElementById("rtmpBufferInfo");
+				el.innerHTML = "Chosen bitrate is: " + mappedBitrate.bitrate + "<br /> Video file served: " + streamName + "<br /> Old Video file served: " + oldStreamName;
+				
+			},
+			// this method is called when the bandwidth check is done
+			onBwDone: function(mappedBitrate, detectedBitrate) {
+				var el = document.getElementById("rtmpBufferInfo");
+				el.innerHTML = "Your speed is: " + detectedBitrate + "<br /> Your chosen bitrate: " + mappedBitrate.bitrate + "<br /> Video file served: " + mappedBitrate.url;
+			}
+		}
+
+	},
+
+	// configure the clip to use the rtmp plugin for providing video data
+	// and the bwcheck plugin in resolving the URLs
+	clip: {
+		provider: 'rtmp',
+		
+		// use bwcheck for all clips
+		urlResolvers: 'bwcheck',
+		onMetaData: function(clip) {
+			var dimensions = "Clip Width: " + clip.metaData.width + " Clip Height: " + clip.metaData.height;
+			var content = $f().getPlugin('content');
+			content.setHtml(dimensions);
+		}
+	},
+	log: { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.rtmp.*, org.flowplayer.cluster.*' }
+
+});</code></pre>
+</div>
+</div>
+
+<a name="rtmp_animate"></a>
+<h2><em>RTMP</em> With Animate Example</h2>
+
+<p>
+
+</p>
+
+<div style="width:425px;margin:30px auto">
+   
+
+
+<!-- player container-->
+
+
+<a
+	href="skyandice"
+	style="display:block;width:425px;height:300px;"
+	id="rtmpAnimatePlayer">
+
+	<!-- splash image inside the container -->
+	<img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" />
+
+</a>
+
+<div class="box info" id="rtmpBufferInfo">
+	Click on the splash image above.
+</div>
+
+<!-- Flowplayer installation and configuration -->
+<script language="JavaScript">
+
+flowplayer("rtmpAnimatePlayer", "@PLAYER_SWF@", {
+	playlist: [
+            {
+              url: "flv:bbb", 
+              bitrates: [
+                        {url: "vod/demo.flowplayer/bbb_160x90", width: 160, height: 90, bitrate: 100},
+                        {url: "vod/demo.flowplayer/bbb_320x180", width: 320, height: 180, bitrate: 180},
+                        {url: "vod/demo.flowplayer/bbb_480x270", width: 480, height: 270, bitrate: 270},
+                        {url: "vod/demo.flowplayer/bbb_640x360", width: 640, height: 360, bitrate: 360}
+			           ]
+			}
+        ],
+	// configure the required plugins
+	plugins:  {
+
+		// RTMP streaming plugin
+		rtmp: {
+			url: '../flowplayer.rtmp.swf',
+			netConnectionUrl: 'rtmp://vod01.netdna.com/play'
+		},
+		content: {
+			url: '../flowplayer.content.swf',
+			top: 0,
+			left: 0,
+			width: 250 
+		},
+
+		// bandwidth check plugin
+		bwcheck: {
+			url: '@MAIN_PLAYER_SWF@',
+
+			serverType: 'wowza',
+
+			// Use this connection for bandwidth detection
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
+			bitrateProfileName: 'RTMPBitrateProfile',
+			enableDynamicBuffer: true,
+			
+			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
+				var el = document.getElementById("rtmpBufferInfo");
+				el.innerHTML = "Chosen bitrate is: " + mappedBitrate.bitrate + "<br /> Video file served: " + streamName + "<br /> Old Video file served: " + oldStreamName;
+				
+			},
+			// this method is called when the bandwidth check is done
+			onBwDone: function(mappedBitrate, detectedBitrate) {
+				var el = document.getElementById("rtmpBufferInfo");
+				el.innerHTML = "Your speed is: " + detectedBitrate + "<br /> Your chosen bitrate: " + mappedBitrate.bitrate + "<br /> Video file served: " + mappedBitrate.url;
+			}
+		}
+
+	},
+
+	// configure the clip to use the rtmp plugin for providing video data
+	// and the bwcheck plugin in resolving the URLs
+	clip: {
+		provider: 'rtmp',
+		
+		// use bwcheck for all clips
+		urlResolvers: 'bwcheck',
+		onMetaData: function(clip) {
+			var dimensions = "Clip Width: " + clip.metaData.width + " Clip Height: " + clip.metaData.height;
+			var content = $f().getPlugin('content');
+			content.setHtml(dimensions);
+		}
+	},
+	log: { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.rtmp.*, org.flowplayer.cluster.*' }
+
+});
+
+function animateClip() {
+	$f().getScreen().animate({ width: 160, height: 90; });
+}
+
+</script>
+
+
+
+</div>
+
+<button onclick="animateClip()" type="button">Resize Clip</button>
 
 <button rel="div.overlay:eq(8)" type="button">Configuration For This Example</button>
 
