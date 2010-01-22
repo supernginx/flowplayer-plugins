@@ -147,6 +147,8 @@ package org.flowplayer.controls.slider {
 
         private function doStart(clip:Clip, startTime:Number = 0):void {
             log.debug("doStart()");
+            if (isTrickPlay) return;
+
             var status:Status = _config.player.status;
             var time:Number = startTime > 0 ? startTime : status.time;
 
@@ -179,7 +181,7 @@ package org.flowplayer.controls.slider {
         }
 
         private function get isTrickPlay():Boolean {
-            return _slowMotionInfo["isTrickPlay"]; 
+            return _slowMotionInfo && _slowMotionInfo["isTrickPlay"]; 
         }
 
         private function stop(event:ClipEvent = null):void {
