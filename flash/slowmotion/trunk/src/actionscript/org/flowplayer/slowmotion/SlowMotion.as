@@ -44,7 +44,6 @@ package org.flowplayer.slowmotion {
 
             _timeProvider = new SlowMotionTimeProvider(_model, _provider, _player.playlist);
             _provider.timeProvider = _timeProvider;
-            _player.playlist.onResume(function(event:ClipEvent):void { normal(); });
 
             _model.dispatchOnLoad();
         }
