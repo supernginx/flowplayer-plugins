@@ -459,6 +459,8 @@ package org.flowplayer.bwcheck.monitor
 				streamID: streamID
 			};
 			
+			log.debug("Switching stream with max bandwidth " + _bitrateStorage.maxBandwidth);
+			
 			dispatch(obj, DynamicStreamEvent.SWITCH_STREAM);
 			
 			_switchMode = true;
@@ -486,7 +488,7 @@ package org.flowplayer.bwcheck.monitor
 				
 			getMaxBandwidth();
 			
-//			log.debug("max bw: "+_maxBandwidth);
+			//log.debug("max bw: "+_maxBandwidth);
 		}
 		
 		public function stop():void
@@ -499,20 +501,22 @@ package org.flowplayer.bwcheck.monitor
 		
 		public function onStart(event:ClipEvent = null):void
 		{
-            log.debug("onStart()");
+            log.debug("Starting Qos");
 			setup();
 			init();
 		}
 		
 		public function onStop(event:ClipEvent):void
 		{
+			log.debug("Stopping Qos");
+			
 			_switchMode = false;					
 			stop();
 		}
 		
 		public function onBufferEmpty(event:ClipEvent):void
 		{
-            log.debug("onBufferEmpty()");
+            log.debug("Buffer Empty. Starting Qos");
 			_curStreamID = 0;
 
 			if(!_config.liveStream) {
@@ -527,7 +531,7 @@ package org.flowplayer.bwcheck.monitor
 		
 		public function onBufferFull(event:ClipEvent = null):void
 		{
-            log.debug("onBufferFull()");
+            log.debug("Buffer Full. Starting Qos");
 			getMaxBandwidth();
 			SwitchUpOnMaxBandwidth();
 			_isBuffering = false;
@@ -537,18 +541,21 @@ package org.flowplayer.bwcheck.monitor
 		
 		public function onPause(event:ClipEvent):void
 		{
+			log.debug("Paused. Stopping Timers");
 			if(qosTimer.running){ qosTimer.stop(); }
 			if(mainTimer.running){ mainTimer.stop(); }
 		}
 		
 		public function onResume(event:ClipEvent):void
 		{
+			log.debug("Resuming. Starting Timers");
 			if(!qosTimer.running){ qosTimer.start(); }
 			if(!mainTimer.running){ mainTimer.start(); }
 		}
 		
 		public function onSeek(event:ClipEvent):void
 		{
+			log.debug("Seeking. Resetting Buffertime");
 			if(!_config.liveStream) {
 				_curBufferTime = _startBufferLength;
 				_netStream.bufferTime = _curBufferTime;											
