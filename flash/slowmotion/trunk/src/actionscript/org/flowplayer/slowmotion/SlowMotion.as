@@ -49,21 +49,19 @@ package org.flowplayer.slowmotion {
         }
 
         [External]
-        public function forward(multiplier:Number = 4, fps:Number = 10):void {
+        public function forward(multiplier:Number = 4, fps:Number = -1):void {
             log.debug("forward()");
             if (multiplier == 1) {
                 normal();
                 return;
             }
-            _provider.netConnection.call("setFastPlay", null, multiplier, fps, 1);
-            _provider.netStream.seek(_timeProvider.getTime(netStream));
+            setFastPlay(multiplier, fps, 1);
         }
 
         [External]
-        public function backward(multiplier:Number = 4, fps:Number = 10):void {
+        public function backward(multiplier:Number = 4, fps:Number = -1):void {
             log.debug("backward()");
-            _provider.netConnection.call("setFastPlay", null, multiplier, fps, -1);
-            _provider.netStream.seek(_timeProvider.getTime(netStream));
+            setFastPlay(multiplier, fps, -1);
         }
 
         [External]
@@ -77,10 +75,11 @@ package org.flowplayer.slowmotion {
             return _timeProvider.info();
         }
 
-        /*
-         [External]
-         public function
-         */
+        private function setFastPlay(multiplier:Number, fps:Number, forward:int):void {
+            var targetFps:Number = fps > 0 ? fps : multiplier * 50;
+            _provider.netConnection.call("setFastPlay", null, multiplier, targetFps, forward);
+            _provider.netStream.seek(_timeProvider.getTime(netStream));
+        }
 
         private function lookupProvider(providers:Dictionary):StreamProvider {
             log.debug("lookupProvider() " + providers);
@@ -92,6 +91,9 @@ package org.flowplayer.slowmotion {
             }
             for each (model in providers) {
                 log.debug(model.name);
+                if (model.name == "rtmp") {
+                    return model.pluginObject as StreamProvider;                    
+                }
                 if (["http", "httpInstream"].indexOf(model.name) < 0 && model.pluginObject is StreamProvider) {
                     return model.pluginObject as StreamProvider;
                 }
