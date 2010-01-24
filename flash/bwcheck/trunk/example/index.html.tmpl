@@ -94,14 +94,18 @@ $(function() {
 
 // common methods and configs
 
-function showBitratesList(clip, container)
+function showBitratesList(clip, container, widthCheck)
 {
 	var bitrates = clip.bitrates;
+	var containerWidth = $("#" + $f().id()).width();
 	
 	var form = "<b>Change Bitrate:</b><br/>";
 	jQuery.each( bitrates, function(index, item){
-	
-		form += '<label><input type="radio" name="bitrateBtn" value="' + item.bitrate + '"  onclick="changeBitrate(' + item.bitrate + ')" />' + item.bitrate + ' K</label><br>';
+		if (item.width > containerWidth && widthCheck) {
+			form += '<label><input type="radio" name="bitrateBtn" value="' + item.bitrate + '"  onclick="changeBitrate(' + item.bitrate + ')" disabled />' + item.bitrate + ' K (not valid with this player size )</label><br>';
+		} else {
+			form += '<label><input type="radio" name="bitrateBtn" value="' + item.bitrate + '"  onclick="changeBitrate(' + item.bitrate + ')" />' + item.bitrate + ' K</label><br>';
+		}
 	});
 	$(container).html(form);
 }
@@ -401,14 +405,18 @@ var contentPlugin = {
 
 var loggingConfig = { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.cluster.*' };
 
-function showBitratesList(clip, container)
+function showBitratesList(clip, container, widthCheck)
 {
 	var bitrates = clip.bitrates;
+	var containerWidth = $("#" + $f().id()).width();
 	
 	var form = "<b>Change Bitrate:</b><br/>";
 	jQuery.each( bitrates, function(index, item){
-	
-		form += '<label><input type="radio" name="bitrateBtn" value="' + item.bitrate + '"  onclick="changeBitrate(' + item.bitrate + ')" />' + item.bitrate + ' K</label><br>';
+		if (item.width > containerWidth && widthCheck) {
+			form += '<label><input type="radio" name="bitrateBtn" value="' + item.bitrate + '"  onclick="changeBitrate(' + item.bitrate + ')" disabled />' + item.bitrate + ' K (not valid with this player size )</label><br>';
+		} else {
+			form += '<label><input type="radio" name="bitrateBtn" value="' + item.bitrate + '"  onclick="changeBitrate(' + item.bitrate + ')" />' + item.bitrate + ' K</label><br>';
+		}
 	});
 	$(container).html(form);
 }
@@ -979,8 +987,8 @@ flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
 		
 		// use bwcheck for all clips
 		urlResolvers: 'bwcheck',
-		onBeforeBegin: function (clip) {
-			showBitratesList(clip, '#changeManualBitrate');
+		onBegin: function (clip) {
+			showBitratesList(clip, '#changeManualBitrate', true);
 		}
 	},
 	log: loggingConfig
@@ -1044,21 +1052,25 @@ flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
 		// use bwcheck for all clips
 		urlResolvers: 'bwcheck',
 		onBeforeBegin: function (clip) {
-			showBitratesList(clip, '#changeManualBitrate');
+			showBitratesList(clip, '#changeManualBitrate', true);
 		}
 	},
 	log: loggingConfig
 
 });
 
-function showBitratesList(clip, container)
+function showBitratesList(clip, container, widthCheck)
 {
 	var bitrates = clip.bitrates;
+	var containerWidth = $("#" + $f().id()).width();
 	
 	var form = "<b>Change Bitrate:</b><br/>";
 	jQuery.each( bitrates, function(index, item){
-	
-		form += '<label><input type="radio" name="bitrateBtn" value="' + item.bitrate + '"  onclick="changeBitrate(' + item.bitrate + ')" />' + item.bitrate + ' K</label><br>';
+		if (item.width > containerWidth && widthCheck) {
+			form += '<label><input type="radio" name="bitrateBtn" value="' + item.bitrate + '"  onclick="changeBitrate(' + item.bitrate + ')" disabled />' + item.bitrate + ' K (not valid with this player size )</label><br>';
+		} else {
+			form += '<label><input type="radio" name="bitrateBtn" value="' + item.bitrate + '"  onclick="changeBitrate(' + item.bitrate + ')" />' + item.bitrate + ' K</label><br>';
+		}
 	});
 	$(container).html(form);
 }
@@ -1163,7 +1175,7 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 		// use bwcheck for all clips
 		urlResolvers: 'bwcheck',
 		onBeforeBegin: function (clip) {
-			showBitratesList(clip, '#changeDynamicBitrate');
+			showBitratesList(clip, '#changeDynamicBitrate', true);
 		}
 		
 	},
@@ -1228,7 +1240,7 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 		// use bwcheck for all clips
 		urlResolvers: 'bwcheck',
 		onBeforeBegin: function (clip) {
-			showBitratesList(clip, '#changeDynamicBitrate');
+			showBitratesList(clip, '#changeDynamicBitrate', true);
 		}
 		
 	},
@@ -1236,14 +1248,18 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 
 });
 
-function showBitratesList(clip, container)
+function showBitratesList(clip, container, widthCheck)
 {
 	var bitrates = clip.bitrates;
+	var containerWidth = $("#" + $f().id()).width();
 	
 	var form = "<b>Change Bitrate:</b><br/>";
 	jQuery.each( bitrates, function(index, item){
-	
-		form += '<label><input type="radio" name="bitrateBtn" value="' + item.bitrate + '"  onclick="changeBitrate(' + item.bitrate + ')" />' + item.bitrate + ' K</label><br>';
+		if (item.width > containerWidth && widthCheck) {
+			form += '<label><input type="radio" name="bitrateBtn" value="' + item.bitrate + '"  onclick="changeBitrate(' + item.bitrate + ')" disabled />' + item.bitrate + ' K (not valid with this player size )</label><br>';
+		} else {
+			form += '<label><input type="radio" name="bitrateBtn" value="' + item.bitrate + '"  onclick="changeBitrate(' + item.bitrate + ')" />' + item.bitrate + ' K</label><br>';
+		}
 	});
 	$(container).html(form);
 }
@@ -1334,7 +1350,7 @@ flowplayer("rtmpDynamicFMSPlayer", "@PLAYER_SWF@", {
 		// use bwcheck for all clips
 		urlResolvers: 'bwcheck',
 		onBeforeBegin: function (clip) {
-			showBitratesList(clip, '#changeDynamicFMSBitrate');
+			showBitratesList(clip, '#changeDynamicFMSBitrate', true);
 		}
 	},
 	log: loggingConfig
@@ -1399,21 +1415,25 @@ flowplayer("rtmpDynamicFMSPlayer", "@PLAYER_SWF@", {
 		// use bwcheck for all clips
 		urlResolvers: 'bwcheck',
 		onBeforeBegin: function (clip) {
-			showBitratesList(clip, '#changeDynamicFMSBitrate');
+			showBitratesList(clip, '#changeDynamicFMSBitrate', true);
 		}
 	},
 	log: loggingConfig
 
 });
 
-function showBitratesList(clip, container)
+function showBitratesList(clip, container, widthCheck)
 {
 	var bitrates = clip.bitrates;
+	var containerWidth = $("#" + $f().id()).width();
 	
 	var form = "<b>Change Bitrate:</b><br/>";
 	jQuery.each( bitrates, function(index, item){
-	
-		form += '<label><input type="radio" name="bitrateBtn" value="' + item.bitrate + '"  onclick="changeBitrate(' + item.bitrate + ')" />' + item.bitrate + ' K</label><br>';
+		if (item.width > containerWidth && widthCheck) {
+			form += '<label><input type="radio" name="bitrateBtn" value="' + item.bitrate + '"  onclick="changeBitrate(' + item.bitrate + ')" disabled />' + item.bitrate + ' K (not valid with this player size )</label><br>';
+		} else {
+			form += '<label><input type="radio" name="bitrateBtn" value="' + item.bitrate + '"  onclick="changeBitrate(' + item.bitrate + ')" />' + item.bitrate + ' K</label><br>';
+		}
 	});
 	$(container).html(form);
 }
@@ -1726,14 +1746,18 @@ flowplayer("rtmpSelectionPlayer", "@PLAYER_SWF@", {
 
 });
 
-function showBitratesList(clip, container)
+function showBitratesList(clip, container, widthCheck)
 {
 	var bitrates = clip.bitrates;
+	var containerWidth = $("#" + $f().id()).width();
 	
 	var form = "<b>Change Bitrate:</b><br/>";
 	jQuery.each( bitrates, function(index, item){
-	
-		form += '<label><input type="radio" name="bitrateBtn" value="' + item.bitrate + '"  onclick="changeBitrate(' + item.bitrate + ')" />' + item.bitrate + ' K</label><br>';
+		if (item.width > containerWidth && widthCheck) {
+			form += '<label><input type="radio" name="bitrateBtn" value="' + item.bitrate + '"  onclick="changeBitrate(' + item.bitrate + ')" disabled />' + item.bitrate + ' K (not valid with this player size )</label><br>';
+		} else {
+			form += '<label><input type="radio" name="bitrateBtn" value="' + item.bitrate + '"  onclick="changeBitrate(' + item.bitrate + ')" />' + item.bitrate + ' K</label><br>';
+		}
 	});
 	$(container).html(form);
 }
