@@ -344,7 +344,7 @@ flowplayer("player", "@PLAYER_SWF@", {
 	},
 	clip: {
 		urlResolvers: 'bwcheck',
-		baseUrl: 'http://flashy.flowplayer.org/video/'
+		baseUrl: 'http://vod01.netdna.com/vod/demo.flowplayer/'
 	},
 	log: loggingConfig
 	
@@ -446,7 +446,7 @@ flowplayer("player", "@PLAYER_SWF@", {
 	},
 	clip: {
 		urlResolvers: 'bwcheck',
-		baseUrl: 'http://flashy.flowplayer.org/video/'
+		baseUrl: 'http://vod01.netdna.com/vod/demo.flowplayer/'
 	},
 	log: loggingConfig
 	
@@ -865,7 +865,7 @@ flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
 	clip: {
 		provider: 'psuedo',
 		urlResolvers: 'bwcheck',
-		baseUrl: 'http://flashy.flowplayer.org/video/'
+		baseUrl: 'http://vod01.netdna.com/vod/demo.flowplayer/'
 	},
 	log: { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.pseudostreaming.*, org.flowplayer.cluster.*' }
 	
@@ -902,7 +902,7 @@ flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
 	clip: {
 		provider: 'psuedo',
 		urlResolvers: 'bwcheck',
-		baseUrl: 'http://flashy.flowplayer.org/video/'
+		baseUrl: 'http://vod01.netdna.com/vod/demo.flowplayer/'
 	},
 	log: { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.pseudostreaming.*, org.flowplayer.cluster.*' }
 	
@@ -915,6 +915,10 @@ flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
 
 <p>
 	RTMP Example with bitrate manual selection.
+</p>
+
+<p>
+	Demonstrates the functionality of the default stream selection strategy. Regardless of the available bandwidth the player will only choose the bitrate to match the available player dimensions when a bitrate is chosen from the list. 
 </p>
 
 <div style="width:425px;margin:30px auto">
@@ -1097,6 +1101,10 @@ $(document).ready(function () {
    In Wowza and Red5 the bandwidth check applications require to be installed as they are not enabled by default. 
 </p>
 
+<p>
+	Demonstrates the functionality of the default stream selection strategy. Regardless of the available bandwidth the player will only choose the bitrate to match the available player dimensions when a bitrate is chosen from the list. 
+</p>
+
 <div style="width:320px;height:205px;margin:30px auto">
    
 
@@ -1260,6 +1268,9 @@ $(document).ready(function () {
 <a name="rtmp_fmsdynamicswitching"></a>
 <h2><em>RTMP</em> With Dynamic Stream Switching FMS Example</h2>
 
+<p>
+	Demonstrates the functionality of the default stream selection strategy. Regardless of the available bandwidth the player will only choose the bitrate to match the available player dimensions when a bitrate is chosen from the list. 
+</p>
 
 <a name="dynamic"></a>
 <h3>Dynamic stream switching FMS Example</h3>
