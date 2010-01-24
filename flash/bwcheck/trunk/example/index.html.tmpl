@@ -1662,7 +1662,7 @@ flowplayer("rtmpSelectionPlayer", "@PLAYER_SWF@", {
 		// use bwcheck for all clips
 		urlResolvers: 'bwcheck',
 		onBeforeBegin: function (clip) {
-			showBitratesList(clip, '#changeSelectionBitrate');
+			showBitratesList(clip, '#changeSelectionBitrate',false);
 		}
 	},
 	log: loggingConfig
@@ -1739,7 +1739,7 @@ flowplayer("rtmpSelectionPlayer", "@PLAYER_SWF@", {
 		// use bwcheck for all clips
 		urlResolvers: 'bwcheck',
 		onBeforeBegin: function (clip) {
-			showBitratesList(clip, '#changeSelectionBitrate');
+			showBitratesList(clip, '#changeSelectionBitrate',false);
 		}
 	},
 	log: loggingConfig
