@@ -2251,6 +2251,134 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
 </div>
 </div>
 
+<a name="rtmp_error"></a>
+<h2><em>RTMP</em> With Bandwidth Check URL and Default Bitrate Failover Example</h2>
+
+<p>
+	This examples demonstrates when there is an error with the bwcheck urls, it will failover to the defaultBitrate config. 
+</p>
+
+<div style="width:425px;margin:30px auto">
+   
+
+
+<!-- player container-->
+
+
+<a
+	href="skyandice"
+	style="display:block;width:425px;height:300px;"
+	id="rtmpErrorPlayer">
+
+	<!-- splash image inside the container -->
+	<img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" />
+
+</a>
+
+<!-- Flowplayer installation and configuration -->
+<script language="JavaScript">
+
+flowplayer("rtmpErrorPlayer", "@PLAYER_SWF@", {
+	playlist: wowzaPlaylist,
+	// configure the required plugins
+	plugins:  {
+
+		// RTMP streaming plugin
+		rtmp: {
+			url: '../flowplayer.rtmp.swf',
+			netConnectionUrl: 'rtmp://vod01.netdna.com/play'
+		},
+		content: contentPlugin,
+
+		// bandwidth check plugin
+		bwcheck: {
+			url: '@MAIN_PLAYER_SWF@',
+
+			// Wowza media server bandwidth checking type
+			serverType: 'wowza',
+
+			// Use this connection for bandwidth detection
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck2',
+			defaultBitrate: 270,
+			bitrateProfileName: 'RTMPBitrateProfile',
+			
+			onStreamSwitch: switchStreamInfo,
+			// this method is called when the bandwidth check is done
+			onBwDone: bwDoneInfo
+		}
+
+	},
+
+	// configure the clip to use the rtmp plugin for providing video data
+	// and the bwcheck plugin in resolving the URLs
+	clip: {
+		provider: 'rtmp',
+		// use bwcheck for all clips
+		urlResolvers: 'bwcheck'
+	},
+	log: loggingConfig
+
+});
+
+</script>
+
+
+
+</div>
+
+<p>
+     Note that the <samp>serverType</samp>  value that needs to
+    be defined for streaming server connecting to, either fms, red5 or wowza.
+</p>
+
+<button rel="div.overlay:eq(11)" type="button">Configuration For This Example</button>
+
+
+<div class="overlay">
+<div class="box code">
+<pre><code class="javascript">flowplayer("rtmpErrorPlayer", "@PLAYER_SWF@", {
+	playlist: wowzaPlaylist,
+	// configure the required plugins
+	plugins:  {
+
+		// RTMP streaming plugin
+		rtmp: {
+			url: '../flowplayer.rtmp.swf',
+			netConnectionUrl: 'rtmp://vod01.netdna.com/play'
+		},
+		content: contentPlugin,
+
+		// bandwidth check plugin
+		bwcheck: {
+			url: '@MAIN_PLAYER_SWF@',
+
+			// Wowza media server bandwidth checking type
+			serverType: 'wowza',
+
+			// Use this connection for bandwidth detection
+			//netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck2',
+			defaultBitrate: 270,
+			bitrateProfileName: 'RTMPBitrateProfile',
+			
+			onStreamSwitch: switchStreamInfo,
+			// this method is called when the bandwidth check is done
+			onBwDone: bwDoneInfo
+		}
+
+	},
+
+	// configure the clip to use the rtmp plugin for providing video data
+	// and the bwcheck plugin in resolving the URLs
+	clip: {
+		provider: 'rtmp',
+		// use bwcheck for all clips
+		urlResolvers: 'bwcheck'
+	},
+	log: loggingConfig
+
+});</code></pre>
+</div>
+</div>
 
 <a name="clustering"></a>
 <h3>Clustering of bandwidth checks</h3>
