@@ -42,7 +42,8 @@ package org.flowplayer.controls.slider {
 		private var _tooltipTextFunc:Function;
         private var _controlbar:DisplayObject;
         private var _mouseOver:Boolean;
-
+		private var _border:Sprite;
+		
         public function AbstractSlider(config:Config, animationEngine:AnimationEngine, controlbar:DisplayObject) {
             _config = config;
             _animationEngine = animationEngine;
@@ -279,11 +280,12 @@ package org.flowplayer.controls.slider {
 			_dragger.height = height;
             _dragger.scaleX = _dragger.scaleY;
             drawBackground();
+			drawBorder();
         }
 
 		private function drawBackground():void {
 			graphics.clear();
-			graphics.beginFill(sliderColor, 1);
+			graphics.beginFill(sliderColor, sliderAlpha);
 			graphics.drawRoundRect(0, height/2 - barHeight/2, width, barHeight, barCornerRadius, barCornerRadius);
             graphics.endFill();
                                                                                                                      
@@ -291,6 +293,32 @@ package org.flowplayer.controls.slider {
                 GraphicsUtil.addGradient(this, 0, sliderGradient, barCornerRadius);
             }
         }
+
+		private function drawBorder():void {
+			
+			if (_border && _border.parent == this) {
+				removeChild(_border);
+			}
+			if (! borderWidth > 0) return;
+			_border = new Sprite();
+			addChild(_border);
+			swapChildren(_border, _dragger);
+			log.info("border weight is " + borderWidth);		
+			_border.graphics.lineStyle(borderWidth, borderColor, borderAlpha);
+			GraphicsUtil.drawRoundRectangle(_border.graphics, 0, height/2 - barHeight/2, width, barHeight, barCornerRadius);
+		}
+
+		protected function get borderWidth():Number {
+			return 0;
+		}
+		
+		protected function get borderColor():Number {
+			return 0xffffff;
+		}
+		
+		protected function get borderAlpha():Number {
+			return 0;
+		}
 
         protected function get barCornerRadius():Number {
             return barHeight/1.5;
@@ -304,15 +332,20 @@ package org.flowplayer.controls.slider {
             return 0x000000;
         }
 
+		protected function get sliderAlpha():Number {
+            return 1;
+        }
+
         protected function get barHeight():Number {
             return height;
         }
 
-		protected function drawBar(bar:Sprite, color:Number, gradientAlphas:Array, leftEdge:Number, rightEdge:Number):void {
+		protected function drawBar(bar:Sprite, color:Number, alpha:Number, gradientAlphas:Array, leftEdge:Number, rightEdge:Number):void {
 			bar.graphics.clear();
 			if (leftEdge > rightEdge) return;
 			bar.scaleX = 1;
-			bar.graphics.beginFill(color);
+			
+			bar.graphics.beginFill(color, alpha);
 			bar.graphics.drawRoundRect(leftEdge, height/2 - barHeight/2, rightEdge - leftEdge, barHeight, barCornerRadius, barCornerRadius);
 			bar.graphics.endFill();
 			
@@ -330,6 +363,7 @@ package org.flowplayer.controls.slider {
 		public function redraw(config:Config):void {
 			_config = config;
             drawBackground();
+			drawBorder();
 			toggleTooltip();
 			_tooltip.redraw(config);
 		}

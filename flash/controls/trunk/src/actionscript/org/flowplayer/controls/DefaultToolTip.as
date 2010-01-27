@@ -63,7 +63,7 @@ package org.flowplayer.controls {
 		public function show(p:DisplayObject, title:String, positionToMouse:Boolean = false, content:String=null):void {
 			if (_tween) {
 				_tween.cancel();
-				this.alpha = 1;
+				this.alpha = _config.style.tooltipAlpha;
 			}
 			if (this.parent == p.stage) {
 				if (_tf && _tf.htmlText != "" && _tf.htmlText != title) {
@@ -157,6 +157,7 @@ package org.flowplayer.controls {
 			this._tf = this.createField( titleIsDevice ); 
 			this._tf.defaultTextFormat = this._titleFormat;
 			this._tf.htmlText = title;
+			this._tf.alpha = _config.style.tooltipTextAlpha;
 			if( this._autoSize ){
 				setDefaultWidth();
 				if (_parentObject.x + _parentObject.width / 2 + _defaultWidth / 2 > _parentObject.stage.stageWidth) {
@@ -185,6 +186,7 @@ package org.flowplayer.controls {
 			tf.gridFitType = "pixel";
 			//tf.border = true;
 			tf.autoSize = TextFieldAutoSize.LEFT;
+			tf.blendMode = BlendMode.LAYER;
 			tf.selectable = false;
 			if( ! this._autoSize ){
 				tf.multiline = true;
@@ -198,7 +200,7 @@ package org.flowplayer.controls {
 			var bounds:Rectangle = this.getBounds( this );
 			var fillType:String = GradientType.LINEAR;
 		   	//var colors:Array = [0xFFFFFF, 0x9C9C9C];
-		   	var alphas:Array = [1, 1];
+		   	var alphas:Array = [_config.style.tooltipAlpha, _config.style.tooltipAlpha];
 		   	var ratios:Array = [0x00, 0xFF];
 		   	var matr:Matrix = new Matrix();
 			var radians:Number = 90 * Math.PI / 180;
@@ -366,7 +368,7 @@ package org.flowplayer.controls {
 
         override public function get visible():Boolean {
             if (super.visible) return false;
-            return this.alpha < 1;
+            return this.alpha < _config.style.tooltipAlpha;
         }
     }
 }

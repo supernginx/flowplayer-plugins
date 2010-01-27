@@ -216,7 +216,23 @@ package org.flowplayer.controls.slider {
 		}
 
 		private function drawBufferBar(leftEdge:Number, rightEdge:Number):void {
-			drawBar(_bufferBar, _config.style.bufferColor, _config.style.bufferGradient, leftEdge, rightEdge);
+			drawBar(_bufferBar, _config.style.bufferColor, _config.style.bufferAlpha, _config.style.bufferGradient, leftEdge, rightEdge);
+		}
+
+		override protected function get sliderAlpha():Number {
+            return _config.style.sliderAlpha;
+        }
+
+		override protected function get borderWidth():Number {
+			return _config.style.sliderBorderWidth;
+		}
+		
+		override protected function get borderColor():Number {
+			return _config.style.sliderBorderColor;
+		}
+		
+		override protected function get borderAlpha():Number {
+			return _config.style.sliderBorderAlpha;
 		}
 
 		private function createBars():void {
@@ -235,7 +251,7 @@ package org.flowplayer.controls.slider {
 //		}
 
 		private function drawProgressBar(leftEdge:Number):void {
-			drawBar(_progressBar, _config.style.progressColor, _config.style.progressGradient, leftEdge || 0, _dragger.x + _dragger.width - 2);
+			drawBar(_progressBar, _config.style.progressColor, _config.style.progressAlpha, _config.style.progressGradient, leftEdge || 0, _dragger.x + _dragger.width - 2);
 		}
 
 		public function set allowRandomSeek(value:Boolean):void {
@@ -303,8 +319,8 @@ package org.flowplayer.controls.slider {
 		
 		override public function redraw(config:Config):void {
 			super.redraw(config);
-			drawBar(_progressBar, _config.style.progressColor, _config.style.progressGradient, _progressBar.x, _progressBar.width);
-			drawBar(_bufferBar, _config.style.bufferColor, _config.style.bufferGradient, _bufferBar.x, _bufferBar.width);
+			drawBar(_progressBar, _config.style.progressColor, _config.style.progressAlpha, _config.style.progressGradient, _progressBar.x, _progressBar.width);
+			drawBar(_bufferBar, _config.style.bufferColor, _config.style.bufferAlpha, _config.style.bufferGradient, _bufferBar.x, _bufferBar.width);
 		}
 
         override protected function get barHeight():Number {
