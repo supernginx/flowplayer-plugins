@@ -53,8 +53,7 @@ import org.flowplayer.view.AnimationEngine;
         override protected function onSetValue():void {
 			var pos:Number = value/100 * (width - _dragger.width);
             animationEngine.animateProperty(_dragger, "x", pos, 200);
-
-			drawBar(_volumeBar, volumeColor, _config.style.bufferGradient, 0, pos + _dragger.width / 2);
+			drawBar(_volumeBar, volumeColor, volumeAlpha, _config.style.bufferGradient, 0, pos + _dragger.width / 2);
         }
 
 		override protected function isToolTipEnabled():Boolean {
@@ -75,9 +74,30 @@ import org.flowplayer.view.AnimationEngine;
             return _config.style.volumeSliderColor;
         }
 
+		override protected function get sliderAlpha():Number {
+            return _config.style.volumeAlpha;
+        }
+
+		override protected function get borderWidth():Number {
+			return _config.style.volumeBorderWidth;
+		}
+		
+		override protected function get borderColor():Number {
+			return _config.style.volumeBorderColor;
+		}
+		
+		override protected function get borderAlpha():Number {
+			return _config.style.volumeBorderAlpha;
+		}
+
 		protected function get volumeColor():Number {
 			if (isNaN(_config.style.volumeColor) || _config.style.volumeColor == -2 ) return sliderColor;
             return _config.style.volumeColor;
+        }
+
+		protected function get volumeAlpha():Number {
+			if (isNaN(_config.style.volumeSliderAlpha) || _config.style.volumeSliderAlpha == -2 ) return sliderAlpha;
+            return _config.style.volumeSliderAlpha;
         }
 
         override protected function get barCornerRadius():Number {
