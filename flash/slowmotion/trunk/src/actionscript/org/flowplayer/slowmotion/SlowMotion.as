@@ -11,14 +11,20 @@
 package org.flowplayer.slowmotion {
     import flash.net.NetStream;
     import flash.utils.Dictionary;
+	import flash.utils.*;
+	import flash.events.*;
+	import flash.display.Loader;
+	import org.flowplayer.layout.LayoutEvent;
 
     import org.flowplayer.controller.StreamProvider;
     import org.flowplayer.model.ClipEvent;
     import org.flowplayer.model.Plugin;
     import org.flowplayer.model.PluginError;
     import org.flowplayer.model.PluginModel;
+	import org.flowplayer.model.DisplayProperties;
     import org.flowplayer.util.Log;
     import org.flowplayer.view.Flowplayer;
+	import org.flowplayer.util.PropertyBinder;
 
     public class SlowMotion implements Plugin {
         private var log:Log = new Log(this);
@@ -26,9 +32,14 @@ package org.flowplayer.slowmotion {
         private var _model:PluginModel;
         private var _player:Flowplayer;
         private var _timeProvider:SlowMotionTimeProvider;
+		private var _config:Config;
+
+		private var _speedIndicator:PluginModel;
+		private var _speedIndicatorTimer:Timer;
 
         public function onConfig(model:PluginModel):void {
             _model = model;
+			_config = new PropertyBinder(new Config(), null).copyProperties(model.config) as Config;
         }
 
         public function onLoad(player:Flowplayer):void {
@@ -44,6 +55,13 @@ package org.flowplayer.slowmotion {
 
             _timeProvider = new SlowMotionTimeProvider(_model, _provider, _player.playlist);
             _provider.timeProvider = _timeProvider;
+
+			//try {
+                lookupSpeedIndicator();
+            /*} catch (e:Error) {
+                _model.dispatchError(PluginError.INIT_FAILED, "Failed to lookup a speedIndicator plugin: " + e.message);
+                return;
+            }*/
 
             _model.dispatchOnLoad();
         }
@@ -67,6 +85,7 @@ package org.flowplayer.slowmotion {
         [External]
         public function normal():void {
             log.debug("normal()");
+			showSpeedIndicator(1, 0);
             _provider.netStream.seek(_timeProvider.getTime(netStream));
         }
 
@@ -76,6 +95,7 @@ package org.flowplayer.slowmotion {
         }
 
         private function setFastPlay(multiplier:Number, fps:Number, forward:int):void {
+			showSpeedIndicator(multiplier, forward);
             var targetFps:Number = fps > 0 ? fps : multiplier * 50;
             _provider.netConnection.call("setFastPlay", null, multiplier, targetFps, forward);
             _provider.netStream.seek(_timeProvider.getTime(netStream));
@@ -100,6 +120,74 @@ package org.flowplayer.slowmotion {
             }
             return null;
         }
+
+		private function lookupSpeedIndicator():void
+		{
+			_speedIndicator = _player.pluginRegistry.getPlugin(_config.speedIndicator) as PluginModel;
+
+			if ( _speedIndicator && getQualifiedClassName(_speedIndicator.pluginObject) != 'org.flowplayer.content::Content' )
+				throw new Error("The specified speedIndicator is not a Content plugin");
+						
+			_speedIndicatorTimer = new Timer(_config.speedIndicatorDelay, 1);
+			_speedIndicatorTimer.addEventListener(TimerEvent.TIMER, function(e:TimerEvent):void { 
+				if ( _speedIndicator )
+					_player.hidePlugin(_speedIndicator.name);
+			});
+		}
+
+		private function showSpeedIndicator(multiplier:Number, forward:int):void
+		{
+			if ( ! _speedIndicator )
+				return;
+
+			var label:String = getSpeedIndicatorLabel(multiplier, forward);
+			_speedIndicator.pluginObject.html = label;
+
+			_speedIndicatorTimer.reset();
+			_player.showPlugin(_speedIndicator.name);
+
+			_speedIndicatorTimer.start();
+		}
+
+		private function getSpeedIndicatorLabel(multiplier:Number, forward:int):String
+		{
+			var label:String = 'qwe';
+			if ( multiplier == 1 )
+				label = _config.normalLabel;
+			else if ( multiplier > 1 && forward > 0 )
+				label = _config.fastForwardLabel;
+			else if ( multiplier < 1 && forward > 0 )
+				label = _config.slowForwardLabel;
+			else if ( multiplier > 1 && forward < 0 )
+				label = _config.fastBackwardLabel;
+			else label = _config.slowBackwardLabel;
+
+			if ( label.indexOf('{speed}') != -1 )
+			{
+				var multiplierAsString:String = null;
+				if ( multiplier >= 1 )
+					multiplierAsString = String(multiplier);
+				else
+				{
+					for ( var i:int = 1; i <= 25; i++ )
+					{
+						if ( 1/i == multiplier )
+						{
+							multiplierAsString = '1/'+ String(i);
+							break;
+						}
+					}
+
+					if ( multiplierAsString == null )
+						multiplierAsString = String(Math.round(multiplier*1000)/1000);
+				}
+				
+				label = label.replace(/\{speed\}/ig, multiplierAsString);
+			}
+
+			return label;
+		}
+
 
         public function getDefaultConfig():Object {
             return null;
