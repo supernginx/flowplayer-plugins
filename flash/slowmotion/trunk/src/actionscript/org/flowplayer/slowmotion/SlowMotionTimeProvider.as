@@ -31,11 +31,11 @@ package org.flowplayer.slowmotion {
         private var _playlist:Playlist;
         private var _model:PluginModel;
 
-        public function SlowMotionTimeProvider(model:PluginModel, provider:StreamProvider, playlist:Playlist) {
+        public function SlowMotionTimeProvider(model:PluginModel, provider:StreamProvider, providerName:String, playlist:Playlist) {
             _model = model;
             _provider = provider;
             _playlist = playlist;
-            playlist.onStart(onStart, function(clip:Clip):Boolean { return clip.type == ClipType.VIDEO; });
+            playlist.onStart(onStart, function(clip:Clip):Boolean { return clip.provider == providerName; });
         }
 
         public function getTime(netStream:NetStream):Number {

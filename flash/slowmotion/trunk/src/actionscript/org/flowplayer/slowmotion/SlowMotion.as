@@ -33,6 +33,7 @@ package org.flowplayer.slowmotion {
         private var _player:Flowplayer;
         private var _timeProvider:SlowMotionTimeProvider;
 		private var _config:Config;
+        private var _providerName:String;
 
 		private var _speedIndicator:PluginModel;
 		private var _speedIndicatorTimer:Timer;
@@ -46,22 +47,17 @@ package org.flowplayer.slowmotion {
             _player = player;
 
             try {
-                _provider = lookupProvider(player.pluginRegistry.providers);
+                lookupProvider(player.pluginRegistry.providers);
             } catch (e:Error) {
                 _model.dispatchError(PluginError.INIT_FAILED, "Failed to lookup a RTMP plugin: " + e.message);
                 return;
             }
             log.debug("Found RTMP provider " + _provider);
 
-            _timeProvider = new SlowMotionTimeProvider(_model, _provider, _player.playlist);
+            _timeProvider = new SlowMotionTimeProvider(_model, _provider, _providerName, _player.playlist);
             _provider.timeProvider = _timeProvider;
 
-			//try {
-                lookupSpeedIndicator();
-            /*} catch (e:Error) {
-                _model.dispatchError(PluginError.INIT_FAILED, "Failed to lookup a speedIndicator plugin: " + e.message);
-                return;
-            }*/
+            lookupSpeedIndicator();
 
             _model.dispatchOnLoad();
         }
@@ -101,24 +97,31 @@ package org.flowplayer.slowmotion {
             _provider.netStream.seek(_timeProvider.getTime(netStream));
         }
 
-        private function lookupProvider(providers:Dictionary):StreamProvider {
+        private function setProvider(model:PluginModel):void {
+            _providerName = model.name;
+            _provider = model.pluginObject as StreamProvider;
+        }
+
+        private function lookupProvider(providers:Dictionary):void {
             log.debug("lookupProvider() " + providers);
             if (_model.config && _model.config["provider"]) {
                 var model:PluginModel = _player.pluginRegistry.getPlugin(_model.config["provider"]) as PluginModel;
                 if (! model) throw new Error("Failed to find plugin '" + _model.config["provider"] + "'");
                 if (! (model.pluginObject is StreamProvider)) throw new Error("The specified provider is not a StreamProvider");
-                return model.pluginObject as StreamProvider;
+                setProvider(model);
+                return;
             }
             for each (model in providers) {
                 log.debug(model.name);
                 if (model.name == "rtmp") {
-                    return model.pluginObject as StreamProvider;                    
+                    setProvider(model);
+                    return;
                 }
                 if (["http", "httpInstream"].indexOf(model.name) < 0 && model.pluginObject is StreamProvider) {
-                    return model.pluginObject as StreamProvider;
+                    setProvider(model);
+                    return;
                 }
             }
-            return null;
         }
 
 		private function lookupSpeedIndicator():void
