@@ -75,7 +75,7 @@ import org.flowplayer.view.AnimationEngine;
         }
 
 		override protected function get sliderAlpha():Number {
-            return _config.style.volumeAlpha;
+            return _config.style.volumeSliderAlpha;
         }
 
 		override protected function get borderWidth():Number {
@@ -96,8 +96,8 @@ import org.flowplayer.view.AnimationEngine;
         }
 
 		protected function get volumeAlpha():Number {
-			if (isNaN(_config.style.volumeSliderAlpha) || _config.style.volumeSliderAlpha == -2 ) return sliderAlpha;
-            return _config.style.volumeSliderAlpha;
+			if (isNaN(_config.style.volumeAlpha) || _config.style.volumeAlpha == -2 ) return sliderAlpha;
+            return _config.style.volumeAlpha;
         }
 
         override protected function get barCornerRadius():Number {
