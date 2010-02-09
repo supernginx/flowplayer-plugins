@@ -303,7 +303,7 @@ package org.flowplayer.controls.slider {
 			_border = new Sprite();
 			addChild(_border);
 			swapChildren(_border, _dragger);
-			log.info("border weight is " + borderWidth);		
+			log.info("border weight is " + borderWidth + ", color is "+ String(borderColor) + ", alpha "+ String(borderAlpha));		
 			_border.graphics.lineStyle(borderWidth, borderColor, borderAlpha);
 			GraphicsUtil.drawRoundRectangle(_border.graphics, 0, height/2 - barHeight/2, width, barHeight, barCornerRadius);
 		}
