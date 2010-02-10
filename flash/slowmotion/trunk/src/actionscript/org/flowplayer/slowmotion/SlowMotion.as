@@ -15,6 +15,9 @@ package org.flowplayer.slowmotion {
 	import flash.events.*;
 	import flash.display.Loader;
 	import org.flowplayer.layout.LayoutEvent;
+	
+	import flash.events.KeyboardEvent;
+    import flash.ui.Keyboard;
 
     import org.flowplayer.controller.StreamProvider;
     import org.flowplayer.model.ClipEvent;
@@ -45,7 +48,23 @@ package org.flowplayer.slowmotion {
 
         public function onLoad(player:Flowplayer):void {
             _player = player;
-
+			
+			var handler:Function = function(event:KeyboardEvent, fast:Boolean):void {
+				if ( ! event.ctrlKey )	return;
+				
+				var nextSpeed:Number = getNextSpeed(fast, true);
+				if ( nextSpeed == 0 )
+					normal();
+				else
+					forward(nextSpeed);
+			};
+			
+			var fastmotion:Function = function(event:KeyboardEvent):void {};
+			_player.addKeyListener(Keyboard.RIGHT, 	function(event:KeyboardEvent):void { handler(event, true); });
+			_player.addKeyListener(76, 				function(event:KeyboardEvent):void { handler(event, true); }); 
+			_player.addKeyListener(Keyboard.LEFT, 	function(event:KeyboardEvent):void { handler(event, false); }); 
+			_player.addKeyListener(72, 				function(event:KeyboardEvent):void { handler(event, false); });
+			
             try {
                 lookupProvider(player.pluginRegistry.providers);
             } catch (e:Error) {
@@ -154,7 +173,7 @@ package org.flowplayer.slowmotion {
 
 		private function getSpeedIndicatorLabel(multiplier:Number, forward:int):String
 		{
-			var label:String = 'qwe';
+			var label:String = '';
 			if ( multiplier == 1 )
 				label = _config.normalLabel;
 			else if ( multiplier > 1 && forward > 0 )
@@ -199,5 +218,32 @@ package org.flowplayer.slowmotion {
         private function get netStream():NetStream {
             return _provider.netStream;
         }
+
+		public function getNextSpeed(fast:Boolean, forward:Boolean):Number
+		{
+			var fastSpeeds:Array = [2, 4, 8, 1];
+			var slowSpeeds:Array = [1/2, 1/4, 1/8, 1];
+			
+			var currentSpeed:Number = info ? info.speedMultiplier  : 1;
+			var isForward:Boolean   = info ? info.forwardDirection : true;
+			
+			var nextSpeed:Number = 1;
+			
+			if ( forward == isForward )	// same direction
+			{
+				if ( fast ) // fast
+					nextSpeed   = fastSpeeds[((fastSpeeds.indexOf(currentSpeed)+1)%fastSpeeds.length)];
+				else  // slow
+					nextSpeed   = slowSpeeds[((slowSpeeds.indexOf(currentSpeed)+1)%slowSpeeds.length)];
+			}
+			else if ( fast )
+				nextSpeed = fastSpeeds[0];
+			else
+				nextSpeed = slowSpeeds[0];
+				
+			log.debug("Next speed "+ nextSpeed + " forward ? "+ forward);
+			
+			return nextSpeed;
+		}
     }
 }
