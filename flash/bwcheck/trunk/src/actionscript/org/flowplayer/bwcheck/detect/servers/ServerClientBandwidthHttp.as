@@ -19,7 +19,8 @@ package org.flowplayer.bwcheck.detect.servers
 	import flash.net.URLRequestHeader;
 	import flash.net.URLRequestMethod;
 	import flash.utils.getTimer;
-	
+	import flash.system.Security;
+
 	import org.red5.flash.bwcheck.BandwidthDetection;
 	
 	/**
@@ -115,7 +116,7 @@ package org.flowplayer.bwcheck.detect.servers
 			
 			this._startTime = getTimer();
 			log.debug("start: " + _startTime.toString());
-			
+
 			var request:URLRequest = new URLRequest(_url);
 			_nocache = new URLRequestHeader("Cache-Control", "no-store, no-cache, must-revalidate");
 			var headers:Array = new Array(_nocache);
