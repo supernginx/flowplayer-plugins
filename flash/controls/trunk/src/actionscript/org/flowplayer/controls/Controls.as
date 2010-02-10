@@ -662,29 +662,9 @@ package org.flowplayer.controls {
 		{
 			if ( ! hasSlowMotion() )
 				return;
-				
-			var fastSpeeds:Array = [2, 4, 8, 1];
-			var slowSpeeds:Array = [1/2, 1/4, 1/8, 1];
-			
+							
 			var slowMotionPlugin:*  = _player.pluginRegistry.getPlugin("slowmotion").pluginObject;
-			var currentSpeed:Number = slowMotionPlugin.info ? slowMotionPlugin.info.speedMultiplier  : 1;
-			var isForward:Boolean   = slowMotionPlugin.info ? slowMotionPlugin.info.forwardDirection : true;
-			
-			var nextSpeed:Number = 1;
-			
-			if ( forward == isForward )	// same direction
-			{
-				if ( fast ) // fast
-					nextSpeed   = fastSpeeds[((fastSpeeds.indexOf(currentSpeed)+1)%fastSpeeds.length)];
-				else  // slow
-					nextSpeed   = slowSpeeds[((slowSpeeds.indexOf(currentSpeed)+1)%slowSpeeds.length)];
-			}
-			else if ( fast )
-				nextSpeed = fastSpeeds[0];
-			else
-				nextSpeed = slowSpeeds[0];
-				
-			log.debug("Next speed "+ nextSpeed + " forward ? "+ forward);	
+			var nextSpeed:Number = slowMotionPlugin.getNextSpeed(fast, forward);
 				
 			if ( nextSpeed == 0 )
 				slowMotionPlugin.normal();
