@@ -551,7 +551,8 @@ playlist: [
         <td class="code default"></td>
         <td class="description">
             The URL used to check the bandwidth. For HTTP-based checking this should point to a reference file that is
-            loaded as part of the check. For RTMP this should be a RMTP url pointing to a streaming server.
+            loaded as part of the check. The file should reside on the same host as the plugin, or requires domain context policies for remote loading of the file to prevent sandbox issues. 
+            For RTMP this should be a RMTP url pointing to a streaming server.
         </td>
     </tr>
     <tr>
@@ -841,7 +842,7 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 <h2><em>Psuedo Streaming</em> Example</h2>
 
 <p>
-	The bwcheck plugin supports dynamic switching with Psuedo Streaming servers such as Lighttpd. Below is an example:
+	The bwcheck plugin supports dynamic switching with Psuedo Streaming servers such as Lighttpd. The bandwidth check file should reside on the same host as the plugin, or requires domain context policies for remote loading of the file to prevent sandbox issues. Below is an example:
 </p>
 
 <div style="width:425px;margin:30px auto">
@@ -864,7 +865,7 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 
 <!-- Flowplayer installation and configuration -->
 <script language="JavaScript">
-/*
+
 flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
 	playlist: psuedoPlaylist,
 	// configure the required plugin
@@ -892,28 +893,8 @@ flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
 	},
 	log: { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.pseudostreaming.*, org.flowplayer.cluster.*, org.flowplayer.controls.slider.*' }
 	
-});*/
-
-
-flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
-
-	// configure the required plugin
-	plugins:  {
-		content: contentPlugin,
-		psuedo: {
-			url: '../flowplayer.pseudostreaming.swf'
-		}
-		
-	},
-	clip: {
-		provider: 'psuedo',
-		url: 'bbb_480x270.flv',
-		start: 150,
-		baseUrl: 'http://vod01.netdna.com/vod/demo.flowplayer/pseudo/'
-	},
-	log: { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.pseudostreaming.*, org.flowplayer.cluster.*, org.flowplayer.controls.slider.*' }
-	
 });
+
 </script>	
 
 
