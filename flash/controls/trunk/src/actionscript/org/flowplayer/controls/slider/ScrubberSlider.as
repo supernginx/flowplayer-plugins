@@ -164,7 +164,7 @@ package org.flowplayer.controls.slider {
                             var endPos:Number = width - _dragger.width;
                             var duration:Number = (clip.duration - time) * 1000;  
                             log.debug("doStart(), starting an animation to x pos " + endPos + ", the duration is " + clip.duration + ", current pos is " + _dragger.x);
-                            //updateDraggerPos(currentTime, clip);
+                            updateDraggerPos(currentTime, clip);
                             animationEngine.animateProperty(_dragger, "x", endPos, duration, null, Linear.easeOut);
                         }
                     });
