@@ -12,11 +12,9 @@ package org.flowplayer.youtube {
 	/**
 	 * @author danielr
 	 */
-	public class YouTubePlayerState {
-		public static const ENDED:Number = 0;
-    	public static const PLAYING:Number = 1;
-    	public static const PAUSED:Number = 2;
-    	public static const BUFFERING:Number = 3;
-    	public static const CUED:Number = 5;
+	public class YouTubePlayerError {
+		public static const STREAM_NOT_FOUND:Number = 100;
+    	public static const EMBED_NOT_ALLOWED:Number = 101;
+    	public static const EMBED_NOT_ALLOWED2:Number = 150;
 	}
 }
