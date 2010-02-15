@@ -27,7 +27,7 @@
 		<!-- this A tag is where your Flowplayer will be placed. it can be anywhere -->
 		<a  
 			 href=""  
-			 style="display:block;width:400px;height:300px"  
+			 style="display:block;width:854px;height:680px"  
 			 id="youtube"> 
 		</a> 
 		
@@ -42,15 +42,19 @@
 	
 				// 1:st clip
 				{
-					url: '6oNMWq1K2Lo'
+					url: 'chromeless:PmGiCFPUSM4',
+					
 					
 				}
 			], 
 			clip: {
 				provider: 'youtube',
+				urlResolvers: 'youtube',
 				//autoPlay: false,
+				autoBuffering: true,
+				//accelerated: true, 
 				onStart: function(clip)  {
-			
+					
 				}
 			}, 
 			
@@ -58,9 +62,10 @@
 			     
 				     // other levels are: 'info', 'warning', 'error' which will cause less output 
 				     level: 'debug',
-				     filter: 'org.flowplayer.youtube.*, org.flowplayer.controller.*' 
+				     filter: 'org.flowplayer.youtube.*,  org.flowplayer.controller.*, org.flowplayer.layout.Dimensions' 
 				},
 			plugins:  {
+				controls: { autoHide: true },
 				youtube: {
 					url:'@MAIN_PLAYER_SWF@'
 				}
