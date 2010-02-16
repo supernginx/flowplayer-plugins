@@ -269,7 +269,7 @@
 	</target>
     
     <target name="write-zip-url">
-<echo file="${url-file}" append="true">&#60;a href="http://flowplayer.org/releases/${basename}/${basename}-${version}.zip"&#62;${basename}-${version}.zip&#60;/a&#62; &#60;br /&#62;
+<echo file="${url-file}" append="true">&#60;a href="http://flowplayer-releases.s3.amazonaws.com/${basename}/${basename}-${version}.zip"&#62;${basename}-${version}.zip&#60;/a&#62; &#60;br /&#62;
 </echo>
     </target>
 
@@ -290,34 +290,55 @@
 		</zip>
 	</target>
 
-	<target name="release-remote" depends="release-swfs">
-		<remotecopy remotedir="${remotedir}/${basename}" keyfile="${keyfile}" pass="${pass}">
-			<releasefiles>
-				<fileset dir="${dist-dir}">
-					<include name="${basename}-${version}.zip" />
-					<include name="${basename}-${version}-src.zip" />
-					<include name="${plugin-binary-versioned}" />
-				</fileset>
-				<fileset dir="${build-dir}">
-					<include name="${plugin-binary-versioned}" />
-				</fileset>
-			</releasefiles>
-		</remotecopy>
-	</target>
-	
+    <target name="release-remote" depends="release-swfs">
+        <remotecopy remotedir="${basename}" keyfile="${keyfile}" pass="${pass}">
+            <releasefiles>
+                <fileset dir="${dist-dir}">
+                    <include name="${basename}-${version}.zip" />
+                    <include name="${basename}-${version}-src.zip" />
+                    <include name="${plugin-binary-versioned}" />
+                </fileset>
+                <fileset dir="${build-dir}">
+                    <include name="${plugin-binary-versioned}" />
+                </fileset>
+            </releasefiles>
+        </remotecopy>
+    </target>
+
+    <target name="release-remote-dev">
+        <remotecopy-dev remotedir="${swfremotedir}" keyfile="${keyfile}" pass="${pass}">
+            <releasefiles>
+                <fileset dir="${build-dir}">
+                    <include name="${plugin-binary-versioned}" />
+                    <include name="${plugin-binary}" />
+                </fileset>
+            </releasefiles>
+        </remotecopy-dev>
+    </target>
+
 	<target name="release-swfs">
-		<remotecopy remotedir="${swfremotedir}" keyfile="${keyfile}" pass="${pass}">
+		<remotecopy-dev remotedir="swf" keyfile="${keyfile}" pass="${pass}">
 			<releasefiles>
 				<fileset dir="${build-dir}">
 					<include name="${plugin-binary-versioned}" />
 					<include name="${plugin-binary}" />
 				</fileset>
 			</releasefiles>
-		</remotecopy>
+		</remotecopy-dev>
 	</target>
 
 	<target name="echo-name">
 		<echo message="${plugin-binary-versioned}" />
 	</target>
 
+    <target name="zip-swfs">
+        <echo message="${basename}: updating ${all-swf-zip}" />
+        <updatezip zip="${all-swf-zip}">
+            <zipfiles>
+                <fileset dir="${build-dir}">
+                    <include name="${plugin-binary-versioned}" />
+                </fileset>
+            </zipfiles>
+        </updatezip>
+    </target>
 </project>

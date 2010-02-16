@@ -1,16 +1,59 @@
 <project name="Macro for copying files with scp, can be included in different build files">
-	
-	<macrodef name="remotecopy">
+
+    <path id="classpath-release">
+          <fileset dir="/Users/api/code/release/jars">
+            <include name="*.jar"/>
+          </fileset>
+     </path>
+
+    <taskdef name="S3Upload" classname="dak.ant.taskdefs.S3Upload">
+        <classpath refid="classpath-release"/>
+    </taskdef>
+
+    <macrodef name="remotecopy">
+        <attribute name="remotedir" default="" />
+        <attribute name="keyfile" />
+        <attribute name="pass" />
+        <element name="releasefiles" />
+        
+        <sequential>
+            <condition property="bucketname" value="flowplayer-releases" else="flowplayer-releases/@{remotedir}" >
+                    <equals arg1="@{remotedir}" arg2="" />
+            </condition>
+
+            <echo message="releasing to flowplayer-releases/@{remotedir}" />
+
+            <S3Upload verbose="true"
+                        accessId="${aws-accessId}"
+                        secretKey="${aws-secretKey}"
+                        bucket="${bucketname}"
+                        publicRead="true">
+                <releasefiles />
+            </S3Upload>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="updatezip">
+        <attribute name="zip" />
+        <element name="zipfiles" />
+        <sequential>
+            <echo message="adding files to @{zip}" />
+            <zip update="true" destfile="@{zip}">
+                <zipfiles />
+            </zip>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="remotecopy-dev">
         <attribute name="remotedir" />
         <attribute name="keyfile" />
         <attribute name="pass" />
         <element name="releasefiles" />
-		<sequential>
-			<echo message="releasing to @{remotedir}" />
-			<scp todir="@{remotedir}" keyfile="@{keyfile}" passphrase="@{pass}" verbose="true">
-				<releasefiles />
-			</scp>
-		</sequential>
-	</macrodef>
-	
+        <sequential>
+            <echo message="releasing to @{remotedir}" />
+            <scp todir="@{remotedir}" keyfile="@{keyfile}" passphrase="" verbose="true">
+                <releasefiles />
+            </scp>
+        </sequential>
+    </macrodef>
 </project>
