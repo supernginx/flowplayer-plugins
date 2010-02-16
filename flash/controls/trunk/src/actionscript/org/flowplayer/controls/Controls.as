@@ -96,11 +96,14 @@ package org.flowplayer.controls {
          * @param enabledWidgets the buttons visibilies, for example { all: true, volume: false, time: false }
          */
         [External]
-        public function widgets(visibleWidgets:Object):void {
-            log.debug("enable()");
-            if (_animationTimer && _animationTimer.running) return;
+        public function widgets(visibleWidgets:Object = null):Object {
+            log.debug("widgets()");
+            if (! visibleWidgets) return _config.visible;
+
+            if (_animationTimer && _animationTimer.running) return _config.visible;
             setConfigBooleanStates("visible", visibleWidgets);
             recreateWidgets();
+            return _config.visible;
         }
 
         private function recreateWidgets():void {
@@ -168,9 +171,14 @@ package org.flowplayer.controls {
         }
 
         [External]
+        public function getTooltips():ToolTips {
+            return _config.tooltips;
+        }
+
+        [External]
         public function setAutoHide(props:Object = null):void {
             log.debug("autoHide()");
-		    		if (props) {
+            if (props) {
                 new PropertyBinder(_config).copyProperties(props);
 
                 if (props.hasOwnProperty("enabled")) {
@@ -197,8 +205,8 @@ package org.flowplayer.controls {
             _controlBarMover.start();
         }
 
-				private function setAutoHideFullscreenOnly(config:Config, props:Object):void {
-		    		if (props.hasOwnProperty("fullscreenOnly")) {
+        private function setAutoHideFullscreenOnly(config:Config, props:Object):void {
+            if (props.hasOwnProperty("fullscreenOnly")) {
                 _config.autoHide = props.fullscreenOnly ? "fullscreen" : "always";
             } else if (config.autoHide == "never") {
                 _config.autoHide = "fullscreen";
@@ -370,8 +378,6 @@ package org.flowplayer.controls {
 				_slowMotionFFwdButton = addChildWidget(createWidget(_slowMotionFFwdButton, "slowmotion", SlowMotionFFwdButton, _config, animationEngine), ButtonEvent.CLICK, function(e:ButtonEvent):void { onSlowMotionClicked(true, true); });
 				_slowMotionFBwdButton = addChildWidget(createWidget(_slowMotionFBwdButton, "slowmotion", SlowMotionFBwdButton, _config, animationEngine), ButtonEvent.CLICK, function(e:ButtonEvent):void { onSlowMotionClicked(true, false); });
 			}
-
-
 
             _muteVolumeButton = addChildWidget(createWidget(_muteVolumeButton, "mute", ToggleVolumeMuteButton, _config, animationEngine), ButtonEvent.CLICK, onMuteVolumeClicked) as AbstractToggleButton;
             _volumeSlider = addChildWidget(createWidget(_volumeSlider, "volume", VolumeScrubber, _config, animationEngine, this), VolumeSlider.DRAG_EVENT, onVolumeSlider) as VolumeScrubber;

@@ -2,10 +2,13 @@ Version history:
 
 3.1.6
 -----
+- External method widgets() now also returns the current widget visibility states. Can be also called called without parameters
+- Added new getTooltips() external method
 - Smoother movement of the scrubber, especially with short clips.
-- Added new autoHide() external method, for example autoHide({ state: 'always', delay: 1000, duration: 1000, style: 'fade' }) 
+- Added new setAutoHide() external method, for example setAutoHide({ enabled: true, fullscreenOnly: false, delay: 1000, duration: 1000, style: 'fade' })
 - Controlbar is now by default centered horizontally. Now when you specify a widht that is less than 100% it by default is
 centered nicely.
+ The tooltips() public method renamed to setTooltips()
 Fixes:
 - Setting scrubber height ratio using $f().getControls().css({ scrubberHeightRatio: 0.9 }) needed 2 calls to take effect
 - borderColor has now precedence on border
