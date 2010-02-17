@@ -175,6 +175,11 @@ package org.flowplayer.controls {
             return _config.tooltips;
         }
 
+        [External(convert="true")]
+        public function getConfig():Config {
+            return _config;
+        }
+
         [External]
         public function setAutoHide(props:Object = null):void {
             log.debug("autoHide()");

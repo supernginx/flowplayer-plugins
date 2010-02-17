@@ -29,6 +29,7 @@ package org.flowplayer.controls {
 		private var _enabled:WidgetBooleanStates = new WidgetEnabledStates();
 		private var _tooltips:ToolTips = new ToolTips();
 
+        [Value]
         public function get autoHide():String {
 			return _autoHide;
 		}
@@ -41,6 +42,7 @@ package org.flowplayer.controls {
             _autoHide = autoHide;
         }
 
+        [Value]
 		public function get style():Style {
 			return _style || new Style();
 		}
@@ -49,6 +51,7 @@ package org.flowplayer.controls {
 			_style = new PropertyBinder(style, "bgStyle").copyProperties(styleProps) as Style;
 		}
 		
+        [Value]
 		public function get hideDelay():Number {
 			return _hideDelay;
 		}
@@ -61,6 +64,7 @@ package org.flowplayer.controls {
             _hideDelay = hideDelay;
         }
 
+        [Value]
 		public function get visible():WidgetBooleanStates {
 			return _visible;
 		}
@@ -69,6 +73,7 @@ package org.flowplayer.controls {
 			_visible = visible;
 		}
 		
+        [Value]
 		public function get enabled():WidgetBooleanStates {
 			return _enabled;
 		}
@@ -77,6 +82,7 @@ package org.flowplayer.controls {
 			_enabled = enabled;
 		}
 		
+        [Value]
 		public function get skin():String {
 			return _skin;
 		}
@@ -85,6 +91,7 @@ package org.flowplayer.controls {
 			_skin = skin;
 		}
 		
+        [Value]
 		public function get tooltips():ToolTips {
 			return _tooltips;
 		}
@@ -101,6 +108,7 @@ package org.flowplayer.controls {
             _player = value;
         }
 
+        [Value]
         public function get hideDuration():Number {
             return _hideDuration;
         }
@@ -113,6 +121,7 @@ package org.flowplayer.controls {
             _hideDuration = value;
         }
 
+        [Value]
         public function get hideStyle():String {
             return _hideStyle;
         }
