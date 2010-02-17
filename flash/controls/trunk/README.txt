@@ -2,6 +2,7 @@ Version history:
 
 3.1.6
 -----
+- New getConfig() external method
 - External method widgets() now also returns the current widget visibility states. Can be also called called without parameters
 - Added new getTooltips() external method
 - Smoother movement of the scrubber, especially with short clips.

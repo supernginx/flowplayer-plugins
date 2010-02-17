@@ -12,14 +12,17 @@ package org.flowplayer.controls {
 
     public class WidgetEnabledStates extends WidgetBooleanStates{
 
+        [Value]
         override public function get stop():Boolean {
             return value("stop", true);
         }
 
+        [Value]
         override public function get playlist():Boolean {
             return value("playlist", true);
         }
 
+        [Value]
 		override public function get slowmotion():Boolean {
             return value("slowmotion", true);
         }
