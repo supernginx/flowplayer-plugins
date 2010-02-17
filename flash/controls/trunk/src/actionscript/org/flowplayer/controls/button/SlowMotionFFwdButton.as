@@ -8,7 +8,7 @@
  */
 package org.flowplayer.controls.button {
     import flash.display.DisplayObjectContainer;
-import org.flowplayer.controls.Config;
+import org.flowplayer.controls.config.Config;
 	import org.flowplayer.controls.button.AbstractButton;
     import org.flowplayer.view.AnimationEngine;
 	

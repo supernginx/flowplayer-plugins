@@ -8,6 +8,7 @@ package org.flowplayer.controls {
     import flash.text.*;
     import flash.utils.Timer;
 
+    import org.flowplayer.controls.config.Config;
     import org.flowplayer.view.Animation;
     import org.flowplayer.view.AnimationEngine;
 

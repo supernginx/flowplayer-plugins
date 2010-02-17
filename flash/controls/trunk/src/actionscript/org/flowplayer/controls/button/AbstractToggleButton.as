@@ -15,7 +15,7 @@ package org.flowplayer.controls.button {
 	import flash.display.DisplayObjectContainer;
 	import flash.events.MouseEvent;
 	
-	import org.flowplayer.controls.Config;	
+	import org.flowplayer.controls.config.Config;
 	/**
 	 * @author api
 	 */

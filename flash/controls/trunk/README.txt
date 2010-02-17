@@ -2,9 +2,9 @@ Version history:
 
 3.1.6
 -----
-- New getConfig() external method
-- External method widgets() now also returns the current widget visibility states. Can be also called called without parameters
-- Added new getTooltips() external method
+- New external methods and some existing methods renamed. New set of methods for setting and getting things:
+    getConfig(), setWidgets(), getWidgets(), setAutoHide(), getAutoHide(), setTooltips(), getTooltips(), setEnabled(), getEnabled()
+- AutoHide related properties are now given in a new 'autoHide' configuration object.
 - Smoother movement of the scrubber, especially with short clips.
 - Added new setAutoHide() external method, for example setAutoHide({ enabled: true, fullscreenOnly: false, delay: 1000, duration: 1000, style: 'fade' })
 - Controlbar is now by default centered horizontally. Now when you specify a widht that is less than 100% it by default is

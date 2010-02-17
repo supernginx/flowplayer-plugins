@@ -17,7 +17,7 @@ package org.flowplayer.controls.slider {
     import flash.utils.Timer;
 	import flash.display.Sprite;
 
-    import org.flowplayer.controls.Config;
+    import org.flowplayer.controls.config.Config;
     import org.flowplayer.controls.DefaultToolTip;
     import org.flowplayer.controls.NullToolTip;
     import org.flowplayer.controls.ToolTip;
