@@ -170,7 +170,7 @@ package org.flowplayer.controls.slider {
             _dragTimer.stop();
 		}
 		
-		private function onMouseUp(event:MouseEvent = null):void {
+		protected function onMouseUp(event:MouseEvent = null):void {
 			log.debug("onMouseUp");
 //			_tooltip.hide();
 			if (event && event.target != this) return;

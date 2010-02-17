@@ -88,7 +88,7 @@ package org.flowplayer.controls.slider {
                 doStart(_slowMotionInfo["clip"], adjustedTime(_config.player.status.time));
 
             } else {
-                stratTrickPlayTracking();
+                startTrickPlayTracking();
             }
         }
 
@@ -105,7 +105,7 @@ package org.flowplayer.controls.slider {
             }
         }
 
-        private function stratTrickPlayTracking():void {
+        private function startTrickPlayTracking():void {
             stopTrickPlayTracking();
             _trickPlayTrackTimer = new Timer(200);
             _trickPlayTrackTimer.addEventListener(TimerEvent.TIMER, onTrickPlayProgress);
@@ -340,5 +340,10 @@ package org.flowplayer.controls.slider {
             if (isNaN(_config.style.scrubberBorderRadius)) return super.barCornerRadius;
             return _config.style.scrubberBorderRadius;
         }
+
+		override protected function onMouseDown(event:MouseEvent):void {
+			stop();
+			super.onMouseDown(event);
+		}
 	}
 }
