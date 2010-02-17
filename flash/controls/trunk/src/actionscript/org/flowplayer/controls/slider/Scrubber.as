@@ -11,7 +11,7 @@ package org.flowplayer.controls.slider {
 
     import flash.display.DisplayObject;
 
-    import org.flowplayer.controls.Config;
+    import org.flowplayer.controls.config.Config;
     import org.flowplayer.controls.button.SkinClasses;
     import org.flowplayer.model.Playlist;
     import org.flowplayer.util.Arrange;

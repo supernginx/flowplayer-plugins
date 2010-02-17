@@ -30,6 +30,11 @@ package org.flowplayer.controls {
     import org.flowplayer.controls.button.ToggleFullScreenButton;
     import org.flowplayer.controls.button.TogglePlayButton;
     import org.flowplayer.controls.button.ToggleVolumeMuteButton;
+    import org.flowplayer.controls.config.AutoHide;
+    import org.flowplayer.controls.config.Config;
+    import org.flowplayer.controls.config.ToolTips;
+    import org.flowplayer.controls.config.WidgetBooleanStates;
+    import org.flowplayer.controls.config.WidgetEnabledStates;
     import org.flowplayer.controls.slider.Scrubber;
     import org.flowplayer.controls.slider.ScrubberSlider;
     import org.flowplayer.controls.slider.VolumeScrubber;
@@ -91,12 +96,63 @@ package org.flowplayer.controls {
             addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
         }
 
+        [External(convert="true")]
+        public function get config():Config {
+            return _config;
+        }
+
+        [External]
+        public function setTooltips(props:Object):void {
+            initTooltipConfig(_config, props);
+            redraw(props);
+        }
+
+        [External(convert="true")]
+        public function getTooltips():ToolTips {
+            return _config.tooltips;
+        }
+
+        [External]
+        public function setAutoHide(props:Object = null):void {
+            log.debug("autoHide()");
+            if (props) {
+                new PropertyBinder(_config.autoHide).copyProperties(props);
+
+//                if (props.hasOwnProperty("enabled")) {
+//                    if (props.enabled) {
+//                        setAutoHideFullscreenOnly(_config, props);
+//                    } else {
+//                        _config.autoHide.state = "never";
+//                    }
+//                } else if (_config.autoHide.enabled) {
+//                    setAutoHideFullscreenOnly(_config, props);
+//                }
+            }
+            _pluginModel.config.autoHide = _config.autoHide.state;
+
+            if (! props || _config.autoHide.state == "never") {
+                log.debug("autoHide set to 'never'");
+                if (_controlBarMover) {
+                    _controlBarMover.stop();
+                }
+                return;
+            }
+
+            createControlBarMover();
+            _controlBarMover.start();
+        }
+
+        [External(convert="true")]
+        public function getAutoHide():AutoHide {
+            return _config.autoHide;
+        }
+
         /**
          * Makes buttons and other widgets visible/hidden.
-         * @param enabledWidgets the buttons visibilies, for example { all: true, volume: false, time: false }
+         * @param visibleWidgets the buttons visibilies, for example { all: true, volume: false, time: false }
          */
         [External]
-        public function widgets(visibleWidgets:Object = null):Object {
+        public function setWidgets(visibleWidgets:Object = null):Object {
             log.debug("widgets()");
             if (! visibleWidgets) return _config.visible;
 
@@ -106,22 +162,33 @@ package org.flowplayer.controls {
             return _config.visible;
         }
 
-        private function recreateWidgets():void {
-            immediatePositioning = false;
-            createChildren();
-            onResize();
-            immediatePositioning = true;
+
+        [External(convert="true")]
+        public function getWidgets():WidgetBooleanStates {
+            return _config.visible;
         }
 
         /**
          * Enables and disables buttons and other widgets.
          */
         [External]
-        public function enable(enabledWidgets:Object):void {
+        public function setEnabled(enabledWidgets:Object):void {
             log.debug("enable()");
             setConfigBooleanStates("enabled", enabledWidgets);
             enableWidgets();
             enableFullscreenButton(_player.playlist.current);
+        }
+
+        [External(convert="true")]
+        public function getEnabled():WidgetBooleanStates {
+            return _config.enabled;
+        }
+
+        private function recreateWidgets():void {
+            immediatePositioning = false;
+            createChildren();
+            onResize();
+            immediatePositioning = true;
         }
 
         private function enableWidgets():void {
@@ -164,57 +231,11 @@ package org.flowplayer.controls {
             return newStyleProps;
         }
 
-        [External]
-        public function setTooltips(props:Object):void {
-            initTooltipConfig(_config, props);
-            redraw(props);
-        }
-
-        [External]
-        public function getTooltips():ToolTips {
-            return _config.tooltips;
-        }
-
-        [External(convert="true")]
-        public function getConfig():Config {
-            return _config;
-        }
-
-        [External]
-        public function setAutoHide(props:Object = null):void {
-            log.debug("autoHide()");
-            if (props) {
-                new PropertyBinder(_config).copyProperties(props);
-
-                if (props.hasOwnProperty("enabled")) {
-                    if (props.enabled) {
-                        setAutoHideFullscreenOnly(_config, props);
-                    } else {
-                        _config.autoHide = "never";
-                    }
-                } else if (_config.autoHide != "never") {
-                    setAutoHideFullscreenOnly(_config, props);
-                }
-            }
-            _pluginModel.config.autoHide = _config.autoHide;
-
-            if (! props || _config.autoHide == "never") {
-                log.debug("autoHide set to 'never'");
-                if (_controlBarMover) {
-                    _controlBarMover.stop();
-                }
-                return;
-            }
-
-            createControlBarMover();
-            _controlBarMover.start();
-        }
-
         private function setAutoHideFullscreenOnly(config:Config, props:Object):void {
             if (props.hasOwnProperty("fullscreenOnly")) {
-                _config.autoHide = props.fullscreenOnly ? "fullscreen" : "always";
-            } else if (config.autoHide == "never") {
-                _config.autoHide = "fullscreen";
+                _config.autoHide.fullscreenOnly = props.fullscreenOnly;
+            } else if (config.autoHide.state == "never") {
+                _config.autoHide.state = "fullscreen";
             }
         }
 
@@ -287,13 +308,13 @@ package org.flowplayer.controls {
         }
 
         private function createControlBarMover():void {
-            if (_config.autoHide != 'never' && ! _controlBarMover) {
-                _controlBarMover = new ControlsAutoHide(_pluginModel, _config, _player, stage, this);
+            if (_config.autoHide.state != 'never' && ! _controlBarMover) {
+                _controlBarMover = new ControlsAutoHide(_pluginModel, _config.autoHide, _player, stage, this);
             }
         }
 
         public function onLoad(player:Flowplayer):void {
-            log.info("received player API! autohide == " + _config.autoHide);
+            log.info("received player API! autohide == " + _config.autoHide.state);
             _player = player;
             
             if (_config.skin) {
@@ -348,6 +369,7 @@ package org.flowplayer.controls {
 
         private function createConfig(config:Object):Config {
             var result:Config = new PropertyBinder(new Config()).copyProperties(config) as Config;
+            new PropertyBinder(result.autoHide).copyProperties(config.autoHide);
             new PropertyBinder(result.visible).copyProperties(config);
             new PropertyBinder(result.enabled).copyProperties(config.enabled);
             result.addStyleProps(config);
@@ -575,13 +597,13 @@ package org.flowplayer.controls {
 
         private function reconfigure(controlsConfig:Object):void {
             _currentControlsConfig = controlsConfig;
-            widgets(controlsConfig);
+            setWidgets(controlsConfig);
             if (controlsConfig.hasOwnProperty("tooltips")) {
                 initTooltipConfig(_config, controlsConfig["tooltips"]);
             }
             css(controlsConfig);
             if (controlsConfig.hasOwnProperty("enabled")) {
-                enable(controlsConfig["enabled"]);
+                setEnabled(controlsConfig["enabled"]);
             }
         }
 

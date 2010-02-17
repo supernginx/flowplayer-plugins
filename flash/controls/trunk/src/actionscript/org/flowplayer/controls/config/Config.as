@@ -8,7 +8,8 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
-package org.flowplayer.controls {
+package org.flowplayer.controls.config {
+    import org.flowplayer.controls.*;
 	import org.flowplayer.util.Log;	
 	import org.flowplayer.util.PropertyBinder;
     import org.flowplayer.view.Flowplayer;
@@ -21,28 +22,12 @@ package org.flowplayer.controls {
         private var _player:Flowplayer;
 		private var _skin:String;
 		private var _style:Style;
-		private var _autoHide:String = "fullscreen"; // never | fullscreen | always
-		private var _hideDelay:Number = 4000;
-        private var _hideDuration:Number = 800;
-        private var _hideStyle:String = "move";
+        private var _autoHide:AutoHide = new AutoHide();
         private var _visible:WidgetBooleanStates = new WidgetBooleanStates();
 		private var _enabled:WidgetBooleanStates = new WidgetEnabledStates();
 		private var _tooltips:ToolTips = new ToolTips();
 
-        [Value]
-        public function get autoHide():String {
-			return _autoHide;
-		}
 
-        public function set autoHide(autoHide:String):void {
-            _autoHide = autoHide;
-        }
-
-        public function set state(autoHide:String):void {
-            _autoHide = autoHide;
-        }
-
-        [Value]
 		public function get style():Style {
 			return _style || new Style();
 		}
@@ -50,19 +35,6 @@ package org.flowplayer.controls {
 		public function addStyleProps(styleProps:Object):void {
 			_style = new PropertyBinder(style, "bgStyle").copyProperties(styleProps) as Style;
 		}
-		
-        [Value]
-		public function get hideDelay():Number {
-			return _hideDelay;
-		}
-
-        public function set hideDelay(hideDelay:Number):void {
-            _hideDelay = hideDelay;
-        }
-
-        public function set delay(hideDelay:Number):void {
-            _hideDelay = hideDelay;
-        }
 
         [Value]
 		public function get visible():WidgetBooleanStates {
@@ -109,34 +81,19 @@ package org.flowplayer.controls {
         }
 
         [Value]
-        public function get hideDuration():Number {
-            return _hideDuration;
+        public function get autoHide():AutoHide {
+            return _autoHide;
         }
 
-        public function set hideDuration(value:Number):void {
-            _hideDuration = value;
-        }
+        public function setAutoHide(value:Object):void {
+            if (value is String) {
+                _autoHide.state = value as String;
+            }
+            if (value is Boolean) {
+                _autoHide.enabled = value as Boolean;
+                _autoHide.fullscreenOnly = ! value;
+            }
 
-        public function set duration(value:Number):void {
-            _hideDuration = value;
-        }
-
-        [Value]
-        public function get hideStyle():String {
-            return _hideStyle;
-        }
-
-        public function set hideStyle(value:String):void {
-            _hideStyle = value;
-        }
-
-        /**
-         * Synonym for set hideStyle()
-         * @param value
-         * @return
-         */
-        public function setStyle(value:String):void {
-            _hideStyle = value;
         }
     }
 }

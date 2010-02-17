@@ -18,7 +18,7 @@ package org.flowplayer.controls.slider {
 
     import mx.effects.easing.Linear;
 
-    import org.flowplayer.controls.Config;
+    import org.flowplayer.controls.config.Config;
     import org.flowplayer.model.Clip;
     import org.flowplayer.model.ClipEvent;
     import org.flowplayer.model.ClipType;

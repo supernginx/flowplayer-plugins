@@ -8,7 +8,8 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
-package org.flowplayer.controls {
+package org.flowplayer.controls.config {
+    import org.flowplayer.controls.config.WidgetBooleanStates;
 
     public class WidgetEnabledStates extends WidgetBooleanStates{
 

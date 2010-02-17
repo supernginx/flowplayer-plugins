@@ -12,7 +12,7 @@ package org.flowplayer.controls.slider {
     import flash.display.DisplayObject;
 	import flash.display.Sprite;
 import org.flowplayer.view.AnimationEngine;
-	import org.flowplayer.controls.Config;
+	import org.flowplayer.controls.config.Config;
 	import org.flowplayer.controls.slider.AbstractSlider;	
 
 	/**
