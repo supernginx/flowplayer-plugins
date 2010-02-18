@@ -316,16 +316,16 @@
         </remotecopy-dev>
     </target>
 
-	<target name="release-swfs">
-		<remotecopy-dev remotedir="swf" keyfile="${keyfile}" pass="${pass}">
-			<releasefiles>
-				<fileset dir="${build-dir}">
-					<include name="${plugin-binary-versioned}" />
-					<include name="${plugin-binary}" />
-				</fileset>
-			</releasefiles>
-		</remotecopy-dev>
-	</target>
+    <target name="release-swfs">
+        <remotecopy remotedir="swf" keyfile="${keyfile}" pass="${pass}">
+            <releasefiles>
+                <fileset dir="${build-dir}">
+                    <include name="${plugin-binary-versioned}" />
+                    <include name="${plugin-binary}" />
+                </fileset>
+            </releasefiles>
+        </remotecopy>
+    </target>
 
 	<target name="echo-name">
 		<echo message="${plugin-binary-versioned}" />
