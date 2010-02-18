@@ -168,6 +168,14 @@ package org.flowplayer.controls {
             return _config.visible;
         }
 
+        /*
+         * This is here for backward compatibility. Lots of ad plugins use this.
+         */
+        [External]
+        public function enable(enabledWidgets:Object):void {
+            setEnabled(enabledWidgets);   
+        }
+
         /**
          * Enables and disables buttons and other widgets.
          */
