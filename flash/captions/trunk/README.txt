@@ -1,5 +1,11 @@
 Version history:
 
+3.1.5
+-----
+- Fixed visibility issue
+- Fixed multiple lines subtitles (#36)
+- Increasing font size when going fullscreen (#37)
+
 3.1.4
 -----
 - Timed Text parsing was fixed
