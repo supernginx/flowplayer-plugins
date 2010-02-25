@@ -1,4 +1,5 @@
 <project name="Audiovisual Flowplayer plugin" default="deploy">
+    <property file="build.generated.properties"/>
 
 	<property name="devkit-dir" value="../flowplayer.devkit" />
 	
