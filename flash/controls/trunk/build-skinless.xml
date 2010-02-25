@@ -1,5 +1,5 @@
 <project name="Flowplayer skinless controlbar" default="deploy">
-
+    <property file="build.generated.properties"/>
 	<property file="${user.home}/plugin.properties" />
 	<property file="build.properties" />
 	
