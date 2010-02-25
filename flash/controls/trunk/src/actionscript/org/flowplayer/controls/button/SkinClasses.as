@@ -103,6 +103,15 @@ import flash.utils.getDefinitionByName;
             return 0;
         }
 
+		public static function getVolumeSliderWidth():Number {
+            try {
+                var clazz:Class = getClass("SkinDefaults");
+                return clazz["getVolumeSliderWidth"]();
+            } catch (e:Error) {
+            }
+            return 40;
+        }
+
         public static function set skinClasses(val:ApplicationDomain):void {
             log.debug("received skin classes " + val);
             _skinClasses = val;
