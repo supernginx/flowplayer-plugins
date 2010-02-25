@@ -57,7 +57,7 @@ import org.flowplayer.view.AnimationEngine;
         }
 
 		override protected function isToolTipEnabled():Boolean {
-			return _config.tooltips.volume;
+			return _config.tooltips && _config.tooltips.volume;
 		}
 
         override protected function get barHeight():Number {

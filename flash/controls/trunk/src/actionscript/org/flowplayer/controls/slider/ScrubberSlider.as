@@ -212,7 +212,7 @@ package org.flowplayer.controls.slider {
 		}
 		
 		override protected function isToolTipEnabled():Boolean {
-			return _config.tooltips.scrubber;
+			return _config.tooltips && _config.tooltips.scrubber;
 		}
 
 		private function drawBufferBar(leftEdge:Number, rightEdge:Number):void {
