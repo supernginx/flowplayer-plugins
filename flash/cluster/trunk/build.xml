@@ -1,4 +1,5 @@
 <project name="Flowplayer Cluster plugin" default="deploy">
+    <property file="build.generated.properties"/>
 
 	<property file="${user.home}/plugin.properties" />
 	<property file="build.properties" />
@@ -9,7 +10,6 @@
 	<property file="${devkit-dir}/plugin-build.properties" />
 	<import file="${devkit-dir}/plugin-build.xml"/>
 	
-	<property name="version" value="3.1.2-dev" />
 	<property name="basename" value="flowplayer.cluster" />
 	<property name="plugin-binary" value="${basename}.swf" />
 	<property name="plugin-swc" value="${basename}.swc" />
