@@ -756,7 +756,7 @@ package org.flowplayer.controls {
 
             // set volume slider width first so that we know how to arrange the other controls
             if (_volumeSlider) {
-                _volumeSlider.width = 40;
+                _volumeSlider.width = getVolumeSliderWidth();
             }
             if (_config.visible.scrubber) {
                 // arrange from right to left (scrubber takes the remaining space)
@@ -863,6 +863,10 @@ package org.flowplayer.controls {
 
         private function getScrubberRightEdgeWidth(nextWidgetToRight:DisplayObject):int {
             return SkinClasses.getScrubberRightEdgeWidth(nextWidgetToRight);
+        }
+
+		private function getVolumeSliderWidth():int {
+            return SkinClasses.getVolumeSliderWidth();
         }
 
         private function get lastOnRight():DisplayObject {
