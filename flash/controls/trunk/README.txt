@@ -13,6 +13,7 @@ centered nicely.
 Fixes:
 - Setting scrubber height ratio using $f().getControls().css({ scrubberHeightRatio: 0.9 }) needed 2 calls to take effect
 - borderColor has now precedence on border
+- fixed use of controls: null in configuration 
 
 3.1.4
 -----
