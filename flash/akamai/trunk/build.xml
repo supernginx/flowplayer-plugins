@@ -1,4 +1,5 @@
 <project name="Akamai plugin that uses the Akamai's IDENT service" default="deploy">
+    <property file="build.generated.properties"/>
 
 	<property name="devkit-dir" value="../flowplayer.devkit" />
 	
