@@ -20,6 +20,17 @@ package org.flowplayer.shareembed {
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
 	import flash.net.URLRequest;
+	
+	
+	
+	import flash.utils.getDefinitionByName;
+	import flash.text.TextField;
+	import flash.text.TextFieldAutoSize;	
+	import flash.text.TextFieldType;
+	import flash.display.Stage;
+	import org.flowplayer.view.FlowStyleSheet;
+
+	
 
 	import com.ediblecode.util.StringUtil;
 
@@ -33,6 +44,8 @@ package org.flowplayer.shareembed {
 	import org.flowplayer.shareembed.assets.LivespacesIcon;
 	import org.flowplayer.shareembed.assets.OrkutIcon;
 	import org.flowplayer.shareembed.assets.StumbleuponIcon;
+	
+	import flash.text.AntiAliasType;
 
 	/**
 	 * @author danielr
@@ -63,6 +76,16 @@ package org.flowplayer.shareembed {
 		private var _stumbleUponIcon:Sprite;
 		private var _liveSpacesIcon:Sprite;
 		
+		private var _shareArray:Array;
+		private var _iconArray:Array;
+		private var BUTTON_PADDING:Number = 30;
+		private var _BUTTON_PADDING:Number;
+		private var button_line_size:Number;
+		private var scale_percentage:Number;
+		
+		private var _stageHeight:int;
+		private var _stageWidth:int;
+		
 		private var _embedCode:String;
 		
 		public function ShareView(plugin:DisplayPluginModel, player:Flowplayer, config:Config) {
@@ -70,8 +93,10 @@ package org.flowplayer.shareembed {
 			_plugin = plugin;
 			_player = player;
 			_config = config;
-	
 			createCloseButton();
+			
+			_stageWidth = _player.playlist.current.width
+			_stageHeight = _player.playlist.current.height
 		}
 		
 		public function set embedCode(value:String):void
@@ -99,54 +124,100 @@ package org.flowplayer.shareembed {
 			//get the current video page
             _videoURL = URLUtil.pageUrl;
             
-            //setup facebook
-            _facebookIcon = new FacebookIcon() as Sprite;
-            _facebookIcon.buttonMode = true;
-            _facebookIcon.addEventListener(MouseEvent.MOUSE_DOWN, shareFacebook);
-			addChild(_facebookIcon);
-            
-            //setup myspace
-            _myspaceIcon = new MyspaceIcon() as Sprite;
-            _myspaceIcon.buttonMode = true;
-            _myspaceIcon.addEventListener(MouseEvent.MOUSE_DOWN, shareMyspace);
-            addChild(_myspaceIcon);
-            
-            //setup twitter
-            _twitterIcon = new TwitterIcon() as Sprite;
-            _twitterIcon.buttonMode = true;
-            _twitterIcon.addEventListener(MouseEvent.MOUSE_DOWN, shareTwitter);
-            addChild(_twitterIcon);
-            
-            //setup bebo
-            _beboIcon = new BeboIcon() as Sprite;
-            _beboIcon.buttonMode = true;
-            _beboIcon.addEventListener(MouseEvent.MOUSE_DOWN, shareBebo);
-            addChild(_beboIcon);
-            
-            //setup digg
-            _diggIcon = new DiggIcon() as Sprite;
-            _diggIcon.buttonMode = true;
-            _diggIcon.addEventListener(MouseEvent.MOUSE_DOWN, shareDigg);
-            addChild(_diggIcon);
-            
-            //setup orkut
-            _orkutIcon = new OrkutIcon() as Sprite;
-            _orkutIcon.buttonMode = true;
-            _orkutIcon.addEventListener(MouseEvent.MOUSE_DOWN, shareOrkut);
-            addChild(_orkutIcon);
-            
-            //setup stumbleupon
-            _stumbleUponIcon = new StumbleuponIcon() as Sprite;
-            _stumbleUponIcon.buttonMode = true;
-            _stumbleUponIcon.addEventListener(MouseEvent.MOUSE_DOWN, shareStumbleUpon);
-            addChild(_stumbleUponIcon);
-            
-            //setu livespaces
-            _liveSpacesIcon = new LivespacesIcon() as Sprite;
-            _liveSpacesIcon.buttonMode = true;
-            _liveSpacesIcon.addEventListener(MouseEvent.MOUSE_DOWN, shareLiveSpaces);
-            addChild(_liveSpacesIcon);
-            
+			if (!_shareArray) {
+				//_shareArray = new Array("Facebook", "Myspace", "Twitter", "Bebo", "Digg", "Orkut", "Stumbleupon", "Livespaces");
+				_shareArray = new Array("Facebook");
+				
+				_iconArray = new Array();
+				_facebookIcon = new FacebookIcon() as Sprite;
+				
+				button_line_size = (_facebookIcon.width * 4) + (BUTTON_PADDING * 5);
+				scale_percentage = _stageWidth / button_line_size;
+				_BUTTON_PADDING = BUTTON_PADDING * scale_percentage;
+				
+				var field:TextField = _player.createTextField();
+				//field.selectable = false;
+				//field.focusRect = false;            
+				//field.tabEnabled = false;
+				//field.autoSize = TextFieldAutoSize.LEFT;
+				//field.styleSheet = style.styleSheet;
+				//field.focusRect = false;
+				field.antiAliasType = AntiAliasType.ADVANCED;
+
+				field.width = _stageWidth - 20;
+				field.height = 20;            
+				//field.htmlText = "width: " + button_line_size + "; " +  scale_percentage;
+				addChild(field);
+	
+				/*
+				for (var x:String in _shareArray) {
+					 var dynamicClass:String = _shareArray[x] + "Icon";
+					 var classRef:Class = getDefinitionByName(dynamicClass) as Class;
+					 var funcRef:Function = getDefinitionByName("share" + _shareArray[x]) as Function;
+					 var tmpIcon:Sprite = new classRef() as Sprite;
+					 tmpIcon.buttonMode = true;
+					 tmpIcon.addEventListener(MouseEvent.MOUSE_DOWN, funcRef);
+					 addChild(tmpIcon);
+					 _iconArray.push(tmpIcon);
+				 }
+				*/
+				//setup facebook
+				
+				_facebookIcon = new FacebookIcon() as Sprite;
+				_facebookIcon.buttonMode = true;
+				_facebookIcon.addEventListener(MouseEvent.MOUSE_DOWN, shareFacebook);
+				addChild(_facebookIcon);
+				_iconArray.push(_facebookIcon);
+				
+				//setup myspace
+				_myspaceIcon = new MyspaceIcon() as Sprite;
+				_myspaceIcon.buttonMode = true;
+				_myspaceIcon.addEventListener(MouseEvent.MOUSE_DOWN, shareMyspace);
+				addChild(_myspaceIcon);
+				_iconArray.push(_myspaceIcon);
+			   
+				//setup twitter
+				_twitterIcon = new TwitterIcon() as Sprite;
+				_twitterIcon.buttonMode = true;
+				_twitterIcon.addEventListener(MouseEvent.MOUSE_DOWN, shareTwitter);
+				addChild(_twitterIcon);
+				_iconArray.push(_twitterIcon);
+				
+				//setup bebo
+				_beboIcon = new BeboIcon() as Sprite;
+				_beboIcon.buttonMode = true;
+				_beboIcon.addEventListener(MouseEvent.MOUSE_DOWN, shareBebo);
+				addChild(_beboIcon);
+				_iconArray.push(_beboIcon);
+				
+				//setup digg
+				_diggIcon = new DiggIcon() as Sprite;
+				_diggIcon.buttonMode = true;
+				_diggIcon.addEventListener(MouseEvent.MOUSE_DOWN, shareDigg);
+				addChild(_diggIcon);
+				_iconArray.push(_diggIcon);
+			   
+				//setup orkut
+				_orkutIcon = new OrkutIcon() as Sprite;
+				_orkutIcon.buttonMode = true;
+				_orkutIcon.addEventListener(MouseEvent.MOUSE_DOWN, shareOrkut);
+				addChild(_orkutIcon);
+				_iconArray.push(_orkutIcon);
+				
+				//setup stumbleupon
+				_stumbleUponIcon = new StumbleuponIcon() as Sprite;
+				_stumbleUponIcon.buttonMode = true;
+				_stumbleUponIcon.addEventListener(MouseEvent.MOUSE_DOWN, shareStumbleUpon);
+				addChild(_stumbleUponIcon);
+				_iconArray.push(_stumbleUponIcon);
+				
+				//setu livespaces
+				_liveSpacesIcon = new LivespacesIcon() as Sprite;
+				_liveSpacesIcon.buttonMode = true;
+				_liveSpacesIcon.addEventListener(MouseEvent.MOUSE_DOWN, shareLiveSpaces);
+				addChild(_liveSpacesIcon);
+				_iconArray.push(_liveSpacesIcon);
+			}
             //arrange the icon buttons
             arrangeIcons();
 			
@@ -281,37 +352,49 @@ package org.flowplayer.shareembed {
 		 */
 		private function arrangeIcons():void
 		{
-			_facebookIcon.x = 0;
-			_facebookIcon.y = 0;
+			//var init_x:int = _BUTTON_PADDING - 5;
+			var tmp_x:int = ((_stageWidth) / 2) - (((_iconArray[0].width * 2) + (_BUTTON_PADDING * 3)) * scale_percentage);
+			var init_x:int = tmp_x;
+			var init_y:int = ((_stageHeight-50) / 2) - ((_iconArray[0].height) * scale_percentage);
+			//var init_y:int = 20;
+			var rowcounter:int = 0;
+			for (var i:String in _iconArray) {
+				_iconArray[i].scaleX = _iconArray[i].scaleY = scale_percentage;
+				//if (init_x > _stageWidth - _iconArray[i].width) {
+					rowcounter++;
+				if (rowcounter > 4) {
+					rowcounter = 0
+					init_x = tmp_x;
+					init_y += _iconArray[i].height + _BUTTON_PADDING;
+				}
+				_iconArray[i].x = init_x;
+				_iconArray[i].y = init_y;
+				init_x += _iconArray[i].width + _BUTTON_PADDING;
+			}
 			
-			_myspaceIcon.x = _facebookIcon.x + _facebookIcon.width + 10;
-			_twitterIcon.x = _myspaceIcon.x + _myspaceIcon.width + 10;
-			_beboIcon.y = _myspaceIcon.y + _myspaceIcon.height + 5;
-			_diggIcon.y = _myspaceIcon.y + _myspaceIcon.height + 5;
-			_diggIcon.x = _beboIcon.x + _beboIcon.width + 5;
-			_orkutIcon.y = _myspaceIcon.y + _myspaceIcon.height + 5;
-			_orkutIcon.x = _diggIcon.x + _diggIcon.width + 5;
-			_stumbleUponIcon.y = _beboIcon.y + _beboIcon.height + 5;
-			_liveSpacesIcon.y = _beboIcon.y + _beboIcon.height + 5;
-			_liveSpacesIcon.x = _stumbleUponIcon.x + _stumbleUponIcon.width + 5;
 		}
 		
 		
 		override protected function onResize():void {
+			//_stageWidth = _player.playlist.current.width
+			//_stageHeight = _player.playlist.current.height
 			arrangeCloseButton();
-			
+			setupShareIcons();
 			this.x = 0;
 			this.y = 0;
 		}
 
 		override protected function onRedraw():void {
 			arrangeCloseButton();
+			setupShareIcons();
 		}
 		
 		private function arrangeCloseButton():void {
 			if (_closeButton && style) {
-				_closeButton.x = width - _closeButton.width - 1 - style.borderRadius/5;
-				_closeButton.y = 1 + style.borderRadius/5;
+				//_closeButton.x = width - _closeButton.width - 1 - style.borderRadius/5;
+				_closeButton.x = _stageWidth - _closeButton.width;
+				//_closeButton.y = 1 + style.borderRadius/5;
+				_closeButton.y = _closeButton.height / 3;
 				setChildIndex(_closeButton, numChildren-1);
 			}
 		}
@@ -335,6 +418,7 @@ package org.flowplayer.shareembed {
 		 * @return void
 		 */
 		private function onCloseClicked(event:MouseEvent):void {
+			ShareEmbed(_plugin.getDisplayObject()).removeTabs();
 			_player.animationEngine.fadeOut(this, 500, onFadeOut);
 		}
 		
@@ -345,7 +429,15 @@ package org.flowplayer.shareembed {
 		 * @return void
 		 */
 		private function onFadeOut():void {
+			ShareEmbed(_plugin.getDisplayObject()).displayButtons(true);
+			//ShareEmbed(_plugin.getDisplayObject()).removeChild(this);
+			//ShareEmbed(_plugin.getDisplayObject()).hideSharePanel(this);
+		}
+		public function closePanel():void {
 			ShareEmbed(_plugin.getDisplayObject()).removeChild(this);
+			//_player.animationEngine.fadeOut(this, 0, closePanel2);	
+		}
+		public function closePanel2():void {
 		}
 
 	}

@@ -35,9 +35,10 @@ package org.flowplayer.shareembed
 		private var _screen:Object = {
 	    	left: 0,
 			top: 0,
-			opacity: 0.8,
-			height: "50%",
-			width: "50%"
+			opacity: 1,
+			color: '#000000',
+			height: "100%",
+			width: "100%"
 		}
 		
 		private var _popUpDimensions:Object = {
