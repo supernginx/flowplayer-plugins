@@ -37,6 +37,10 @@ package org.flowplayer.shareembed {
 		
 		private var _copyBtn:Sprite;
 		private var _infoText:TextField;
+		private var _xPadding:int = 5;
+		
+		private var _stageHeight:int;
+		private var _stageWidth:int;
 
 		public function EmbedView(plugin:DisplayPluginModel, player:Flowplayer) {
 			super(null, player, player.createLoader());
@@ -45,7 +49,10 @@ package org.flowplayer.shareembed {
 
 			createCloseButton();
 			createCopyButton();
-
+			
+			_stageWidth = _player.playlist.current.width
+			_stageHeight = _player.playlist.current.height
+			
 		}
 
 		override protected function onSetStyle(style:FlowStyleSheet):void {
@@ -65,6 +72,7 @@ package org.flowplayer.shareembed {
 			}
 			_text.htmlText = '<span class="embed">' + _htmlText + '</span>';
 			log.debug("set html to " + _text.htmlText);
+
 		}
 		
 		public function get html():String {
@@ -77,6 +85,8 @@ package org.flowplayer.shareembed {
 			var field:TextField = _player.createTextField();
 			field.selectable = false;
 			field.autoSize = TextFieldAutoSize.NONE;
+			field.antiAliasType = AntiAliasType.ADVANCED;
+
 			field.styleSheet = style.styleSheet;
 			return field;
 		}
@@ -102,10 +112,13 @@ package org.flowplayer.shareembed {
 			_text.selectable = true;
 			_text.antiAliasType = AntiAliasType.ADVANCED;
 			_text.condenseWhite = true;
-			_text.width = width - 15;
-			_text.height = height - _copyBtn.height - 10;
-      		_text.x = 5;
-      		_text.y = 5;
+			//ShareEmbed(_plugin.getDisplayObject()).field.text = "height: " + _stageHeight
+			_text.width = _stageWidth - 40;
+			_text.height = _stageHeight - _copyBtn.height - 30;
+			//_text.width = 400;
+			//_text.height = 200;
+      		_text.x = _xPadding;
+      		_text.y = _xPadding;
 
 			addChild(_text);
 			if (style.styleSheet) {
@@ -122,6 +135,9 @@ package org.flowplayer.shareembed {
 	
 
 		override protected function onResize():void {
+			//_stageWidth = _player.playlist.current.width
+			//_stageHeight = _player.playlist.current.height
+
 			arrangeCloseButton();
 			arrangeCopyButton();
 			arrangeInfoText();
@@ -138,22 +154,24 @@ package org.flowplayer.shareembed {
 		
 		private function arrangeCloseButton():void {
 			if (_closeButton && style) {
-				_closeButton.x = width - _closeButton.width - 1 - style.borderRadius/5;
-				_closeButton.y = 1 + style.borderRadius/5;
+				//_closeButton.x = width - _closeButton.width - 1 - style.borderRadius/5;
+				_closeButton.x = _stageWidth - _closeButton.width;
+				//_closeButton.y = 1 + style.borderRadius/5;
+				_closeButton.y = _closeButton.height / 3;
 				setChildIndex(_closeButton, numChildren-1);
 			}
 		}
 		
 		private function arrangeCopyButton():void {
 			if (_copyBtn) {
-				_copyBtn.y = height - _copyBtn.height - 5;
-				_copyBtn.x = 10;		
+				_copyBtn.y = height - _copyBtn.height - _xPadding;
+				_copyBtn.x = this.width - _copyBtn.width - _xPadding;		
 			}
 		}
 		
 		private function arrangeInfoText():void {
 			if (_infoText && _copyBtn) {
-				_infoText.y = height - _infoText.height - 5;
+				_infoText.y = height - _infoText.height - _xPadding;
 				_infoText.x = _copyBtn.x + _copyBtn.width + 40;		
 			}
 		}
@@ -180,11 +198,21 @@ package org.flowplayer.shareembed {
 		}
 		
 		private function onCloseClicked(event:MouseEvent):void {
+			ShareEmbed(_plugin.getDisplayObject()).removeTabs();
 			_player.animationEngine.fadeOut(this, 500, onFadeOut);	
 		}
 		
 		private function onFadeOut():void {
+			ShareEmbed(_plugin.getDisplayObject()).displayButtons(true);
+			//ShareEmbed(_plugin.getDisplayObject()).removeChild(this);
+			//ShareEmbed(_plugin.getDisplayObject()).hideEmbedPanel(this);
+		}
+		
+		public function closePanel():void {
 			ShareEmbed(_plugin.getDisplayObject()).removeChild(this);
+			//_player.animationEngine.fadeOut(this, 0, closePanel2);	
+		}
+		public function closePanel2():void {
 		}
 
 	}

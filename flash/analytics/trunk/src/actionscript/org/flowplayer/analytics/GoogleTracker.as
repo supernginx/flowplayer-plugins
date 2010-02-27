@@ -1,7 +1,7 @@
 ﻿/*
  * This file is part of Flowplayer, http://flowplayer.org
  *
- * By: Richard Mueller
+ * By: Richard Mueller  richard@3232design.com
  * Copyright (c) 2009 Flowplayer Oy
  *
  * Released under the MIT License:
@@ -42,7 +42,7 @@ package org.flowplayer.analytics {
 		private var _labels:Object;
 
 		public function GoogleTracker() { 			// constructor
-			// Hey, this is empty!  Weird.
+			
 		}
 
 		public function getDefaultConfig():Object {

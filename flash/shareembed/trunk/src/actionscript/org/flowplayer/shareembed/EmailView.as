@@ -14,7 +14,8 @@ package org.flowplayer.shareembed {
 	import org.flowplayer.view.Flowplayer;
 	import org.flowplayer.view.StyleableSprite;
 	import org.flowplayer.util.URLUtil;
-	
+	import flash.text.AntiAliasType;
+
 	import com.adobe.serialization.json.JSON;
 	import com.ediblecode.util.StringUtil;
 	
@@ -67,9 +68,11 @@ package org.flowplayer.shareembed {
 		
 		private var _videoURL:String;
 		
-		private var _xPadding:int = 10;
-		private var _yPadding:int = 5;
+		private var _xPadding:int = 20;
+		private var _yPadding:int = 3;
 		
+		private var _stageHeight:int;
+		private var _stageWidth:int;
 		/**
 		 * Constructor
 		 * 
@@ -87,6 +90,9 @@ package org.flowplayer.shareembed {
 			createCloseButton();
 			
 			this.addEventListener(Event.ADDED_TO_STAGE, setTextFocus);
+			
+			_stageWidth = _player.playlist.current.width
+			_stageHeight = _player.playlist.current.height
 		}
 		
 		/**
@@ -137,6 +143,8 @@ package org.flowplayer.shareembed {
 			field.focusRect = false;            
 			field.tabEnabled = false;
 			field.autoSize = TextFieldAutoSize.LEFT;
+			field.antiAliasType = AntiAliasType.ADVANCED;
+
 			field.styleSheet = style.styleSheet;
 			return field;
 		}
@@ -153,6 +161,8 @@ package org.flowplayer.shareembed {
 			field.addEventListener(FocusEvent.FOCUS_OUT, onTextInputFocusOut);
 			field.type = TextFieldType.INPUT;
 			field.alwaysShowSelection = true;
+			field.antiAliasType = AntiAliasType.ADVANCED;
+
 			field.tabEnabled = true;
             field.border = true;
 			return field;
@@ -224,7 +234,7 @@ package org.flowplayer.shareembed {
 			var field:TextField = createInputField();  
 			field.tabIndex = 1;
 			field.mouseWheelEnabled	= true;
-			field.width = 0.9 * width;
+			field.width = _stageWidth - _xPadding * 2;
             field.height = 20;          
             return field;
 		}
@@ -256,8 +266,8 @@ package org.flowplayer.shareembed {
 			field.multiline = true;    
 			field.wordWrap = true;    
 			field.mouseWheelEnabled	= true;
-            field.width = 0.9 * width;
-            field.height = 100;
+			field.width = _stageWidth - _xPadding * 2;
+            field.height = 60;
             return field;
 		}
 		
@@ -285,7 +295,7 @@ package org.flowplayer.shareembed {
 		{
 			var field:TextField = createInputField();     
 			field.tabIndex = 3;
-			field.width = 0.5 * (width - (3 * _xPadding));
+			field.width = 0.5 * (_stageWidth - (3 * _xPadding));
            	field.height = 20;      
             return field;
 		}
@@ -314,7 +324,7 @@ package org.flowplayer.shareembed {
 		{
 			var field:TextField = createInputField();  
 			field.tabIndex = 4;
-			field.width = 0.5 * (width - (3 * _xPadding));
+			field.width = 0.5 * (_stageWidth - (3 * _xPadding));
             field.height = 20;    
             return field;
 		}
@@ -679,7 +689,7 @@ package org.flowplayer.shareembed {
              _emailFromInput.x = _nameFromInput.x + _nameFromInput.width + _xPadding;
             _emailFromInput.y = _emailFromLabel.y + _emailFromLabel.height + _yPadding;
             
-            _sendBtn.x = _xPadding;
+            _sendBtn.x = _stageWidth - _sendBtn.width - _xPadding;
             _sendBtn.y = _nameFromInput.y + _nameFromInput.height + (_yPadding * 2);
             
             _emailSuccessLabel.x = _sendBtn.x + _sendBtn.width + _xPadding;
@@ -689,6 +699,9 @@ package org.flowplayer.shareembed {
 		}
 
 		override protected function onResize():void {
+			//_stageWidth = _player.playlist.current.width
+			//_stageHeight = _player.playlist.current.height
+
 			arrangeCloseButton();
 
 			this.x = 0;
@@ -701,8 +714,10 @@ package org.flowplayer.shareembed {
 		
 		private function arrangeCloseButton():void {
 			if (_closeButton && style) {
-				_closeButton.x = width - _closeButton.width - 1 - style.borderRadius/5;
-				_closeButton.y = 1 + style.borderRadius/5;
+				//_closeButton.x = width - _closeButton.width - 1 - style.borderRadius/5;
+				_closeButton.x = _stageWidth - _closeButton.width;
+				//_closeButton.y = 1 + style.borderRadius/5;
+				_closeButton.y = _closeButton.height / 3;
 				setChildIndex(_closeButton, numChildren-1);
 			}
 		}
@@ -729,6 +744,7 @@ package org.flowplayer.shareembed {
 		 */
 		 
 		private function onCloseClicked(event:MouseEvent):void {
+			ShareEmbed(_plugin.getDisplayObject()).removeTabs();
 			_player.animationEngine.fadeOut(this, 500, onFadeOut);
 		}
 		
@@ -739,7 +755,15 @@ package org.flowplayer.shareembed {
 		 * @return void
 		 */
 		private function onFadeOut():void {
-			ShareEmbed(_plugin.getDisplayObject()).removeChild(this);
+			ShareEmbed(_plugin.getDisplayObject()).displayButtons(true);
+			//ShareEmbed(_plugin.getDisplayObject()).removeChild(this);
+			//ShareEmbed(_plugin.getDisplayObject()).hideEmailPanel(this);
+		}
+		public function closePanel():void {
+			//ShareEmbed(_plugin.getDisplayObject()).removeChild(this);
+			//_player.animationEngine.fadeOut(this, 0, closePanel2);	
+		}
+		public function closePanel2():void {
 		}
 	}
 }
