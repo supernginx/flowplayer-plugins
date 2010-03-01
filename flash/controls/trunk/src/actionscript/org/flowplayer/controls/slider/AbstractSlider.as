@@ -290,7 +290,7 @@ package org.flowplayer.controls.slider {
             graphics.endFill();
                                                                                                                      
             if (sliderGradient) {
-                GraphicsUtil.addGradient(this, 0, sliderGradient, barCornerRadius);
+                GraphicsUtil.addGradient(this, 1, sliderGradient, barCornerRadius, 0, height/2 - barHeight/2, barHeight);
             }
         }
 

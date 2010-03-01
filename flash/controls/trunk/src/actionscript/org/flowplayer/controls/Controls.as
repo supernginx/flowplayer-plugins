@@ -726,7 +726,7 @@ package org.flowplayer.controls {
         }
 
         private function arrangeLeftEdgeControls():Number {
-            var leftEdge:Number = margins[3];
+            var leftEdge:Number = getSpaceBeforeFirstWidget();
             var leftControls:Array = [_stopButton];
 			
 			if ( hasSlowMotion() && _slowMotionBwdButton && _slowMotionFBwdButton)
@@ -855,6 +855,10 @@ package org.flowplayer.controls {
             clip.scaleX = clip.scaleY;
 
             Arrange.center(clip, 0, height);
+        }
+
+		private function getSpaceBeforeFirstWidget():int {
+            return SkinClasses.getSpaceBeforeFirstWidget();
         }
 
         private function getSpaceAfterWidget(widget:DisplayObject):int {
