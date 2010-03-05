@@ -124,6 +124,8 @@ package org.flowplayer.controls.slider {
 			_dragger[func](MouseEvent.MOUSE_DOWN, onMouseDown);
 			_dragger[func](MouseEvent.MOUSE_UP, onMouseUp);
 			stage[func](MouseEvent.MOUSE_UP, onMouseUpStage);
+			stage[func](Event.MOUSE_LEAVE, onMouseLeaveStage);
+			
 			toggleClickListeners(value);
 
 			alpha = value ? 1 : 0.5;
@@ -170,11 +172,19 @@ package org.flowplayer.controls.slider {
             _dragTimer.stop();
 		}
 		
+		private function onMouseLeaveStage(event:Event):void {
+			if (_dragTimer.running) {
+				onMouseUp();
+			}
+            _dragTimer.stop();
+		}
+		
 		protected function onMouseUp(event:MouseEvent = null):void {
 			log.debug("onMouseUp");
 //			_tooltip.hide();
 			if (event && event.target != this) return;
 			if (! canDragTo(mouseX) && _dragger.x > 0) return;
+						
 			_dragTimer.stop();
 			dragging();
 			updateCurrentPosFromDragger();
@@ -277,6 +287,9 @@ package org.flowplayer.controls.slider {
 		}
 
 		protected override function onResize():void {
+			log.debug("onResize");
+			super.onResize();
+			
 			_dragger.height = height;
             _dragger.scaleX = _dragger.scaleY;
             drawBackground();

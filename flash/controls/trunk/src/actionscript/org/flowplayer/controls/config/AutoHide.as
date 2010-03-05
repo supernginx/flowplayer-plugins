@@ -15,7 +15,8 @@ package org.flowplayer.controls.config {
         private var _hideDelay:Number = 4000;
         private var _hideDuration:Number = 800;
         private var _hideStyle:String = "move";
-
+		private var _mouseOutDelay:Number = 500;
+		
         public function set state(autoHide:String):void {
             _enabled = (autoHide && autoHide != "never") as Boolean;
             _fullscreenOnly = autoHide == "fullscreen";
@@ -25,7 +26,7 @@ package org.flowplayer.controls.config {
          * @return 'always' | 'fullscreen' | 'never'
          */
         public function get state():String {
-            if (! _enabled) return 'never'
+            if (! _enabled) return 'never';
             return _fullscreenOnly ? 'fullscreen' : 'always';
         }
 
@@ -57,6 +58,16 @@ package org.flowplayer.controls.config {
 
         public function set hideStyle(value:String):void {
             _hideStyle = value;
+        }
+
+
+		public function set mouseOutDelay(value:Number):void {
+            _mouseOutDelay = value;
+        }
+
+		[Value]
+        public function get mouseOutDelay():Number {
+            return _mouseOutDelay;
         }
 
         /**

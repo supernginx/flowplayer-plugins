@@ -6,14 +6,24 @@ Version history:
     getConfig(), setWidgets(), getWidgets(), setAutoHide(), getAutoHide(), setTooltips(), getTooltips(), setEnabled(), getEnabled()
 - AutoHide related properties are now given in a new 'autoHide' configuration object.
 - Smoother movement of the scrubber, especially with short clips.
-- Added new setAutoHide() external method, for example setAutoHide({ enabled: true, fullscreenOnly: false, delay: 1000, duration: 1000, style: 'fade' })
+- Added new setAutoHide() external method, for example setAutoHide({ enabled: true, fullscreenOnly: false, delay: 1000, duration: 1000, style: 'fade', mouseOutDelay: 500 })
+- Added mouseOutDelay in autoHide config
 - Controlbar is now by default centered horizontally. Now when you specify a widht that is less than 100% it by default is
 centered nicely.
  The tooltips() public method renamed to setTooltips()
+- Added a distance field in the tooltip configuration that allows the tooltip to be closer (or not) from the control bar
+- Added timeBorder, timeBorderColor and timeBorderWidth
+
 Fixes:
 - Setting scrubber height ratio using $f().getControls().css({ scrubberHeightRatio: 0.9 }) needed 2 calls to take effect
 - borderColor has now precedence on border
 - fixed use of controls: null in configuration 
+- fixed timeView size
+- now hides controls when autoHide is set and mouse leaves stage, with mouseOutDelay
+- defaulted autoHide=always on modern
+- fixed slider when mouseup out of the stage
+- fixed $f().getControls().css({ tooltipTextColor: '#xxxxxx' })
+- fixed progressbar issue when resizing while seeking 
 
 3.1.4
 -----

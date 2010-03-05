@@ -38,6 +38,7 @@ package org.flowplayer.controls {
         private var log:Log = new Log(this);
         private var _controlBar:DisplayObject;
         private var _hideTimer:Timer;
+        private var _mouseOutTimer:Timer;
         private var _stage:Stage;
         private var _playList:Playlist;
         private var _config:AutoHide;
@@ -64,6 +65,7 @@ package org.flowplayer.controls {
                 startTimerAndInitializeListeners();
             }
             _stage.addEventListener(FullScreenEvent.FULL_SCREEN, onFullScreen);
+			_stage.addEventListener(Event.MOUSE_LEAVE, startMouseOutTimer);
         }
 
         public function stop():void {
@@ -72,9 +74,11 @@ package org.flowplayer.controls {
                 showControlBar();
             }
             stopHideTimer();
+			stopMouseOutTimer();
             _stage.removeEventListener(FullScreenEvent.FULL_SCREEN, onFullScreen);
             _stage.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
             _stage.removeEventListener(Event.RESIZE, onStageResize);
+			_stage.removeEventListener(Event.MOUSE_LEAVE, startMouseOutTimer);
             _controlBar.removeEventListener(MouseEvent.ROLL_OVER, onMouseOver);
             _controlBar.removeEventListener(MouseEvent.ROLL_OUT, onMouseOut);
         }
@@ -124,9 +128,8 @@ package org.flowplayer.controls {
             if (isInFullscreen()) {
                 startTimerAndInitializeListeners();
             } else {
-                if (_hideTimer) {
-                    stopHideTimer();
-                }
+                stopHideTimer();
+                stopMouseOutTimer();
                 _stage.addEventListener(FullScreenEvent.FULL_SCREEN, onFullScreen);
             }
         }
@@ -148,6 +151,47 @@ package org.flowplayer.controls {
         private function onMouseOut(event:MouseEvent):void {
             _mouseOver = false;
         }
+
+
+
+		private function mouseLeave(event:Event = null):void {
+			stopHideTimer();
+			stopMouseOutTimer();
+			_player.animationEngine.cancel(_controlBar);
+			hideControlBar();
+			_stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+		}
+		
+		
+		
+		private function startMouseOutTimer(event:Event = null):void {
+            log.debug("startMouseOutTimer(), delay is " + _config.mouseOutDelay);
+            if (_config.mouseOutDelay == 0) {
+                mouseLeave();
+                return;
+            }
+            if (! _mouseOutTimer) {
+                _mouseOutTimer = new Timer(_config.mouseOutDelay);
+            }
+            // check if hideDelay has changed
+            else if (_config.mouseOutDelay != _mouseOutTimer.delay) {
+                log.debug("startMouseOutTimer(), using new delay " + _config.mouseOutDelay);
+                _mouseOutTimer.stop();
+                _mouseOutTimer = new Timer(_config.mouseOutDelay);
+            }
+            
+            _mouseOutTimer.addEventListener(TimerEvent.TIMER, mouseLeave);
+            _mouseOutTimer.start();
+        }
+
+        private function stopMouseOutTimer():void {
+            if (! _mouseOutTimer) return;
+            _mouseOutTimer.stop();
+            _mouseOutTimer = null;
+        }
+		
+		
+		
 
         private function onMouseMove(event:MouseEvent):void {
             _stage.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
