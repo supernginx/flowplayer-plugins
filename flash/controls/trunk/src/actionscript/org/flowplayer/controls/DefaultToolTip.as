@@ -126,7 +126,7 @@ package org.flowplayer.controls {
 			var globalPoint:Point = _parentObject.localToGlobal(parentCoords);
 
 			var xp:Number = globalPoint.x + this._offSet;
-			var yp:Number = globalPoint.y - this.height - _config.tooltips.distance;
+			var yp:Number = globalPoint.y - this.height - _config.tooltips.marginBottom;
 
 			var overhangRight:Number = this._defaultWidth + xp;
 			if( overhangRight > stage.stageWidth ){

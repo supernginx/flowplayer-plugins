@@ -11,7 +11,7 @@ Version history:
 - Controlbar is now by default centered horizontally. Now when you specify a widht that is less than 100% it by default is
 centered nicely.
  The tooltips() public method renamed to setTooltips()
-- Added a distance field in the tooltip configuration that allows the tooltip to be closer (or not) from the control bar
+- Added a marginBottom field in the tooltip configuration that allows the tooltip to be closer (or not) from the control bar
 - Added timeBorder, timeBorderColor and timeBorderWidth
 
 Fixes:
