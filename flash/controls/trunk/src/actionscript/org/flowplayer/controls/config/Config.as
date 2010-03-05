@@ -93,7 +93,18 @@ package org.flowplayer.controls.config {
                 _autoHide.enabled = value as Boolean;
                 _autoHide.fullscreenOnly = ! value;
             }
-
         }
+		
+		// some backward compatibility
+		public function set hideDelay(value:Number):void
+		{
+			_autoHide.hideDelay = value;
+		}
+		
+		public function get hideDelay():Number
+		{
+			return _autoHide.hideDelay;
+		}
+
     }
 }

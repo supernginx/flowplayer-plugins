@@ -126,8 +126,8 @@ package org.flowplayer.controls {
 			var globalPoint:Point = _parentObject.localToGlobal(parentCoords);
 
 			var xp:Number = globalPoint.x + this._offSet;
-			var yp:Number = globalPoint.y - this.height - 5;
-			
+			var yp:Number = globalPoint.y - this.height - _config.tooltips.distance;
+
 			var overhangRight:Number = this._defaultWidth + xp;
 			if( overhangRight > stage.stageWidth ){
 				xp =  stage.stageWidth -  this._defaultWidth;
@@ -198,6 +198,9 @@ package org.flowplayer.controls {
 		
 		private function drawBG():void {
 			graphics.clear();
+			
+			_titleFormat.color = _config.style.tooltipTextColor;
+			
 			var bounds:Rectangle = this.getBounds( this );
 			var fillType:String = GradientType.LINEAR;
 		   	//var colors:Array = [0xFFFFFF, 0x9C9C9C];

@@ -14,7 +14,7 @@ package org.flowplayer.controls.slider {
     import flash.events.MouseEvent;
 
     import flash.events.TimerEvent;
-    import flash.utils.Timer;
+    import flash.utils.*;
 
     import mx.effects.easing.Linear;
 
@@ -46,6 +46,8 @@ package org.flowplayer.controls.slider {
         private var _trickPlayTrackTimer:Timer;
         private var _slowMotionInfo:Object;
 
+		private var _currentClip:Clip;
+
         public function ScrubberSlider(config:Config, animationEngine:AnimationEngine, controlbar:DisplayObject) {
             super(config, animationEngine, controlbar);
             lookupPluginAndBindEvent(config.player, "slowmotion", onSlowMotionEvent);
@@ -66,7 +68,11 @@ package org.flowplayer.controls.slider {
             playlist.onStart(setSeekDone);
             playlist.onBeforeSeek(setSeekBegin);
             playlist.onSeek(setSeekDone);
-
+			
+			playlist.onBegin(function(event:ClipEvent):void {
+				_currentClip = event.target as Clip;
+			})
+			
             playlist.onStart(start);
             playlist.onResume(resume);
             playlist.onPause(stop);
@@ -116,15 +122,35 @@ package org.flowplayer.controls.slider {
             updateDraggerPos(_config.player.status.time, _slowMotionInfo["clip"] as Clip);
         }
 
+		protected override function onResize():void {
+			super.onResize();
+			
+			drawBufferBar(0, 0);
+			drawProgressBar(0, 0);
+			
+			if ( _currentClip )
+			{
+				stop();
+				updateDraggerPos(_config.player.status.time, _currentClip);
+				doStart(_currentClip, _config.player.status.time);
+			}
+			
+        }
+
         private function beforeSeek(event:ClipEvent):void {
             log.debug("beforeSeek()");
             if (event.isDefaultPrevented()) return;
+
+			
             updateDraggerPos(event.info as Number, event.target as Clip);
             stop();
+
+			drawBufferBar(0, 0);
+			drawProgressBar(0, 0);
         }
 
         private function updateDraggerPos(time:Number, clip:Clip):void {
-            _dragger.x = (time / clip.duration) * (width - _dragger.width);            
+           	_dragger.x = (time / clip.duration) * (width - _dragger.width);            
         }
 
         private function seek(event:ClipEvent):void {
@@ -152,6 +178,7 @@ package org.flowplayer.controls.slider {
             var status:Status = _config.player.status;
             var time:Number = startTime > 0 ? startTime : status.time;
 
+            if (! _config.player.isPlaying()) return;
             if (_startDetectTimer && _startDetectTimer.running) return;
             if (animationEngine.hasAnimationRunning(_dragger)) return;
 
@@ -250,8 +277,8 @@ package org.flowplayer.controls.slider {
 //			drawProgressBar(_bufferStart * width);
 //		}
 
-		private function drawProgressBar(leftEdge:Number):void {
-			drawBar(_progressBar, _config.style.progressColor, _config.style.progressAlpha, _config.style.progressGradient, leftEdge || 0, _dragger.x + _dragger.width - 2);
+		private function drawProgressBar(leftEdge:Number, rightEdge:Number = 0):void {
+			drawBar(_progressBar, _config.style.progressColor, _config.style.progressAlpha, _config.style.progressGradient, leftEdge || 0, rightEdge || _dragger.x + _dragger.width - 2);
 		}
 
 		public function set allowRandomSeek(value:Boolean):void {
