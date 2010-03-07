@@ -36,16 +36,9 @@ package org.flowplayer.shareembed {
     import org.flowplayer.view.Flowplayer;
     import org.flowplayer.view.StyleableSprite;
 
-    /**
-     * @author danielr
-     */
     internal class EmailView extends StyleableView {
 
         private var _config:EmailConfig;
-
-        // TODO: refactor the close button to the main view
-        private var _closeButton:CloseButton;
-        
         private var _formContainer:Sprite;
         private var _titleLabel:TextField;
         private var _emailToLabel:TextField;
@@ -76,10 +69,7 @@ package org.flowplayer.shareembed {
         public function EmailView(plugin:DisplayPluginModel, player:Flowplayer, config:EmailConfig, style:Object) {
             super("viral-email", plugin, player, style);
             _config = config;
-
-            createCloseButton();
             createForm();
-
             this.addEventListener(Event.ADDED_TO_STAGE, setTextFocus);
         }
 
@@ -550,12 +540,6 @@ package org.flowplayer.shareembed {
 
         }
 
-        /**
-         * Error handler for the token script
-         *
-         * @param event IOErrorEvent
-         * @return void
-         */
         private function onTokenError(event:IOErrorEvent):void
         {
             log.debug("Error: " + event.text);
@@ -563,12 +547,6 @@ package org.flowplayer.shareembed {
             formError(event.text);
         }
 
-        /**
-         * Success handler for the token script
-         *
-         * @param event Event
-         * @return void
-         */
         private function onTokenSuccess(event:Event):void
         {
             var loader:URLLoader = event.target as URLLoader;
@@ -662,52 +640,9 @@ package org.flowplayer.shareembed {
 
         override protected function onResize():void {
             log.debug("onResize " + width + " x " + height);
-            arrangeCloseButton();
             arrangeForm();
         }
 
-        private function arrangeCloseButton():void {
-            if (_closeButton && style) {
-                //_closeButton.x = width - _closeButton.width - 1 - style.borderRadius/5;
-                _closeButton.x = width - _closeButton.width;
-                //_closeButton.y = 1 + style.borderRadius/5;
-                _closeButton.y = _closeButton.height / 3;
-                setChildIndex(_closeButton, numChildren - 1);
-            }
-        }
-
-        /**
-         * Create the close button
-         *
-         * @return void
-         */
-        private function createCloseButton():void {
-            _closeButton = new CloseButton(null);
-            _closeButton.tabEnabled = false;
-            _closeButton.focusRect = false;
-            addChild(_closeButton);
-            _closeButton.addEventListener(MouseEvent.CLICK, onCloseClicked);
-        }
-
-        /**
-         * Close button click event handler
-         * Fade the panel
-         *
-         * @param event MouseEvent
-         * @return void
-         */
-
-        private function onCloseClicked(event:MouseEvent):void {
-            ShareEmbed(model.getDisplayObject()).removeTabs();
-            player.animationEngine.fadeOut(this, 500, onFadeOut);
-        }
-
-        /**
-         * Fade animate handler
-         * When the panel is faded out, remove it from the parent
-         *
-         * @return void
-         */
         private function onFadeOut():void {
             ShareEmbed(model.getDisplayObject()).displayButtons(true);
             //ShareEmbed(_plugin.getDisplayObject()).removeChild(this);

@@ -32,6 +32,11 @@ package org.flowplayer.shareembed {
         protected function get player():Flowplayer {
             return _player;
         }
+
+        public function show():void {
+            this.visible = true;
+            this.alpha = 1;
+        }
     }
 
 }
