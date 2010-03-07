@@ -71,6 +71,7 @@ package org.flowplayer.shareembed {
         public var _emailTab:Tab;
         public var _shareTab:Tab;
 
+        private var _closeButton:CloseButton;
         private var _displayButtons:Boolean;
 
         private var _tabCSSProperties:Object;
@@ -88,10 +89,17 @@ package org.flowplayer.shareembed {
             }
         }
 
+        private function arrangeCloseButton():void {
+            _closeButton.x = width - (_closeButton.width/3);
+            _closeButton.y = _closeButton.height / 3;
+            setChildIndex(_closeButton, numChildren - 1);
+        }
+
         override protected function onResize():void {
             arrangeView(_emailView);
             arrangeView(_embedView);
             arrangeView(_shareView);
+            arrangeCloseButton();
         }
 
         private function createButtonContainer():void {
@@ -119,11 +127,17 @@ package org.flowplayer.shareembed {
 
         private function createPanelContainer():void {
             _panelContainer = new Sprite();
-            _panelContainer.visible = false;
             addChild(_panelContainer);
         }
 
+        private function createCloseButton(icon:DisplayObject = null):void {
+            _closeButton = new CloseButton(icon);
+            addChild(_closeButton);
+            _closeButton.addEventListener(MouseEvent.CLICK, onCloseClicked);
+        }
+
         public function onLoad(player:Flowplayer):void {
+            this.visible = false;
             _player = player;
 
             _player.playlist.onBegin(onBegin);
@@ -133,20 +147,28 @@ package org.flowplayer.shareembed {
             createPanelContainer();
             createButtonContainer();
             createTabs();
+            createCloseButton();
 
             _emailBtn.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void {
-                email();
+                fadeIn("Email");
             });
             _embedBtn.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void {
-                embed();
+                fadeIn("Embed");
             });
             _shareBtn.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void {
-                share();
+                fadeIn("Share");
             });
 
             _displayButtons = true;
 
             _model.dispatchOnLoad();
+        }
+
+        private function fadeIn(view:String):void {
+            this.visible = true;
+            this.alpha = 0;
+            setActiveTab(view);
+            _player.animationEngine.fadeIn(this);
         }
 
         private function onPlayerLoad(event:PlayerEvent):void {
@@ -231,28 +253,26 @@ package org.flowplayer.shareembed {
         }
 
         public function showView(panel:String):void {
-            if (panel == "Email") _emailView.visible = true;
-            if (panel == "Embed") _embedView.visible = true;
-            if (panel == "Share") _shareView.visible = true;
-        }
-
-        public function hideAllPanels():void {
             if (_emailView) _emailView.visible = false;
             if (_embedView) _embedView.visible = false;
             if (_shareView) _shareView.visible = false;
+
+            if (panel == "Email") _emailView.show();
+            if (panel == "Embed") _embedView.show();
+            if (panel == "Share") _shareView.show();
         }
 
-        public function removeTabs():void {
-            _player.animationEngine.fadeOut(_tabContainer, 500, tabsFadedOut);
+
+        private function onCloseClicked(event:MouseEvent):void {
+            _player.animationEngine.fadeOut(this, 500, onFadeOut);
         }
 
-        private function tabsFadedOut():void {
-            _tabContainer.visible = false;
-            _panelContainer.visible = false;
+        private function onFadeOut():void {
+            displayButtons(true);
         }
 
-        private function setLiveTab(newTab:String):void {
-            log.debug("setLiveTab() " + newTab);
+        public function setActiveTab(newTab:String):void {
+            log.debug("setActiveTab() " + newTab);
 
             if (_emailView) {
                 _emailMask.height = TAB_HEIGHT;
@@ -280,6 +300,9 @@ package org.flowplayer.shareembed {
                 _shareTab.css(_tabCSSProperties);
             }
 
+            showView(newTab);
+            arrangeView(getView(newTab));
+
         }
 
         private function getViewCSSProperties():Object {
@@ -287,21 +310,6 @@ package org.flowplayer.shareembed {
             if (_embedView) return _embedView.css();
             if (_shareView) return _shareView.css();
             return null;
-        }
-
-        public function switchTabs(newTab:String):void {
-            hideAllPanels();
-            setLiveTab(newTab);
-
-            if (newTab == "Email") {
-                email();
-            }
-            if (newTab == "Embed") {
-                embed();
-            }
-            if (newTab == "Share") {
-                share();
-            }
         }
 
         private function createViewIfNotExists(liveTab:String, viewName:String, view:DisplayObject, createFunc:Function):void {
@@ -312,17 +320,15 @@ package org.flowplayer.shareembed {
 
         private function showViews(liveTab:String):void {
             displayButtons(false);
-            _tabContainer.visible = true;
-            _tabContainer.alpha = 1;
-            _panelContainer.visible = true;
-            setLiveTab(liveTab);
+
+            this.visible = true;
+            this.alpha = 1;
 
             createViewIfNotExists(liveTab, "Email", _emailView, createEmailView);
             createViewIfNotExists(liveTab, "Embed", _embedView, createEmbedView);
             createViewIfNotExists(liveTab, "Share", _shareView, createShareView);
 
-            showView(liveTab);
-            arrangeView(getView(liveTab));
+            setActiveTab(liveTab);
         }
 
         private function getView(liveTab:String):StyleableSprite {
@@ -351,7 +357,6 @@ package org.flowplayer.shareembed {
         private function createTabs():void {
             log.debug("createTabs()");
             _tabContainer = new Sprite();
-            _tabContainer.visible = false;
             addChild(_tabContainer);
 
             var tabXPos:int = 0;
@@ -382,13 +387,14 @@ package org.flowplayer.shareembed {
             var conf:Object = JSON.decode(stage.loaderInfo.parameters["config"]);
 
             //loop through the plugins and replace the plugin urls with absolute full domain urls
-            for (var plugin:String in conf.plugins)
-            {
-                var url:String = URLUtil.isCompleteURLWithProtocol(conf.plugins[plugin].url)
-                        ? conf.plugins[plugin].url
-                        : conf.plugins[plugin].url.substring(conf.plugins[plugin].url.lastIndexOf("/") + 1, conf.plugins[plugin].url.length);
+            for (var plugin:String in conf.plugins) {
+                if (conf.plugins[plugin].url) {
+                    var url:String = URLUtil.isCompleteURLWithProtocol(conf.plugins[plugin].url)
+                            ? conf.plugins[plugin].url
+                            : conf.plugins[plugin].url.substring(conf.plugins[plugin].url.lastIndexOf("/") + 1, conf.plugins[plugin].url.length);
 
-                conf.plugins[plugin].url = URLUtil.completeURL(_config.baseURL, url);
+                    conf.plugins[plugin].url = URLUtil.completeURL(_config.baseURL, url);
+                }
             }
 
 
@@ -425,11 +431,7 @@ package org.flowplayer.shareembed {
         /**
          * Show the icon buttons panel
          */
-        private function showButtonPanel():void
-        {
-            hideAllPanels();
-            _tabContainer.visible = false;
-
+        private function showButtonPanel():void {
             _player.animationEngine.animate(_btnContainer, {alpha: 1}, 500);
             //field.htmlText = ""
         }
@@ -437,25 +439,21 @@ package org.flowplayer.shareembed {
         /**
          * Hide the icon buttons panel
          */
-        private function hideButtonPanel():void
-        {
+        private function hideButtonPanel():void {
             _player.animationEngine.animate(_btnContainer, {alpha: 0}, 500);
         }
 
-        private function onMouseOver(event:PlayerEvent):void
-        {
+        private function onMouseOver(event:PlayerEvent):void {
             if (_displayButtons) {
                 showButtonPanel();
             }
         }
 
-        private function onMouseOut(event:PlayerEvent):void
-        {
+        private function onMouseOut(event:PlayerEvent):void {
             hideButtonPanel();
         }
 
-        private function onBegin(event:ClipEvent):void
-        {
+        private function onBegin(event:ClipEvent):void {
             hideButtonPanel();
 
             _player.onMouseOver(onMouseOver);

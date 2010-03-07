@@ -51,7 +51,6 @@ package org.flowplayer.shareembed {
     internal class ShareView extends StyleableView {
 
         private var _config:ShareConfig;
-        private var _closeButton:CloseButton;
 
         private var _videoURL:String;
         private var _facebookURL:String = "http://www.facebook.com/share.php?t={0}&u={1}";
@@ -83,7 +82,6 @@ package org.flowplayer.shareembed {
             super("viral-share", plugin, player, style);
             rootStyle = style;
             _config = config;
-            createCloseButton();
             createIcons();
         }
 
@@ -292,96 +290,37 @@ package org.flowplayer.shareembed {
          *
          * @return void
          */
-        private function arrangeIcons():void
-        {
+        private function arrangeIcons():void {
+            _facebookIcon.scaleX = 1;
             var lineSize:Number = (_facebookIcon.width * 4) + 50;
-            var scalePct:Number = _width / lineSize;
+            var scalePct:Number = width / lineSize;
             var padding:Number = 10 * scalePct;
 
-//            var tmp_x:int = ((width) / 2) - (((_iconArray[0].width * 2) + (padding * 3)) * scalePct);
-//            var tmp_x:int = padding;
             var xPos:int = padding;
             var yPos:int = padding;
-            //var init_y:int = 20;
 
             var rowcounter:int = 0;
-            for (var i:String in _iconArray) {
-                _iconArray[i].scaleX = _iconArray[i].scaleY = scalePct;
-                //if (init_x > _stageWidth - _iconArray[i].width) {
+            for (var j:String in _iconArray) {
+                _iconArray[j].scaleX = _iconArray[j].scaleY = scalePct;
                 rowcounter++;
                 if (rowcounter > 4) {
                     rowcounter = 0
                     xPos = padding;
-                    yPos += _iconArray[i].height + padding;
+                    yPos += _iconArray[j].height + padding;
                 }
-                _iconArray[i].x = xPos;
-                _iconArray[i].y = yPos;
-                xPos += _iconArray[i].width + padding;
+                _iconArray[j].x = xPos;
+                _iconArray[j].y = yPos;
+                xPos += _iconArray[j].width + padding;
             }
 
         }
 
-
         override protected function onResize():void {
+            log.debug("onResize() " + width + " x " + height);
             _infoField.width = width - 20;
             _infoField.height = 20;
 
-            arrangeCloseButton();
             arrangeIcons();
         }
-
-        private function arrangeCloseButton():void {
-            if (_closeButton && style) {
-                //_closeButton.x = width - _closeButton.width - 1 - style.borderRadius/5;
-                _closeButton.x = width - _closeButton.width;
-                //_closeButton.y = 1 + style.borderRadius/5;
-                _closeButton.y = _closeButton.height / 3;
-                setChildIndex(_closeButton, numChildren - 1);
-            }
-        }
-
-        /**
-         * Create the close button
-         *
-         * @return void
-         */
-        private function createCloseButton(icon:DisplayObject = null):void {
-            _closeButton = new CloseButton(icon);
-            addChild(_closeButton);
-            _closeButton.addEventListener(MouseEvent.CLICK, onCloseClicked);
-        }
-
-        /**
-         * Close button click event handler
-         * Fade the panel
-         *
-         * @param event MouseEvent
-         * @return void
-         */
-        private function onCloseClicked(event:MouseEvent):void {
-            ShareEmbed(model.getDisplayObject()).removeTabs();
-            player.animationEngine.fadeOut(this, 500, onFadeOut);
-        }
-
-        /**
-         * Fade animate handler
-         * When the panel is faded out, remove it from the parent
-         *
-         * @return void
-         */
-        private function onFadeOut():void {
-            ShareEmbed(model.getDisplayObject()).displayButtons(true);
-            //ShareEmbed(_plugin.getDisplayObject()).removeChild(this);
-            //ShareEmbed(_plugin.getDisplayObject()).hideSharePanel(this);
-        }
-
-        public function closePanel():void {
-            ShareEmbed(model.getDisplayObject()).removeChild(this);
-            //_player.animationEngine.fadeOut(this, 0, closePanel2);
-        }
-
-        public function closePanel2():void {
-        }
-
     }
 }

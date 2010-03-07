@@ -32,7 +32,6 @@ package org.flowplayer.shareembed {
         private const PADDING:int = 5;
 
         private var _emedText:TextField;
-        private var _closeButton:CloseButton;
         private var _htmlText:String;
 
         private var _copyBtn:Sprite;
@@ -42,7 +41,6 @@ package org.flowplayer.shareembed {
             super("viral-embed", plugin, player, style);
             rootStyle = style;
 
-            createCloseButton();
             createCopyButton();
             createEmbedText();
             createInfoText();
@@ -110,7 +108,6 @@ package org.flowplayer.shareembed {
 
         override protected function onResize():void {
             log.debug("onResize " + width + " x " + height);
-            arrangeCloseButton();
             arrangeCopyButton();
             arrangeInfoText();
             arranggeEmbedText();
@@ -121,22 +118,6 @@ package org.flowplayer.shareembed {
             _emedText.height = _width - _copyBtn.height - 30;
             _emedText.x = PADDING;
             _emedText.y = PADDING;
-        }
-
-        override protected function onRedraw():void {
-            arrangeCloseButton();
-            arrangeCopyButton();
-            arrangeInfoText();
-        }
-
-        private function arrangeCloseButton():void {
-            if (_closeButton) {
-                //_closeButton.x = width - _closeButton.width - 1 - style.borderRadius/5;
-                _closeButton.x = width - _closeButton.width;
-                //_closeButton.y = 1 + style.borderRadius/5;
-                _closeButton.y = _closeButton.height / 3;
-                setChildIndex(_closeButton, numChildren - 1);
-            }
         }
 
         private function arrangeCopyButton():void {
@@ -153,12 +134,6 @@ package org.flowplayer.shareembed {
             }
         }
 
-        private function createCloseButton(icon:DisplayObject = null):void {
-            _closeButton = new CloseButton(icon);
-            addChild(_closeButton);
-            _closeButton.addEventListener(MouseEvent.CLICK, onCloseClicked);
-        }
-
         private function createCopyButton():void {
             _copyBtn = new CopyBtn() as Sprite;
             _copyBtn.buttonMode = true;
@@ -173,25 +148,5 @@ package org.flowplayer.shareembed {
             _emedText.setSelection(0, _emedText.text.length);
             _infoText.htmlText = '<span class="info">Copied to clipboard</span>';
         }
-
-        private function onCloseClicked(event:MouseEvent):void {
-            ShareEmbed(model.getDisplayObject()).removeTabs();
-            player.animationEngine.fadeOut(this, 500, onFadeOut);
-        }
-
-        private function onFadeOut():void {
-            ShareEmbed(model.getDisplayObject()).displayButtons(true);
-            //ShareEmbed(_plugin.getDisplayObject()).removeChild(this);
-            //ShareEmbed(_plugin.getDisplayObject()).hideEmbedPanel(this);
-        }
-
-        public function closePanel():void {
-            ShareEmbed(model.getDisplayObject()).removeChild(this);
-            //_player.animationEngine.fadeOut(this, 0, closePanel2);
-        }
-
-        public function closePanel2():void {
-        }
-
     }
 }

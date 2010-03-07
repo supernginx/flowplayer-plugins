@@ -69,7 +69,7 @@ package org.flowplayer.shareembed {
         }
 
         public function onThisClicked(event:MouseEvent):void {
-            ShareEmbed(_plugin.getDisplayObject()).switchTabs(html);
+            ShareEmbed(_plugin.getDisplayObject()).setActiveTab(html);
         }
 
         public function closePanel():void {
