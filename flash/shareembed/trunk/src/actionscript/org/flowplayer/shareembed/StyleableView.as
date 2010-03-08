@@ -9,11 +9,24 @@
  *    Additional Term, see http://flowplayer.org/license_gpl.html
  */
 package org.flowplayer.shareembed {
+    import flash.events.FocusEvent;
+    import flash.text.AntiAliasType;
+    import flash.text.TextField;
+
+    import flash.text.TextFieldAutoSize;
+
+    import flash.text.TextFieldType;
+
     import org.flowplayer.model.DisplayPluginModel;
     import org.flowplayer.view.Flowplayer;
     import org.flowplayer.view.StyleableSprite;
 
     public class StyleableView extends StyleableSprite {
+        protected const PADDING_X:int = 20;
+        protected const PADDING_Y:int = 3;
+        protected const MARGIN_Y:int = 10;
+        protected const MARGIN_X:int = 10;
+
         private var _model:DisplayPluginModel;
         private var _player:Flowplayer;
 
@@ -36,6 +49,54 @@ package org.flowplayer.shareembed {
         public function show():void {
             this.visible = true;
             this.alpha = 1;
+        }
+
+        protected function createLabelField():TextField {
+            var field:TextField = player.createTextField();
+            field.selectable = false;
+            field.focusRect = false;
+            field.tabEnabled = false;
+            field.autoSize = TextFieldAutoSize.LEFT;
+            field.antiAliasType = AntiAliasType.ADVANCED;
+            field.height = 15;
+
+            field.styleSheet = style.styleSheet;
+            return field;
+        }
+
+        protected function createInputField(selectTextOnFocus:Boolean = true):TextField {
+            var field:TextField = player.createTextField();
+
+            field.addEventListener(FocusEvent.FOCUS_IN, function(event:FocusEvent):void {
+                var field:TextField = event.target as TextField;
+                field.borderColor = 0xCCFFCC;
+                if (selectTextOnFocus) {
+                    var text:String = field.text;
+                    if (text && text.length > 0) {
+                        field.setSelection(0, text.length);
+                        field.scrollH = field.scrollV = 0;
+                    }
+                }
+            });
+            field.addEventListener(FocusEvent.FOCUS_OUT, function(event:FocusEvent):void {
+                var field:TextField = event.target as TextField;
+                field.borderColor = 0xffffff;
+                if (selectTextOnFocus) {
+                    field.setSelection(0, 0);
+                }
+            });
+
+            field.type = TextFieldType.INPUT;
+            field.alwaysShowSelection = true;
+            field.antiAliasType = AntiAliasType.ADVANCED;
+            field.background = true;
+            field.backgroundColor = 0xffffff;
+            field.border = true;
+            field.borderColor = 0xffffff;
+            field.tabEnabled = true;
+            field.textColor = 0;
+            field.height = 20;
+            return field;
         }
     }
 
