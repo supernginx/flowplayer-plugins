@@ -90,8 +90,8 @@ package org.flowplayer.shareembed {
         }
 
         private function arrangeCloseButton():void {
-            _closeButton.x = width - (_closeButton.width/3);
-            _closeButton.y = _closeButton.height / 3;
+            _closeButton.x = width;
+            _closeButton.y = TAB_HEIGHT;
             setChildIndex(_closeButton, numChildren - 1);
         }
 
@@ -202,7 +202,7 @@ package org.flowplayer.shareembed {
 
         public function getDefaultConfig():Object {
             return {
-                top: "50%",
+                top: "45%",
                 left: "50%",
                 opacity: 1,
                 borderRadius: 10,
@@ -227,7 +227,7 @@ package org.flowplayer.shareembed {
         }
 
         private function createEmbedView():void {
-            _embedView = new EmbedView(_model as DisplayPluginModel, _player, _config.canvas);
+            _embedView = new EmbedView(_model as DisplayPluginModel, _player, _config.embed, _config.canvas);
             //_embedView.setSize(stage.width, stage.height);
             _panelContainer.addChild(_embedView);
             //get the embed code and return it to the embed code textfield
@@ -358,6 +358,7 @@ package org.flowplayer.shareembed {
             log.debug("createTabs()");
             _tabContainer = new Sprite();
             addChild(_tabContainer);
+            _tabContainer.x = 3;
 
             var tabXPos:int = 0;
             var masky:int = (BORDER / 2);

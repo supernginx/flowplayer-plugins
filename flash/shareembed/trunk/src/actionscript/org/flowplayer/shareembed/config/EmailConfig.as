@@ -9,16 +9,16 @@
  *    Additional Term, see http://flowplayer.org/license_gpl.html
  */
 package org.flowplayer.shareembed.config {
+    import org.flowplayer.util.PropertyBinder;
 
     public class EmailConfig {
         private var _script:String;
         private var _tokenUrl:String;
         private var _token:String;
-        private var _subject:String = "Video you might be interested in";
-        private var _template:String = "{0} \n\n Video Link: <a href=\"{1}\">{2}</a>";
-        private var _required:Array = ["name","email","to","message","subject"];
-        private var _title:String = "Email this video";
-
+        private var _required:Array = ["to"];
+//        private var _required:Array = ["name","email","to","message","subject"];
+        private var _texts:EmailTexts = new EmailTexts();
+        
         public function get script():String {
             return _script;
         }
@@ -43,22 +43,6 @@ package org.flowplayer.shareembed.config {
             _token = value;
         }
 
-        public function get subject():String {
-            return _subject;
-        }
-
-        public function set subject(value:String):void {
-            _subject = value;
-        }
-
-        public function get template():String {
-            return _template;
-        }
-
-        public function set template(value:String):void {
-            _template = value;
-        }
-
         public function get required():Array {
             return _required;
         }
@@ -67,12 +51,17 @@ package org.flowplayer.shareembed.config {
             _required = value;
         }
 
-        public function get title():String {
-            return _title;
+        public function isRequired(field:String):Boolean {
+            return _required.indexOf(field) >= 0;
         }
 
-        public function set title(value:String):void {
-            _title = value;
+        public function get texts():EmailTexts {
+            return _texts;
+        }
+
+        public function setTexts(value:Object):void {
+            if (! value) return;
+            new PropertyBinder(_texts).copyProperties(value);
         }
     }
 

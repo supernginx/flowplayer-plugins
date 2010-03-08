@@ -16,8 +16,8 @@ package org.flowplayer.shareembed.config
     public class Config {
         private var _email:EmailConfig = new EmailConfig();
         private var _share:ShareConfig = new ShareConfig();
+        private var _embed:EmbedConfig = new EmbedConfig;
         private var _canvas:Object;
-        private var _embed:Boolean = true;
 
         private var _baseURL:String = URLUtil.pageUrl;
 
@@ -65,6 +65,24 @@ package org.flowplayer.shareembed.config
             new PropertyBinder(_share).copyProperties(value);
         }
 
+        public function get embed():EmbedConfig {
+            return _embed;
+        }
+
+        public function setEmbed(value:Object):void {
+            if (! value) {
+                _embed = null;
+                return;
+            }
+            if (! _embed) {
+                _embed = new EmbedConfig();
+            }
+            if (value is Boolean) {
+                return;
+            }
+            new PropertyBinder(_embed).copyProperties(value);
+        }
+
         public function get canvas():Object {
             if (! _canvas) {
                 _canvas = {
@@ -82,7 +100,7 @@ package org.flowplayer.shareembed.config
                         color: '#ffffff'
                     },
                     '.title': {
-                        fontSize: 23
+                        fontSize: 16
                     },
                     '.label': {
                         fontSize: 12
@@ -94,7 +112,7 @@ package org.flowplayer.shareembed.config
                         fontSize: 8
                     },
                     '.error': {
-                        color: '#000000',
+                        color: '#ff3333',
                         fontSize: 10,
                         fontWeight: 'normal',
                         fontFamily: 'Arial'
@@ -107,7 +125,7 @@ package org.flowplayer.shareembed.config
                     },
                     '.embed': {
                         color: '#000000',
-                        fontSize: 8,
+                        fontSize: 6,
                         fontWeight: 'normal',
                         fontFamily: 'Arial',
                         textAlign: 'left'
@@ -123,14 +141,6 @@ package org.flowplayer.shareembed.config
 
         public function set canvas(value:Object):void {
             _canvas = value;
-        }
-
-        public function get embed():Boolean {
-            return _embed;
-        }
-
-        public function set embed(value:Boolean):void {
-            _embed = value;
         }
     }
 }

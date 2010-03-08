@@ -17,6 +17,7 @@ package org.flowplayer.shareembed {
     import flash.events.FocusEvent;
     import flash.events.IOErrorEvent;
     import flash.events.MouseEvent;
+    import flash.events.TimerEvent;
     import flash.net.URLLoader;
     import flash.net.URLLoaderDataFormat;
     import flash.net.URLRequest;
@@ -28,13 +29,13 @@ package org.flowplayer.shareembed {
     import flash.text.TextFieldAutoSize;
     import flash.text.TextFieldType;
 
+    import flash.utils.Timer;
+
     import org.flowplayer.model.DisplayPluginModel;
     import org.flowplayer.shareembed.assets.SendBtn;
-    import org.flowplayer.shareembed.config.Config;
     import org.flowplayer.shareembed.config.EmailConfig;
     import org.flowplayer.util.URLUtil;
     import org.flowplayer.view.Flowplayer;
-    import org.flowplayer.view.StyleableSprite;
 
     internal class EmailView extends StyleableView {
 
@@ -49,22 +50,11 @@ package org.flowplayer.shareembed {
         private var _nameFromInput:TextField;
         private var _emailFromLabel:TextField;
         private var _emailFromInput:TextField;
-        private var _emailSuccessLabel:TextField;
+        private var _statusLabel:TextField;
 
         private var _sendBtn:Sprite;
 
         private var _videoURL:String;
-
-        private var _xPadding:int = 20;
-        private var _yPadding:int = 3;
-
-        /**
-         * Constructor
-         *
-         * @param plugin DisplayPluginModel
-         * @param player Flowplayer
-         * @param config Config
-         */
 
         public function EmailView(plugin:DisplayPluginModel, player:Flowplayer, config:EmailConfig, style:Object) {
             super("viral-email", plugin, player, style);
@@ -73,141 +63,43 @@ package org.flowplayer.shareembed {
             this.addEventListener(Event.ADDED_TO_STAGE, setTextFocus);
         }
 
-        /**
-         * When added to stage, set the focus to the email to text input.
-         *
-         * @param event Event
-         * @return void
-         */
-        public function setTextFocus(event:Event):void
-        {
+        public function setTextFocus(event:Event):void {
             this.removeEventListener(Event.ADDED_TO_STAGE, setTextFocus);
             stage.focus = _emailToInput;
         }
 
-        /**
-         * Create a label text field
-         *
-         * @return TextField
-         */
-
-        private function createLabelField():TextField
-        {
-            var field:TextField = player.createTextField();
-            field.selectable = false;
-            field.focusRect = false;
-            field.tabEnabled = false;
-            field.autoSize = TextFieldAutoSize.LEFT;
-            field.antiAliasType = AntiAliasType.ADVANCED;
-
-            field.styleSheet = style.styleSheet;
-            return field;
-        }
-
-        /**
-         * Create an input text field
-         *
-         * @return TextField
-         */
-        private function createInputField():TextField
-        {
-            var field:TextField = player.createTextField();
-            field.addEventListener(FocusEvent.FOCUS_IN, onTextInputFocusIn);
-            field.addEventListener(FocusEvent.FOCUS_OUT, onTextInputFocusOut);
-            field.type = TextFieldType.INPUT;
-            field.alwaysShowSelection = true;
-            field.antiAliasType = AntiAliasType.ADVANCED;
-
-            field.tabEnabled = true;
-            field.border = true;
-            return field;
-        }
-
-        /**
-         * Text Focus In handler
-         * Changes the text input border color to CCCCCC on focus.
-         *
-         * @param event FocusEvent
-         * @return void
-         */
-        private function onTextInputFocusIn(event:FocusEvent):void
-        {
-            var field:TextField = event.target as TextField;
-            field.borderColor = 0xCCCCCC;
-        }
-
-        /**
-         * Text Focus Out handler
-         * Changes the text input border color to 000000 on focus.
-         *
-         * @param event FocusEvent
-         * @return void
-         */
-        private function onTextInputFocusOut(event:FocusEvent):void
-        {
-            var field:TextField = event.target as TextField;
-            field.borderColor = 0x000000;
-        }
-
-        /**
-         * The title label
-         *
-         * @return TextField
-         */
-        private function titleLabel():TextField
-        {
+        private function titleLabel():TextField {
             var field:TextField = createLabelField();
-            field.focusRect = false;
-            field.htmlText = "<span class=\"title\">"+ _config.title +"</span>";
+            field.htmlText = "<span class=\"title\">" + _config.texts.title + "</span>";
             return field;
         }
 
-        /**
-         * The email label
-         *
-         * @return TextField
-         */
-        private function emailToLabel():TextField
-        {
+        private function emailToLabel():TextField {
             var field:TextField = createLabelField();
-            field.htmlText = "<span class=\"label\">Type in an email address <span class=" +
-                             "\"small\">(multiple addresses with commas)</span></span>";
+            field.htmlText = "<span class=\"label\">"+ _config.texts.to +" <span class=" +
+                             "\"small\">"+ _config.texts.toSmall +"</span></span>";
             return field;
         }
 
-        /**
-         * The email input
-         *
-         * @return TextField
-         */
-        private function emailToInput():TextField
-        {
+        private function emailToInput():TextField {
             var field:TextField = createInputField();
             field.tabIndex = 1;
             field.mouseWheelEnabled = true;
             return field;
         }
 
-        /**
-         * The message label
-         *
-         * @return TextField
-         */
-        private function messageLabel():TextField
-        {
+        private function optional(field:String):String {
+            if (_config.isRequired(field)) return "";
+            return " <span class=\"small\">" + _config.texts.optional + "</span></span>";
+        }
+
+        private function messageLabel():TextField {
             var field:TextField = createLabelField();
-            field.htmlText = "<span class=\"label\">Personal message <span class=" +
-                             "\"small\">(optional)</span></span>";
+            field.htmlText = "<span class=\"label\">" + _config.texts.message + optional("message");
             return field;
         }
 
-        /**
-         * The message input
-         *
-         * @return TextField
-         */
-        private function messageInput():TextField
-        {
+        private function messageInput():TextField  {
             var field:TextField = createInputField();
             field.tabIndex = 2;
             field.multiline = true;
@@ -216,86 +108,33 @@ package org.flowplayer.shareembed {
             return field;
         }
 
-        /**
-         * The name from label
-         *
-         * @return TextField
-         */
-        private function nameFromLabel():TextField
-        {
+        private function nameFromLabel():TextField {
             var field:TextField = createLabelField();
-            field.width = 100;
-            field.height = 15;
-            field.htmlText = "<span class=\"label\">Your name <span class=" +
-                             "\"small\">(optional)</span></span>";
+            field.htmlText = "<span class=\"label\">" + _config.texts.from + optional("name");
             return field;
         }
 
-        /**
-         * The name from input
-         *
-         * @return TextField
-         */
-        private function nameFromInput():TextField
-        {
+        private function nameFromInput():TextField {
             var field:TextField = createInputField();
             field.tabIndex = 3;
             return field;
         }
 
-        /**
-         * The email from label
-         *
-         * @return TextField
-         */
-        private function emailFromLabel():TextField
-        {
+        private function emailFromLabel():TextField {
             var field:TextField = createLabelField();
-            field.width = 100;
-            field.height = 15;
-            field.htmlText = "<span class=\"label\">Your email address <span class=" +
-                             "\"small\">(optional)</span></span>";
+            field.htmlText = "<span class=\"label\">" + _config.texts.fromAddress + optional("email");
             return field;
         }
 
-        /**
-         * The email from input
-         *
-         * @return TextField
-         */
-        private function emailFromInput():TextField
-        {
+        private function emailFromInput():TextField {
             var field:TextField = createInputField();
             field.tabIndex = 4;
             return field;
         }
 
-        /**
-         * The email success / error label
-         *
-         * @return TextField
-         */
-        private function emailSuccessLabel():TextField
-        {
-            var field:TextField = createLabelField();
-            field.width = 100;
-            field.height = 15;
-            return field;
-        }
-
-        /**
-         * Setup the form elements
-         *
-         * @return void
-         */
-        private function createForm():void
-        {
+        private function createForm():void {
             _formContainer = new Sprite();
-
             addChild(_formContainer);
-
-            _formContainer.x = 0;
-            _formContainer.y = 0;
 
             _titleLabel = titleLabel();
             _formContainer.addChild(_titleLabel);
@@ -324,8 +163,8 @@ package org.flowplayer.shareembed {
             _nameFromInput = nameFromInput();
             _formContainer.addChild(_nameFromInput);
 
-            _emailSuccessLabel = emailSuccessLabel();
-            _formContainer.addChild(_emailSuccessLabel);
+            _statusLabel = createLabelField();
+            _formContainer.addChild(_statusLabel);
 
 
             _emailFromInput = emailFromInput();
@@ -347,13 +186,7 @@ package org.flowplayer.shareembed {
 
         }
 
-        /**
-         * Request the email script token to be used to submit to the email system
-         *
-         * @return void
-         */
-        private function getEmailToken():void
-        {
+        private function getEmailToken():void {
             log.debug("Requesting " + _config.tokenUrl);
             var loader:URLLoader = new URLLoader();
             var request:URLRequest = new URLRequest(_config.tokenUrl);
@@ -365,13 +198,7 @@ package org.flowplayer.shareembed {
             loader.addEventListener(IOErrorEvent.IO_ERROR, onTokenError);
         }
 
-        /**
-         * Send the form to the email server side system
-         *
-         * @return void
-         */
-        private function sendServerEmail():void
-        {
+        private function sendServerEmail():void {
             var loader:URLLoader = new URLLoader();
             var request:URLRequest = new URLRequest(_config.script);
             request.method = URLRequestMethod.POST;
@@ -382,8 +209,8 @@ package org.flowplayer.shareembed {
             param.email = _emailFromInput.text;
             param.to = _emailToInput.text;
             //format the message from the message template
-            param.message = StringUtil.formatString(_config.template, _messageInput.text, _videoURL, _config.title ? _config.title : _videoURL);
-            param.subject = _config.subject;
+            param.message = StringUtil.formatString(_config.texts.template, _messageInput.text, _videoURL, _config.texts.title ? _config.texts.title : _videoURL);
+            param.subject = _config.texts.subject;
             param.token = _config.token;
 
             param.dataFormat = URLLoaderDataFormat.VARIABLES;
@@ -395,70 +222,53 @@ package org.flowplayer.shareembed {
             loader.addEventListener(IOErrorEvent.IO_ERROR, onSendError);
         }
 
-        /**
-         * Send the email locally, launching an email client using mailto:
-         *
-         * @return void
-         */
-        private function sendLocalEmail():void
-        {
-            var request:URLRequest = new URLRequest(StringUtil.formatString("mailto:{0}?subject={1}&body={2}", _emailToInput.text, escape(_config.subject), escape(StringUtil.formatString(_config.template, _messageInput.text, _videoURL, _videoURL))));
+        private function sendLocalEmail():void {
+            var request:URLRequest = new URLRequest(StringUtil.formatString("mailto:{0}?subject={1}&body={2}", _emailToInput.text, escape(_config.texts.subject), escape(StringUtil.formatString(_config.texts.template, _messageInput.text, _videoURL, _videoURL))));
             navigateToURL(request, "_self");
         }
 
-        /**
-         * Set the error message for the form
-         *
-         * @param error String
-         * @return void
-         */
-        private function formError(error:String):void
-        {
-            _emailSuccessLabel.htmlText = '<span class="error">' + error + '</span>';
+        private function setStatus(msg:String):void {
+            _statusLabel.htmlText = msg;
+            createStatusLabelReset();
         }
 
-        /**
-         * Set the send success message for the form
-         *
-         * @param error String
-         * @return void
-         */
-        private function formSuccess(value:String):void
-        {
-            _emailSuccessLabel.htmlText = '<span class="success">' + value + '</span>';
+        private function formSuccess(value:String):void {
+            setStatus('<span class="success">' + value + '</span>');
         }
 
-        /**
-         * Submit handler for the submit button
-         * First checks against an array of required fields, to validate the form input
-         * Then checks if the email script url is enabled
-         * If the email script token is set, post the form or else request the token from the token script
-         * If the email script url is disabled, a local email is sent
-         *
-         *
-         * @return void
-         */
-        private function onSubmit(event:MouseEvent):void
-        {
+        private function formError(error:String):void {
+            setStatus('<span class="error">' + error + '</span>');
+        }
+
+        private function createStatusLabelReset():void {
+            var timer:Timer = new Timer(5000, 1);
+            timer.addEventListener(TimerEvent.TIMER_COMPLETE, function(event:TimerEvent):void { _statusLabel.htmlText = ""; } );
+            timer.start();
+        }
+
+        private function validateField(field:TextField, fieldName:String, missingFields:Array):void {
+            if (!field.text && _config.isRequired(fieldName)) missingFields.push(fieldName);
+        }
+
+        private function checkRequiredFields():Boolean {
             var required:Array = _config.required;
-            var requiredFields:Array = [];
+            var missingFields:Array = [];
+            if (required.length > 0) {
+                validateField(_nameFromInput, "name", missingFields);
+                validateField(_emailFromInput, "email", missingFields);
+                validateField(_emailToInput, "to", missingFields);
+                validateField(_messageInput, "message", missingFields);
+            }
+            return (missingFields.length == 0);
+        }
 
-            //validate the form input
-            if (required.length > 0)
-            {
-                if (!_nameFromInput.text && required.indexOf("name") !== -1) requiredFields.push("name");
-                if (!_emailFromInput.text && required.indexOf("email") !== -1) requiredFields.push("email");
-                if (!_emailToInput.text && required.indexOf("to") !== -1) requiredFields.push("to");
-                if (!_messageInput.text && required.indexOf("message") !== -1) requiredFields.push("message");
-                if (!_config.subject && required.indexOf("subject") !== -1) requiredFields.push("subject");
+        private function onSubmit(event:MouseEvent):void {
+            if (! checkRequiredFields()) {
+                formError("Please fill required fields!");
+                return;
             }
 
-            //send message required fields are missing
-            if (requiredFields.length > 0)
-            {
-                formError('Following are required ' + requiredFields.join(","));
-            } else if (_config.script)
-            {
+            if (_config.script) {
                 //email token is already set , post the form
                 if (_config.token && !_config.tokenUrl)
                 {
@@ -481,28 +291,13 @@ package org.flowplayer.shareembed {
             }
         }
 
-        /**
-         * Error handler for the email system
-         *
-         * @param event IOErrorEvent
-         * @return void
-         */
-        private function onSendError(event:IOErrorEvent):void
-        {
+        private function onSendError(event:IOErrorEvent):void {
             log.debug("Error: " + event.text);
 
             formError(event.text);
         }
 
-        /**
-         * Success handler for the email system
-         * Messages returned are in the form of a json object with either a success or error key
-         *
-         * @param event Event
-         * @return void
-         */
-        private function onSendSuccess(event:Event):void
-        {
+        private function onSendSuccess(event:Event):void {
             var loader:URLLoader = event.target as URLLoader;
 
             loader.removeEventListener(Event.COMPLETE, onSendSuccess);
@@ -540,15 +335,13 @@ package org.flowplayer.shareembed {
 
         }
 
-        private function onTokenError(event:IOErrorEvent):void
-        {
+        private function onTokenError(event:IOErrorEvent):void {
             log.debug("Error: " + event.text);
 
             formError(event.text);
         }
 
-        private function onTokenSuccess(event:Event):void
-        {
+        private function onTokenSuccess(event:Event):void {
             var loader:URLLoader = event.target as URLLoader;
 
             loader.removeEventListener(Event.COMPLETE, onTokenSuccess);
@@ -584,77 +377,65 @@ package org.flowplayer.shareembed {
 
         }
 
-        /**
-         * Arrange the form
-         *
-         * @return void
-         */
         private function arrangeForm():void {
-            _titleLabel.x = _xPadding;
-            _titleLabel.y = _xPadding;
-            _titleLabel.width = 100;
+            _titleLabel.x = PADDING_X;
+            _titleLabel.y = MARGIN_Y;
+            _titleLabel.width = width;
             _titleLabel.height = 20;
 
-            _emailToLabel.x = _xPadding;
-            _emailToLabel.y = _titleLabel.y + _titleLabel.height + (_yPadding * 2);
-            _emailToLabel.width = 150;
+            _emailToLabel.x = PADDING_X;
+            _emailToLabel.y = _titleLabel.y + _titleLabel.height + (PADDING_Y * 2);
+            _emailToLabel.width = width;
             _emailToLabel.height = 15;
 
-            _emailToInput.x = _xPadding;
-            _emailToInput.y = _emailToLabel.y + _emailToLabel.height + _yPadding;
+            _emailToInput.x = PADDING_X;
+            _emailToInput.y = _emailToLabel.y + _emailToLabel.height + PADDING_Y;
+            _emailToInput.width = width - 2 * PADDING_X;
+            _emailToInput.height = 20;
 
-            _messageLabel.x = _xPadding;
-            _messageLabel.y = _emailToInput.y + _emailToInput.height + _yPadding;
-            _messageLabel.width = width - _xPadding * 2;
+            _messageLabel.x = PADDING_X;
+            _messageLabel.y = _emailToInput.y + _emailToInput.height + PADDING_Y;
+            _messageLabel.width = width - PADDING_X * 2;
             _messageLabel.height = 20;
 
-            _messageInput.x = _xPadding;
-            _messageInput.y = _messageLabel.y + _messageLabel.height + _yPadding;
-            _messageInput.width = width - _xPadding * 2;
-            _messageInput.height = 60;
+            // from bottom
 
-            _nameFromLabel.x = _xPadding;
-            _nameFromLabel.y = _messageInput.y + _messageInput.height + _yPadding;
+            _sendBtn.x = width - _sendBtn.width - PADDING_X;
+            _sendBtn.y = height - _sendBtn.height - MARGIN_Y;
 
-            _emailFromLabel.x = _nameFromLabel.x + _nameFromLabel.width + _xPadding;
-            _emailFromLabel.y = _messageInput.y + _messageInput.height + _yPadding;
+            _statusLabel.x = PADDING_X;
+            _statusLabel.width = width - PADDING_X * 2 - _sendBtn.x;
+            _statusLabel.y = _sendBtn.y;
 
-            _nameFromInput.x = _xPadding;
-            _nameFromInput.y = _nameFromLabel.y + _nameFromLabel.height + _yPadding;
-            _nameFromInput.width = 0.5 * (width - (3 * _xPadding));
+            _statusLabel.x = PADDING_X;
+            _statusLabel.y = _sendBtn.y;
+
+            _nameFromInput.x = PADDING_X;
+            _nameFromInput.y = _sendBtn.y - _nameFromInput.height - 4 * PADDING_Y;
+            _nameFromInput.width = 0.5 * (width - (2 * PADDING_X) - 5);
             _nameFromInput.height = 20;
 
-            _emailFromInput.x = _nameFromInput.x + _nameFromInput.width + _xPadding;
-            _emailFromInput.y = _emailFromLabel.y + _emailFromLabel.height + _yPadding;
-            _emailFromInput.width = 0.5 * (width - (3 * _xPadding));
+            _emailFromInput.x = _nameFromInput.x + _nameFromInput.width + 5;
+            _emailFromInput.y = _nameFromInput.y;
+            _emailFromInput.width = 0.5 * (width - (2 * PADDING_X) - 5);
             _emailFromInput.height = 20;
 
-            _sendBtn.x = width - _sendBtn.width - _xPadding;
-            _sendBtn.y = _nameFromInput.y + _nameFromInput.height + (_yPadding * 2);
+            _nameFromLabel.x = PADDING_X;
+            _nameFromLabel.y = _emailFromInput.y - _nameFromLabel.height - PADDING_Y;
 
-            _emailSuccessLabel.x = _sendBtn.x + _sendBtn.width + _xPadding;
-            _emailSuccessLabel.y = _sendBtn.y;
+            _emailFromLabel.x = _emailFromInput.x;
+            _emailFromLabel.y = _nameFromLabel.y;
 
-
+            // message field takes all space available vertically
+            _messageInput.x = PADDING_X;
+            _messageInput.y = _messageLabel.y + _messageLabel.height + PADDING_Y;
+            _messageInput.width = width - PADDING_X * 2;
+            _messageInput.height = height - (_messageLabel.y + _messageLabel.height) - (height - _emailFromLabel.y) - PADDING_Y * 2;
         }
 
         override protected function onResize():void {
             log.debug("onResize " + width + " x " + height);
             arrangeForm();
-        }
-
-        private function onFadeOut():void {
-            ShareEmbed(model.getDisplayObject()).displayButtons(true);
-            //ShareEmbed(_plugin.getDisplayObject()).removeChild(this);
-            //ShareEmbed(_plugin.getDisplayObject()).hideEmailPanel(this);
-        }
-
-        public function closePanel():void {
-            //ShareEmbed(_plugin.getDisplayObject()).removeChild(this);
-            //_player.animationEngine.fadeOut(this, 0, closePanel2);
-        }
-
-        public function closePanel2():void {
         }
     }
 }

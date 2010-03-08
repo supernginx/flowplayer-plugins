@@ -10,7 +10,11 @@
 package org.flowplayer.shareembed {
     import flash.system.System;
 
+    import flash.text.TextFieldType;
+    import flash.text.TextFormat;
+
     import org.flowplayer.model.DisplayPluginModel;
+    import org.flowplayer.shareembed.config.EmbedConfig;
     import org.flowplayer.view.FlowStyleSheet;
     import org.flowplayer.view.Flowplayer;
     import org.flowplayer.view.StyleableSprite;
@@ -29,21 +33,20 @@ package org.flowplayer.shareembed {
      * @author danielr
      */
     internal class EmbedView extends StyleableView {
-        private const PADDING:int = 5;
 
-        private var _emedText:TextField;
+        private var _embedCode:TextField;
         private var _htmlText:String;
-
         private var _copyBtn:Sprite;
-        private var _infoText:TextField;
+        private var _titleLabel:TextField;
+        private var _config:EmbedConfig;
 
-        public function EmbedView(plugin:DisplayPluginModel, player:Flowplayer, style:Object) {
+        public function EmbedView(plugin:DisplayPluginModel, player:Flowplayer, config:EmbedConfig, style:Object) {
             super("viral-embed", plugin, player, style);
-            rootStyle = style;
+            _config = config;
 
             createCopyButton();
-            createEmbedText();
-            createInfoText();
+            createEmbedCode();
+            createTitle();
         }
 
         public function set html(htmlText:String):void {
@@ -51,8 +54,10 @@ package org.flowplayer.shareembed {
             if (! _htmlText) {
                 _htmlText = "";
             }
-            _emedText.htmlText = '<span class="embed">' + _htmlText + '</span>';
-            log.debug("set html to " + _emedText.htmlText);
+            _embedCode.htmlText = '<span class="embed">' + _htmlText + '</span>';
+            _embedCode.setSelection(0, _embedCode.text.length);
+            _embedCode.scrollH = _embedCode.scrollV = 0;
+            log.debug("set html to " + _embedCode.htmlText);
 
         }
 
@@ -60,78 +65,44 @@ package org.flowplayer.shareembed {
             return _htmlText;
         }
 
-
-        private function createLabelField():TextField
-        {
-            var field:TextField = player.createTextField();
-            field.selectable = false;
-            field.autoSize = TextFieldAutoSize.NONE;
-            field.antiAliasType = AntiAliasType.ADVANCED;
-
-            field.styleSheet = style.styleSheet;
-            return field;
+        private function createTitle():void {
+            _titleLabel = createLabelField();
+            _titleLabel.htmlText = "<span class=\"title\">" + _config.title + "</span>";
+            addChild(_titleLabel);
         }
 
-        private function createInfoText():void
-        {
-            _infoText = createLabelField();
-            _infoText.width = 150;
-            _infoText.height = 20;
-            addChild(_infoText);
-        }
-
-        private function createEmbedText(htmlText:String = null):void {
+        private function createEmbedCode(htmlText:String = null):void {
             log.debug("creating text field for text " + htmlText);
-            if (_emedText) {
-                removeChild(_emedText);
+            if (_embedCode) {
+                removeChild(_embedCode);
             }
-            _emedText = createLabelField();
-            _emedText.blendMode = BlendMode.LAYER;
-            //_text.autoSize = TextFieldAutoSize.LEFT;
-            _emedText.wordWrap = true;
-            _emedText.multiline = true;
-            _emedText.selectable = true;
-            _emedText.antiAliasType = AntiAliasType.ADVANCED;
-            _emedText.condenseWhite = true;
-            //ShareEmbed(_plugin.getDisplayObject()).field.text = "height: " + _stageHeight
+            _embedCode = createInputField(true);
+            _embedCode.type = TextFieldType.DYNAMIC;
+            _embedCode.selectable = false;
+            var format:TextFormat = new TextFormat();
+            format.size = 10;
+            _embedCode.defaultTextFormat = format;
 
-            addChild(_emedText);
-            if (style.styleSheet) {
-                _emedText.styleSheet = style.styleSheet;
-            }
+            addChild(_embedCode);
             if (htmlText) {
                 log.debug("setting html to " + htmlText);
                 html = htmlText;
             }
         }
 
-
         override protected function onResize():void {
             log.debug("onResize " + width + " x " + height);
-            arrangeCopyButton();
-            arrangeInfoText();
-            arranggeEmbedText();
-        }
+            _titleLabel.x = MARGIN_X;
+            _titleLabel.y = MARGIN_Y;
+            _titleLabel.width = width - 2 * MARGIN_X;
 
-        private function arranggeEmbedText():void {
-            _emedText.width = width - 40;
-            _emedText.height = _width - _copyBtn.height - 30;
-            _emedText.x = PADDING;
-            _emedText.y = PADDING;
-        }
+            _embedCode.width = width - 2 * MARGIN_X;
+            _embedCode.height = 15;
+            _embedCode.x = MARGIN_X;
+            _embedCode.y = _titleLabel.y + _titleLabel.height + 10;
 
-        private function arrangeCopyButton():void {
-            if (_copyBtn) {
-                _copyBtn.y = height - _copyBtn.height - PADDING;
-                _copyBtn.x = this.width - _copyBtn.width - PADDING;
-            }
-        }
-
-        private function arrangeInfoText():void {
-            if (_infoText && _copyBtn) {
-                _infoText.y = height - _infoText.height - PADDING;
-                _infoText.x = _copyBtn.x + _copyBtn.width + 40;
-            }
+            _copyBtn.x = width - _copyBtn.width - MARGIN_X;
+            _copyBtn.y = _embedCode.y + _embedCode.height + 10;
         }
 
         private function createCopyButton():void {
@@ -143,10 +114,10 @@ package org.flowplayer.shareembed {
 
         private function onCopyToClipboard(event:MouseEvent):void
         {
-            System.setClipboard(_emedText.text);
-            stage.focus = _emedText;
-            _emedText.setSelection(0, _emedText.text.length);
-            _infoText.htmlText = '<span class="info">Copied to clipboard</span>';
+            System.setClipboard(_embedCode.text);
+            stage.focus = _embedCode;
+            _embedCode.setSelection(0, _embedCode.text.length);
+            _titleLabel.htmlText = '<span class="info">Copied to clipboard</span>';
         }
     }
 }
