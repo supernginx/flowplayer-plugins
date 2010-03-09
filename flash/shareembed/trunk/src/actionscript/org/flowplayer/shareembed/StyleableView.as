@@ -24,6 +24,7 @@ package org.flowplayer.shareembed {
     public class StyleableView extends StyleableSprite {
         protected const PADDING_X:int = 20;
         protected const PADDING_Y:int = 3;
+        protected const PADDING_Y_TALL:int = 6;
         protected const MARGIN_Y:int = 10;
         protected const MARGIN_X:int = 10;
 
