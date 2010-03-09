@@ -27,7 +27,7 @@
 		<!-- this A tag is where your Flowplayer will be placed. it can be anywhere -->
 		<a  
 			 href=""  
-			 style="display:block;width:854px;height:680px"  
+			 style="display:block;width:854px;height:480px"  
 			 id="youtube"> 
 		</a> 
 		
@@ -42,7 +42,7 @@
 	
 				// 1:st clip
 				{
-					url: 'chromeless:PmGiCFPUSM4',
+					url: 'api:PmGiCFPUSM4',
 					
 					
 				}
@@ -53,8 +53,8 @@
 				//autoPlay: false,
 				autoBuffering: true,
 				//accelerated: true, 
-				onStart: function(clip)  {
-					
+				onStart: function(clip)  {	
+					//$("#youtube").width(320).height(240);
 				}
 			}, 
 			
@@ -67,7 +67,12 @@
 			plugins:  {
 				controls: { autoHide: true },
 				youtube: {
-					url:'@MAIN_PLAYER_SWF@'
+					url:'@MAIN_PLAYER_SWF@',
+					enableGdata: true,
+					onApiData: function(gdata) {	
+						console.log(gdata);			
+						//console.log($f().getPlugin('youtube').gdata);
+					}
 				}
 			},
 		
