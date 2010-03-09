@@ -11,6 +11,11 @@
 package org.flowplayer.shareembed.config {
     public class EmbedConfig {
         private var _title:String = "Copy and paste the code below to your web page.";
+        private var _options:String = "Customize size and colors:";
+        private var _backgroundColor:String = "Background color";
+        private var _buttonColor:String = "Button color";
+        private var _size:String = "Size (pixels)";
+
         
         public function get title():String {
             return _title;
@@ -18,6 +23,38 @@ package org.flowplayer.shareembed.config {
 
         public function set title(value:String):void {
             _title = value;
+        }
+
+        public function get options():String {
+            return _options;
+        }
+
+        public function set options(value:String):void {
+            _options = value;
+        }
+
+        public function get backgroundColor():String {
+            return _backgroundColor;
+        }
+
+        public function set backgroundColor(value:String):void {
+            _backgroundColor = value;
+        }
+
+        public function get buttonColor():String {
+            return _buttonColor;
+        }
+
+        public function set buttonColor(value:String):void {
+            _buttonColor = value;
+        }
+
+        public function get size():String {
+            return _size;
+        }
+
+        public function set size(value:String):void {
+            _size = value;
         }
     }
 }
