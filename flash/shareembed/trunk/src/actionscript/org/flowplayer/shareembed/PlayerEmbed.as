@@ -14,28 +14,31 @@ package org.flowplayer.shareembed {
     import flash.display.Stage;
 
     import org.flowplayer.model.DisplayPluginModel;
+    import org.flowplayer.util.Log;
     import org.flowplayer.util.PropertyBinder;
     import org.flowplayer.util.URLUtil;
     import org.flowplayer.view.Flowplayer;
     import org.flowplayer.view.StyleableSprite;
 
-    public class PlayerConfiguration {
+    public class PlayerEmbed {
+        private var log:Log = new Log(this);
         private var _player:Flowplayer;
         private var _stage:Stage;
         private var _viralPluginConfiguredName:String;
         private var _config:Object;
-        private var _height:Number;
-        private var _width:Number;
+        private var _height:int;
+        private var _width:int;
         private var _controls:StyleableSprite;
         private var _controlsOriginalOptions:Object;
         private var _controlsModel:DisplayPluginModel;
         private var _controlsOptions:Object;
+        private var _autoHide:Boolean;
 
-        public function PlayerConfiguration(player:Flowplayer, viralPluginConfiguredName:String, stage:Stage, config:Object) {
+        public function PlayerEmbed(player:Flowplayer, viralPluginConfiguredName:String, stage:Stage, configString:String) {
             _player = player;
             _viralPluginConfiguredName = viralPluginConfiguredName;
             _stage = stage;
-            _config = config;
+            _config = JSON.decode(configString);
             initializeConfig();
             lookupControls();
         }
@@ -46,30 +49,35 @@ package org.flowplayer.shareembed {
             }
         }
 
-        public function set backgroundColor(color:Number) {
+        public function set backgroundColor(color:String):void {
+            log.debug("set backgroundColor " + color);
             createOptions();
             _controlsOptions.backgroundColor = color;
             _controls.css(_controlsOptions);
         }
 
-        public function get backgroundColor():Number {
-            if (! _controlsOptions) return NaN;
+        public function get backgroundColor():String {
+            if (! _controlsOptions) return null;
             return _controlsOptions.backgroundColor;
         }
 
-        public function set buttonColor(color:Number) {
+        public function set buttonColor(color:String):void {
+            log.debug("set buttonColor " + color);
             createOptions();
             _controlsOptions.buttonColor = color;
             _controls.css(_controlsOptions);
         }
 
-        public function get buttonColor():Number {
-            if (! _controlsOptions) return NaN;
+        public function get buttonColor():String {
+            if (! _controlsOptions) return null;
             return _controlsOptions.buttonColor;
         }
 
-        public function resetControls():Number {
-            _controls.css(_controlsOriginalOptions);
+        public function applyControlsOptions(value:Boolean = true):void {
+            _controls.css(value ? _controlsOptions : _controlsOriginalOptions);
+            if (_autoHide) {
+                _controls["setAutoHide"](! value);
+            }
         }
 
         private function lookupControls():void {
@@ -80,9 +88,11 @@ package org.flowplayer.shareembed {
             _controlsOriginalOptions = {};
             var props:Object = _controls.css();
             _controlsOriginalOptions = { backgroundColor: props.backgroundColor, buttonColor: props.buttonColor };
+            _autoHide = controls["getAutoHide"]()["state"] == "always";
         }
 
         private function initializeConfig():void {
+            log.debug("initializeConfig() " + _config);
             //loop through the plugins and replace the plugin urls with absolute full domain urls
             for (var plugin:String in _config.plugins) {
                 if (_config.plugins[plugin].url) {
@@ -102,8 +112,15 @@ package org.flowplayer.shareembed {
         }
 
         public function getEmbedCode():String {
+            log.debug("getEmbedCode() ", _controlsOptions);
             if (_controlsOptions) {
-                new PropertyBinder(_config.plugins["controls"]).copyProperties(_controlsOptions);
+                if (! _config.plugins["controls"]) {
+                    _config.plugins["controls"] = _controlsOptions;
+                } else {
+                    for (var prop:String in _controlsOptions) {
+                        _config.plugins["controls"][prop] = _controlsOptions[prop];
+                    }
+                }
             }
 
             var playerSwf:String = URLUtil.completeURL(URLUtil.pageUrl, _player.config.playerSwfName);
@@ -121,15 +138,16 @@ package org.flowplayer.shareembed {
                     '	<embed src="' + playerSwf + '" type="application/x-shockwave-flash" width="' + width + '" height="' + height + '" allowfullscreen="true" allowscriptaccess="always" cachebusting="true" flashvars="config=' + configStr + '" bgcolor="#000000" quality="true"/>' + "\n" +
                     '</object>';
 
+
             return code;
         }
 
-        private function get width():Number {
+        public function get width():int {
             if (_width > 0) return _width;
             return _stage.width;
         }
 
-        private function get height():Number {
+        public function get height():int {
             if (_height > 0) return _height;
             return _stage.height;
         }
@@ -138,11 +156,13 @@ package org.flowplayer.shareembed {
             return _controls;
         }
 
-        public function set height(value:Number):void {
+        public function set height(value:int):void {
+            log.debug("set height " + value);
             _height = value;
         }
 
-        public function set width(value:Number):void {
+        public function set width(value:int):void {
+            log.debug("set width " + value);
             _width = value;
         }
     }
