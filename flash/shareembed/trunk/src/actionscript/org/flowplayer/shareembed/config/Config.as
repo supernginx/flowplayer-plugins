@@ -10,13 +10,14 @@
 
 package org.flowplayer.shareembed.config
 {
+    import org.flowplayer.shareembed.PlayerEmbed;
     import org.flowplayer.util.PropertyBinder;
     import org.flowplayer.util.URLUtil;
 
     public class Config {
         private var _email:EmailConfig = new EmailConfig();
         private var _share:ShareConfig = new ShareConfig();
-        private var _embed:EmbedConfig = new EmbedConfig;
+        private var _embed:EmbedConfig = new EmbedConfig();
         private var _canvas:Object;
 
         private var _baseURL:String = URLUtil.pageUrl;
@@ -141,6 +142,11 @@ package org.flowplayer.shareembed.config
 
         public function set canvas(value:Object):void {
             _canvas = value;
+        }
+
+        public function set playerEmbed(embed:PlayerEmbed):void {
+            if (! _embed) return;
+            _embed.playerEmbed = embed;
         }
     }
 }

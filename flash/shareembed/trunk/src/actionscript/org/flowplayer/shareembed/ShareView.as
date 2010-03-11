@@ -54,9 +54,10 @@ package org.flowplayer.shareembed {
         private var _stumbleUponIcon:Sprite;
         private var _liveSpacesIcon:Sprite;
         private var _title:TextField;
+        private var _embedCode:String;
 
         private var _iconArray:Array;
-        private var _embedCode:String;
+//        private var _embedCode:String;
 
         public function ShareView(plugin:DisplayPluginModel, player:Flowplayer, config:ShareConfig, style:Object) {
             super("viral-share", plugin, player, style);

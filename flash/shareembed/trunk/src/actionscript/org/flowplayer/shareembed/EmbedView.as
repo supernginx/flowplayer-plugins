@@ -8,6 +8,7 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 package org.flowplayer.shareembed {
+    import flash.events.FocusEvent;
     import flash.system.System;
 
     import flash.text.TextFieldType;
@@ -39,7 +40,6 @@ package org.flowplayer.shareembed {
     internal class EmbedView extends StyleableView {
 
         private var _embedCode:TextField;
-        private var _htmlText:String;
         private var _copyBtn:Sprite;
         private var _titleLabel:TextField;
         private var _optionsLabel:TextField;
@@ -53,6 +53,7 @@ package org.flowplayer.shareembed {
         private var _heightTxt:TextField;
         private var _widthTxt:TextField;
         private var _optionsContainer:Sprite;
+
         public function EmbedView(plugin:DisplayPluginModel, player:Flowplayer, config:EmbedConfig, style:Object) {
             super("viral-embed", plugin, player, style);
             _config = config;
@@ -69,10 +70,37 @@ package org.flowplayer.shareembed {
             _sizeDivLabel = createLabel("<span class=\"label\">x</span>", _optionsContainer);
 
             _widthTxt = createInput(_optionsContainer);
+            log.debug("setting embed size to " + _config.playerEmbed.width + " x " + _config.playerEmbed.height);
+            _widthTxt.text = _config.playerEmbed.width + "";
+            _widthTxt.addEventListener(FocusEvent.FOCUS_OUT, function(event:FocusEvent):void {
+                config.playerEmbed.width = value(_widthTxt);
+                changeCode();
+            });
+
             _heightTxt = createInput(_optionsContainer);
+            _heightTxt.text = _config.playerEmbed.height + "";
+            _heightTxt.addEventListener(FocusEvent.FOCUS_OUT, function(event:FocusEvent):void {
+                config.playerEmbed.height = value(_heightTxt);
+                changeCode();
+            });
 
             createButtonColorMenu(player.animationEngine);
             createBackgroundColorMenu(player.animationEngine);
+            initEmbedCodeSettings();
+        }
+
+        override public function set visible(value:Boolean):void {
+            super.visible = value;
+            _config.playerEmbed.applyControlsOptions(value);
+        }
+
+        private function value(field:TextField):int {
+            try {
+                return int(field.text);
+            } catch (e:Error) {
+                log.warn(e.message);
+            }
+            return 0;
         }
 
         private function createOptionsContainer():void {
@@ -89,7 +117,8 @@ package org.flowplayer.shareembed {
             _buttonColors.addItem("Yellow", "#ffff00");
             _buttonColors.addItem("Green", "#00ff3c");
             _buttonColors.addEventListener(DropdownMenuEvent.CHANGE, function(event:DropdownMenuEvent):void {
-                controlsCss({ buttonColor: event.value });
+                _config.playerEmbed.buttonColor = event.value;
+                changeCode();
             });
             _optionsContainer.addChild(_buttonColors);
         }
@@ -103,36 +132,15 @@ package org.flowplayer.shareembed {
             _bgColors.addItem("Yellow", "#ffff00");
             _bgColors.addItem("Green", "#00ff3c");
             _bgColors.addEventListener(DropdownMenuEvent.CHANGE, function(event:DropdownMenuEvent):void {
-                controlsCss({ backgroundColor: event.value });
+                _config.playerEmbed.backgroundColor = event.value;
+                changeCode();
             });
             _optionsContainer.addChild(_bgColors);
-        }
-
-        private function controlsCss(cssProps:Object):void {
-            var controlsModel:DisplayPluginModel = player.pluginRegistry.getPlugin("controls") as DisplayPluginModel;
-            if (! controlsModel) return;
-            var controls:StyleableSprite = controlsModel.getDisplayObject() as StyleableSprite;
-            controls.css(cssProps);
         }
 
         private function setSelection():void {
             _embedCode.setSelection(0, _embedCode.text.length);
             _embedCode.scrollH = _embedCode.scrollV = 0;
-        }
-
-        public function set html(htmlText:String):void {
-            _htmlText = htmlText;
-            if (! _htmlText) {
-                _htmlText = "";
-            }
-            _embedCode.htmlText = '<span class="embed">' + _htmlText + '</span>';
-            setSelection();
-            log.debug("set html to " + _embedCode.htmlText);
-
-        }
-
-        public function get html():String {
-            return _htmlText;
         }
 
         private function createLabel(htmlText:String, parent:DisplayObject = null):TextField {
@@ -148,8 +156,18 @@ package org.flowplayer.shareembed {
             return field;
         }
 
-        private function createEmbedCode(htmlText:String = null):void {
-            log.debug("creating text field for text " + htmlText);
+        private function changeCode():void {
+            log.debug("changeCode");
+            _embedCode.htmlText = '<span class="embed">' + _config.playerEmbed.getEmbedCode().replace(/\</g, "&lt;").replace(/\>/g, "&gt;") + '</span>';
+        }
+
+        private function initEmbedCodeSettings():void {
+            _config.playerEmbed.width = _widthTxt.text as Number;
+            _config.playerEmbed.height = _heightTxt.text as Number;
+            changeCode();
+        }
+
+        private function createEmbedCode():void {
             if (_embedCode) {
                 removeChild(_embedCode);
             }
@@ -161,10 +179,6 @@ package org.flowplayer.shareembed {
             _embedCode.defaultTextFormat = format;
 
             addChild(_embedCode);
-            if (htmlText) {
-                log.debug("setting html to " + htmlText);
-                html = htmlText;
-            }
         }
 
         private function arrangeOptions():void {
@@ -223,9 +237,9 @@ package org.flowplayer.shareembed {
             addChild(_copyBtn);
         }
 
-        private function onCopyToClipboard(event:MouseEvent):void
-        {
-            System.setClipboard(_embedCode.text);
+        private function onCopyToClipboard(event:MouseEvent):void {
+            initEmbedCodeSettings();
+            System.setClipboard(_config.playerEmbed.getEmbedCode());
             stage.focus = _embedCode;
             setSelection();
             _titleLabel.htmlText = '<span class="info">Copied to clipboard</span>';

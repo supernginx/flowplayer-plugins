@@ -51,6 +51,7 @@ package org.flowplayer.shareembed {
         public var _player:Flowplayer;
         private var _model:PluginModel;
         private var _config:Config;
+        private var _playerEmbed:PlayerEmbed;
 
         private var _embedBtn:Sprite;
         private var _emailBtn:Sprite;
@@ -172,6 +173,9 @@ package org.flowplayer.shareembed {
         }
 
         private function onPlayerLoad(event:PlayerEvent):void {
+            _playerEmbed = new PlayerEmbed(_player, _model.name, stage, stage.loaderInfo.parameters["config"]);
+            _config.playerEmbed = _playerEmbed;
+
             createViews();
             initializeTabProperties();
         }
@@ -231,7 +235,6 @@ package org.flowplayer.shareembed {
             //_embedView.setSize(stage.width, stage.height);
             _panelContainer.addChild(_embedView);
             //get the embed code and return it to the embed code textfield
-            _embedView.html = getEmbedCode().replace(/\</g, "&lt;").replace(/\>/g, "&gt;");
         }
 
         [External]
@@ -243,7 +246,6 @@ package org.flowplayer.shareembed {
         private function createShareView():void {
             _shareView = new ShareView(_model as DisplayPluginModel, _player, _config.share, _config.canvas);
             //return the embed code to be used for some of the social networking site links like myspace
-            _shareView.embedCode = getEmbedCode();
             _panelContainer.addChild(_shareView);
         }
 
@@ -374,59 +376,6 @@ package org.flowplayer.shareembed {
             if (_config.share) {
                 _shareTab = createTab(tabXPos, _shareMask, masky, "Share")
             }
-        }
-
-        /**
-         * Get the embed code obtained from the root config flashvar
-         * We need to remove some config objects when sharing, like the email script urls etc
-         *
-         * @return String
-         */
-        private function getEmbedCode():String
-        {
-
-            var conf:Object = JSON.decode(stage.loaderInfo.parameters["config"]);
-
-            //loop through the plugins and replace the plugin urls with absolute full domain urls
-            for (var plugin:String in conf.plugins) {
-                if (conf.plugins[plugin].url) {
-                    var url:String = URLUtil.isCompleteURLWithProtocol(conf.plugins[plugin].url)
-                            ? conf.plugins[plugin].url
-                            : conf.plugins[plugin].url.substring(conf.plugins[plugin].url.lastIndexOf("/") + 1, conf.plugins[plugin].url.length);
-
-                    conf.plugins[plugin].url = URLUtil.completeURL(_config.baseURL, url);
-                }
-            }
-
-
-            //remove the email script url
-            conf.plugins[_model.name].emailScriptURL = null;
-            //remove the email script token url
-            conf.plugins[_model.name].emailScriptTokenURL = null;
-            //remove the email script token
-            conf.plugins[_model.name].emailScriptToken = null;
-
-            //remove the playerId config
-            conf.playerId = null;
-
-            //get the flowplayer name
-            var playerSwf:String = URLUtil.completeURL(URLUtil.pageUrl, _player.config.playerSwfName);
-
-            var configStr:String = JSON.encode(conf);
-
-            var code:String =
-                    '<object id="' + _player.id + '" width="' + stage.width + '" height="' + stage.height + '" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"> ' + "\n" +
-                    '	<param value="true" name="allowfullscreen"/>' + "\n" +
-                    '	<param value="always" name="allowscriptaccess"/>' + "\n" +
-                    '	<param value="high" name="quality"/>' + "\n" +
-                    '	<param value="true" name="cachebusting"/>' + "\n" +
-                    '	<param value="#000000" name="bgcolor"/>' + "\n" +
-                    '	<param name="movie" value="' + playerSwf + '" />' + "\n" +
-                    '	<param value="config=' + configStr + '" name="flashvars"/>' + "\n" +
-                    '	<embed src="' + playerSwf + '" type="application/x-shockwave-flash" width="' + stage.width + '" height="' + stage.height + '" allowfullscreen="true" allowscriptaccess="always" cachebusting="true" flashvars="config=' + configStr + '" bgcolor="#000000" quality="true"/>' + "\n" +
-                    '</object>';
-
-            return code;
         }
 
         /**
