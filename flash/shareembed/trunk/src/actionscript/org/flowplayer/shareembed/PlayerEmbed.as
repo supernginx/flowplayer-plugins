@@ -15,7 +15,6 @@ package org.flowplayer.shareembed {
 
     import org.flowplayer.model.DisplayPluginModel;
     import org.flowplayer.util.Log;
-    import org.flowplayer.util.PropertyBinder;
     import org.flowplayer.util.URLUtil;
     import org.flowplayer.view.Flowplayer;
     import org.flowplayer.view.StyleableSprite;
