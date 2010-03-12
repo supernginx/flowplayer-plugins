@@ -9,37 +9,25 @@
  */
 package org.flowplayer.shareembed {
 
-    import com.adobe.serialization.json.JSON;
-
     import flash.display.DisplayObject;
-    import flash.display.Stage;
     import flash.display.Sprite;
     import flash.events.MouseEvent;
 
-    import org.flowplayer.controller.ResourceLoader;
-    import org.flowplayer.model.ClipEvent;
     import org.flowplayer.model.DisplayPluginModel;
+    import org.flowplayer.model.PlayerEvent;
     import org.flowplayer.model.Plugin;
     import org.flowplayer.model.PluginModel;
-    import org.flowplayer.shareembed.config.Config;
-    import org.flowplayer.view.FlowStyleSheet;
-    import org.flowplayer.view.Styleable;
-    import org.flowplayer.model.PlayerEvent;
-    import org.flowplayer.util.PropertyBinder;
-    import org.flowplayer.view.AbstractSprite;
-    import org.flowplayer.view.Flowplayer;
-
-    import org.flowplayer.util.URLUtil;
-
     import org.flowplayer.shareembed.assets.EmailBtn;
     import org.flowplayer.shareembed.assets.EmbedBtn;
     import org.flowplayer.shareembed.assets.ShareBtn;
-
-    import flash.text.AntiAliasType;
-    import flash.text.TextField;
-
+    import org.flowplayer.shareembed.config.Config;
+    import org.flowplayer.ui.AutoHide;
+    import org.flowplayer.util.PropertyBinder;
+    import org.flowplayer.view.AbstractSprite;
+    import org.flowplayer.view.FlowStyleSheet;
+    import org.flowplayer.view.Flowplayer;
+    import org.flowplayer.view.Styleable;
     import org.flowplayer.view.StyleableSprite;
-
 
     public class ShareEmbed extends AbstractSprite implements Plugin, Styleable {
 
@@ -73,9 +61,8 @@ package org.flowplayer.shareembed {
         public var _shareTab:Tab;
 
         private var _closeButton:CloseButton;
-        private var _displayButtons:Boolean;
-
         private var _tabCSSProperties:Object;
+        private var _autoHide:AutoHide;
 
         public function onConfig(plugin:PluginModel):void {
             _model = plugin;
@@ -123,7 +110,7 @@ package org.flowplayer.shareembed {
                 _shareBtn.y = _embedBtn.y + _embedBtn.height + 5;
             }
 
-            _player.addToPanel(_btnContainer, {right:10, top: 0, zIndex: 100, alpha: 0});
+            _player.addToPanel(_btnContainer, {right:10, top: 0, zIndex: 100});
         }
 
         private function createPanelContainer():void {
@@ -141,10 +128,6 @@ package org.flowplayer.shareembed {
             this.visible = false;
             _player = player;
 
-            _player.playlist.onBegin(onBegin);
-            _player.playlist.onLastSecond(onBeforeFinish);
-            _player.onLoad(onPlayerLoad);
-
             createPanelContainer();
             createButtonContainer();
             createTabs();
@@ -160,8 +143,7 @@ package org.flowplayer.shareembed {
                 fadeIn("Share");
             });
 
-            _displayButtons = true;
-
+            _player.onLoad(onPlayerLoad);
             _model.dispatchOnLoad();
         }
 
@@ -178,6 +160,9 @@ package org.flowplayer.shareembed {
 
             createViews();
             initializeTabProperties();
+
+            _autoHide = new AutoHide(null, _config.autoHide, _player, stage, _btnContainer);
+            _autoHide.start();
         }
 
         private function createViews():void {
@@ -255,6 +240,8 @@ package org.flowplayer.shareembed {
         }
 
         public function showView(panel:String):void {
+            displayButtons(false);
+
             if (_emailView) _emailView.visible = false;
             if (_embedView) _embedView.visible = false;
             if (_shareView) _shareView.visible = false;
@@ -321,8 +308,6 @@ package org.flowplayer.shareembed {
         }
 
         private function showViews(liveTab:String):void {
-            displayButtons(false);
-
             this.visible = true;
             this.alpha = 1;
 
@@ -378,61 +363,18 @@ package org.flowplayer.shareembed {
             }
         }
 
-        /**
-         * Show the icon buttons panel
-         */
-        private function showButtonPanel():void {
-            _player.animationEngine.animate(_btnContainer, {alpha: 1}, 500);
-            //field.htmlText = ""
-        }
-
-        /**
-         * Hide the icon buttons panel
-         */
-        private function hideButtonPanel():void {
-            _player.animationEngine.animate(_btnContainer, {alpha: 0}, 500);
-        }
-
-        private function onMouseOver(event:PlayerEvent):void {
-            if (_displayButtons) {
-                showButtonPanel();
-            }
-        }
-
-        private function onMouseOut(event:PlayerEvent):void {
-            hideButtonPanel();
-        }
-
-        private function onBegin(event:ClipEvent):void {
-            hideButtonPanel();
-
-            _player.onMouseOver(onMouseOver);
-            _player.onMouseOut(onMouseOut);
-        }
-
-        /**
-         * Show the icon buttons panel when the video is complete
-         */
-        private function onBeforeFinish(event:ClipEvent):void {
-            showButtonPanel();
-        }
-
         public function displayButtons(display:Boolean):void {
             if (display) {
-                _displayButtons = true;
-                showButtonPanel();
+                _autoHide.start();
             } else {
-                _displayButtons = false;
-                hideButtonPanel();
+                log.debug("stopping auto hide and hiding buttons");
+                _autoHide.stop(false);
             }
         }
 
         [External]
-        public function show():void
-        {
-            if (_displayButtons) {
-                showButtonPanel();
-            }
+        public function show():void {
+            showViews("Email");
         }
 
         public function css(styleProps:Object = null):Object {
@@ -442,7 +384,5 @@ package org.flowplayer.shareembed {
         public function animate(styleProps:Object):Object {
             return {};
         }
-
-
     }
 }

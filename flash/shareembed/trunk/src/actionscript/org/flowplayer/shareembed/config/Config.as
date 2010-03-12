@@ -11,6 +11,7 @@
 package org.flowplayer.shareembed.config
 {
     import org.flowplayer.shareembed.PlayerEmbed;
+    import org.flowplayer.ui.AutoHideConfig;
     import org.flowplayer.util.PropertyBinder;
     import org.flowplayer.util.URLUtil;
 
@@ -18,9 +19,17 @@ package org.flowplayer.shareembed.config
         private var _email:EmailConfig = new EmailConfig();
         private var _share:ShareConfig = new ShareConfig();
         private var _embed:EmbedConfig = new EmbedConfig();
+        private var _autoHide:AutoHideConfig;
         private var _canvas:Object;
-
         private var _baseURL:String = URLUtil.pageUrl;
+
+        public function Config() {
+            _autoHide = new AutoHideConfig();
+            _autoHide.fullscreenOnly = false;
+            _autoHide.hideStyle = "fade";
+            _autoHide.delay = 2000;
+            _autoHide.duration = 1000;
+        }
 
         public function get baseURL():String {
             return _baseURL;
@@ -147,6 +156,23 @@ package org.flowplayer.shareembed.config
         public function set playerEmbed(embed:PlayerEmbed):void {
             if (! _embed) return;
             _embed.playerEmbed = embed;
+        }
+
+        public function get autoHide():AutoHideConfig {
+            return _autoHide;
+        }
+
+        public function setAutoHide(value:Object):void {
+            if (value is String) {
+                _autoHide.state = value as String;
+                return;
+            }
+            if (value is Boolean) {
+                _autoHide.enabled = value as Boolean;
+                _autoHide.fullscreenOnly = ! value;
+                return;
+            }
+            new PropertyBinder(_autoHide).copyProperties(value);
         }
     }
 }
