@@ -21,20 +21,18 @@ package org.flowplayer.controls {
     import org.flowplayer.controls.button.ButtonEvent;
     import org.flowplayer.controls.button.NextButton;
     import org.flowplayer.controls.button.PrevButton;
-		import org.flowplayer.controls.button.SlowMotionFwdButton;
-    import org.flowplayer.controls.button.SlowMotionBwdButton;
-		import org.flowplayer.controls.button.SlowMotionFFwdButton;
-    import org.flowplayer.controls.button.SlowMotionFBwdButton;
     import org.flowplayer.controls.button.SkinClasses;
+    import org.flowplayer.controls.button.SlowMotionBwdButton;
+    import org.flowplayer.controls.button.SlowMotionFBwdButton;
+    import org.flowplayer.controls.button.SlowMotionFFwdButton;
+    import org.flowplayer.controls.button.SlowMotionFwdButton;
     import org.flowplayer.controls.button.StopButton;
     import org.flowplayer.controls.button.ToggleFullScreenButton;
     import org.flowplayer.controls.button.TogglePlayButton;
     import org.flowplayer.controls.button.ToggleVolumeMuteButton;
-    import org.flowplayer.controls.config.AutoHide;
     import org.flowplayer.controls.config.Config;
     import org.flowplayer.controls.config.ToolTips;
     import org.flowplayer.controls.config.WidgetBooleanStates;
-    import org.flowplayer.controls.config.WidgetEnabledStates;
     import org.flowplayer.controls.slider.Scrubber;
     import org.flowplayer.controls.slider.ScrubberSlider;
     import org.flowplayer.controls.slider.VolumeScrubber;
@@ -46,8 +44,11 @@ package org.flowplayer.controls {
     import org.flowplayer.model.PlayerEventType;
     import org.flowplayer.model.Playlist;
     import org.flowplayer.model.Plugin;
+    import org.flowplayer.model.PluginEventDispatcher;
     import org.flowplayer.model.PluginModel;
     import org.flowplayer.model.Status;
+    import org.flowplayer.ui.AutoHide;
+    import org.flowplayer.ui.AutoHideConfig;
     import org.flowplayer.util.Arrange;
     import org.flowplayer.util.PropertyBinder;
     import org.flowplayer.view.AnimationEngine;
@@ -80,7 +81,7 @@ package org.flowplayer.controls {
         private var _config:Config;
         private var _timeUpdateTimer:Timer;
         private var _floating:Boolean = false;
-        private var _controlBarMover:ControlsAutoHide;
+        private var _controlBarMover:AutoHide;
         private var _immediatePositioning:Boolean = true;
         private var _animationTimer:Timer;
         private var _player:Flowplayer;
@@ -117,16 +118,6 @@ package org.flowplayer.controls {
             log.debug("autoHide()");
             if (props) {
                 new PropertyBinder(_config.autoHide).copyProperties(props);
-
-//                if (props.hasOwnProperty("enabled")) {
-//                    if (props.enabled) {
-//                        setAutoHideFullscreenOnly(_config, props);
-//                    } else {
-//                        _config.autoHide.state = "never";
-//                    }
-//                } else if (_config.autoHide.enabled) {
-//                    setAutoHideFullscreenOnly(_config, props);
-//                }
             }
             _pluginModel.config.autoHide = _config.autoHide.state;
 
@@ -143,7 +134,7 @@ package org.flowplayer.controls {
         }
 
         [External(convert="true")]
-        public function getAutoHide():AutoHide {
+        public function getAutoHide():AutoHideConfig {
             return _config.autoHide;
         }
 
@@ -317,7 +308,7 @@ package org.flowplayer.controls {
 
         private function createControlBarMover():void {
             if (_config.autoHide.state != 'never' && ! _controlBarMover) {
-                _controlBarMover = new ControlsAutoHide(_pluginModel, _config.autoHide, _player, stage, this);
+                _controlBarMover = new AutoHide(DisplayPluginModel(_pluginModel), _config.autoHide, _player, stage, this);
             }
         }
 

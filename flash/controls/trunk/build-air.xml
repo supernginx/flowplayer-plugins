@@ -12,8 +12,9 @@
 	<property name="plugin-binary-versioned" value="${basename}-${version}.swf" />
 	<property name="plugin-main-class" value="org/flowplayer/controls/Controls.as" />
 	<property name="library-path" value="src/flash/air" />
-  <property name="compiler-define" value="CONFIG::skin,'true'  -define=CONFIG::hasSlowMotion,'false'" />
-    <!--<property name="plugin-runtime-lib-swc" value="lib/corelib/corelib.swc" />-->
+    <property name="compiler-define" value="CONFIG::skin,'true'  -define=CONFIG::hasSlowMotion,'false'" />
+
+    <property name="extra-sources" value="../common/src/actionscript" />
 
     <target name="build-skinless">
         <ant antfile="build-skinless.xml" target="build" inheritall="false" />
