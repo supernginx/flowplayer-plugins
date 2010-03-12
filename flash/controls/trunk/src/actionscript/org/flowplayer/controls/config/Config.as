@@ -10,7 +10,9 @@
 
 package org.flowplayer.controls.config {
     import org.flowplayer.controls.*;
-	import org.flowplayer.util.Log;	
+    import org.flowplayer.ui.AutoHide;
+    import org.flowplayer.ui.AutoHideConfig;
+    import org.flowplayer.util.Log;
 	import org.flowplayer.util.PropertyBinder;
     import org.flowplayer.view.Flowplayer;
 
@@ -22,7 +24,7 @@ package org.flowplayer.controls.config {
         private var _player:Flowplayer;
 		private var _skin:String;
 		private var _style:Style;
-        private var _autoHide:AutoHide = new AutoHide();
+        private var _autoHide:AutoHideConfig = new AutoHideConfig();
         private var _visible:WidgetBooleanStates = new WidgetBooleanStates();
 		private var _enabled:WidgetBooleanStates = new WidgetEnabledStates();
 		private var _tooltips:ToolTips = new ToolTips();
@@ -81,7 +83,7 @@ package org.flowplayer.controls.config {
         }
 
         [Value]
-        public function get autoHide():AutoHide {
+        public function get autoHide():AutoHideConfig {
             return _autoHide;
         }
 
