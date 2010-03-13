@@ -11,6 +11,8 @@ package org.flowplayer.youtube.model
 		public var thumbnails:Array;
 		public var duration:Number;
 		public var statistics:Object;
+		public var relatedVideos:Array;
+		public var bitrates:Array;
 		
 		public function Gdata()
 		{

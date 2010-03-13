@@ -1,90 +1,710 @@
-<html><head>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<!-- A minimal Flowplayer setup to get you started -->
-  
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">  
 
-	<!-- 
-		include flowplayer JavaScript file that does  
-		Flash embedding and provides the Flowplayer API.
-	-->
+<!-- 
+	Flowplayer website, forums & jQuery Tools by Tero Piirainen 
+	
+	Prefer web standards over Flash. Video is the only exception.	
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+
+		<title>Flowplayer - Flash Video Player for the Web</title>
+		<meta name="Description" content="Embed video streams to your website. Superior alternative to YouTube. Open Sourced under the GPL license. No other software makes this smoother." />	
+		<meta name="Keywords" content="video player for the web, flash video player,web media player,free video player,free flv player,mp4 flash player,mp4 player,open source video player,flash 9 video,flash video,web video,flv player,flv video" />		
+	
+
+	
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+	<meta name="Distribution" content="Global" />
+	<meta name="Author" content="Tero Piirainen" />
+	<meta name="Robots" content="index,follow" /> 
+ 
+	<link rel="shortcut icon" href="/img/favicon.png" type="image/png" />
+		
+		<link rel="stylesheet" type="text/css" href="http://static.flowplayer.org/css/global-0.25.css" />
+	
 	<script type="text/javascript" src="jquery-1.2.6.min.js"></script>
-	<script type="text/javascript" src="flowplayer-@FLOWPLAYER_JS_VERSION_INFO@.min.js"></script>
-	
-	<!-- some minimal styling, can be removed -->
-	<link rel="stylesheet" type="text/css" href="style.css">
-	
-	<!-- page title -->
-	<title>Youtube</title>
+	<script src="http://cdn.jquerytools.org/1.1.2/jquery.tools.min.js"></script>
 
-</head><body>
-
-	<div id="page">
-		
-		<h1>Youtube</h1>
-		
-		<p></p>
-
-		<!-- this A tag is where your Flowplayer will be placed. it can be anywhere -->
-		<a  
-			 href=""  
-			 style="display:block;width:854px;height:480px"  
-			 id="youtube"> 
-		</a> 
-		
+	<script src="http://static.flowplayer.org/js/flowplayer-3.1.4.min.js"></script>
 	
-		<!-- this will install flowplayer inside previous A- tag. -->
+	<script src="http://static.flowplayer.org/js/jquery.mousewheel.js"></script>
+	<script src="http://static.flowplayer.org/js/flowplayer.playlist-3.0.7.min.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="http://amazon.flowplayer.org/css/playlist.css"/>
+		
+	<script type="text/javascript" src="http://static.flowplayer.org/js/global-0.36.js"></script>
+	
+	<script>
+
+$(function() {		
+		
+	// positions for each overlay
 
 		
-		<script>
-		$f("youtube", {src:"@PLAYER_SWF@",bgcolor:'#000000'}, {
-
-			playlist: [
-	
-				// 1:st clip
-				{
-					url: 'api:PmGiCFPUSM4',
-					
-					
-				}
-			], 
-			clip: {
-				provider: 'youtube',
-				urlResolvers: 'youtube',
-				//autoPlay: false,
-				autoBuffering: true,
-				//accelerated: true, 
-				onStart: function(clip)  {	
-					//$("#youtube").width(320).height(240);
-				}
-			}, 
+	// setup triggers
+	$("button[rel]").each(function(i) {
 			
-			log:  {         
-			     
-				     // other levels are: 'info', 'warning', 'error' which will cause less output 
-				     level: 'debug',
-				     filter: 'org.flowplayer.youtube.*,  org.flowplayer.controller.*, org.flowplayer.layout.Dimensions' 
-				},
-			plugins:  {
-				controls: { autoHide: true },
-				youtube: {
+		$(this).overlay({
+
+			// common configuration for each overlay
+			oneInstance: false, 
+			closeOnClick: false, 
+			 
+
+			// use apple effect
+			effect: 'apple'
+			
+		});			
+	});
+	
+});
+</script>
+	
+	<style>
+		div.overlay {
+		width:1024px; 
+		height:432px;
+
+		}
+		
+		/* these two settings will remove borders from playlist entries */
+		a:active {  outline:none; }
+	 	:focus   { -moz-outline-style:none; }
+	</style>
+	
+
+	<!--[if lt IE 7]>
+		<style>
+			@import "http://static.flowplayer.org/css/ie6.css?v=0.2";
+		</style>
+	<![endif]-->
+	
+	<!--[if lt IE 8]>
+		<style>
+			html { overflow-x:hidden; }
+			#content ol, #content ul  {margin-left: 50px; }
+		</style>
+	<![endif]-->	
+
+</head>
+
+<body id="plugins_youtube">
+
+
+<script language="JavaScript">
+
+// common methods and configs
+
+function showRelatedList(gdata, container)
+{
+	
+	var relatedVideos = gdata.relatedVideos;
+	
+
+	var content = '<br/><b>Related Videos:</b><br/>';
+	content += '<a class="go up"></a><div class="playlist"><div class="clips low">';
+	
+	
+	jQuery.each( relatedVideos, function(index, item){
+		content += '<a href="'+ item.url +'" '+ (index==0 ? 'class="first"' : "") +'>';
+		content += item.title + "<br/>";
+		content += "<em>" + Math.round(item.duration / 60) + " min</em></a>";
+	});
+	
+	content += '</div></div><a class="go down"></a>';
+	
+
+	$(container).html(content);
+	
+	$("div.playlist").scrollable({
+		items:'div.clips',
+		vertical:true,
+		next:'a.down',
+		prev:'a.up'
+	});
+}
+
+
+
+var playlist =  [
+			       {
+						url: 'api:PmGiCFPUSM4'					
+				   }
+        		];
+
+
+var loggingConfig = { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.cluster.*,org.flowplayer.rtmp.*, org.flowplayer.youtube.*' };
+
+$(document).ready(function () {	
+	
+	$("div.playlist").scrollable({
+		items:'div.clips',
+		vertical:true,
+		next:'a.down',
+		prev:'a.up'
+	});
+		
+});
+
+</script>
+
+	
+	<div id="wrap">			 
+		
+		
+		<div id="content"> 
+		
+		
+
+
+
+
+
+
+<h1 style="background-image:url(http://www.flowplayer.org/img/title/streaminge.png)">
+	<strong>Youtube</strong> 
+	<em>Youtube Videos in Flowplayer</em>
+</h1>
+
+
+
+<h2>Introduction</h2>
+
+<p>
+    The Youtube Flowplayer plugin uses the Youtube AS3 API to play Youtube videos directly within Flowplayer.   
+</p>
+<p>
+	The plugin obtains a list of quality levels to be used for a bitrates config array to be used with the bwcheck plugin. 
+</p>
+
+<p>
+	The plugin also obtains a list of related videos from the API feed and configures a related config array to be used with the related videos plugin. 
+</p>
+
+
+<h2>Features</h2>
+
+<ul>
+	<li>
+		 Support for Bandwidth Checking and Related Videos features.
+	</li>
+	<li>
+		 Provides an event for obtaining detailed data for the video to be used for customised features via the javascript API.
+	</li>
+	<li>
+		 Full control of the player controls including fullscreen.
+	</li>
+</ul>
+
+
+<h2>Examples</h2>
+
+<a name="basic"></a>
+<h2><em>Basic</em> Example</h2>
+
+<p>
+    This example demonstrates a basic setup to play the video. 
+</p>
+
+
+
+<div style="width:900px;">
+   
+
+<!-- player container-->
+
+
+<a 
+	href="http://video.flowplayer.org/skyandice.flv" 
+	style="display:block;width:425px;height:300px;float:left;" 
+	id="basic">
+	
+	<!-- splash image inside the container -->
+	<img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" />
+	
+</a>
+
+<div id="playlistContainer" style="float:left;width:190px;margin-left:50px; margin-top:0px;"></div>
+
+<!-- Flowplayer installation and configuration -->
+<script language="JavaScript">
+
+$f("basic", "@PLAYER_SWF@", {
+	playlist: playlist,
+	// configure the required plugin
+	plugins:  {
+		
+		controls: { autoHide: true },
+		youtube: {
 					url:'@MAIN_PLAYER_SWF@',
 					enableGdata: true,
-					onApiData: function(gdata) {	
-						console.log(gdata);			
-						//console.log($f().getPlugin('youtube').gdata);
+					
+					onApiData: function(gdata) {
+					console.log(gdata);	
+						showRelatedList(gdata, "#playlistContainer");
 					}
-				}
-			},
+					
+					
+		}
+
 		
-		
-		});
-		
+	},
+	clip: {
+		provider: 'youtube',
+		urlResolvers: 'youtube',
+		onBegin: function (clip) {
+				
+		}
+	},
+	log: loggingConfig
 	
-		//}}}
-		</script>
+}).playlist("div.clips");
+</script>	
+
+
+
+
+
+</div>
+
+<br clear="all" />
+
+<button rel="div.overlay:eq(0)" type="button">Configuration For This Example</button>
+
+<div class="overlay">
+<div class="box code">
+<pre><code class="javascript">
+function showRelatedList(gdata, container)
+{
+	
+	var relatedVideos = gdata.relatedVideos;
+	
+
+	var content = '<br/><b>Related Videos:</b><br/>';
+	content += '<a class="go up"></a><div class="playlist"><div class="clips low">';
+	
+	
+	jQuery.each( relatedVideos, function(index, item){
+		content += '<a href="'+ item.url +'" '+ (index==0 ? 'class="first"' : "") +'>';
+		content += item.title + "<br/>";
+		content += "<em>" + Math.round(item.duration / 60) + " min</em></a>";
+	});
+	
+	content += '</div></div><a class="go down"></a>';
+	
+
+	$(container).html(content);
+	
+	$("div.playlist").scrollable({
+		items:'div.clips',
+		vertical:true,
+		next:'a.down',
+		prev:'a.up'
+	});
+}
+
+
+var playlist =  [
+			       {
+						url: 'api:PmGiCFPUSM4'					
+				   }
+        		];
+        		
+$f("basic", "@PLAYER_SWF@", {
+	playlist: playlist,
+	// configure the required plugin
+	plugins:  {
+		
+		controls: { autoHide: true },
+		youtube: {
+					url:'@MAIN_PLAYER_SWF@',
+					enableGdata: true,
+					
+					onApiData: function(gdata) {	
+						showRelatedList(gdata, "#playlistContainer");
+					}
+					
+					
+		}
+
+		
+	},
+	clip: {
+		provider: 'youtube',
+		urlResolvers: 'youtube',
+		onBegin: function (clip) {
+				
+		}
+	},
+	log: loggingConfig
+	
+}).playlist("div.clips");
+</code></pre>
+</div>
+</div>
+
+
+
+<h2>Configuration</h2>
+
+
+<p>
+    Here is a list of the configuration options:
+</p>
+<table class="listing">
+	<thead>
+		<tr>
+			<th nowrap>property / datatype</th>
+			<th>default</th>
+			<th>description</th>
+		</tr>
+	</thead>
+
+    <tr>
+        <td class="code">apiPlayerURL <div class="type">string</div></td>
+        <td class="code default">http://www.youtube.com/apiplayer?version=3</td>
+        <td class="description">
+            The url to the Youtube chromeless API. 
+        </td>
+    </tr>
+    <tr>
+        <td class="code">gdataApiURL <div class="type">string</div></td>
+        <td class="code default">http://gdata.youtube.com/feeds/api/videos/</td>
+        <td class="description">
+            The url to the Youtube video Gdata feed. 
+        </td>
+    </tr>
+    <tr>
+        <td class="code">gdataApiVersion <div class="type">string</div></td>
+        <td class="code default">2</td>
+        <td class="description">
+				The version number for the Gdata feed. 
+        </td>
+    </tr>
+    <tr>
+        <td class="code">gdataApiFormat <div class="type">string</di></td>
+        <td class="code default">5</td>
+        <td class="description">
+        	The format number for the  Gdata feed.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">defaultQuality <div class="type">string</div></td>
+        <td class="code default">default</td>
+        <td class="description">
+            The default quality level (default,medium,large,hd720).
+        </td>
+    </tr>
+    <tr>
+        <td class="code">enableGdata <div class="type">boolean</div></td>
+        <td class="code default">false</td>
+        <td class="description">
+			When enabled the Gdata feed will be collected and video information will be returned via the onApiData event. This will collect information like related videos, category, tags, title, description etc.
+        </td>
+    </tr>
+</table>
+
+
+
+<h3>Events</h3>
+
+<table class="listing">
+	<thead>
+		<tr>
+			<th nowrap>Event</th>
+			<th style="width:450px">When does it fire?</th>
+		</tr>
+	</thead>
+
+    <tr>
+        <td class="code"><em>onApiData()</em></td>
+        <td class="description">
+				Fires when the gdata feed information is collected when the enableGdata config is enabled. The callback is fed with the following arguments:
+
+				<ul>
+					<li><samp>gdata</samp> the gdata object with information of the video. </li>
+				</ul>
+        </td>
+    </tr>
+</table>
+
+<h3>Gdata Object</h3>
+
+<table class="listing">
+	<thead>
+		<tr>
+			<th nowrap>Property</th>
+			<th style="width:450px">Description</th>
+		</tr>
+	</thead>
+	<tr>
+        <td class="code"><em>author</em></td>
+        <td class="description">
+				The author object with the following properties:
+
+				<ul>
+					<li><samp>name</samp> the author username. </li>
+					<li><samp>uri</samp> the uri to the author gdata feed. </li>
+				</ul>
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>title</em></td>
+        <td class="description">
+				The video title.
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>category</em></td>
+        <td class="description">
+				The video category.
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>content</em></td>
+        <td class="description">
+				The video content / description.
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>defaultThumbnail</em></td>
+        <td class="description">
+				The default video thumbnail.
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>duration</em></td>
+        <td class="description">
+				The duration of the video in seconds.
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>relatedVideos</em></td>
+        <td class="description">
+				An array of related video objects also returned in the clip.related property.
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>bitrates</em></td>
+        <td class="description">
+				An array of video bitrate quality selections also returned in the clip.bitrates property to be used in conjunction with the bandwidth check plugin.
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>statistics</em></td>
+        <td class="description">
+				The statistics object with the following properties:
+
+				<ul>
+					<li><samp>favoriteCount</samp> the count of favorites added by users. </li>
+					<li><samp>viewCount</samp> the view count. </li>
+				</ul>
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>tags</em></td>
+        <td class="description">
+				A numbered array of tags.
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>thumbnails</em></td>
+        <td class="description">
+				An array of thumbnail objects with the following properties:
+				
+				<ul>
+					<li><samp>height</samp> the thumbnail height. </li>
+					<li><samp>width</samp> the thumbnail width. </li>
+					<li><samp>time</samp> the time in the video of the thumbnail still. </li>
+					<li><samp>url</samp> the thumbnail url. </li>
+				</ul>
+        </td>
+    </tr>
+</table>
+
+<h3>Bitrates</h3>
+
+<p>The bitrates array is added to the gdata bitrates property aswell as the clip.bitrates property. 
+The bitrates property is to be used in conjuncton with the bandwidth check plugin for providing bitrate selections. 
+</p>
+
+<table class="listing">
+	<thead>
+		<tr>
+			<th nowrap>Property</th>
+			<th style="width:450px">Description</th>
+		</tr>
+	</thead>
+	<tr>
+        <td class="code"><em>bitrate</em></td>
+        <td class="description">
+				The video bitrate.
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>format</em></td>
+        <td class="description">
+				The Youtube video quality level.
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>height</em></td>
+        <td class="description">
+				The video height.
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>width</em></td>
+        <td class="description">
+				The video width.
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>label</em></td>
+        <td class="description">
+				The label of the bitrate option provided by a static map of bitrate / quality  levels.
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>type</em></td>
+        <td class="description">
+				The video type.
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>url</em></td>
+        <td class="description">
+				The video url.
+        </td>
+    </tr>
+</table>
+
+
+<h3>Related Videos Object</h3>
+
+<p>The related videos object is added to the gdata object aswell as the clip.related property. 
+This can be useful for providing a playlist of related videos or used in conjuction with the related videos plugin (TBA). 
+</p>
+
+<table class="listing">
+	<thead>
+		<tr>
+			<th nowrap>Property</th>
+			<th style="width:450px">Description</th>
+		</tr>
+	</thead>
+	<tr>
+        <td class="code"><em>url</em></td>
+        <td class="description">
+				The video url ie api:youtubeid.
+        </td>
+    </tr>
+	<tr>
+        <td class="code"><em>author</em></td>
+        <td class="description">
+				The author object with the following properties:
+
+				<ul>
+					<li><samp>name</samp> the author username. </li>
+					<li><samp>uri</samp> the uri to the author gdata feed. </li>
+				</ul>
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>title</em></td>
+        <td class="description">
+				The video title.
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>category</em></td>
+        <td class="description">
+				The video category.
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>content</em></td>
+        <td class="description">
+				The video content / description.
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>defaultThumbnail</em></td>
+        <td class="description">
+				The default video thumbnail.
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>duration</em></td>
+        <td class="description">
+				The duration of the video in seconds.
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>statistics</em></td>
+        <td class="description">
+				The statistics object with the following properties:
+
+				<ul>
+					<li><samp>favoriteCount</samp> the count of favorites added by users. </li>
+					<li><samp>viewCount</samp> the view count. </li>
+				</ul>
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>tags</em></td>
+        <td class="description">
+				A numbered array of tags.
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>thumbnails</em></td>
+        <td class="description">
+				An array of thumbnail objects with the following properties:
+				
+				<ul>
+					<li><samp>height</samp> the thumbnail height. </li>
+					<li><samp>width</samp> the thumbnail width. </li>
+					<li><samp>time</samp> the time in the video of the thumbnail still. </li>
+					<li><samp>url</samp> the thumbnail url. </li>
+				</ul>
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>ratings</em></td>
+        <td class="description">
+				The ratings object with the following properties:
+
+				<ul>
+					<li><samp>average</samp> the average ratings. </li>
+					<li><samp>max</samp> the max ratings. </li>
+					<li><samp>min</samp> the min ratings. </li>
+					<li><samp>numRaters</samp> the number of raters. </li>
+				</ul>
+        </td>
+    </tr>
+</table>
+</div>
+		
+		<div class="clear"></div> 
+		
+		<div id="footer">
+			
+		</div> 
 		
 		
 	</div>
+
+
 	
 	
-</body></html>
+	
+	
+			
+</body>
+
+</html>
