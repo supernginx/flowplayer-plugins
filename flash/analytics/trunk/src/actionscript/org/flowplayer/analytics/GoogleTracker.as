@@ -159,7 +159,7 @@ package org.flowplayer.analytics {
 			if (_embeddedURL == null) {
 				_embeddedURL = "Unknown";
 			}
-			_tracker.trackEvent(_embeddedURL, _eventLabel, _clip.completeUrl + (_clip.isInStream ? ": instream" : ""), _player.status.time);
+            _tracker.trackEvent(_embeddedURL, _eventLabel, _clip.completeUrl + (_clip.isInStream ? ": instream" : ""), int(_player.status.time) ); 
 		}
 		private function doPlayerTrackEvent(_eventLabel:String):void {
 			if (_embeddedURL == null) {
