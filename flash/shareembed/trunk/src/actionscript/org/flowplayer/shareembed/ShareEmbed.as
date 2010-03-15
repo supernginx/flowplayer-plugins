@@ -17,11 +17,9 @@ package org.flowplayer.shareembed {
     import org.flowplayer.model.PlayerEvent;
     import org.flowplayer.model.Plugin;
     import org.flowplayer.model.PluginModel;
-    import org.flowplayer.shareembed.assets.EmailBtn;
-    import org.flowplayer.shareembed.assets.EmbedBtn;
-    import org.flowplayer.shareembed.assets.ShareBtn;
     import org.flowplayer.shareembed.config.Config;
     import org.flowplayer.ui.AutoHide;
+    import org.flowplayer.ui.CloseButton;
     import org.flowplayer.util.PropertyBinder;
     import org.flowplayer.view.AbstractSprite;
     import org.flowplayer.view.FlowStyleSheet;
@@ -40,12 +38,8 @@ package org.flowplayer.shareembed {
         private var _model:PluginModel;
         private var _config:Config;
         private var _playerEmbed:PlayerEmbed;
+        private var _iconBar:IconBar;
 
-        private var _embedBtn:Sprite;
-        private var _emailBtn:Sprite;
-        private var _shareBtn:Sprite;
-
-        private var _btnContainer:Sprite;
         private var _tabContainer:Sprite;
         private var _panelContainer:Sprite;
 
@@ -78,8 +72,10 @@ package org.flowplayer.shareembed {
         }
 
         private function arrangeCloseButton():void {
-            _closeButton.x = width;
-            _closeButton.y = TAB_HEIGHT;
+            _closeButton.width = width * .05;
+            _closeButton.height = width * .05;
+            _closeButton.x = width - _closeButton.width / 2;
+            _closeButton.y = TAB_HEIGHT - _closeButton.height / 2;
             setChildIndex(_closeButton, numChildren - 1);
         }
 
@@ -90,38 +86,29 @@ package org.flowplayer.shareembed {
             arrangeCloseButton();
         }
 
-        private function createButtonContainer():void {
-            _btnContainer = new Sprite();
-
-            if (_config.email) {
-                _emailBtn = new EmailBtn() as Sprite;
-                _btnContainer.addChild(_emailBtn);
-            }
-
-            if (_config.embed) {
-                _embedBtn = new EmbedBtn() as Sprite;
-                _btnContainer.addChild(_embedBtn);
-                _embedBtn.y = _emailBtn.y + _emailBtn.height + 5;
-            }
-
-            if (_config.share) {
-                _shareBtn = new ShareBtn() as Sprite;
-                _btnContainer.addChild(_shareBtn);
-                _shareBtn.y = _embedBtn.y + _embedBtn.height + 5;
-            }
-
-            _player.addToPanel(_btnContainer, {right:10, top: 0, zIndex: 100});
-        }
-
         private function createPanelContainer():void {
             _panelContainer = new Sprite();
             addChild(_panelContainer);
         }
 
         private function createCloseButton(icon:DisplayObject = null):void {
-            _closeButton = new CloseButton(icon);
+            _closeButton = new CloseButton(_config.closeButton, _player.animationEngine);
             addChild(_closeButton);
             _closeButton.addEventListener(MouseEvent.CLICK, onCloseClicked);
+        }
+
+        private function createIconBar():void {
+            _iconBar = new IconBar(_config, _player);
+
+            _iconBar.onEmail(function():void {
+                fadeIn("Email");
+            });
+            _iconBar.onEmbed(function():void {
+                fadeIn("Embed");
+            });
+            _iconBar.onShare(function():void {
+                fadeIn("Share");
+            });
         }
 
         public function onLoad(player:Flowplayer):void {
@@ -129,19 +116,8 @@ package org.flowplayer.shareembed {
             _player = player;
 
             createPanelContainer();
-            createButtonContainer();
-            createTabs();
+            createIconBar();
             createCloseButton();
-
-            _emailBtn.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void {
-                fadeIn("Email");
-            });
-            _embedBtn.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void {
-                fadeIn("Embed");
-            });
-            _shareBtn.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void {
-                fadeIn("Share");
-            });
 
             _player.onLoad(onPlayerLoad);
             _model.dispatchOnLoad();
@@ -160,8 +136,9 @@ package org.flowplayer.shareembed {
 
             createViews();
             initializeTabProperties();
+            createTabs();
 
-            _autoHide = new AutoHide(null, _config.autoHide, _player, stage, _btnContainer);
+            _autoHide = new AutoHide(null, _config.autoHide, _player, stage, _iconBar);
             _autoHide.start();
         }
 
@@ -184,6 +161,10 @@ package org.flowplayer.shareembed {
                 gradient = [gradArr[0], gradArr[0]];
             }
             _tabCSSProperties = getViewCSSProperties();
+            var defaultTabProps:Object = { backgroundGradient: 'medium', border: 'none', borderRadius: 15 };
+            for (var prop:String in defaultTabProps) {
+                _tabCSSProperties[prop] = defaultTabProps[prop]; 
+            }
             if (gradient) {
                 _tabCSSProperties.backgroundGradient = gradient;
             }
@@ -205,7 +186,7 @@ package org.flowplayer.shareembed {
 
         private function createEmailView():void {
             _config.setEmail(true);
-            _emailView = new EmailView(_model as DisplayPluginModel, _player, _config.email, _config.canvas);
+            _emailView = new EmailView(_model as DisplayPluginModel, _player, _config, _config.canvas);
             //_emailView.setSize(stage.width, stage.height);
             _panelContainer.addChild(_emailView);
         }
@@ -216,7 +197,7 @@ package org.flowplayer.shareembed {
         }
 
         private function createEmbedView():void {
-            _embedView = new EmbedView(_model as DisplayPluginModel, _player, _config.embed, _config.canvas);
+            _embedView = new EmbedView(_model as DisplayPluginModel, _player, _config, _config.canvas);
             //_embedView.setSize(stage.width, stage.height);
             _panelContainer.addChild(_embedView);
             //get the embed code and return it to the embed code textfield
@@ -326,7 +307,7 @@ package org.flowplayer.shareembed {
         }
 
         private function createTab(xpos:int, mask:Sprite, masky:int, tabTitle:String):Tab {
-            var tab:Tab = new Tab(_model as DisplayPluginModel, _player, tabTitle);
+            var tab:Tab = new Tab(_model as DisplayPluginModel, _player, tabTitle, _tabCSSProperties);
             tab.setSize(TAB_WIDTH, TAB_HEIGHT * 2);
             tab.x = xpos;
             _tabContainer.addChild(tab);

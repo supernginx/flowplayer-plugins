@@ -33,13 +33,15 @@ package org.flowplayer.shareembed {
 
     import org.flowplayer.model.DisplayPluginModel;
     import org.flowplayer.shareembed.assets.SendBtn;
+    import org.flowplayer.shareembed.config.Config;
     import org.flowplayer.shareembed.config.EmailConfig;
+    import org.flowplayer.ui.LabelButton;
     import org.flowplayer.util.URLUtil;
     import org.flowplayer.view.Flowplayer;
 
     internal class EmailView extends StyleableView {
 
-        private var _config:EmailConfig;
+        private var _config:Config;
         private var _formContainer:Sprite;
         private var _titleLabel:TextField;
         private var _emailToLabel:TextField;
@@ -52,11 +54,11 @@ package org.flowplayer.shareembed {
         private var _emailFromInput:TextField;
         private var _statusLabel:TextField;
 
-        private var _sendBtn:Sprite;
+        private var _sendBtn:LabelButton;
 
         private var _videoURL:String;
 
-        public function EmailView(plugin:DisplayPluginModel, player:Flowplayer, config:EmailConfig, style:Object) {
+        public function EmailView(plugin:DisplayPluginModel, player:Flowplayer, config:Config, style:Object) {
             super("viral-email", plugin, player, style);
             _config = config;
             createForm();
@@ -70,14 +72,14 @@ package org.flowplayer.shareembed {
 
         private function titleLabel():TextField {
             var field:TextField = createLabelField();
-            field.htmlText = "<span class=\"title\">" + _config.texts.title + "</span>";
+            field.htmlText = "<span class=\"title\">" + _config.email.texts.title + "</span>";
             return field;
         }
 
         private function emailToLabel():TextField {
             var field:TextField = createLabelField();
-            field.htmlText = "<span class=\"label\">"+ _config.texts.to +" <span class=" +
-                             "\"small\">"+ _config.texts.toSmall +"</span></span>";
+            field.htmlText = "<span class=\"label\">"+ _config.email.texts.to +" <span class=" +
+                             "\"small\">"+ _config.email.texts.toSmall +"</span></span>";
             return field;
         }
 
@@ -89,13 +91,13 @@ package org.flowplayer.shareembed {
         }
 
         private function optional(field:String):String {
-            if (_config.isRequired(field)) return "";
-            return " <span class=\"small\">" + _config.texts.optional + "</span></span>";
+            if (_config.email.isRequired(field)) return "";
+            return " <span class=\"small\">" + _config.email.texts.optional + "</span></span>";
         }
 
         private function messageLabel():TextField {
             var field:TextField = createLabelField();
-            field.htmlText = "<span class=\"label\">" + _config.texts.message + optional("message");
+            field.htmlText = "<span class=\"label\">" + _config.email.texts.message + optional("message");
             return field;
         }
 
@@ -110,7 +112,7 @@ package org.flowplayer.shareembed {
 
         private function nameFromLabel():TextField {
             var field:TextField = createLabelField();
-            field.htmlText = "<span class=\"label\">" + _config.texts.from + optional("name");
+            field.htmlText = "<span class=\"label\">" + _config.email.texts.from + optional("name");
             return field;
         }
 
@@ -122,7 +124,7 @@ package org.flowplayer.shareembed {
 
         private function emailFromLabel():TextField {
             var field:TextField = createLabelField();
-            field.htmlText = "<span class=\"label\">" + _config.texts.fromAddress + optional("email");
+            field.htmlText = "<span class=\"label\">" + _config.email.texts.fromAddress + optional("email");
             return field;
         }
 
@@ -170,11 +172,10 @@ package org.flowplayer.shareembed {
             _emailFromInput = emailFromInput();
             _formContainer.addChild(_emailFromInput);
 
-            _sendBtn = new SendBtn() as Sprite;
+            _sendBtn = new LabelButton(_config.email.texts.send, _config.buttons, player.animationEngine);
             _sendBtn.tabEnabled = true;
             _sendBtn.tabIndex = 5;
-            _sendBtn.buttonMode = true;
-            _sendBtn.addEventListener(MouseEvent.MOUSE_DOWN, onSubmit);
+            _sendBtn.addEventListener(MouseEvent.CLICK, onSubmit);
 
             _formContainer.addChild(_sendBtn);
 
@@ -187,9 +188,9 @@ package org.flowplayer.shareembed {
         }
 
         private function getEmailToken():void {
-            log.debug("Requesting " + _config.tokenUrl);
+            log.debug("Requesting " + _config.email.tokenUrl);
             var loader:URLLoader = new URLLoader();
-            var request:URLRequest = new URLRequest(_config.tokenUrl);
+            var request:URLRequest = new URLRequest(_config.email.tokenUrl);
             request.method = URLRequestMethod.GET;
 
             loader.load(request);
@@ -200,7 +201,7 @@ package org.flowplayer.shareembed {
 
         private function sendServerEmail():void {
             var loader:URLLoader = new URLLoader();
-            var request:URLRequest = new URLRequest(_config.script);
+            var request:URLRequest = new URLRequest(_config.email.script);
             request.method = URLRequestMethod.POST;
 
             //set the post variables from the form elements
@@ -209,9 +210,9 @@ package org.flowplayer.shareembed {
             param.email = _emailFromInput.text;
             param.to = _emailToInput.text;
             //format the message from the message template
-            param.message = StringUtil.formatString(_config.texts.template, _messageInput.text, _videoURL, _config.texts.title ? _config.texts.title : _videoURL);
-            param.subject = _config.texts.subject;
-            param.token = _config.token;
+            param.message = StringUtil.formatString(_config.email.texts.template, _messageInput.text, _videoURL, _config.email.texts.title ? _config.email.texts.title : _videoURL);
+            param.subject = _config.email.texts.subject;
+            param.token = _config.email.token;
 
             param.dataFormat = URLLoaderDataFormat.VARIABLES;
             request.data = param;
@@ -223,7 +224,7 @@ package org.flowplayer.shareembed {
         }
 
         private function sendLocalEmail():void {
-            var request:URLRequest = new URLRequest(StringUtil.formatString("mailto:{0}?subject={1}&body={2}", _emailToInput.text, escape(_config.texts.subject), escape(StringUtil.formatString(_config.texts.template, _messageInput.text, _videoURL, _videoURL))));
+            var request:URLRequest = new URLRequest(StringUtil.formatString("mailto:{0}?subject={1}&body={2}", _emailToInput.text, escape(_config.email.texts.subject), escape(StringUtil.formatString(_config.email.texts.template, _messageInput.text, _videoURL, _videoURL))));
             navigateToURL(request, "_self");
         }
 
@@ -247,11 +248,11 @@ package org.flowplayer.shareembed {
         }
 
         private function validateField(field:TextField, fieldName:String, missingFields:Array):void {
-            if (!field.text && _config.isRequired(fieldName)) missingFields.push(fieldName);
+            if (!field.text && _config.email.isRequired(fieldName)) missingFields.push(fieldName);
         }
 
         private function checkRequiredFields():Boolean {
-            var required:Array = _config.required;
+            var required:Array = _config.email.required;
             var missingFields:Array = [];
             if (required.length > 0) {
                 validateField(_nameFromInput, "name", missingFields);
@@ -268,13 +269,13 @@ package org.flowplayer.shareembed {
                 return;
             }
 
-            if (_config.script) {
+            if (_config.email.script) {
                 //email token is already set , post the form
-                if (_config.token && !_config.tokenUrl)
+                if (_config.email.token && !_config.email.tokenUrl)
                 {
                     formSuccess("Sending email ..");
                     sendServerEmail();
-                } else if (_config.tokenUrl) {
+                } else if (_config.email.tokenUrl) {
                     //request the email script token to be able to post the form
                     formSuccess("Sending email ..");
                     getEmailToken();
@@ -370,7 +371,7 @@ package org.flowplayer.shareembed {
                     formError(data.error);
                 } else {
                     //we have a token, set the email script token and post the form
-                    _config.token = data.token;
+                    _config.email.token = data.token;
                     sendServerEmail();
                 }
             }
@@ -402,6 +403,7 @@ package org.flowplayer.shareembed {
 
             _sendBtn.x = width - _sendBtn.width - PADDING_X;
             _sendBtn.y = height - _sendBtn.height - MARGIN_Y;
+            _sendBtn.setSize(130, 30);
 
             _statusLabel.x = PADDING_X;
             _statusLabel.width = width - PADDING_X * 2 - _sendBtn.x;

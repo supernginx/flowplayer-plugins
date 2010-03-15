@@ -64,6 +64,7 @@ package org.flowplayer.shareembed {
             log.debug("set buttonColor " + color);
             createOptions();
             _controlsOptions.buttonColor = color;
+            _controlsOptions.buttonOverColor = color;
             _controls.css(_controlsOptions);
         }
 
@@ -86,7 +87,7 @@ package org.flowplayer.shareembed {
             _controls = controlsModel.getDisplayObject() as StyleableSprite;
             _controlsOriginalOptions = {};
             var props:Object = _controls.css();
-            _controlsOriginalOptions = { backgroundColor: props.backgroundColor, buttonColor: props.buttonColor };
+            _controlsOriginalOptions = { backgroundColor: props.backgroundColor, buttonColor: props.buttonColor, buttonOverColor: props.buttonOverColor };
             _autoHide = controls["getAutoHide"]()["state"] == "always";
         }
 

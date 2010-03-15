@@ -19,6 +19,7 @@ package org.flowplayer.shareembed.config {
         private var _template:String = "{0} \n\n Video Link: <a href=\"{1}\">{2}</a>";
         private var _from:String = "Your name";
         private var _fromAddress:String = "Your email address";
+        private var _send:String = "Send email";
 
         public function get title():String {
             return _title;
@@ -90,6 +91,14 @@ package org.flowplayer.shareembed.config {
 
         public function set fromAddress(value:String):void {
             _fromAddress = value;
+        }
+
+        public function get send():String {
+            return _send;
+        }
+
+        public function set send(value:String):void {
+            _send = value;
         }
     }
 }
