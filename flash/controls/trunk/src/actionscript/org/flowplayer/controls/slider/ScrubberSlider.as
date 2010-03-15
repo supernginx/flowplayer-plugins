@@ -71,7 +71,7 @@ package org.flowplayer.controls.slider {
 			
 			playlist.onBegin(function(event:ClipEvent):void {
 				_currentClip = event.target as Clip;
-			})
+			});
 			
             playlist.onStart(start);
             playlist.onResume(resume);
@@ -163,11 +163,13 @@ package org.flowplayer.controls.slider {
             var clip:Clip = event.target as Clip;
             log.debug("start() " + clip);
             if (clip.duration == 0 && clip.type == ClipType.IMAGE) return;
+			stop();
             doStart(clip);
 //            animationEngine.animateProperty(_dragger, "x", 0, 300, function():void { doStart(event.target as Clip); });
         }
 
         private function resume(event:ClipEvent):void {
+			stop();
             doStart(event.target as Clip);
         }
 
