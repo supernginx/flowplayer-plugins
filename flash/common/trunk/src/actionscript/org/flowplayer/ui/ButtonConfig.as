@@ -51,7 +51,7 @@ package org.flowplayer.ui {
 
         public function get overColorRGBA():Array {
             var rgba:Array = overColorRGB;
-            rgba.push(alpha);
+            rgba.push(overAlpha);
             return rgba;
         }
 
