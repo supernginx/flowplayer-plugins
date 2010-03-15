@@ -17,9 +17,9 @@ package org.flowplayer.shareembed.config {
         private var _backgroundColor:String = "Background color";
         private var _buttonColor:String = "Button color";
         private var _size:String = "Size (pixels)";
+        private var _copy:String = "Copy";
         private var _playerEmbed:PlayerEmbed;
 
-        
         public function get title():String {
             return _title;
         }
@@ -66,6 +66,14 @@ package org.flowplayer.shareembed.config {
 
         public function get playerEmbed():PlayerEmbed {
             return _playerEmbed;
+        }
+
+        public function get copy():String {
+            return _copy;
+        }
+
+        public function set copy(value:String):void {
+            _copy = value;
         }
     }
 }

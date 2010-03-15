@@ -8,31 +8,23 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 package org.flowplayer.shareembed {
+    import flash.display.DisplayObject;
+    import flash.display.Sprite;
     import flash.events.FocusEvent;
+    import flash.events.MouseEvent;
     import flash.system.System;
-
+    import flash.text.TextField;
     import flash.text.TextFieldType;
     import flash.text.TextFormat;
 
     import org.flowplayer.model.DisplayPluginModel;
-    import org.flowplayer.shareembed.config.EmbedConfig;
+    import org.flowplayer.shareembed.config.Config;
     import org.flowplayer.ui.DropdownMenu;
     import org.flowplayer.ui.DropdownMenuEvent;
+    import org.flowplayer.ui.LabelButton;
     import org.flowplayer.util.Arrange;
     import org.flowplayer.view.AnimationEngine;
-    import org.flowplayer.view.FlowStyleSheet;
     import org.flowplayer.view.Flowplayer;
-    import org.flowplayer.view.StyleableSprite;
-
-    import flash.display.BlendMode;
-    import flash.display.DisplayObject;
-    import flash.display.Sprite;
-    import flash.events.MouseEvent;
-    import flash.text.AntiAliasType;
-    import flash.text.TextField;
-    import flash.text.TextFieldAutoSize;
-
-    import org.flowplayer.shareembed.assets.CopyBtn;
 
     /**
      * @author danielr
@@ -40,21 +32,21 @@ package org.flowplayer.shareembed {
     internal class EmbedView extends StyleableView {
 
         private var _embedCode:TextField;
-        private var _copyBtn:Sprite;
+        private var _copyBtn:LabelButton;
         private var _titleLabel:TextField;
         private var _optionsLabel:TextField;
         private var _buttonColorLabel:TextField;
         private var _bgColorLabel:TextField;
         private var _sizeDivLabel:TextField;
         private var _sizeLabel:TextField;
-        private var _config:EmbedConfig;
+        private var _config:Config;
         private var _bgColors:DropdownMenu;
         private var _buttonColors:DropdownMenu;
         private var _heightTxt:TextField;
         private var _widthTxt:TextField;
         private var _optionsContainer:Sprite;
 
-        public function EmbedView(plugin:DisplayPluginModel, player:Flowplayer, config:EmbedConfig, style:Object) {
+        public function EmbedView(plugin:DisplayPluginModel, player:Flowplayer, config:Config, style:Object) {
             super("viral-embed", plugin, player, style);
             _config = config;
 
@@ -62,25 +54,25 @@ package org.flowplayer.shareembed {
             createEmbedCode();
             createOptionsContainer();
 
-            _titleLabel = createLabel("<span class=\"title\">" + _config.title + "</span>");
-            _optionsLabel = createLabel("<span class=\"label\">" + _config.options + "</span>", _optionsContainer);
-            _sizeLabel = createLabel("<span class=\"label\">" + _config.size + "</span>", _optionsContainer);
-            _bgColorLabel = createLabel("<span class=\"label\">" + _config.backgroundColor + "</span>", _optionsContainer);
-            _buttonColorLabel = createLabel("<span class=\"label\">" + _config.buttonColor + "</span>", _optionsContainer);
+            _titleLabel = createLabel("<span class=\"title\">" + _config.embed.title + "</span>");
+            _optionsLabel = createLabel("<span class=\"label\">" + _config.embed.options + "</span>", _optionsContainer);
+            _sizeLabel = createLabel("<span class=\"label\">" + _config.embed.size + "</span>", _optionsContainer);
+            _bgColorLabel = createLabel("<span class=\"label\">" + _config.embed.backgroundColor + "</span>", _optionsContainer);
+            _buttonColorLabel = createLabel("<span class=\"label\">" + _config.embed.buttonColor + "</span>", _optionsContainer);
             _sizeDivLabel = createLabel("<span class=\"label\">x</span>", _optionsContainer);
 
             _widthTxt = createInput(_optionsContainer);
-            log.debug("setting embed size to " + _config.playerEmbed.width + " x " + _config.playerEmbed.height);
-            _widthTxt.text = _config.playerEmbed.width + "";
+            log.debug("setting embed size to " + _config.embed.playerEmbed.width + " x " + _config.embed.playerEmbed.height);
+            _widthTxt.text = _config.embed.playerEmbed.width + "";
             _widthTxt.addEventListener(FocusEvent.FOCUS_OUT, function(event:FocusEvent):void {
-                config.playerEmbed.width = value(_widthTxt);
+                config.embed.playerEmbed.width = value(_widthTxt);
                 changeCode();
             });
 
             _heightTxt = createInput(_optionsContainer);
-            _heightTxt.text = _config.playerEmbed.height + "";
+            _heightTxt.text = _config.embed.playerEmbed.height + "";
             _heightTxt.addEventListener(FocusEvent.FOCUS_OUT, function(event:FocusEvent):void {
-                config.playerEmbed.height = value(_heightTxt);
+                config.embed.playerEmbed.height = value(_heightTxt);
                 changeCode();
             });
 
@@ -91,7 +83,7 @@ package org.flowplayer.shareembed {
 
         override public function set visible(value:Boolean):void {
             super.visible = value;
-            _config.playerEmbed.applyControlsOptions(value);
+            _config.embed.playerEmbed.applyControlsOptions(value);
         }
 
         private function value(field:TextField):int {
@@ -117,7 +109,7 @@ package org.flowplayer.shareembed {
             _buttonColors.addItem("Yellow", "#ffff00");
             _buttonColors.addItem("Green", "#00ff3c");
             _buttonColors.addEventListener(DropdownMenuEvent.CHANGE, function(event:DropdownMenuEvent):void {
-                _config.playerEmbed.buttonColor = event.value;
+                _config.embed.playerEmbed.buttonColor = event.value;
                 changeCode();
             });
             _optionsContainer.addChild(_buttonColors);
@@ -132,7 +124,7 @@ package org.flowplayer.shareembed {
             _bgColors.addItem("Yellow", "#ffff00");
             _bgColors.addItem("Green", "#00ff3c");
             _bgColors.addEventListener(DropdownMenuEvent.CHANGE, function(event:DropdownMenuEvent):void {
-                _config.playerEmbed.backgroundColor = event.value;
+                _config.embed.playerEmbed.backgroundColor = event.value;
                 changeCode();
             });
             _optionsContainer.addChild(_bgColors);
@@ -158,12 +150,12 @@ package org.flowplayer.shareembed {
 
         private function changeCode():void {
             log.debug("changeCode");
-            _embedCode.htmlText = '<span class="embed">' + _config.playerEmbed.getEmbedCode().replace(/\</g, "&lt;").replace(/\>/g, "&gt;") + '</span>';
+            _embedCode.htmlText = '<span class="embed">' + _config.embed.playerEmbed.getEmbedCode().replace(/\</g, "&lt;").replace(/\>/g, "&gt;") + '</span>';
         }
 
         private function initEmbedCodeSettings():void {
-            _config.playerEmbed.width = _widthTxt.text as Number;
-            _config.playerEmbed.height = _heightTxt.text as Number;
+            _config.embed.playerEmbed.width = _widthTxt.text as Number;
+            _config.embed.playerEmbed.height = _heightTxt.text as Number;
             changeCode();
         }
 
@@ -223,6 +215,7 @@ package org.flowplayer.shareembed {
             _embedCode.x = MARGIN_X;
             _embedCode.y = _titleLabel.y + _titleLabel.height + 10;
 
+            _copyBtn.setSize(130, 30);
             _copyBtn.x = width - _copyBtn.width - MARGIN_X;
             _copyBtn.y = _embedCode.y + _embedCode.height + 10;
 
@@ -231,15 +224,16 @@ package org.flowplayer.shareembed {
         }
 
         private function createCopyButton():void {
-            _copyBtn = new CopyBtn() as Sprite;
-            _copyBtn.buttonMode = true;
-            _copyBtn.addEventListener(MouseEvent.MOUSE_DOWN, onCopyToClipboard);
+            _copyBtn = new LabelButton(_config.embed.copy, _config.buttons, player.animationEngine);
+            _copyBtn.tabEnabled = true;
+            _copyBtn.tabIndex = 2;
+            _copyBtn.addEventListener(MouseEvent.CLICK, onCopyToClipboard);
             addChild(_copyBtn);
         }
 
         private function onCopyToClipboard(event:MouseEvent):void {
             initEmbedCodeSettings();
-            System.setClipboard(_config.playerEmbed.getEmbedCode());
+            System.setClipboard(_config.embed.playerEmbed.getEmbedCode());
             stage.focus = _embedCode;
             setSelection();
             _titleLabel.htmlText = '<span class="info">Copied to clipboard</span>';

@@ -36,9 +36,9 @@ package org.flowplayer.shareembed {
         public var _field:TextField
         private var _text:String;
 
-        public function Tab(plugin:DisplayPluginModel, player:Flowplayer, text:String) {
+        public function Tab(plugin:DisplayPluginModel, player:Flowplayer, text:String, style:Object) {
             super("viral-tab", player, player.createLoader());
-            rootStyle = { backgroundGradient: 'medium', border: 'none', borderRadius: 15 };
+            rootStyle = style;
 
             _plugin = plugin;
             _player = player;
