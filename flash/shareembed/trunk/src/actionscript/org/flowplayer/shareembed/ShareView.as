@@ -85,6 +85,7 @@ package org.flowplayer.shareembed {
         public function createIcons():void {
             //get the current video page
             _videoURL = URLUtil.pageUrl;
+            log.debug("Page URL to share is " + _videoURL);
             _iconArray = new Array();
 //            _facebookIcon = new FacebookIcon() as Sprite;
 
@@ -106,22 +107,22 @@ package org.flowplayer.shareembed {
         }
 
         private function shareFacebook(event:MouseEvent):void {
-            var url:String = StringUtil.formatString(_facebookURL, _config.title, _videoURL);
+            var url:String = StringUtil.formatString(_facebookURL, _config.shareTitle, _videoURL);
             launchURL(url, _config.popupDimensions.facebook);
         }
 
         private function shareMyspace(event:MouseEvent):void {
-            var url:String = StringUtil.formatString(_myspaceURL, _config.title, _embedCode, _videoURL);
+            var url:String = StringUtil.formatString(_myspaceURL, _config.shareTitle, _embedCode, _videoURL);
             launchURL(url, _config.popupDimensions.myspace);
         }
 
         private function shareDigg(event:MouseEvent):void {
-            var url:String = StringUtil.formatString(_diggURL, _config.title, _videoURL, _config.body, _config.category);
+            var url:String = StringUtil.formatString(_diggURL, _config.shareTitle, _videoURL, _config.body, _config.category);
             launchURL(url, _config.popupDimensions.digg);
         }
 
         private function shareBebo(event:MouseEvent):void {
-            var url:String = StringUtil.formatString(_beboURL, _config.title, _videoURL);
+            var url:String = StringUtil.formatString(_beboURL, _config.shareTitle, _videoURL);
             launchURL(url, _config.popupDimensions.bebo);
         }
 
@@ -131,17 +132,17 @@ package org.flowplayer.shareembed {
         }
 
         private function shareTwitter(event:MouseEvent):void {
-            var url:String = StringUtil.formatString(_twitterURL, _config.title, _videoURL);
+            var url:String = StringUtil.formatString(_twitterURL, _config.shareTitle, _videoURL);
             launchURL(url, _config.popupDimensions.twitter);
         }
 
         private function shareStumbleUpon(event:MouseEvent):void {
-            var url:String = StringUtil.formatString(_stumbleUponURL, _config.title, _videoURL);
+            var url:String = StringUtil.formatString(_stumbleUponURL, _config.shareTitle, _videoURL);
             launchURL(url, _config.popupDimensions.stumbleupon);
         }
 
         private function shareLiveSpaces(event:MouseEvent):void {
-            var url:String = StringUtil.formatString(_liveSpacesURL, _config.title, _videoURL, _embedCode);
+            var url:String = StringUtil.formatString(_liveSpacesURL, _config.shareTitle, _videoURL, _embedCode);
             launchURL(url, _config.popupDimensions.livespaces);
         }
 
@@ -152,7 +153,7 @@ package org.flowplayer.shareembed {
             //if we are using a popup window, launch javascript with window.open
             if (_config.popupOnClick)
             {
-                var jscommand:String = "window.open('" + url + "','PopUpWindow','height=" + popUpDimensions[0] + ",width=" + popUpDimensions[1] + ",toolbar=no,scrollbars=yes');";
+                var jscommand:String = "window.open('" + url + "','PopUpWindow','height=" + popUpDimensions[0] + ",width=" + popUpDimensions[1] + ",toolbar=yes,scrollbars=yes');";
                 request = new URLRequest("javascript:" + jscommand + " void(0);");
                 navigateToURL(request, "_self");
             } else {
