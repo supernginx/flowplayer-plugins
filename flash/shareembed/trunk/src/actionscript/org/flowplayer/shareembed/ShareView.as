@@ -19,15 +19,17 @@ package org.flowplayer.shareembed {
     import flash.text.TextField;
 
     import org.flowplayer.model.DisplayPluginModel;
-    import org.flowplayer.shareembed.assets.BeboIcon;
-    import org.flowplayer.shareembed.assets.DiggIcon;
-    import org.flowplayer.shareembed.assets.FacebookIcon;
-    import org.flowplayer.shareembed.assets.LivespacesIcon;
-    import org.flowplayer.shareembed.assets.MyspaceIcon;
-    import org.flowplayer.shareembed.assets.OrkutIcon;
-    import org.flowplayer.shareembed.assets.StumbleuponIcon;
-    import org.flowplayer.shareembed.assets.TwitterIcon;
     import org.flowplayer.shareembed.config.ShareConfig;
+    import org.flowplayer.shareembed.icons.AbstractIcon;
+    import org.flowplayer.shareembed.icons.BeboIcon;
+    import org.flowplayer.shareembed.icons.DiggIcon;
+    import org.flowplayer.shareembed.icons.FacebookIcon;
+    import org.flowplayer.shareembed.icons.LivespacesIcon;
+    import org.flowplayer.shareembed.icons.MyspaceIcon;
+    import org.flowplayer.shareembed.icons.OrkutIcon;
+    import org.flowplayer.shareembed.icons.StumbleuponIcon;
+    import org.flowplayer.shareembed.icons.TwitterIcon;
+    import org.flowplayer.ui.AbstractButton;
     import org.flowplayer.util.URLUtil;
     import org.flowplayer.view.Flowplayer;
 
@@ -45,19 +47,20 @@ package org.flowplayer.shareembed {
         private var _stumbleUponURL:String = "http://www.stumbleupon.com/submit?url={1}&title={0}";
         private var _liveSpacesURL:String = "http://spaces.live.com/BlogIt.aspx?Title={0}&SourceURL={1}&description={2}";
 
-        private var _facebookIcon:Sprite;
-        private var _myspaceIcon:Sprite;
-        private var _twitterIcon:Sprite;
-        private var _beboIcon:Sprite;
-        private var _diggIcon:Sprite;
-        private var _orkutIcon:Sprite;
-        private var _stumbleUponIcon:Sprite;
-        private var _liveSpacesIcon:Sprite;
+        private var _facebookIcon:AbstractIcon;
+        private var _myspaceIcon:AbstractButton;
+        private var _twitterIcon:AbstractButton;
+        private var _beboIcon:AbstractButton;
+        private var _diggIcon:AbstractButton;
+        private var _orkutIcon:AbstractButton;
+        private var _stumbleUponIcon:AbstractButton;
+        private var _liveSpacesIcon:AbstractButton;
+        
         private var _title:TextField;
         private var _embedCode:String;
-
         private var _iconArray:Array;
-//        private var _embedCode:String;
+        private var _originalIconHeight:Number;
+        private var _originalIconWidth:Number;
 
         public function ShareView(plugin:DisplayPluginModel, player:Flowplayer, config:ShareConfig, style:Object) {
             super("viral-share", plugin, player, style);
@@ -70,7 +73,7 @@ package org.flowplayer.shareembed {
             _embedCode = escape(value.replace(/\n/g, ""));
         }
 
-        private function initIcon(enabled:Boolean, icon:Sprite, listener:Function):Sprite {
+        private function initIcon(enabled:Boolean, icon:AbstractButton, listener:Function):AbstractButton {
             if (! enabled) return null;
             icon.buttonMode = true;
             icon.addEventListener(MouseEvent.MOUSE_DOWN, listener);
@@ -83,61 +86,63 @@ package org.flowplayer.shareembed {
             //get the current video page
             _videoURL = URLUtil.pageUrl;
             _iconArray = new Array();
-            _facebookIcon = new FacebookIcon() as Sprite;
+//            _facebookIcon = new FacebookIcon() as Sprite;
 
             _title = createLabelField();
             _title.htmlText = "<span class=\"title\">" + _config.title + "</span>";
             addChild(_title);
 
-            _facebookIcon = initIcon(_config.facebook, new FacebookIcon() as Sprite, shareFacebook);
-            _twitterIcon = initIcon(_config.twitter, new TwitterIcon() as Sprite, shareTwitter);
-            _myspaceIcon = initIcon(_config.myspace, new MyspaceIcon() as Sprite, shareMyspace);
-            _liveSpacesIcon = initIcon(_config.livespaces, new LivespacesIcon() as Sprite, shareLiveSpaces);
+            _facebookIcon = AbstractIcon(initIcon(_config.facebook, new FacebookIcon(_config.icons, player.animationEngine), shareFacebook));
+            _originalIconWidth = _facebookIcon.width;
+            _originalIconHeight = _facebookIcon.height;
+            _twitterIcon = initIcon(_config.twitter, new TwitterIcon(_config.icons, player.animationEngine), shareTwitter);
+            _myspaceIcon = initIcon(_config.myspace, new MyspaceIcon(_config.icons, player.animationEngine), shareMyspace);
+            _liveSpacesIcon = initIcon(_config.livespaces, new LivespacesIcon(_config.icons, player.animationEngine), shareLiveSpaces);
             
-            _beboIcon = initIcon(_config.bebo, new BeboIcon() as Sprite, shareBebo);
-            _diggIcon = initIcon(_config.digg, new DiggIcon() as Sprite, shareDigg);
-            _orkutIcon = initIcon(_config.orkut, new OrkutIcon() as Sprite, shareOrkut);
-            _stumbleUponIcon = initIcon(_config.stubmbleupon, new StumbleuponIcon() as Sprite, shareStumbleUpon);
+            _beboIcon = initIcon(_config.bebo, new BeboIcon(_config.icons, player.animationEngine), shareBebo);
+            _diggIcon = initIcon(_config.digg, new DiggIcon(_config.icons, player.animationEngine), shareDigg);
+            _orkutIcon = initIcon(_config.orkut, new OrkutIcon(_config.icons, player.animationEngine), shareOrkut);
+            _stumbleUponIcon = initIcon(_config.stubmbleupon, new StumbleuponIcon(_config.icons, player.animationEngine), shareStumbleUpon);
         }
 
         private function shareFacebook(event:MouseEvent):void {
             var url:String = StringUtil.formatString(_facebookURL, _config.title, _videoURL);
-            launchURL(url, _config.icons.facebook);
+            launchURL(url, _config.popupDimensions.facebook);
         }
 
         private function shareMyspace(event:MouseEvent):void {
             var url:String = StringUtil.formatString(_myspaceURL, _config.title, _embedCode, _videoURL);
-            launchURL(url, _config.icons.myspace);
+            launchURL(url, _config.popupDimensions.myspace);
         }
 
         private function shareDigg(event:MouseEvent):void {
             var url:String = StringUtil.formatString(_diggURL, _config.title, _videoURL, _config.body, _config.category);
-            launchURL(url, _config.icons.digg);
+            launchURL(url, _config.popupDimensions.digg);
         }
 
         private function shareBebo(event:MouseEvent):void {
             var url:String = StringUtil.formatString(_beboURL, _config.title, _videoURL);
-            launchURL(url, _config.icons.bebo);
+            launchURL(url, _config.popupDimensions.bebo);
         }
 
         private function shareOrkut(event:MouseEvent):void {
             var url:String = StringUtil.formatString(_orkutURL, _videoURL);
-            launchURL(url, _config.icons.orkut);
+            launchURL(url, _config.popupDimensions.orkut);
         }
 
         private function shareTwitter(event:MouseEvent):void {
             var url:String = StringUtil.formatString(_twitterURL, _config.title, _videoURL);
-            launchURL(url, _config.icons.twitter);
+            launchURL(url, _config.popupDimensions.twitter);
         }
 
         private function shareStumbleUpon(event:MouseEvent):void {
             var url:String = StringUtil.formatString(_stumbleUponURL, _config.title, _videoURL);
-            launchURL(url, _config.icons.stumbleupon);
+            launchURL(url, _config.popupDimensions.stumbleupon);
         }
 
         private function shareLiveSpaces(event:MouseEvent):void {
             var url:String = StringUtil.formatString(_liveSpacesURL, _config.title, _videoURL, _embedCode);
-            launchURL(url, _config.icons.livespaces);
+            launchURL(url, _config.popupDimensions.livespaces);
         }
 
         private function launchURL(url:String, popUpDimensions:Array):void {
@@ -157,40 +162,32 @@ package org.flowplayer.shareembed {
             }
         }
 
-        private function get firstIcon():DisplayObject {
-            for (var name:String in _iconArray) {
-                return _iconArray[name];
-            }
-            return null;
-        }
-
         private function arrangeIcons():void {
             var margin:int = width * .12;
-            const PADDING_NON_SCALED:int = 10;
+            const PADDING_NON_SCALED:int = 25;
 
-            firstIcon.scaleX = firstIcon.scaleY = 1;
             var numCols:int = _iconArray.length >= 4 ? 4 : _iconArray.length;
             log.debug("arrangeIcons(), number of columns " + numCols);
 
-            var lineWidth:Number = (firstIcon.width * numCols) + (numCols-1) * PADDING_NON_SCALED;
+            var lineWidth:Number = (_originalIconWidth * numCols) + (numCols-1) * PADDING_NON_SCALED;
             var scaling:Number = (width-2*margin) / lineWidth;
 
             // try if too tall, and reset scaling accordingly
-            if (firstIcon.height * scaling > height - 2 * margin) {
-                scaling = (height-2*margin) / firstIcon.height;
+            if (_originalIconHeight * scaling > height - 2 * margin) {
+                scaling = (height-2*margin) / _originalIconHeight;
             }
 
             var padding:Number = PADDING_NON_SCALED * scaling;
-            var leftEdge:int = width/2 - numCols/2 * firstIcon.width * scaling - (numCols > 1 ? (numCols/2-1) * padding : 0);
+            var leftEdge:int = width/2 - numCols/2 * _originalIconWidth * scaling - (numCols > 1 ? (numCols/2-1) * padding : 0);
 
             var numRows:int = _iconArray.length > 4 ? 2 : 1;
-            var yPos:int = Math.max(height/2 - (firstIcon.height * scaling / (numRows == 1 ? 2 : 1)) - (numRows == 2 ? padding/2 : 0), _title.y + _title.height + padding);
+            var yPos:int = Math.max(height/2 - (_originalIconHeight * scaling / (numRows == 1 ? 2 : 1)) - (numRows == 2 ? padding/2 : 0), _title.y + _title.height + padding);
 
             var iconNum:int = 0;
             var xPos:int = leftEdge;
             for (var name:String in _iconArray) {
-                var icon:DisplayObject = _iconArray[name] as DisplayObject;
-                icon.scaleX = icon.scaleY = scaling;
+                var icon:AbstractButton = _iconArray[name] as AbstractButton;
+                icon.setSize(_originalIconWidth * scaling, _originalIconHeight * scaling);
 
                 iconNum++;
                 if (iconNum > 4) {

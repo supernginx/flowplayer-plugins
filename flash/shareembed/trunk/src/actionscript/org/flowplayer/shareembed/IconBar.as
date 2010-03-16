@@ -14,7 +14,9 @@ package org.flowplayer.shareembed {
 
     import org.flowplayer.model.DisplayProperties;
     import org.flowplayer.shareembed.config.Config;
-    import org.flowplayer.util.Arrange;
+    import org.flowplayer.shareembed.icons.EmailIcon;
+    import org.flowplayer.shareembed.icons.EmbedIcon;
+    import org.flowplayer.shareembed.icons.ShareIcon;
     import org.flowplayer.view.AbstractSprite;
     import org.flowplayer.view.Flowplayer;
 
