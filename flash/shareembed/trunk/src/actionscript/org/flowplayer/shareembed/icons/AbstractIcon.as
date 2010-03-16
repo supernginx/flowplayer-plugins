@@ -28,13 +28,13 @@ package org.flowplayer.shareembed.icons {
         }
 
         override protected function onResize():void {
-            face.width = width;
-            face.height = width;
+            face.height = face.width = height - _label.height;
 
-            _label.y = face.height;
             _label.width = _label.textWidth + 5;
+            _label.y = height - _label.height;
             log.debug("label arranged to Y pos " + _label.y);
             Arrange.center(_label, width);
+            _label.x = _label.x - 5;
         }
 
         override protected final function createFace():DisplayObjectContainer {
@@ -49,9 +49,9 @@ package org.flowplayer.shareembed.icons {
         }
 
         private function createLabel(icon:DisplayObjectContainer, label:String):void {
-            _label = TextUtil.createTextField(false);
+            _label = TextUtil.createTextField(false, null, 10);
             _label.text = label;
-            _label.height = 20;
+            _label.height = 15;
             addChild(_label);
 
             _label.y = icon.height;

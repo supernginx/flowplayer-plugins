@@ -31,7 +31,6 @@ package org.flowplayer.shareembed {
 
         private const BORDER:int = 1;
         private const TAB_HEIGHT:int = 20;
-        private const TAB_WIDTH:int = 100;
         private const TAB_HEIGHT_LIVE:int = 20 + (BORDER);
 
         public var _player:Flowplayer;
@@ -308,18 +307,22 @@ package org.flowplayer.shareembed {
 
         private function createTab(xpos:int, mask:Sprite, masky:int, tabTitle:String):Tab {
             var tab:Tab = new Tab(_model as DisplayPluginModel, _player, tabTitle, _tabCSSProperties);
-            tab.setSize(TAB_WIDTH, TAB_HEIGHT * 2);
+            tab.setSize(tabWidth, TAB_HEIGHT * 2);
             tab.x = xpos;
             _tabContainer.addChild(tab);
 
             mask.graphics.beginFill(0xffffff, 1);
-            mask.graphics.drawRect(0, 0, TAB_WIDTH + (BORDER * 2), TAB_HEIGHT_LIVE);
+            mask.graphics.drawRect(0, 0, tabWidth + (BORDER * 2), TAB_HEIGHT_LIVE);
             mask.graphics.endFill();
             mask.x = xpos - (BORDER / 2);
             mask.y = masky;
             tab.mask = mask;
             _tabContainer.addChild(mask);
             return tab;
+        }
+
+        private function get tabWidth():Number {
+            return width > 315 ? 100 : 80;
         }
 
         private function createTabs():void {
@@ -333,11 +336,11 @@ package org.flowplayer.shareembed {
 
             if (_config.email) {
                 _emailTab = createTab(tabXPos, _emailMask, masky, "Email");
-                tabXPos += TAB_WIDTH + (BORDER * 2);
+                tabXPos += tabWidth + (BORDER * 2);
             }
             if (_config.embed) {
                 _embedTab = createTab(tabXPos, _embedMask, masky, "Embed")
-                tabXPos += TAB_WIDTH + (BORDER * 2);
+                tabXPos += tabWidth + (BORDER * 2);
             }
             if (_config.share) {
                 _shareTab = createTab(tabXPos, _shareMask, masky, "Share")

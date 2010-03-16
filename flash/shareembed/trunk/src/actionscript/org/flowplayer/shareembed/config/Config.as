@@ -117,7 +117,8 @@ package org.flowplayer.shareembed.config
                         color: '#ffffff'
                     },
                     '.title': {
-                        fontSize: 16
+                        fontSize: 12,
+                        fontWeight: 'bold'
                     },
                     '.label': {
                         fontSize: 12

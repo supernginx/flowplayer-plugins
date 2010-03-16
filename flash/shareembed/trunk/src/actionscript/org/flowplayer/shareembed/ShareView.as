@@ -163,8 +163,8 @@ package org.flowplayer.shareembed {
         }
 
         private function arrangeIcons():void {
-            var margin:int = width * .12;
-            const PADDING_NON_SCALED:int = 25;
+            var margin:int = width >= 320 ? width * .12 : width * .05;
+            const PADDING_NON_SCALED:int = width >= 320 ? 25 : 10;
 
             var numCols:int = _iconArray.length >= 4 ? 4 : _iconArray.length;
             log.debug("arrangeIcons(), number of columns " + numCols);
@@ -193,7 +193,7 @@ package org.flowplayer.shareembed {
                 if (iconNum > 4) {
                     iconNum = 0;
                     xPos = leftEdge;
-                    yPos += icon.height + padding;
+                    yPos += icon.height + 15 * scaling;
                 }
                 icon.x = xPos;
                 icon.y = yPos;
