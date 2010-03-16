@@ -124,6 +124,7 @@ package org.flowplayer.shareembed {
         private function fadeIn(view:String):void {
             this.visible = true;
             this.alpha = 0;
+            _player.setKeyboardShortcutsEnabled(false);
             setActiveTab(view);
             _player.animationEngine.fadeIn(this);
         }
@@ -237,6 +238,7 @@ package org.flowplayer.shareembed {
 
         private function onFadeOut():void {
             displayButtons(true);
+            _player.setKeyboardShortcutsEnabled(true);
         }
 
         public function setActiveTab(newTab:String):void {
@@ -289,6 +291,7 @@ package org.flowplayer.shareembed {
         private function showViews(liveTab:String):void {
             this.visible = true;
             this.alpha = 1;
+            _player.setKeyboardShortcutsEnabled(false);
 
             createViewIfNotExists(liveTab, "Email", _emailView, createEmailView);
             createViewIfNotExists(liveTab, "Embed", _embedView, createEmbedView);

@@ -18,6 +18,7 @@ package org.flowplayer.ui {
     import flash.text.TextField;
     import flash.text.TextFormat;
 
+    import org.flowplayer.util.StyleSheetUtil;
     import org.flowplayer.util.TextUtil;
     import org.flowplayer.view.AbstractSprite;
     import org.flowplayer.view.AnimationEngine;
@@ -29,9 +30,13 @@ package org.flowplayer.ui {
         private var _value:String;
         private var _bgShape:Shape;
         private var _animations:AnimationEngine;
+        private var _backgroundColor:String;
+        private var _textColor:String;
 
-        public function DropdownMenu(animations:AnimationEngine):void {
+        public function DropdownMenu(animations:AnimationEngine, backgroundColor:String, textColor:String):void {
             _animations = animations;
+            _backgroundColor = backgroundColor;
+            _textColor = textColor;
             createContainer();
             createButton();
             drawBackgroundShape(width, height);
@@ -42,7 +47,7 @@ package org.flowplayer.ui {
         }
 
         public function addItem(caption:String, value:String):void {
-            var menuItem:MenuItem = new MenuItem(_animations, caption, value);
+            var menuItem:MenuItem = new MenuItem(_animations, caption, value, _backgroundColor, _textColor);
             menuItem.height = 20;
             menuItem.addEventListener(MouseEvent.CLICK, menuItemClick);
             _container.addChild(menuItem);
@@ -85,7 +90,7 @@ package org.flowplayer.ui {
             txtFormat.bold = true;
             txtFormat.size = 10;
             txtFormat.font = "Verdana";
-            txtFormat.color = 0;
+            txtFormat.color = StyleSheetUtil.colorValue(_textColor);
 
             _txt = TextUtil.createTextField(false, null, 10, true);
             _txt.defaultTextFormat = txtFormat;
@@ -145,14 +150,9 @@ package org.flowplayer.ui {
                 removeChild(_bgShape);
             }
             _bgShape = new Shape();
-            var colours:Array = [ 0xdddddd,0xffffff ];
-            var alphas:Array = [1,1];
-            var ratios :Array = [0,255];
-            var radians:Number = 90 * (Math.PI / 180);
-            var matrix:Matrix = new Matrix();
-            matrix.createGradientBox(width, height, radians);
-            _bgShape.graphics.beginGradientFill(GradientType.LINEAR, colours, alphas, ratios, matrix);
-            _bgShape.graphics.drawRoundRect(0, 0, width, height, 5, 5);
+            _bgShape.graphics.lineStyle(0, StyleSheetUtil.colorValue(_textColor), 0.5);
+            _bgShape.graphics.beginFill(StyleSheetUtil.colorValue(_backgroundColor), StyleSheetUtil.colorAlpha(_backgroundColor));
+            _bgShape.graphics.drawRect(0, 0, width, height);
             addChild(_bgShape);
             _button.hitTestState = _bgShape;
         }
