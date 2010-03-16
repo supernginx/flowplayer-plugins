@@ -14,6 +14,7 @@ package org.flowplayer.shareembed.config {
 
     public class ShareConfig {
         private var _title:String = "Click on an icon to share this video.";
+        private var _shareTitle:String = "A cool video";
         private var _body:String = "";
         private var _category:String = "";
         private var _popupOnClick:Boolean = true;
@@ -154,6 +155,14 @@ package org.flowplayer.shareembed.config {
 
         public function set bebo(value:Boolean):void {
             _bebo = value;
+        }
+
+        public function get shareTitle():String {
+            return _shareTitle;
+        }
+
+        public function set shareTitle(value:String):void {
+            _shareTitle = value;
         }
     }
 
