@@ -61,7 +61,7 @@ package org.flowplayer.shareembed {
             _buttonColorLabel = createLabel("<span class=\"label\">" + _config.embed.buttonColor + "</span>", _optionsContainer);
             _sizeDivLabel = createLabel("<span class=\"label\">x</span>", _optionsContainer);
 
-            _widthTxt = createInput(_optionsContainer);
+            _widthTxt = createInput(_optionsContainer, 2);
             log.debug("setting embed size to " + _config.embed.playerEmbed.width + " x " + _config.embed.playerEmbed.height);
             _widthTxt.text = _config.embed.playerEmbed.width + "";
             _widthTxt.addEventListener(FocusEvent.FOCUS_OUT, function(event:FocusEvent):void {
@@ -69,7 +69,7 @@ package org.flowplayer.shareembed {
                 changeCode();
             });
 
-            _heightTxt = createInput(_optionsContainer);
+            _heightTxt = createInput(_optionsContainer, 3);
             _heightTxt.text = _config.embed.playerEmbed.height + "";
             _heightTxt.addEventListener(FocusEvent.FOCUS_OUT, function(event:FocusEvent):void {
                 config.embed.playerEmbed.height = value(_heightTxt);
@@ -142,9 +142,12 @@ package org.flowplayer.shareembed {
             return field;
         }
 
-        private function createInput(parent:DisplayObject = null):TextField {
+        private function createInput(parent:DisplayObject = null, tabIndex:int = 0):TextField {
             var field:TextField = createInputField();
             (parent ? parent : this).addChild(field);
+            if (tabIndex > 0) {
+                field.tabIndex = tabIndex;
+            }
             return field;
         }
 
@@ -206,9 +209,9 @@ package org.flowplayer.shareembed {
 
         override protected function onResize():void {
             log.debug("onResize " + width + " x " + height);
-            _titleLabel.x = MARGIN_X;
             _titleLabel.y = 20;
-            _titleLabel.width = width - 2 * MARGIN_X;
+            _titleLabel.width = _titleLabel.textWidth;
+            Arrange.center(_titleLabel, width);
 
             _embedCode.width = width - 2 * MARGIN_X;
             _embedCode.height = 15;
@@ -226,7 +229,7 @@ package org.flowplayer.shareembed {
         private function createCopyButton():void {
             _copyBtn = new LabelButton(_config.embed.copy, _config.buttons, player.animationEngine);
             _copyBtn.tabEnabled = true;
-            _copyBtn.tabIndex = 2;
+            _copyBtn.tabIndex = 1;
             _copyBtn.addEventListener(MouseEvent.CLICK, onCopyToClipboard);
             addChild(_copyBtn);
         }
