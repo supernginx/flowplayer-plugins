@@ -9,6 +9,8 @@
  *    Additional Term, see http://flowplayer.org/license_gpl.html
  */
 package org.flowplayer.shareembed.config {
+    import org.flowplayer.ui.ButtonConfig;
+    import org.flowplayer.util.PropertyBinder;
 
     public class ShareConfig {
         private var _title:String = "Click on an icon to share this video.";
@@ -24,8 +26,9 @@ package org.flowplayer.shareembed.config {
         private var _orkut:Boolean = true;
         private var _stubmbleupon:Boolean = true;
         private var _bebo:Boolean = true;
+        private var _icons:ButtonConfig;
 
-        private var _icons:Object = {
+        private var _popupDimensions:Object = {
             facebook: [440,620],
             myspace: [650,1024],
             twitter: [650,1024],
@@ -36,6 +39,19 @@ package org.flowplayer.shareembed.config {
             livespaces: [650,1024]
         };
 
+        public function get icons():ButtonConfig {
+            if (! _icons) {
+                _icons = new ButtonConfig();
+                _icons.setColor("rgba(20,20,20,0.5)");
+                _icons.setOverColor("rgba(0,0,0,1)");
+            }
+            return _icons;
+        }
+
+        public function setIcons(config:Object):void {
+            new PropertyBinder(icons).copyProperties(config);
+        }
+
         public function get title():String {
             return _title;
         }
@@ -44,12 +60,12 @@ package org.flowplayer.shareembed.config {
             _title = value;
         }
 
-        public function get icons():Object {
-            return _icons;
+        public function get popupDimensions():Object {
+            return _popupDimensions;
         }
 
-        public function set icons(value:Object):void {
-            _icons = value;
+        public function set popupDimensions(value:Object):void {
+            _popupDimensions = value;
         }
 
         public function get body():String {

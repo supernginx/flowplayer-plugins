@@ -211,6 +211,7 @@ package org.flowplayer.shareembed.config
 
         public function set icons(config:Object):void {
             new PropertyBinder(iconButtons).copyProperties(config);
+            new PropertyBinder(iconButtons).copyProperties(config);
         }
 
         public function set playerEmbed(embed:PlayerEmbed):void {

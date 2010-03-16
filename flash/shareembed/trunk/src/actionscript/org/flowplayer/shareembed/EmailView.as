@@ -14,7 +14,6 @@ package org.flowplayer.shareembed {
 
     import flash.display.Sprite;
     import flash.events.Event;
-    import flash.events.FocusEvent;
     import flash.events.IOErrorEvent;
     import flash.events.MouseEvent;
     import flash.events.TimerEvent;
@@ -24,17 +23,11 @@ package org.flowplayer.shareembed {
     import flash.net.URLRequestMethod;
     import flash.net.URLVariables;
     import flash.net.navigateToURL;
-    import flash.text.AntiAliasType;
     import flash.text.TextField;
-    import flash.text.TextFieldAutoSize;
-    import flash.text.TextFieldType;
-
     import flash.utils.Timer;
 
     import org.flowplayer.model.DisplayPluginModel;
-    import org.flowplayer.shareembed.assets.SendBtn;
     import org.flowplayer.shareembed.config.Config;
-    import org.flowplayer.shareembed.config.EmailConfig;
     import org.flowplayer.ui.LabelButton;
     import org.flowplayer.util.URLUtil;
     import org.flowplayer.view.Flowplayer;
