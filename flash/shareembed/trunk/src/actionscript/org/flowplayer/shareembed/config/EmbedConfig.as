@@ -12,7 +12,7 @@ package org.flowplayer.shareembed.config {
     import org.flowplayer.shareembed.PlayerEmbed;
 
     public class EmbedConfig {
-        private var _title:String = "Copy and paste the code below to your web page.";
+        private var _title:String = "Copy and paste this code to your web page.";
         private var _options:String = "Customize size and colors:";
         private var _backgroundColor:String = "Background color";
         private var _buttonColor:String = "Button color";

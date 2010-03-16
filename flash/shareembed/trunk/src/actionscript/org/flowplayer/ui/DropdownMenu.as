@@ -71,12 +71,12 @@ package org.flowplayer.ui {
             _txt.height = height - 6;
             setChildIndex(_txt, numChildren - 1);
 
-            _container.width = width - 6;
+//            _container.width = width - 6;
             _container.x = 3;
 
             for(var i:int=0; i < _container.numChildren; i++){
                 var child:MenuItem = _container.getChildAt(i) as MenuItem;
-                child.setSize(_container.width, 20);
+                child.setSize(width-6, 20);
             }
         }
 
@@ -140,7 +140,7 @@ package org.flowplayer.ui {
             }
         }
 
-        private function drawBackgroundShape(_width:int, _height:int):void {
+        private function drawBackgroundShape(width:int, height:int):void {
             if (_bgShape) {
                 removeChild(_bgShape);
             }
@@ -150,9 +150,9 @@ package org.flowplayer.ui {
             var ratios :Array = [0,255];
             var radians:Number = 90 * (Math.PI / 180);
             var matrix:Matrix = new Matrix();
-            matrix.createGradientBox(_width, _height, radians);
+            matrix.createGradientBox(width, height, radians);
             _bgShape.graphics.beginGradientFill(GradientType.LINEAR, colours, alphas, ratios, matrix);
-            _bgShape.graphics.drawRoundRect(0, 0, _width, _height, 5, 5);
+            _bgShape.graphics.drawRoundRect(0, 0, width, height, 5, 5);
             addChild(_bgShape);
             _button.hitTestState = _bgShape;
         }

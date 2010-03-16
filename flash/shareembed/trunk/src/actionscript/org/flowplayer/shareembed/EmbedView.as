@@ -104,10 +104,11 @@ package org.flowplayer.shareembed {
         private function createButtonColorMenu(animationEngine:AnimationEngine):void {
             _buttonColors = new DropdownMenu(animationEngine);
             _buttonColors.addItem("White", "#ffffff");
+            _buttonColors.addItem("Black", "#000000");
             _buttonColors.addItem("Red", "#ff0000");
             _buttonColors.addItem("Blue", "#0000ff");
             _buttonColors.addItem("Yellow", "#ffff00");
-            _buttonColors.addItem("Green", "#00ff3c");
+            _buttonColors.addItem("Green", "#0C9607");
             _buttonColors.addEventListener(DropdownMenuEvent.CHANGE, function(event:DropdownMenuEvent):void {
                 _config.embed.playerEmbed.buttonColor = event.value;
                 changeCode();
@@ -119,10 +120,12 @@ package org.flowplayer.shareembed {
             _bgColors = new DropdownMenu(animationEngine);
             _bgColors.addItem("Black", "#000000");
             _bgColors.addItem("Transparent", "rgba(0,0,0,0)");
-            _bgColors.addItem("Red", "#ff0000");
             _bgColors.addItem("Blue", "#0000ff");
-            _bgColors.addItem("Yellow", "#ffff00");
-            _bgColors.addItem("Green", "#00ff3c");
+            _bgColors.addItem("Blue transparent", "rgba(0, 0, 255, 0.6)");
+            _bgColors.addItem("Yellow", "#D5D537");
+            _bgColors.addItem("Yellow transparent", "rgba(223, 213, 55, 0.6)");
+            _bgColors.addItem("Green", "#0C9607");
+            _bgColors.addItem("Green transparent", "rgba(12, 150, 07, 0.6)");
             _bgColors.addEventListener(DropdownMenuEvent.CHANGE, function(event:DropdownMenuEvent):void {
                 _config.embed.playerEmbed.backgroundColor = event.value;
                 changeCode();
@@ -183,7 +186,7 @@ package org.flowplayer.shareembed {
 
             _sizeLabel.y = _optionsLabel.height + PADDING_Y_TALL;
             _widthTxt.y = _optionsLabel.y;
-            _widthTxt.x = INPUT_LEFT;
+            _widthTxt.x = INPUT_LEFT + 20;
             _widthTxt.y = _sizeLabel.y;
             _widthTxt.width = 50;
             _sizeDivLabel.x = _widthTxt.x + _widthTxt.width + 3;
@@ -195,7 +198,8 @@ package org.flowplayer.shareembed {
             _bgColorLabel.y = _widthTxt.y + _widthTxt.height + PADDING_Y_TALL;
             _bgColors.x = INPUT_LEFT;
             _bgColors.y = _bgColorLabel.y;
-            _bgColors.width = _widthTxt.width + 6 + _heightTxt.width + _sizeDivLabel.width;
+//            _bgColors.width = 200;
+            _bgColors.width = _widthTxt.width + 6 + _heightTxt.width + _sizeDivLabel.width + 20;
             _bgColors.height = 20;
 
             _buttonColorLabel.y = _bgColors.y + _bgColors.height + PADDING_Y_TALL;
@@ -211,7 +215,7 @@ package org.flowplayer.shareembed {
             log.debug("onResize " + width + " x " + height);
             _titleLabel.y = 20;
             _titleLabel.width = _titleLabel.textWidth;
-            Arrange.center(_titleLabel, width);
+            _titleLabel.x = MARGIN_X;
 
             _embedCode.width = width - 2 * MARGIN_X;
             _embedCode.height = 15;
