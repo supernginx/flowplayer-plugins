@@ -29,9 +29,8 @@ package org.flowplayer.shareembed {
 
     public class ShareEmbed extends AbstractSprite implements Plugin, Styleable {
 
-        private const BORDER:int = 1;
         private const TAB_HEIGHT:int = 20;
-        private const TAB_HEIGHT_LIVE:int = 20 + (BORDER);
+        private const TAB_HEIGHT_LIVE:int = 20;
 
         public var _player:Flowplayer;
         private var _model:PluginModel;
@@ -312,9 +311,9 @@ package org.flowplayer.shareembed {
             _tabContainer.addChild(tab);
 
             mask.graphics.beginFill(0xffffff, 1);
-            mask.graphics.drawRect(0, 0, tabWidth + (BORDER * 2), TAB_HEIGHT_LIVE);
+            mask.graphics.drawRect(0, 0, tabWidth + 2, TAB_HEIGHT_LIVE);
             mask.graphics.endFill();
-            mask.x = xpos - (BORDER / 2);
+            mask.x = xpos - 1;
             mask.y = masky;
             tab.mask = mask;
             _tabContainer.addChild(mask);
@@ -332,18 +331,17 @@ package org.flowplayer.shareembed {
             _tabContainer.x = 3;
 
             var tabXPos:int = 0;
-            var masky:int = (BORDER / 2);
 
             if (_config.email) {
-                _emailTab = createTab(tabXPos, _emailMask, masky, "Email");
-                tabXPos += tabWidth + (BORDER * 2);
+                _emailTab = createTab(tabXPos, _emailMask, 0, "Email");
+                tabXPos += tabWidth + 2;
             }
             if (_config.embed) {
-                _embedTab = createTab(tabXPos, _embedMask, masky, "Embed")
-                tabXPos += tabWidth + (BORDER * 2);
+                _embedTab = createTab(tabXPos, _embedMask, 0, "Embed")
+                tabXPos += tabWidth + 2;
             }
             if (_config.share) {
-                _shareTab = createTab(tabXPos, _shareMask, masky, "Share")
+                _shareTab = createTab(tabXPos, _shareMask, 0, "Share")
             }
         }
 
