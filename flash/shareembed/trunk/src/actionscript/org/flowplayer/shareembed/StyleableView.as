@@ -18,6 +18,7 @@ package org.flowplayer.shareembed {
     import flash.text.TextFieldType;
 
     import org.flowplayer.model.DisplayPluginModel;
+    import org.flowplayer.util.StyleSheetUtil;
     import org.flowplayer.view.Flowplayer;
     import org.flowplayer.view.StyleableSprite;
 
@@ -65,12 +66,20 @@ package org.flowplayer.shareembed {
             return field;
         }
 
+        protected function get inputFieldBackgroundColor():String {
+            return style.getStyle(".input").backgroundColor as String;
+        }
+
+        protected function get inputFieldTextColor():String {
+            return style.getStyle(".input").color as String;
+        }
+
         protected function createInputField(selectTextOnFocus:Boolean = true):TextField {
             var field:TextField = player.createTextField();
 
             field.addEventListener(FocusEvent.FOCUS_IN, function(event:FocusEvent):void {
                 var field:TextField = event.target as TextField;
-                field.borderColor = 0xCCFFCC;
+//                field.borderColor = 0xCCFFCC;
                 if (selectTextOnFocus) {
                     var text:String = field.text;
                     if (text && text.length > 0) {
@@ -81,7 +90,7 @@ package org.flowplayer.shareembed {
             });
             field.addEventListener(FocusEvent.FOCUS_OUT, function(event:FocusEvent):void {
                 var field:TextField = event.target as TextField;
-                field.borderColor = 0xffffff;
+//                field.borderColor = 0xffffff;
                 if (selectTextOnFocus) {
                     field.setSelection(0, 0);
                 }
@@ -91,12 +100,12 @@ package org.flowplayer.shareembed {
             field.alwaysShowSelection = true;
             field.antiAliasType = AntiAliasType.ADVANCED;
             field.background = true;
-            field.backgroundColor = 0xffffff;
-            field.border = true;
-            field.borderColor = 0xffffff;
             field.tabEnabled = true;
             field.textColor = 0;
             field.height = 20;
+            field.backgroundColor = StyleSheetUtil.colorValue(inputFieldBackgroundColor);
+            field.alpha = StyleSheetUtil.colorAlpha(inputFieldBackgroundColor);
+            field.textColor = StyleSheetUtil.colorValue(inputFieldTextColor);
             return field;
         }
     }

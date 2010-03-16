@@ -124,7 +124,9 @@ package org.flowplayer.shareembed.config
                         fontSize: 12
                     },
                     '.input': {
-                        fontSize: 12
+                        fontSize: 12,
+                        color: '#000000',
+                        backgroundColor: '#ffffff'
                     },
                     '.small': {
                         fontSize: 8

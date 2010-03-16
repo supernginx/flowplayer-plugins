@@ -102,7 +102,7 @@ package org.flowplayer.shareembed {
 
 
         private function createButtonColorMenu(animationEngine:AnimationEngine):void {
-            _buttonColors = new DropdownMenu(animationEngine);
+            _buttonColors = new DropdownMenu(animationEngine, inputFieldBackgroundColor, inputFieldTextColor);
             _buttonColors.addItem("White", "#ffffff");
             _buttonColors.addItem("Black", "#000000");
             _buttonColors.addItem("Red", "#ff0000");
@@ -117,7 +117,7 @@ package org.flowplayer.shareembed {
         }
 
         private function createBackgroundColorMenu(animationEngine:AnimationEngine):void {
-            _bgColors = new DropdownMenu(animationEngine);
+            _bgColors = new DropdownMenu(animationEngine, inputFieldBackgroundColor, inputFieldTextColor);
             _bgColors.addItem("Black", "#000000");
             _bgColors.addItem("Transparent", "rgba(0,0,0,0)");
             _bgColors.addItem("Blue", "#0000ff");
