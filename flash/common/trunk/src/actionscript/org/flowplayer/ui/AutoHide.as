@@ -63,7 +63,6 @@ package org.flowplayer.ui {
                 startTimerAndInitializeListeners();
             }
             _stage.addEventListener(FullScreenEvent.FULL_SCREEN, onFullScreen);
-			_stage.addEventListener(Event.MOUSE_LEAVE, startMouseOutTimer);
         }
 
         public function stop(leaveVisible:Boolean = true):void {
@@ -158,6 +157,7 @@ package org.flowplayer.ui {
         private function startTimerAndInitializeListeners():void {
 //            log.info("startTimerAndInitializeListeners()");
             startHideTimer();
+			_stage.addEventListener(Event.MOUSE_LEAVE, startMouseOutTimer);
             _stage.addEventListener(FullScreenEvent.FULL_SCREEN, onFullScreen);
             _stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
             _stage.addEventListener(Event.RESIZE, onStageResize);
