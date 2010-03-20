@@ -27,13 +27,13 @@
 		<link rel="stylesheet" type="text/css" href="http://static.flowplayer.org/css/global-0.25.css" />
 	
 	<script type="text/javascript" src="jquery-1.2.6.min.js"></script>
-	<script type="text/javascript" src="flowplayer-3.1.4.min.js"></script>
-	<script type="text/javascript" src="jquery.tools.min.js"></script>	
 
-
-
-	<script type="text/javascript"
-		src="http://www.flowplayer.org/js/tools/1.1.2/all/jquery.tools.min.js?v=1"></script>
+	
+	<script src="http://cdn.jquerytools.org/1.1.2/jquery.tools.min.js"></script>
+	<script src="http://static.flowplayer.org/js/flowplayer-3.1.4.min.js"></script>	
+	<script type="text/javascript" src="flowplayer.bwcheck-3.2.js"></script>
+	<script src="http://amazon.flowplayer.org/js/tools/tools.overlay.apple-1.0.1.min.js"></script>	
+	
 		
 	<script type="text/javascript" src="http://static.flowplayer.org/js/global-0.36.js"></script>
 	
@@ -69,6 +69,18 @@ $(function() {
 		height:432px;
 
 		}
+		
+		a.bitrate-disabled {
+			color: #000000;
+		}
+		
+		a.bitrate-active {
+			color: #CCCCCC;
+		}
+		
+		a.bitrate-selected {
+			color: #999999;
+		}
 	</style>
 	
 
@@ -93,27 +105,6 @@ $(function() {
 <script language="JavaScript">
 
 // common methods and configs
-
-function showBitratesList(clip, container, widthCheck)
-{
-	var bitrates = clip.bitrates;
-	var containerWidth = $("#" + $f().id()).width();
-	
-	var form = "<b>Change Bitrate:</b><br/>";
-	jQuery.each( bitrates, function(index, item){
-		if (item.width > containerWidth && widthCheck) {
-			form += '<label><input type="radio" name="bitrateBtn" value="' + item.bitrate + '"  onclick="changeBitrate(' + item.bitrate + ')" disabled />' + item.bitrate + ' K (not valid with this player size )</label><br>';
-		} else {
-			form += '<label><input type="radio" name="bitrateBtn" value="' + item.bitrate + '"  onclick="changeBitrate(' + item.bitrate + ')" />' + item.bitrate + ' K</label><br>';
-		}
-	});
-	$(container).html(form);
-}
-
-function changeBitrate(bitrate) {
-	$f().getPlugin("bwcheck").setBitrate(bitrate);
-}
-
 
 function switchStreamInfo(mappedBitrate, streamName, oldStreamName) {
 	var content = $f().getPlugin('content');
@@ -149,16 +140,7 @@ var psuedoPlaylist =  [
 			              			{url: "bbb_480x270.flv", width: 480, height: 270, bitrate: 270},
 			              			{url: "bbb_640x360.flv", width: 640, height: 360, bitrate: 360}
 			              		    ]
-			            }/*,
-			            {
-			              url: "bbb.flv", 
-			              bitrates: [
-			              			{url: "bbb_160x90.flv", width: 160, height: 90, bitrate: 100},
-			              			{url: "bbb_320x180.flv", width: 320, height: 180, bitrate: 180},
-			              			{url: "bbb_480x270.flv", width: 480, height: 270, bitrate: 270},
-			              			{url: "bbb_640x360.flv", width: 640, height: 360, bitrate: 360}
-			              		    ]
-			            }*/
+			            }
         			];
         			
 var fmsPlaylist =  [
@@ -250,6 +232,10 @@ $(document).ready(function () {
 	Quality of service monitoring is now available for normal rtmp and dynamic stream switching connections.
 </p>
 
+<p>
+	Javascript plugin to dynamically generate a list of stylable / templatable bitrate selections. 
+</p>
+
 
 <h2>Features</h2>
 
@@ -292,6 +278,9 @@ $(document).ready(function () {
 		 Clustering of hosts. The plugin can be configured with a set of hosts it connects to when checking
 		 bandwidth. Failing servers are skipped and a working server is selected.
 	</li>
+	<li>
+		Javascript plugin "bwcheck" to dynamically generate a list of stylable / templatable bitrate selections. 
+	</li>	
 </ul>
 
 <h2>List Of Examples</h2>
@@ -310,6 +299,7 @@ $(document).ready(function () {
 	<li><a href="#rtmp_dynamicbuffer">RTMP with dynamic buffer length calculation feature.</a></li>
 	<li><a href="#rtmp_error">RTMP with bandwidth check error and default bitrate failover.</a></li>
 	<li><a href="#clustering">Bandwidth check url clustering config example.</a></li>
+	<li><a href="#javascript_plugin">Javascript plugin API.</a></li>
 	
 </ul>
 
@@ -418,29 +408,8 @@ var contentPlugin = {
 
 var loggingConfig = { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.cluster.*' };
 
-function showBitratesList(clip, container, widthCheck)
-{
-	var bitrates = clip.bitrates;
-	var containerWidth = $("#" + $f().id()).width();
-	
-	var form = "<b>Change Bitrate:</b><br/>";
-	jQuery.each( bitrates, function(index, item){
-		if (item.width > containerWidth && widthCheck) {
-			form += '<label><input type="radio" name="bitrateBtn" value="' + item.bitrate + '"  onclick="changeBitrate(' + item.bitrate + ')" disabled />' + item.bitrate + ' K (not valid with this player size )</label><br>';
-		} else {
-			form += '<label><input type="radio" name="bitrateBtn" value="' + item.bitrate + '"  onclick="changeBitrate(' + item.bitrate + ')" />' + item.bitrate + ' K</label><br>';
-		}
-	});
-	$(container).html(form);
-}
 
-		
-function changeBitrate(bitrate) {
-	$f().getPlugin("bwcheck").setBitrate(bitrate);
-}
 
-	
-		
 $(document).ready(function () {	
 	$('.checkBandwidthBtn').click(function() {
 		$f().getPlugin("bwcheck").checkBandwidth();
@@ -966,7 +935,7 @@ flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
 <!-- Flowplayer installation and configuration -->
 <script language="JavaScript">
 
-flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
+$f("rtmpManualPlayer", "@PLAYER_SWF@", {
 	playlist: wowzaPlaylist,
 	// configure the required plugins
 	plugins:  {
@@ -986,8 +955,7 @@ flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
 
 			// Use this connection for bandwidth detection
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
-			
-
+			labels: {100:"100 k", 180:"180 k", 270: "270 k", 360: "360 k"},
 			bitrateProfileName: 'RTMPBitrateProfile',
 			
 			onStreamSwitch: switchStreamInfo,
@@ -1005,12 +973,13 @@ flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
 		// use bwcheck for all clips
 		urlResolvers: 'bwcheck',
 		onBegin: function (clip) {
-			showBitratesList(clip, '#changeManualBitrate', true);
+			//showBitratesList(clip, '#changeManualBitrate', true);
 		}
 	},
 	log: loggingConfig
 
-});
+}).bwcheck('#changeManualBitrate',{seperator: "<br/>"});
+
 
 </script>
 
@@ -1019,18 +988,27 @@ flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
 </div>
 
 
-<button type="button" class="checkBandwidthBtn">Check Bandwidth</button>
-		
-<div id="changeManualBitrate">
 
+
+<button type="button" class="checkBandwidthBtn">Check Bandwidth</button>
+
+	
+<div id="changeManualBitrate" style="display:none;">
+	<label index="${bitrate}"><input type="radio" name="bitrateBtn" value="${bitrate}" />${label}</label>
 </div>
+
+<!--
+<div id="changeManualBitrate" style="display:none;">
+	<a href="${bitrate}">${label}</a>
+</div>-->
 		
+	
 <button rel="div.overlay:eq(3)" type="button">Configuration For This Example</button>
 
 <div class="overlay">
 <div class="box code">
 <pre><code class="javascript">
-flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
+$f("rtmpManualPlayer", "@PLAYER_SWF@", {
 	playlist: wowzaPlaylist,
 	// configure the required plugins
 	plugins:  {
@@ -1050,8 +1028,7 @@ flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
 
 			// Use this connection for bandwidth detection
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
-			
-
+			labels: {100:"100 k", 180:"180 k", 270: "270 k", 360: "360 k"},
 			bitrateProfileName: 'RTMPBitrateProfile',
 			
 			onStreamSwitch: switchStreamInfo,
@@ -1065,37 +1042,16 @@ flowplayer("rtmpManualPlayer", "@PLAYER_SWF@", {
 	// and the bwcheck plugin in resolving the URLs
 	clip: {
 		provider: 'rtmp',
-		
+
 		// use bwcheck for all clips
 		urlResolvers: 'bwcheck',
-		onBeforeBegin: function (clip) {
-			showBitratesList(clip, '#changeManualBitrate', true);
+		onBegin: function (clip) {
+			//showBitratesList(clip, '#changeManualBitrate', true);
 		}
 	},
 	log: loggingConfig
 
-});
-
-function showBitratesList(clip, container, widthCheck)
-{
-	var bitrates = clip.bitrates;
-	var containerWidth = $("#" + $f().id()).width();
-	
-	var form = "<b>Change Bitrate:</b><br/>";
-	jQuery.each( bitrates, function(index, item){
-		if (item.width > containerWidth && widthCheck) {
-			form += '<label><input type="radio" name="bitrateBtn" value="' + item.bitrate + '"  onclick="changeBitrate(' + item.bitrate + ')" disabled />' + item.bitrate + ' K (not valid with this player size )</label><br>';
-		} else {
-			form += '<label><input type="radio" name="bitrateBtn" value="' + item.bitrate + '"  onclick="changeBitrate(' + item.bitrate + ')" />' + item.bitrate + ' K</label><br>';
-		}
-	});
-	$(container).html(form);
-}
-
-		
-function changeBitrate(bitrate) {
-	$f().getPlugin("bwcheck").setBitrate(bitrate);
-}
+}).bwcheck('#changeManualBitrate',{seperator: "<br/>"});
 	
 		
 $(document).ready(function () {	
@@ -1104,7 +1060,10 @@ $(document).ready(function () {
 	});
 		
 });
-	
+
+<div id="changeManualBitrate" style="display:none;">
+	<label index="${bitrate}"><input type="radio" name="bitrateBtn" value="${bitrate}" />${label}</label>
+</div>	
 </code></pre>
 </div>
 </div>
@@ -1190,15 +1149,12 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 		provider: 'rtmp',
 		//start: 150,
 		// use bwcheck for all clips
-		urlResolvers: 'bwcheck',
-		onBeforeBegin: function (clip) {
-			showBitratesList(clip, '#changeDynamicBitrate', true);
-		}
+		urlResolvers: 'bwcheck'
 		
 	},
 	log: loggingConfig
 
-});
+}).bwcheck('#changeDynamicBitrate',{seperator: "<br/>"});
 
 </script>
 
@@ -1209,8 +1165,9 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 
 <button type="button" class="checkBandwidthBtn">Check Bandwidth</button>
 		
-<div id="changeDynamicBitrate">
 
+<div id="changeDynamicBitrate" style="display:none;">
+	<label index="${bitrate}"><input type="radio" name="bitrateBtn" value="${bitrate}" />${label}</label>
 </div>
 		
 <button rel="div.overlay:eq(4)" type="button">Configuration For This Example</button>
@@ -1255,37 +1212,14 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 		provider: 'rtmp',
 		
 		// use bwcheck for all clips
-		urlResolvers: 'bwcheck',
-		onBeforeBegin: function (clip) {
-			showBitratesList(clip, '#changeDynamicBitrate', true);
-		}
+		urlResolvers: 'bwcheck'
 		
 	},
 	log: loggingConfig
 
-});
+}).bwcheck('#changeDynamicBitrate',{seperator: "<br/>"});
 
-function showBitratesList(clip, container, widthCheck)
-{
-	var bitrates = clip.bitrates;
-	var containerWidth = $("#" + $f().id()).width();
-	
-	var form = "<b>Change Bitrate:</b><br/>";
-	jQuery.each( bitrates, function(index, item){
-		if (item.width > containerWidth && widthCheck) {
-			form += '<label><input type="radio" name="bitrateBtn" value="' + item.bitrate + '"  onclick="changeBitrate(' + item.bitrate + ')" disabled />' + item.bitrate + ' K (not valid with this player size )</label><br>';
-		} else {
-			form += '<label><input type="radio" name="bitrateBtn" value="' + item.bitrate + '"  onclick="changeBitrate(' + item.bitrate + ')" />' + item.bitrate + ' K</label><br>';
-		}
-	});
-	$(container).html(form);
-}
 
-		
-function changeBitrate(bitrate) {
-	$f().getPlugin("bwcheck").setBitrate(bitrate);
-}
-	
 		
 $(document).ready(function () {	
 	$('.checkBandwidthBtn').click(function() {
@@ -1372,7 +1306,7 @@ flowplayer("rtmpDynamicFMSPlayer", "@PLAYER_SWF@", {
 	},
 	log: loggingConfig
 
-});
+}).bwcheck('#changeDynamicFMSBitrate',{seperator: "<br/>"});
 
 </script>
 
@@ -1383,11 +1317,12 @@ flowplayer("rtmpDynamicFMSPlayer", "@PLAYER_SWF@", {
 
 
 <button type="button" class="checkBandwidthBtn">Check Bandwidth</button>
-		
-<div id="changeDynamicFMSBitrate">
 
-</div>
 		
+<div id="changeDynamicFMSBitrate" style="display:none;">
+	<label index="${bitrate}"><input type="radio" name="bitrateBtn" value="${bitrate}" />${label}</label>
+</div		
+
 <button rel="div.overlay:eq(5)" type="button">Configuration For This Example</button>
 
 <div class="overlay">
@@ -1437,30 +1372,8 @@ flowplayer("rtmpDynamicFMSPlayer", "@PLAYER_SWF@", {
 	},
 	log: loggingConfig
 
-});
+}).bwcheck('#changeDynamicFMSBitrate',{seperator: "<br/>"});
 
-function showBitratesList(clip, container, widthCheck)
-{
-	var bitrates = clip.bitrates;
-	var containerWidth = $("#" + $f().id()).width();
-	
-	var form = "<b>Change Bitrate:</b><br/>";
-	jQuery.each( bitrates, function(index, item){
-		if (item.width > containerWidth && widthCheck) {
-			form += '<label><input type="radio" name="bitrateBtn" value="' + item.bitrate + '"  onclick="changeBitrate(' + item.bitrate + ')" disabled />' + item.bitrate + ' K (not valid with this player size )</label><br>';
-		} else {
-			form += '<label><input type="radio" name="bitrateBtn" value="' + item.bitrate + '"  onclick="changeBitrate(' + item.bitrate + ')" />' + item.bitrate + ' K</label><br>';
-		}
-	});
-	$(container).html(form);
-}
-
-		
-function changeBitrate(bitrate) {
-	$f().getPlugin("bwcheck").setBitrate(bitrate);
-}
-	
-		
 $(document).ready(function () {	
 	$('.checkBandwidthBtn').click(function() {
 		$f().getPlugin("bwcheck").checkBandwidth();
@@ -1677,14 +1590,11 @@ flowplayer("rtmpSelectionPlayer", "@PLAYER_SWF@", {
 		provider: 'rtmp',
 		
 		// use bwcheck for all clips
-		urlResolvers: 'bwcheck',
-		onBeforeBegin: function (clip) {
-			showBitratesList(clip, '#changeSelectionBitrate',false);
-		}
+		urlResolvers: 'bwcheck'
 	},
 	log: loggingConfig
 
-});
+}).bwcheck('#changeSelectionBitrate',{seperator: "<br/>"});
 
 </script>
 
@@ -1695,8 +1605,8 @@ flowplayer("rtmpSelectionPlayer", "@PLAYER_SWF@", {
 
 <button type="button" class="checkBandwidthBtn">Check Bandwidth</button>
 
-<div id="changeSelectionBitrate">
-
+<div id="changeSelectionBitrate" style="display:none;">
+	<label index="${bitrate}"><input type="radio" name="bitrateBtn" value="${bitrate}" />${label}</label>
 </div>
 
 		
@@ -1754,35 +1664,12 @@ flowplayer("rtmpSelectionPlayer", "@PLAYER_SWF@", {
 		provider: 'rtmp',
 		
 		// use bwcheck for all clips
-		urlResolvers: 'bwcheck',
-		onBeforeBegin: function (clip) {
-			showBitratesList(clip, '#changeSelectionBitrate',false);
-		}
+		urlResolvers: 'bwcheck'
+		
 	},
 	log: loggingConfig
 
-});
-
-function showBitratesList(clip, container, widthCheck)
-{
-	var bitrates = clip.bitrates;
-	var containerWidth = $("#" + $f().id()).width();
-	
-	var form = "<b>Change Bitrate:</b><br/>";
-	jQuery.each( bitrates, function(index, item){
-		if (item.width > containerWidth && widthCheck) {
-			form += '<label><input type="radio" name="bitrateBtn" value="' + item.bitrate + '"  onclick="changeBitrate(' + item.bitrate + ')" disabled />' + item.bitrate + ' K (not valid with this player size )</label><br>';
-		} else {
-			form += '<label><input type="radio" name="bitrateBtn" value="' + item.bitrate + '"  onclick="changeBitrate(' + item.bitrate + ')" />' + item.bitrate + ' K</label><br>';
-		}
-	});
-	$(container).html(form);
-}
-
-		
-function changeBitrate(bitrate) {
-	$f().getPlugin("bwcheck").setBitrate(bitrate);
-}
+}).bwcheck('#changeSelectionBitrate',{seperator: "<br/>"});
 
 		
 $(document).ready(function () {	
@@ -1969,7 +1856,6 @@ flowplayer("rtmpSelectionResizePlayer", "@PLAYER_SWF@", {
 		// use bwcheck for all clips
 		urlResolvers: 'bwcheck',
 		onBeforeBegin: function(clip) {
-			showBitratesList(clip, '#changeSelectionResizeBitrate',false);
             if (!options.isBwCheck) $f().getPlugin("bwcheck").setAutoBitrate(options.b);
 			info = $f().getPlugin("bufferInfo");
 			info.fadeIn(1000);
@@ -2015,7 +1901,7 @@ flowplayer("rtmpSelectionResizePlayer", "@PLAYER_SWF@", {
 	},
 	log: loggingConfig
 
-});
+}).bwcheck('#changeSelectionResizeBitrate',{seperator: "<br/>"});
 
 </script>
 
@@ -2026,9 +1912,207 @@ flowplayer("rtmpSelectionResizePlayer", "@PLAYER_SWF@", {
 
 <button type="button" class="checkBandwidthBtn">Check Bandwidth</button>
 
-<div id="changeSelectionResizeBitrate">
 
+<div id="changeSelectionResizeBitrate" style="display:none;">
+	<label index="${bitrate}"><input type="radio" name="bitrateBtn" value="${bitrate}" />${label}</label>
 </div>
+
+<button rel="div.overlay:eq(8)" type="button">Configuration For This Example</button>
+
+
+<div class="overlay">
+<div class="box code">
+<pre><code class="javascript">
+flowplayer("rtmpSelectionResizePlayer", "@PLAYER_SWF@", {
+	playlist: [
+			            {
+			              url: "flv:bbb", 
+			
+			              bitrates: [
+			                        {url: "vod/demo.flowplayer/bbb_160x90", width: 160, height: 90, bitrate: 100},
+			                        {url: "vod/demo.flowplayer/bbb_320x180", width: 320, height: 180, bitrate: 180},
+			                        {url: "vod/demo.flowplayer/bbb_480x270", width: 480, height: 270, bitrate: 270},
+			                        {url: "vod/demo.flowplayer/bbb_640x360", width: 800, height: 600, bitrate: 360}
+						           ]
+						}
+			        ],
+	// configure the required plugins
+	plugins:  {
+		controls: {
+			 height: 30,
+			 bottom: 0,
+			 autoHide: 'always',
+			 progressColor: '#000000',
+			 volumeSliderColor: '#000000',
+			 buttonOverColor: '#CCCCCC'
+		},
+		
+		content: contentPlugin,
+		
+		bufferInfo: {
+			url: '../flowplayer.content.swf',
+			 height: 30,
+			 top: 0,
+			 right: 0,
+			 width: 200,
+			 backgroundColor:'transparent',
+			 backgroundGradient: 'none',
+			 borderRadius: 0,
+			 border:0,
+			 style: { 
+					'.buffering': { 
+							fontSize: '18', 
+							fontFamily: 'Arial',
+							textAlign: 'right',
+
+							color: '#000000'
+					},
+					'body': { 
+							fontSize: '18', 
+							fontFamily: 'Arial',
+							textAlign: 'right',
+							color: '#FFFFFF'
+					} 
+			}
+		},
+		bwCheckInfo: {
+			 url: '../flowplayer.content.swf',
+     
+			 height: 30,
+			 left: 0,
+			 bottom: 32, 
+			 width: 200,
+			 backgroundColor:'transparent',
+			 backgroundGradient: 'none',
+			 borderRadius: 0,
+			 opacity: 0,
+			 border:0,
+			 style: { 
+					'.buffering': { 
+							fontSize: '20', 
+							fontFamily: 'Arial',
+							textAlign: 'left',
+							color: '#000000'
+					},
+					'body': { 
+							fontSize: '20', 
+							fontFamily: 'Arial',
+							textAlign: 'left',
+							color: '#ffffff'
+					} 
+			}
+		},
+		
+		// RTMP streaming plugin
+		rtmp: {
+			url: '../flowplayer.rtmp.swf',
+			netConnectionUrl: 'rtmp://vod01.netdna.com/play'
+		},
+
+
+		// bandwidth check plugin
+		bwcheck: {
+			url: '@MAIN_PLAYER_SWF@',
+
+			serverType: 'wowza',
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
+			// Use this connection for bandwidth detection
+			bitrateProfileName: 'RTMPBitrateProfile',
+			enableDynamic: true,
+			checkOnStart:true, 
+			streamSelectionStrategy: 'resizable',
+			maxContainerWidth: 800,
+			
+			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
+				switchStreamInfo(mappedBitrate, streamName, oldStreamName);
+				$("#rtmpSelectionResizePlayer")
+							.width(parseInt(mappedBitrate.width))
+							.height(parseInt(mappedBitrate.height));
+							
+				var info = $f().getPlugin("bwCheckInfo");
+												
+				info.setHtml("<p>Bitrate: " + mappedBitrate.bitrate + "k</p>");
+				info.fadeIn(2000, function(){
+					info.fadeOut(20000);
+				});
+			},
+			
+			// this method is called when the bandwidth check is done
+			onBwDone: function(mappedBitrate, detectedBitrate) {
+				bwDoneInfo(mappedBitrate, detectedBitrate);
+				$("#rtmpSelectionResizePlayer")
+							.width(parseInt(mappedBitrate.width))
+							.height(parseInt(mappedBitrate.height));	
+				var info = $f().getPlugin("bwCheckInfo");
+												
+				info.setHtml("<p>Bitrate: " + mappedBitrate.bitrate + "k</p>");
+				info.fadeIn(2000, function(){
+					info.fadeOut(20000);
+				});
+			}
+		}
+
+	},
+
+	// configure the clip to use the rtmp plugin for providing video data
+	// and the bwcheck plugin in resolving the URLs
+	clip: {
+		provider: 'rtmp',
+		start: 0,
+		accelerated: true,
+		// use bwcheck for all clips
+		urlResolvers: 'bwcheck',
+		onBeforeBegin: function(clip) {
+            if (!options.isBwCheck) $f().getPlugin("bwcheck").setAutoBitrate(options.b);
+			info = $f().getPlugin("bufferInfo");
+			info.fadeIn(1000);
+			interval = setInterval(function(){
+				if ($f().getStatus().bufferEnd > 0)
+				{
+					var perc = Math.ceil(($f().getStatus().bufferEnd / bufferLength) * 100) + " %";
+					info.setHtml("<span>Buffering ... " + perc + "</span>");
+				}
+			}, 1000);
+
+			info.setHtml("<span class='buffering'>Buffering ...</span>");
+			
+		},
+		onBufferEmpty: function(clip) {
+
+			info.setHtml("<p>Buffering ...</p>");
+			info.fadeIn(1000);
+			interval = setInterval(function(){
+				if ($f().getStatus().bufferEnd > 0)
+				{
+					var perc = Math.ceil(($f().getStatus().bufferEnd / bufferLength) * 100) + " %";
+					info.setHtml("<span>Buffering ... " + perc + "</span>");
+				}
+			}, 1000);
+
+		},
+		onBufferFull: function(clip) {
+			info = $f().getPlugin("bufferInfo");
+			info.setHtml("<p></p>");
+			info.fadeOut(1000);
+			clearInterval(interval);
+		},
+		onBegin: function(clip) {
+			$f().getPlugin("controls").show();
+            
+		},
+		
+		onFinish: function(clip) {
+			clearInterval(interval);
+			info.fadeOut(1000);
+		}
+	},
+	log: loggingConfig
+
+}).bwcheck('#changeSelectionResizeBitrate',{seperator: "<br/>"});
+</code></pre>
+</div>
+</div>
+
 
 <a name="rtmp_qosmonitor"></a>
 <h2><em>RTMP</em> With Quality Of Service Monitor Enabled</h2>
@@ -2109,10 +2193,7 @@ flowplayer("rtmpQosPlayer", "@PLAYER_SWF@", {
 		provider: 'rtmp',
 		
 		// use bwcheck for all clips
-		urlResolvers: 'bwcheck',
-		onBeforeBegin: function(clip) {
-        	$f().getPlugin("bwcheck").setInitialBitrate(270);
-        }
+		urlResolvers: 'bwcheck'
 	},
 	log: loggingConfig
 
@@ -2128,7 +2209,7 @@ flowplayer("rtmpQosPlayer", "@PLAYER_SWF@", {
 </div>
 
 
-<button rel="div.overlay:eq(8)" type="button">Configuration For This Example</button>
+<button rel="div.overlay:eq(9)" type="button">Configuration For This Example</button>
 
 <div class="overlay">
 <div class="box code">
@@ -2322,7 +2403,7 @@ flowplayer("rtmpRSSPlayer", "@PLAYER_SWF@", {
 
 </div>
 
-<button rel="div.overlay:eq(9)" type="button">Configuration For This Example</button>
+<button rel="div.overlay:eq(10)" type="button">Configuration For This Example</button>
 
 <div class="overlay">
 <div class="box code">
@@ -2450,7 +2531,7 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
 </div>
 
 
-<button rel="div.overlay:eq(10)" type="button">Configuration For This Example</button>
+<button rel="div.overlay:eq(11)" type="button">Configuration For This Example</button>
 
 <div class="overlay">
 <div class="box code">
@@ -2581,7 +2662,7 @@ flowplayer("rtmpErrorPlayer", "@PLAYER_SWF@", {
     be defined for streaming server connecting to, either fms, red5 or wowza.
 </p>
 
-<button rel="div.overlay:eq(11)" type="button">Configuration For This Example</button>
+<button rel="div.overlay:eq(12)" type="button">Configuration For This Example</button>
 
 
 <div class="overlay">
@@ -2733,6 +2814,25 @@ flowplayer("rtmpErrorPlayer", "@PLAYER_SWF@", {
             <samp>rememberBitrate</samp> is set to <samp>true</samp>. If the player is currently playing a clip, a new stream based on the detected bandwidth is selected and started. If <a href="#dynamic">dynamic stream switching</a> is enabled, the stream switches dynamicaly while playing, otherwise, the stream plays from the start of the clip. When the bandwidth check is successfully called the <samp>onBwDone</samp> event is called allowing you to get the results.
         </td>
     </tr>
+    <tr>
+        <td class="code">
+				<strong>getLabels</strong>
+        </td>
+        <td class="code type">object</td>
+        <td class="description">
+			Returns an object of bitrate label mappings set with the <samp>labels</samp> configuration option.
+        </td>
+    </tr>
+     <tr>
+        <td class="code">
+				<strong>getSelectionStrategy</strong>
+        </td>
+        <td class="code type">strings</td>
+        <td class="description">
+			Returns the stream selection strategy config also set with the <samp>streamSelectionStrategy</samp> configuration option.
+        </td>
+    </tr>
+    
 </table>
 
 <h3>Events</h3>
@@ -2817,6 +2917,229 @@ flowplayer("rtmpErrorPlayer", "@PLAYER_SWF@", {
         </td>
     </tr>
 </table>
+
+<a name="javascript_plugin"></a>
+<h2>JavaScript Plugin</h2>
+<p>Available is the bwcheck javascript plugin which provides a way to dynamically generate a list of stylable / templatable bitrate selection links.</p>
+<p>A template of the listing can be set in the html of the set wrapper, and using special variables can be replaced with the required fields.</p>
+<p>If the default stream selection strategy is used, it will check the width of the player and the bitrate width and disable the bitrate selections larger than the player width along with info text.</p>
+
+
+
+
+<div style="width:425px;margin:30px auto">
+   
+
+
+<!-- player container-->
+
+
+<a
+	href="skyandice"
+	style="display:block;width:425px;height:300px;"
+	id="javascriptPluginPlayer">
+
+	<!-- splash image inside the container -->
+	<img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" />
+
+</a>
+
+<!-- Flowplayer installation and configuration -->
+<script language="JavaScript">
+
+$f("javascriptPluginPlayer", "@PLAYER_SWF@", {
+	playlist: wowzaPlaylist,
+	// configure the required plugins
+	plugins:  {
+
+		// RTMP streaming plugin
+		rtmp: {
+			url: '../flowplayer.rtmp.swf',
+			netConnectionUrl: 'rtmp://vod01.netdna.com/play'
+		},
+		content: contentPlugin,
+
+		// bandwidth check plugin
+		bwcheck: {
+			url: '@MAIN_PLAYER_SWF@',
+
+			serverType: 'wowza',
+
+			// Use this connection for bandwidth detection
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
+			labels: {100:"100 k", 180:"180 k", 270: "270 k", 360: "360 k"},
+			bitrateProfileName: 'RTMPBitrateProfile',
+			
+			onStreamSwitch: switchStreamInfo,
+			// this method is called when the bandwidth check is done
+			onBwDone: bwDoneInfo
+		}
+
+	},
+
+	// configure the clip to use the rtmp plugin for providing video data
+	// and the bwcheck plugin in resolving the URLs
+	clip: {
+		provider: 'rtmp',
+
+		// use bwcheck for all clips
+		urlResolvers: 'bwcheck',
+		onBegin: function (clip) {
+			//showBitratesList(clip, '#javascriptPlugin', true);
+		}
+	},
+	log: loggingConfig
+
+}).bwcheck('#javascriptPlugin',{seperator: " | "});
+
+
+</script>
+
+
+
+</div>
+	
+<div id="javascriptPlugin" style="display:none;">
+	<a href="${bitrate}">${label}</a>
+</div>
+
+<button rel="div.overlay:eq(13)" type="button">Configuration For This Example</button>
+
+
+<div class="overlay">
+<div class="box code">
+<pre><code class="javascript">
+$f("javascriptPluginPlayer", "@PLAYER_SWF@", {
+	playlist: wowzaPlaylist,
+	// configure the required plugins
+	plugins:  {
+
+		// RTMP streaming plugin
+		rtmp: {
+			url: '../flowplayer.rtmp.swf',
+			netConnectionUrl: 'rtmp://vod01.netdna.com/play'
+		},
+		content: contentPlugin,
+
+		// bandwidth check plugin
+		bwcheck: {
+			url: '@MAIN_PLAYER_SWF@',
+
+			serverType: 'wowza',
+
+			// Use this connection for bandwidth detection
+			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
+			labels: {100:"100 k", 180:"180 k", 270: "270 k", 360: "360 k"},
+			bitrateProfileName: 'RTMPBitrateProfile',
+			
+			onStreamSwitch: switchStreamInfo,
+			// this method is called when the bandwidth check is done
+			onBwDone: bwDoneInfo
+		}
+
+	},
+
+	// configure the clip to use the rtmp plugin for providing video data
+	// and the bwcheck plugin in resolving the URLs
+	clip: {
+		provider: 'rtmp',
+
+		// use bwcheck for all clips
+		urlResolvers: 'bwcheck',
+		onBegin: function (clip) {
+			//showBitratesList(clip, '#javascriptPlugin', true);
+		}
+	},
+	log: loggingConfig
+
+}).bwcheck('#javascriptPlugin',{seperator: " | "});
+
+<div id="javascriptPlugin" style="display:none;">
+	<a href="${bitrate}">${label}</a>
+</div>
+
+</code></pre>
+</div>
+</div>
+
+
+<br><br><b>Configuration:</b>
+<table class="listing">
+	<thead>
+		<tr>
+			<th nowrap>property / datatype</th>
+			<th>default</th>
+			<th>description</th>
+		</tr>
+	</thead>
+
+    <tr>
+        <td class="code">checkOnStart <div class="type">boolean</div></td>
+        <td class="code default">true</td>
+        <td class="description">
+            If <samp>true</samp> (the default) the plugin checks the bandwidth for every clip once their playback starts <em>even when the clips don't specify this plugin as their <samp>urlResolver</samp>.</em> Specify <samp>false</samp> here if you have clips in the playlist for which the bandwidth should not be checked.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">selectedBitrateClass <div class="type">string</div></td>
+        <td class="code default">bitrate-selected</td>
+        <td class="description">
+            The selected bitrate link class.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">bitrateClass <div class="type">string</div></td>
+        <td class="code default">bitrate-active</td>
+        <td class="description">
+            The active bitrate link class.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">disabledClass <div class="type">string</div></td>
+        <td class="code default">bitrate-disabled</td>
+        <td class="description">
+            The disabled bitrate link class.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">bwCheckPlugin <div class="type">string</div></td>
+        <td class="code default">bwcheck</td>
+        <td class="description">
+				The name of the bandwidth check plugin in the player configuration.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">template <div class="type">string</div></td>
+        <td class="code default"><a href="${bitrate}">${bitrate} k</a></td>
+        <td class="description">
+        	The template config to be used for generating the links. The fields of the bitrates clip config are used as the template variables ie ${bitrate}.
+        	If the wrapper has the template set, it will be used instead of the template config.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">disabledText <div class="type">string</div></td>
+        <td class="code default">(not valid with this player size )</td>
+        <td class="description">
+            The text to display if the item is disabled due to size constraints and the selection strategy. 
+        </td>
+    </tr>
+    <tr>
+        <td class="code">fadeTime <div class="type">int</div></td>
+        <td class="code default">100</td>
+        <td class="description">
+				The interval time for fading the wrapper in and out. Useful for hiding the wrapper if a template is set in it. 
+        </td>
+    </tr>
+    <tr>
+        <td class="code">seperator <div class="type">string</div></td>
+        <td class="code default"></td>
+        <td class="description">
+				A seperator character to use for seperating the links ie <br> or | .
+        </td>
+    </tr>
+</table>
+
+
 </div>
 		
 		<div class="clear"></div> 
