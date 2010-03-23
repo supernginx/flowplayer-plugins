@@ -1,4 +1,5 @@
 <project name="Flowplayer plugin base build file (included in the actual plugin specific build.xml files)">
+    <property file="build.generated.properties"/>
 
 	<import file="remotecopy.xml" />
 	<property file="${user.home}/plugin.properties" />
