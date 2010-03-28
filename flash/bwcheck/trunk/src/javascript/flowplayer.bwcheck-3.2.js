@@ -23,19 +23,21 @@
 		
 		var opts = {
 			selectedBitrateClass: 'bitrate-selected',
-			bitrateClass: 'bitrate-active',
+			activeClass: 'bitrate-active',
 			bitrateInfoClass:'bitrate-info',
 			disabledClass: 'bitrate-disabled',
 			bwCheckPlugin: 'bwcheck',
 			template: '<a href="${bitrate}">${bitrate} k</a>',
 			disabledText: '(not valid with this player size )',
-			fadeTime: 100,
+			fadeTime: 500,
 			seperator: ""
 		};		
 		
 		$.extend(opts, options);
 		
-		wrap = container;
+		var wrap = container;
+		
+
 		
 		var template = null;
 		var labels = null;
@@ -49,9 +51,9 @@
 				
 		function parseTemplate(values) {
 			var el = template; 
-
+	
 			$.each(values, function(key, val) {	
-				if (key=="bitrate") {
+				if (key=="bitrate" && labels) {
 					var label = (plugin && labels.length > 0 && labels[val] ? labels[val] : val + " k");
 					if (label) {
 						el = el.replace("$\{label\}", label).replace("$%7B" +key+ "%7D", label);
@@ -59,6 +61,7 @@
 				}
 				el = el.replace("$\{" +key+ "\}", val).replace("$%7B" +key+ "%7D", val);			
 			}); 
+			
 			return el;
 		}
 		
@@ -70,6 +73,7 @@
 			labels = plugin.getLabels();
 			var widthCheck = (plugin.getSelectionStrategy() == "default");
 			var containerWidth = $("#" + self.id()).width();
+			
 			
 			var index = 0;
 			$.each(self.getClip().bitrates, function() { 
@@ -97,7 +101,12 @@
 					wrap.append(el);
 					wrap.append(" " + opts.disabledText + " ");
 				} else {
+					el.addClass(opts.activeClass);
 					el.click(function() {	
+						el.removeClass(opts.activeClass);
+						
+						wrap.children().removeClass(opts.selectedBitrateClass).addClass(opts.activeClass);
+						el.addClass(opts.selectedBitrateClass);
 						play($(this).attr("index"));
 						if ($(this).is('a')) return false;
 					});
@@ -107,8 +116,16 @@
 				if (index < self.getClip().bitrates.length - 1) wrap.append(opts.seperator);
 				index++;
 			});				
-
-			wrap.fadeIn(opts.fadeTime);
+			
+			
+			
+			//if the parent div wrapper is set to display:none fade in the parent
+			if (wrap.parent().css('display') == "none") {
+				wrap.show();
+				wrap.parent('div').fadeIn(opts.fadeTime);
+			} else {
+				wrap.fadeIn(opts.fadeTime);
+			}
 		} 
 
 		function play(bitrate)  {
@@ -134,10 +151,14 @@
 		
 		// internal playlist
 		function showBitrateList() {
+	
 			wrap = $(wrap);
 			if (self.getClip().bitrates.length > 0) {
 				
 				template = wrap.is(":empty") ? opts.template : wrap.html(); 
+				
+				
+				
 				buildBitrateList();			
 
 			} 
