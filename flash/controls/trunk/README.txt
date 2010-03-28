@@ -24,6 +24,7 @@ Fixes:
 - fixed slider when mouseup out of the stage
 - fixed $f().getControls().css({ tooltipTextColor: '#xxxxxx' })
 - fixed progressbar issue when resizing while seeking 
+- fixed scrubber behaviour with instream clips and specific controlbar configuration
 
 3.1.4
 -----

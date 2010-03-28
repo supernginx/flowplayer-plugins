@@ -587,6 +587,7 @@ package org.flowplayer.controls {
             } else if (_currentControlsConfig) {
                 log.debug("onPlayBegin(): reverting to original configuration");
                 _config = createConfig(_originalConfig);
+				_config.player = _player;	// setting back player, #48
                 rootStyle = _config.style.bgStyle;
                 recreateWidgets();
                 enableWidgets();
