@@ -156,21 +156,24 @@ package org.flowplayer.controls.slider {
         private function seek(event:ClipEvent):void {
             log.debug("seek(), isPlaying: " + _config.player.isPlaying() + ", seek target time is " + event.info);
             if (! _config.player.isPlaying()) return;
-            doStart(event.target as Clip, event.info as Number);
+			
+			_currentClip = (event.target as Clip);
+            doStart(_currentClip, event.info as Number);
         }
 
         private function start(event:ClipEvent):void {
-            var clip:Clip = event.target as Clip;
-            log.debug("start() " + clip);
-            if (clip.duration == 0 && clip.type == ClipType.IMAGE) return;
+			_currentClip = (event.target as Clip);
+            log.debug("start() " + _currentClip);
+            if (_currentClip.duration == 0 && _currentClip.type == ClipType.IMAGE) return;
 			stop();
-            doStart(clip);
+            doStart(_currentClip);
 //            animationEngine.animateProperty(_dragger, "x", 0, 300, function():void { doStart(event.target as Clip); });
         }
 
         private function resume(event:ClipEvent):void {
+			_currentClip = (event.target as Clip);
 			stop();
-            doStart(event.target as Clip);
+            doStart(_currentClip);
         }
 
         private function doStart(clip:Clip, startTime:Number = 0):void {
