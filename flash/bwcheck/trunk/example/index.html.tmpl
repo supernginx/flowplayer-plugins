@@ -24,7 +24,9 @@
  
 	<link rel="shortcut icon" href="/img/favicon.png" type="image/png" />
 		
-		<link rel="stylesheet" type="text/css" href="http://static.flowplayer.org/css/global-0.25.css" />
+	<link rel="stylesheet" type="text/css" href="http://static.flowplayer.org/css/global-0.25.css" />
+	
+	<link rel="stylesheet" type="text/css" href="bwcheck.css" />
 	
 	<script type="text/javascript" src="jquery-1.2.6.min.js"></script>
 
@@ -70,17 +72,7 @@ $(function() {
 
 		}
 		
-		a.bitrate-disabled {
-			color: #000000;
-		}
 		
-		a.bitrate-active {
-			color: #CCCCCC;
-		}
-		
-		a.bitrate-selected {
-			color: #999999;
-		}
 	</style>
 	
 
@@ -616,6 +608,13 @@ playlist: [
         	If using the non-dynamic rtmp stream, the stream switching is possible but not seamless. 
         </td>
     </tr>
+    <tr>
+        <td class="code">labels <div class="type">object</div></td>
+        <td class="code default"></td>
+        <td class="description">
+				An object of bitrate labels with the bitrate as the key and a text label as the value ie {300: "300 k"}. To be used in conjunction with other plugins to provide video bitrate feedback. 
+        </td>
+    </tr>
 </table>
 
 <p>
@@ -971,10 +970,7 @@ $f("rtmpManualPlayer", "@PLAYER_SWF@", {
 		provider: 'rtmp',
 
 		// use bwcheck for all clips
-		urlResolvers: 'bwcheck',
-		onBegin: function (clip) {
-			//showBitratesList(clip, '#changeManualBitrate', true);
-		}
+		urlResolvers: 'bwcheck'
 	},
 	log: loggingConfig
 
@@ -992,16 +988,14 @@ $f("rtmpManualPlayer", "@PLAYER_SWF@", {
 
 <button type="button" class="checkBandwidthBtn">Check Bandwidth</button>
 
-	
+
+<div style="display:none;">
+<b>Choose Video Bitrate:</b> <br>	
 <div id="changeManualBitrate" style="display:none;">
 	<label index="${bitrate}"><input type="radio" name="bitrateBtn" value="${bitrate}" />${label}</label>
 </div>
+</div>
 
-<!--
-<div id="changeManualBitrate" style="display:none;">
-	<a href="${bitrate}">${label}</a>
-</div>-->
-		
 	
 <button rel="div.overlay:eq(3)" type="button">Configuration For This Example</button>
 
@@ -1044,10 +1038,7 @@ $f("rtmpManualPlayer", "@PLAYER_SWF@", {
 		provider: 'rtmp',
 
 		// use bwcheck for all clips
-		urlResolvers: 'bwcheck',
-		onBegin: function (clip) {
-			//showBitratesList(clip, '#changeManualBitrate', true);
-		}
+		urlResolvers: 'bwcheck'
 	},
 	log: loggingConfig
 
@@ -1061,9 +1052,13 @@ $(document).ready(function () {
 		
 });
 
+
+<div style="display:none;">
+<b>Choose Video Bitrate:</b> <br>	
 <div id="changeManualBitrate" style="display:none;">
 	<label index="${bitrate}"><input type="radio" name="bitrateBtn" value="${bitrate}" />${label}</label>
-</div>	
+</div>
+</div>
 </code></pre>
 </div>
 </div>
@@ -1134,6 +1129,7 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
 			enableDynamic: true,
+			labels: {100:"100 k", 180:"180 k", 270: "270 k", 360: "360 k"},
 			//required to enable initial bandwidth checking while als having dynamic switching enabled
 			checkOnStart:true, 
 			onStreamSwitch: switchStreamInfo,
@@ -1165,9 +1161,11 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 
 <button type="button" class="checkBandwidthBtn">Check Bandwidth</button>
 		
-
+<div style="display:none;">
+<b>Choose Video Bitrate:</b> <br>	
 <div id="changeDynamicBitrate" style="display:none;">
 	<label index="${bitrate}"><input type="radio" name="bitrateBtn" value="${bitrate}" />${label}</label>
+</div>
 </div>
 		
 <button rel="div.overlay:eq(4)" type="button">Configuration For This Example</button>
@@ -1197,6 +1195,7 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
 			enableDynamic: true,
+			labels: {100:"100 k", 180:"180 k", 270: "270 k", 360: "360 k"},
 			//required to enable initial bandwidth checking while als having dynamic switching enabled
 			checkOnStart:true, 
 			onStreamSwitch: switchStreamInfo,
@@ -1283,6 +1282,7 @@ flowplayer("rtmpDynamicFMSPlayer", "@PLAYER_SWF@", {
 			// Use this connection for bandwidth detection
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
+			labels: {100:"100 k", 180:"180 k", 270: "270 k", 360: "360 k"},
 			//enableDynamic: true,
 			//checkOnStart:true, 
 			
@@ -1299,10 +1299,7 @@ flowplayer("rtmpDynamicFMSPlayer", "@PLAYER_SWF@", {
 		provider: 'rtmp',
 		
 		// use bwcheck for all clips
-		urlResolvers: 'bwcheck',
-		onBeforeBegin: function (clip) {
-			showBitratesList(clip, '#changeDynamicFMSBitrate', true);
-		}
+		urlResolvers: 'bwcheck'
 	},
 	log: loggingConfig
 
@@ -1318,10 +1315,12 @@ flowplayer("rtmpDynamicFMSPlayer", "@PLAYER_SWF@", {
 
 <button type="button" class="checkBandwidthBtn">Check Bandwidth</button>
 
-		
+<div style="display:none;">
+<b>Choose Video Bitrate:</b> <br>			
 <div id="changeDynamicFMSBitrate" style="display:none;">
 	<label index="${bitrate}"><input type="radio" name="bitrateBtn" value="${bitrate}" />${label}</label>
 </div		
+</div>
 
 <button rel="div.overlay:eq(5)" type="button">Configuration For This Example</button>
 
@@ -1349,6 +1348,7 @@ flowplayer("rtmpDynamicFMSPlayer", "@PLAYER_SWF@", {
 			// Use this connection for bandwidth detection
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
+			labels: {100:"100 k", 180:"180 k", 270: "270 k", 360: "360 k"},
 			enableDynamic: true,
 			checkOnStart:true, 
 			
@@ -1365,10 +1365,7 @@ flowplayer("rtmpDynamicFMSPlayer", "@PLAYER_SWF@", {
 		provider: 'rtmp',
 		
 		// use bwcheck for all clips
-		urlResolvers: 'bwcheck',
-		onBeforeBegin: function (clip) {
-			showBitratesList(clip, '#changeDynamicFMSBitrate', true);
-		}
+		urlResolvers: 'bwcheck'
 	},
 	log: loggingConfig
 
@@ -1566,6 +1563,7 @@ flowplayer("rtmpSelectionPlayer", "@PLAYER_SWF@", {
 			checkOnStart:true, 
 			streamSelectionStrategy: 'resizable',
 			maxContainerWidth: 640,
+			labels: {100:"100 k", 180:"180 k", 270: "270 k", 360: "360 k"},
 			
 			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
 				switchStreamInfo(mappedBitrate, streamName, oldStreamName);
@@ -1605,8 +1603,11 @@ flowplayer("rtmpSelectionPlayer", "@PLAYER_SWF@", {
 
 <button type="button" class="checkBandwidthBtn">Check Bandwidth</button>
 
+<div style="display:none;">
+<b>Choose Video Bitrate:</b> <br>	
 <div id="changeSelectionBitrate" style="display:none;">
 	<label index="${bitrate}"><input type="radio" name="bitrateBtn" value="${bitrate}" />${label}</label>
+</div>
 </div>
 
 		
@@ -1640,6 +1641,7 @@ flowplayer("rtmpSelectionPlayer", "@PLAYER_SWF@", {
 			checkOnStart:true, 
 			streamSelectionStrategy: 'resizable',
 			maxContainerWidth: 640,
+			labels: {100:"100 k", 180:"180 k", 270: "270 k", 360: "360 k"},
 			
 			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
 				switchStreamInfo(mappedBitrate, streamName, oldStreamName);
@@ -1815,6 +1817,7 @@ flowplayer("rtmpSelectionResizePlayer", "@PLAYER_SWF@", {
 			checkOnStart:true, 
 			streamSelectionStrategy: 'resizable',
 			maxContainerWidth: 800,
+			labels: {100:"100 k", 180:"180 k", 270: "270 k", 360: "360 k"},
 			
 			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
 				switchStreamInfo(mappedBitrate, streamName, oldStreamName);
@@ -1913,8 +1916,11 @@ flowplayer("rtmpSelectionResizePlayer", "@PLAYER_SWF@", {
 <button type="button" class="checkBandwidthBtn">Check Bandwidth</button>
 
 
+<div style="display:none;">
+<b>Choose Video Bitrate:</b> <br>	
 <div id="changeSelectionResizeBitrate" style="display:none;">
 	<label index="${bitrate}"><input type="radio" name="bitrateBtn" value="${bitrate}" />${label}</label>
+</div>
 </div>
 
 <button rel="div.overlay:eq(8)" type="button">Configuration For This Example</button>
@@ -2022,6 +2028,7 @@ flowplayer("rtmpSelectionResizePlayer", "@PLAYER_SWF@", {
 			checkOnStart:true, 
 			streamSelectionStrategy: 'resizable',
 			maxContainerWidth: 800,
+			labels: {100:"100 k", 180:"180 k", 270: "270 k", 360: "360 k"},
 			
 			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
 				switchStreamInfo(mappedBitrate, streamName, oldStreamName);
@@ -2983,10 +2990,7 @@ $f("javascriptPluginPlayer", "@PLAYER_SWF@", {
 		provider: 'rtmp',
 
 		// use bwcheck for all clips
-		urlResolvers: 'bwcheck',
-		onBegin: function (clip) {
-			//showBitratesList(clip, '#javascriptPlugin', true);
-		}
+		urlResolvers: 'bwcheck'
 	},
 	log: loggingConfig
 
@@ -2998,9 +3002,12 @@ $f("javascriptPluginPlayer", "@PLAYER_SWF@", {
 
 
 </div>
-	
+
+<div style="display:none;">
+<b>Choose Video Bitrate:</b> <br>		
 <div id="javascriptPlugin" style="display:none;">
 	<a href="${bitrate}">${label}</a>
+</div>
 </div>
 
 <button rel="div.overlay:eq(13)" type="button">Configuration For This Example</button>
@@ -3045,17 +3052,17 @@ $f("javascriptPluginPlayer", "@PLAYER_SWF@", {
 		provider: 'rtmp',
 
 		// use bwcheck for all clips
-		urlResolvers: 'bwcheck',
-		onBegin: function (clip) {
-			//showBitratesList(clip, '#javascriptPlugin', true);
-		}
+		urlResolvers: 'bwcheck'
 	},
 	log: loggingConfig
 
 }).bwcheck('#javascriptPlugin',{seperator: " | "});
 
+<div style="display:none;">
+<b>Choose Video Bitrate:</b> <br>	
 <div id="javascriptPlugin" style="display:none;">
 	<a href="${bitrate}">${label}</a>
+</div>
 </div>
 
 </code></pre>
@@ -3088,7 +3095,7 @@ $f("javascriptPluginPlayer", "@PLAYER_SWF@", {
         </td>
     </tr>
     <tr>
-        <td class="code">bitrateClass <div class="type">string</div></td>
+        <td class="code">activeClass <div class="type">string</div></td>
         <td class="code default">bitrate-active</td>
         <td class="description">
             The active bitrate link class.
