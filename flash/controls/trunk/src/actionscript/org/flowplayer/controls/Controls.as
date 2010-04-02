@@ -321,6 +321,7 @@ package org.flowplayer.controls {
             }
 			
 			_config.player = player;
+            _player.onLoad(onPlayerLoad);
 
             createChildren();
             loader = player.createLoader();
@@ -335,6 +336,11 @@ package org.flowplayer.controls {
                 _muteVolumeButton.down = player.muted;
             }
             _pluginModel.dispatchOnLoad();
+        }
+
+        private function onPlayerLoad(event:PlayerEvent):void {
+            // creation of slowmotion buttons is delayed up to this point
+            createSlowmotionButtons(_player.animationEngine); 
         }
 
         private function initSkin():void {
@@ -385,6 +391,24 @@ package org.flowplayer.controls {
 			return _player.pluginRegistry.getPlugin("slowmotion") != null;
 		}
 
+        private function createSlowmotionButtons(animationEngine:AnimationEngine):void {
+            if (hasSlowMotion() && SkinClasses.getSlowMotionBwdButton() != null)
+            {
+                _slowMotionFwdButton = addChildWidget(createWidget(_slowMotionFwdButton, "slowmotion", SlowMotionFwdButton, _config, animationEngine), ButtonEvent.CLICK, function(e:ButtonEvent):void {
+                    onSlowMotionClicked(false, true);
+                });
+                _slowMotionBwdButton = addChildWidget(createWidget(_slowMotionBwdButton, "slowmotion", SlowMotionBwdButton, _config, animationEngine), ButtonEvent.CLICK, function(e:ButtonEvent):void {
+                    onSlowMotionClicked(false, false);
+                });
+                _slowMotionFFwdButton = addChildWidget(createWidget(_slowMotionFFwdButton, "slowmotion", SlowMotionFFwdButton, _config, animationEngine), ButtonEvent.CLICK, function(e:ButtonEvent):void {
+                    onSlowMotionClicked(true, true);
+                });
+                _slowMotionFBwdButton = addChildWidget(createWidget(_slowMotionFBwdButton, "slowmotion", SlowMotionFBwdButton, _config, animationEngine), ButtonEvent.CLICK, function(e:ButtonEvent):void {
+                    onSlowMotionClicked(true, false);
+                });
+            }
+        }
+
         private function createChildren():void {
             log.debug("creating fullscren ", _config);
             var animationEngine:AnimationEngine = _player.animationEngine;
@@ -395,15 +419,6 @@ package org.flowplayer.controls {
             _stopButton = addChildWidget(createWidget(_stopButton, "stop", StopButton, _config, animationEngine), ButtonEvent.CLICK, onStopClicked);
             _nextButton = addChildWidget(createWidget(_nextButton, "playlist", NextButton, _config, animationEngine), ButtonEvent.CLICK, "next");
             _prevButton = addChildWidget(createWidget(_prevButton, "playlist", PrevButton, _config, animationEngine), ButtonEvent.CLICK, "previous");
-
-			// slowmotion thingie
-			if ( hasSlowMotion() && SkinClasses.getSlowMotionBwdButton() != null )
-			{
-				_slowMotionFwdButton = addChildWidget(createWidget(_slowMotionFwdButton, "slowmotion", SlowMotionFwdButton, _config, animationEngine), ButtonEvent.CLICK, function(e:ButtonEvent):void { onSlowMotionClicked(false, true); });
-				_slowMotionBwdButton = addChildWidget(createWidget(_slowMotionBwdButton, "slowmotion", SlowMotionBwdButton, _config, animationEngine), ButtonEvent.CLICK, function(e:ButtonEvent):void { onSlowMotionClicked(false, false); });
-				_slowMotionFFwdButton = addChildWidget(createWidget(_slowMotionFFwdButton, "slowmotion", SlowMotionFFwdButton, _config, animationEngine), ButtonEvent.CLICK, function(e:ButtonEvent):void { onSlowMotionClicked(true, true); });
-				_slowMotionFBwdButton = addChildWidget(createWidget(_slowMotionFBwdButton, "slowmotion", SlowMotionFBwdButton, _config, animationEngine), ButtonEvent.CLICK, function(e:ButtonEvent):void { onSlowMotionClicked(true, false); });
-			}
 
             _muteVolumeButton = addChildWidget(createWidget(_muteVolumeButton, "mute", ToggleVolumeMuteButton, _config, animationEngine), ButtonEvent.CLICK, onMuteVolumeClicked) as AbstractToggleButton;
             _volumeSlider = addChildWidget(createWidget(_volumeSlider, "volume", VolumeScrubber, _config, animationEngine, this), VolumeSlider.DRAG_EVENT, onVolumeSlider) as VolumeScrubber;
