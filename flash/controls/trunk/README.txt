@@ -25,6 +25,7 @@ Fixes:
 - fixed $f().getControls().css({ tooltipTextColor: '#xxxxxx' })
 - fixed progressbar issue when resizing while seeking 
 - fixed scrubber behaviour with instream clips and specific controlbar configuration
+- fixed autoHide behavior
 
 3.1.4
 -----
