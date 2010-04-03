@@ -1,4 +1,6 @@
-
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <!-- 
 	Flowplayer website, forums & jQuery Tools by Tero Piirainen 
@@ -21,24 +23,54 @@
 	<meta name="Author" content="Tero Piirainen" />
 	<meta name="Robots" content="index,follow" /> 
  
-	<link rel="shortcut icon" href="/img/favicon.png" type="image/png" />
 		
 	<link rel="stylesheet" type="text/css" href="http://static.flowplayer.org/css/global-0.25.css" />
 	
 	<link rel="stylesheet" type="text/css" href="bwcheck.css" />
 	
-	<script type="text/javascript" src="jquery-1.2.6.min.js"></script>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+	<script type="text/javascript"  src="http://cdn.jquerytools.org/1.1.2/jquery.tools.min.js"></script>
+	<script type="text/javascript"  src="http://static.flowplayer.org/js/flowplayer-3.1.4.min.js"></script>	
+	<script type="text/javascript" src="flowplayer.bwcheck-3.2.js"></script>
+	<script type="text/javascript"  src="http://amazon.flowplayer.org/js/tools/tools.overlay.apple-1.0.1.min.js"></script>	
 
 	
-	<script src="http://cdn.jquerytools.org/1.1.2/jquery.tools.min.js"></script>
-	<script src="http://static.flowplayer.org/js/flowplayer-3.1.4.min.js"></script>	
-	<script type="text/javascript" src="flowplayer.bwcheck-3.2.js"></script>
-	<script src="http://amazon.flowplayer.org/js/tools/tools.overlay.apple-1.0.1.min.js"></script>	
 	
+	
+	<style type="text/css">
+		div.overlay {
+		width:1024px; 
+		height:432px;
+
+		}
 		
-	<script type="text/javascript" src="http://static.flowplayer.org/js/global-0.36.js"></script>
+		
+	</style>
 	
-	<script>
+
+	<!--[if lt IE 7]>
+		<style type="text/css">
+			@import "http://static.flowplayer.org/css/ie6.css?v=0.2";
+		</style>
+	<![endif]-->
+	
+	<!--[if lt IE 8]>
+		<style>
+			html { overflow-x:hidden; }
+			#content ol, #content ul  {margin-left: 50px; }
+		</style>
+	<![endif]-->	
+
+</head>
+
+<body id="plugins_bwcheck">
+
+
+
+
+	
+	<div id="wrap">			 
+	<script type="text/javascript" >
 
 $(function() {		
 		
@@ -63,41 +95,8 @@ $(function() {
 	
 });
 </script>
-	
-	<style>
-		div.overlay {
-		width:1024px; 
-		height:432px;
 
-		}
-		
-		
-	</style>
-	
-
-	<!--[if lt IE 7]>
-		<style>
-			@import "http://static.flowplayer.org/css/ie6.css?v=0.2";
-		</style>
-	<![endif]-->
-	
-	<!--[if lt IE 8]>
-		<style>
-			html { overflow-x:hidden; }
-			#content ol, #content ul  {margin-left: 50px; }
-		</style>
-	<![endif]-->	
-
-</head>
-
-<body id="plugins_bwcheck">
-
-
-
-
-	
-	<div id="wrap">			 
-		<script language="JavaScript">
+		<script type="text/javascript" >
 
 // common methods and configs
 
@@ -321,7 +320,7 @@ $(document).ready(function () {
 
 
 <!-- Flowplayer installation and configuration -->
-<script language="JavaScript">
+<script type="text/javascript" >
 
 flowplayer("player", "@PLAYER_SWF@", {
 	playlist: httpPlaylist,
@@ -432,7 +431,8 @@ flowplayer("player", "@PLAYER_SWF@", {
 	log: loggingConfig
 	
 });
-</code></pre>
+</code>
+</pre>
 </div>
 </div>
 
@@ -697,7 +697,7 @@ playlist: [
 </a>
 
 <!-- Flowplayer installation and configuration -->
-<script language="JavaScript">
+<script type="text/javascript" >
 
 flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 	playlist: wowzaPlaylist,
@@ -832,7 +832,7 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 
 
 <!-- Flowplayer installation and configuration -->
-<script language="JavaScript">
+<script type="text/javascript" >
 
 flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
 	playlist: psuedoPlaylist,
@@ -932,7 +932,7 @@ flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
 </a>
 
 <!-- Flowplayer installation and configuration -->
-<script language="JavaScript">
+<script type="text/javascript" >
 
 $f("rtmpManualPlayer", "@PLAYER_SWF@", {
 	playlist: wowzaPlaylist,
@@ -992,7 +992,7 @@ $f("rtmpManualPlayer", "@PLAYER_SWF@", {
 <div style="display:none;">
 <b>Choose Video Bitrate:</b> <br/>	
 <div id="changeManualBitrate" style="display:none;">
-	<label index="${bitrate}"><input type="radio" name="bitrateBtn" value="${bitrate}" />${label}</label>
+	<label><input type="radio" name="bitrateBtn" value="${bitrate}" />${label}</label>
 </div>
 </div>
 
@@ -1000,8 +1000,11 @@ $f("rtmpManualPlayer", "@PLAYER_SWF@", {
 <button rel="div.overlay:eq(3)" type="button">Configuration For This Example</button>
 
 <div class="overlay">
+
 <div class="box code">
-<pre><code class="javascript">
+
+<pre>
+<code class="javascript">
 $f("rtmpManualPlayer", "@PLAYER_SWF@", {
 	playlist: wowzaPlaylist,
 	// configure the required plugins
@@ -1051,15 +1054,13 @@ $(document).ready(function () {
 	});
 		
 });
+</code>
 
 
-<div style="display:none;">
-<b>Choose Video Bitrate:</b> <br/>	
-<div id="changeManualBitrate" style="display:none;">
-	<label index="${bitrate}"><input type="radio" name="bitrateBtn" value="${bitrate}" />${label}</label>
-</div>
-</div>
-</code></pre>
+
+
+</pre>
+
 </div>
 </div>
 
@@ -1067,7 +1068,7 @@ $(document).ready(function () {
 <h2><em>RTMP</em> With Dynamic Stream Switching Example</h2>
 
 
-<a name="dynamic"></a>
+
 <h3>Dynamic stream switching</h3>
 
 <p>
@@ -1106,7 +1107,7 @@ $(document).ready(function () {
 </a>
 
 <!-- Flowplayer installation and configuration -->
-<script language="JavaScript">
+<script type="text/javascript" >
 flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 	playlist: wowzaPlaylist,
 	// configure the required plugins
@@ -1164,7 +1165,7 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 <div style="display:none;">
 <b>Choose Video Bitrate:</b> <br/>	
 <div id="changeDynamicBitrate" style="display:none;">
-	<label index="${bitrate}"><input type="radio" name="bitrateBtn" value="${bitrate}" />${label}</label>
+	<label><input type="radio" name="bitrateBtn" value="${bitrate}" />${label}</label>
 </div>
 </div>
 		
@@ -1238,7 +1239,7 @@ $(document).ready(function () {
 	Demonstrates the functionality of the default stream selection strategy. Regardless of the available bandwidth the player will only choose the bitrate to match the available player dimensions when a bitrate is chosen from the list. 
 </p>
 
-<a name="dynamic"></a>
+
 <h3>Dynamic stream switching FMS Example</h3>
 
 
@@ -1260,7 +1261,7 @@ $(document).ready(function () {
 </a>
 
 <!-- Flowplayer installation and configuration -->
-<script language="JavaScript">
+<script type="text/javascript" >
 flowplayer("rtmpDynamicFMSPlayer", "@PLAYER_SWF@", {
 	playlist: fmsPlaylist,
 	// configure the required plugins
@@ -1318,8 +1319,8 @@ flowplayer("rtmpDynamicFMSPlayer", "@PLAYER_SWF@", {
 <div style="display:none;">
 <b>Choose Video Bitrate:</b> <br/>			
 <div id="changeDynamicFMSBitrate" style="display:none;">
-	<label index="${bitrate}"><input type="radio" name="bitrateBtn" value="${bitrate}" />${label}</label>
-</div		
+	<label><input type="radio" name="bitrateBtn" value="${bitrate}" />${label}</label>
+</div>		
 </div>
 
 <button rel="div.overlay:eq(5)" type="button">Configuration For This Example</button>
@@ -1386,7 +1387,7 @@ $(document).ready(function () {
 <h2><em>RTMP</em> With Dynamic Stream Switching With No Initial Bandwidth Check Example</h2>
 
 
-<a name="dynamic"></a>
+
 <h3>Dynamic stream switching</h3>
 
 <p>Makes use of the quality of service monitoring enabled for rtmp connections to manage upgrading / downgrading the stream. Requires an initial default bitrate to be set.</p>
@@ -1410,7 +1411,7 @@ $(document).ready(function () {
 
 
 <!-- Flowplayer installation and configuration -->
-<script language="JavaScript">
+<script type="text/javascript" >
 flowplayer("rtmpDynamicNoCheckPlayer", "@PLAYER_SWF@", {
 	playlist: wowzaPlaylist,
 	// configure the required plugins
@@ -1538,7 +1539,7 @@ flowplayer("rtmpDynamicNoCheckPlayer", "@PLAYER_SWF@", {
 
 
 <!-- Flowplayer installation and configuration -->
-<script language="JavaScript">
+<script type="text/javascript" >
 flowplayer("rtmpSelectionPlayer", "@PLAYER_SWF@", {
 	playlist: wowzaPlaylist,
 	// configure the required plugins
@@ -1606,7 +1607,7 @@ flowplayer("rtmpSelectionPlayer", "@PLAYER_SWF@", {
 <div style="display:none;">
 <b>Choose Video Bitrate:</b> <br/>	
 <div id="changeSelectionBitrate" style="display:none;">
-	<label index="${bitrate}"><input type="radio" name="bitrateBtn" value="${bitrate}" />${label}</label>
+	<label><input type="radio" name="bitrateBtn" value="${bitrate}" />${label}</label>
 </div>
 </div>
 
@@ -1715,7 +1716,7 @@ $(document).ready(function () {
 
 
 <!-- Flowplayer installation and configuration -->
-<script language="JavaScript">
+<script type="text/javascript" >
 var info = null;
 var bufferLength = 8;
 flowplayer("rtmpSelectionResizePlayer", "@PLAYER_SWF@", {
@@ -1919,7 +1920,7 @@ flowplayer("rtmpSelectionResizePlayer", "@PLAYER_SWF@", {
 <div style="display:none;">
 <b>Choose Video Bitrate:</b> <br/>	
 <div id="changeSelectionResizeBitrate" style="display:none;">
-	<label index="${bitrate}"><input type="radio" name="bitrateBtn" value="${bitrate}" />${label}</label>
+	<label><input type="radio" name="bitrateBtn" value="${bitrate}" />${label}</label>
 </div>
 </div>
 
@@ -2151,7 +2152,7 @@ flowplayer("rtmpSelectionResizePlayer", "@PLAYER_SWF@", {
 
 
 <!-- Flowplayer installation and configuration -->
-<script language="JavaScript">
+<script type="text/javascript" >
 flowplayer("rtmpQosPlayer", "@PLAYER_SWF@", {
 	playlist: wowzaPlaylist,
 	// configure the required plugins
@@ -2360,7 +2361,7 @@ The media:content tag needs to be grouped in a media:group tag like so:
 
 
 <!-- Flowplayer installation and configuration -->
-<script language="JavaScript">
+<script type="text/javascript" >
 flowplayer("rtmpRSSPlayer", "@PLAYER_SWF@", {
 	playlist: "example.rss",
 	// configure the required plugins
@@ -2485,7 +2486,7 @@ flowplayer("rtmpRSSPlayer", "@PLAYER_SWF@", {
 
 
 <!-- Flowplayer installation and configuration -->
-<script language="JavaScript">
+<script type="text/javascript" >
 
 flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
 	playlist: wowzaPlaylist,
@@ -2614,7 +2615,7 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
 </a>
 
 <!-- Flowplayer installation and configuration -->
-<script language="JavaScript">
+<script type="text/javascript" >
 
 flowplayer("rtmpErrorPlayer", "@PLAYER_SWF@", {
 	playlist: wowzaPlaylist,
@@ -2952,7 +2953,7 @@ flowplayer("rtmpErrorPlayer", "@PLAYER_SWF@", {
 </a>
 
 <!-- Flowplayer installation and configuration -->
-<script language="JavaScript">
+<script type="text/javascript" >
 
 $f("javascriptPluginPlayer", "@PLAYER_SWF@", {
 	playlist: wowzaPlaylist,
@@ -3058,13 +3059,6 @@ $f("javascriptPluginPlayer", "@PLAYER_SWF@", {
 
 }).bwcheck('#javascriptPlugin',{seperator: " | "});
 
-<div style="display:none;">
-<b>Choose Video Bitrate:</b> <br/>	
-<div id="javascriptPlugin" style="display:none;">
-	<a href="${bitrate}">${label}</a>
-</div>
-</div>
-
 </code></pre>
 </div>
 </div>
@@ -3149,17 +3143,10 @@ $f("javascriptPluginPlayer", "@PLAYER_SWF@", {
 
 </div>
 		
-		<div class="clear"></div> 
-		
-		<div id="footer">
-			
-		</div> 
 		
 		
 	</div>
 
-
-<!-- END -->	
 	
 	
 	
