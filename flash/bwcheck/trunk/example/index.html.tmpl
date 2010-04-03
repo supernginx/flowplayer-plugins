@@ -1,5 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">  
+
 
 <!-- 
 	Flowplayer website, forums & jQuery Tools by Tero Piirainen 
@@ -94,7 +93,11 @@ $(function() {
 <body id="plugins_bwcheck">
 
 
-<script language="JavaScript">
+
+
+	
+	<div id="wrap">			 
+		<script language="JavaScript">
 
 // common methods and configs
 
@@ -180,10 +183,6 @@ $(document).ready(function () {
 });
 
 </script>
-
-	
-	<div id="wrap">			 
-		
 		
 		<div id="content"> 
 		
@@ -247,7 +246,7 @@ $(document).ready(function () {
 	<li>
 		Selection strategy rule system, choosing the right bitrate and the right video matching the player dimensions. 
 		This is useful to cancel out playing higher bitrate videos if the player dimensions are smaller than the video saving bandwidth.
-		When the player is in fullscreen mode a different video will be chosen to match those dimensions. <br><br>
+		When the player is in fullscreen mode a different video will be chosen to match those dimensions. <br/><br/>
 	
 		Sometimes this strategy rule system is not suitable ie if the player is resized to suit the dimensions so a secondary resizable 
 		strategy is available to choose a video that is under the maximum available width the player can resize to on the page.	
@@ -457,19 +456,20 @@ flowplayer("player", "@PLAYER_SWF@", {
  For this plugin to function correctly all clips in a playlist require an object list of available bitrates in a bitrate property to be set on the clip bitrates property config which maps to customProperties.bitrates.
  
  Each bitrate config must have the following properties
+</p>
  <ul>
    <li>url</li>
    <li>bitrate</li>
    <li>width</li>
 </ul>
-
+<p>
 And optional
-
+</p>
  <ul>
    <li>height</li>
 </ul>
  
-</p>
+
 
 <p>Example clip config</p>
 
@@ -494,7 +494,7 @@ playlist: [
 <table class="listing">
 	<thead>
 		<tr>
-			<th nowrap>property / datatype</th>
+			<th nowrap="nowrap">property / datatype</th>
 			<th>default</th>
 			<th>description</th>
 		</tr>
@@ -539,8 +539,7 @@ playlist: [
         </td>
     </tr>
     <tr>
-    	<a name="rememberBitrate"></a>
-        <td class="code">rememberBitrate <div class="type">boolean</div></td>
+        <td class="code"><a name="rememberBitrate"></a>rememberBitrate <div class="type">boolean</div></td>
         <td class="code default">true</td>
         <td class="description">
 				Should the detected bandwidth be remembered for the client browser. If <samp>true</samp> the detection is performed only once per domain and stored on the client browser. If <samp>false</samp> the detection is done every time a clip starts playing.
@@ -573,16 +572,17 @@ playlist: [
         <td class="code">streamSelectionStrategy<div class="type">string</div></td>
         <td class="code default">default</td>
         <td class="description">
-        	Possible values: (default, resizable)<br>
+        	Possible values: (default, resizable)<br/>
             The strategy to use for the stream selection rule. The default rule will choose a bitrate matching the available bitrate
             while also matching a video that is less than or equal to the player screen size. When the player goes fullscreen the same rule is applied
             but matches the player screen size in fullscreen therefore will choose a higher bitrate if possible.
             <p>
             The resizable selection strategy allows to choose a bitrate and video dimension less than or equal the config setting of maxContainerWidth which is the maximum width the player can be.
             This allows for dynamic resizing of the player container to match the size of the video.
+            </p>
             <p>
             Even without resizing, this strategy is possibly a better option if the default rule isn't flexible enough for delivering the best quality stream for the end user.
-            
+            </p>
         </td>
     </tr>
     <tr>
@@ -624,7 +624,7 @@ playlist: [
 <table class="listing">
 	<thead>
 		<tr>
-			<th nowrap>property / datatype</th>
+			<th nowrap="nowrap">property / datatype</th>
 			<th>default</th>
 			<th>description</th>
 		</tr>
@@ -990,7 +990,7 @@ $f("rtmpManualPlayer", "@PLAYER_SWF@", {
 
 
 <div style="display:none;">
-<b>Choose Video Bitrate:</b> <br>	
+<b>Choose Video Bitrate:</b> <br/>	
 <div id="changeManualBitrate" style="display:none;">
 	<label index="${bitrate}"><input type="radio" name="bitrateBtn" value="${bitrate}" />${label}</label>
 </div>
@@ -1054,7 +1054,7 @@ $(document).ready(function () {
 
 
 <div style="display:none;">
-<b>Choose Video Bitrate:</b> <br>	
+<b>Choose Video Bitrate:</b> <br/>	
 <div id="changeManualBitrate" style="display:none;">
 	<label index="${bitrate}"><input type="radio" name="bitrateBtn" value="${bitrate}" />${label}</label>
 </div>
@@ -1162,7 +1162,7 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 <button type="button" class="checkBandwidthBtn">Check Bandwidth</button>
 		
 <div style="display:none;">
-<b>Choose Video Bitrate:</b> <br>	
+<b>Choose Video Bitrate:</b> <br/>	
 <div id="changeDynamicBitrate" style="display:none;">
 	<label index="${bitrate}"><input type="radio" name="bitrateBtn" value="${bitrate}" />${label}</label>
 </div>
@@ -1316,7 +1316,7 @@ flowplayer("rtmpDynamicFMSPlayer", "@PLAYER_SWF@", {
 <button type="button" class="checkBandwidthBtn">Check Bandwidth</button>
 
 <div style="display:none;">
-<b>Choose Video Bitrate:</b> <br>			
+<b>Choose Video Bitrate:</b> <br/>			
 <div id="changeDynamicFMSBitrate" style="display:none;">
 	<label index="${bitrate}"><input type="radio" name="bitrateBtn" value="${bitrate}" />${label}</label>
 </div		
@@ -1389,7 +1389,7 @@ $(document).ready(function () {
 <a name="dynamic"></a>
 <h3>Dynamic stream switching</h3>
 
-<p>Makes use of the quality of service monitoring enabled for rtmp connections to manage upgrading / downgrading the stream. Requires an initial default bitrate to be set.
+<p>Makes use of the quality of service monitoring enabled for rtmp connections to manage upgrading / downgrading the stream. Requires an initial default bitrate to be set.</p>
 
 <div style="width:320px;height:205px;margin:30px auto">
    
@@ -1604,7 +1604,7 @@ flowplayer("rtmpSelectionPlayer", "@PLAYER_SWF@", {
 <button type="button" class="checkBandwidthBtn">Check Bandwidth</button>
 
 <div style="display:none;">
-<b>Choose Video Bitrate:</b> <br>	
+<b>Choose Video Bitrate:</b> <br/>	
 <div id="changeSelectionBitrate" style="display:none;">
 	<label index="${bitrate}"><input type="radio" name="bitrateBtn" value="${bitrate}" />${label}</label>
 </div>
@@ -1917,7 +1917,7 @@ flowplayer("rtmpSelectionResizePlayer", "@PLAYER_SWF@", {
 
 
 <div style="display:none;">
-<b>Choose Video Bitrate:</b> <br>	
+<b>Choose Video Bitrate:</b> <br/>	
 <div id="changeSelectionResizeBitrate" style="display:none;">
 	<label index="${bitrate}"><input type="radio" name="bitrateBtn" value="${bitrate}" />${label}</label>
 </div>
@@ -2847,7 +2847,7 @@ flowplayer("rtmpErrorPlayer", "@PLAYER_SWF@", {
 <table class="listing">
 	<thead>
 		<tr>
-			<th nowrap>Event</th>
+			<th nowrap="nowrap">Event</th>
 			<th style="width:450px">When does it fire?</th>
 		</tr>
 	</thead>
@@ -2891,7 +2891,7 @@ flowplayer("rtmpErrorPlayer", "@PLAYER_SWF@", {
 <table class="listing">
 	<thead>
 		<tr>
-			<th nowrap>Event</th>
+			<th nowrap="nowrap">Event</th>
 			<th style="width:450px">When does it fire?</th>
 		</tr>
 	</thead>
@@ -3004,7 +3004,7 @@ $f("javascriptPluginPlayer", "@PLAYER_SWF@", {
 </div>
 
 <div style="display:none;">
-<b>Choose Video Bitrate:</b> <br>		
+<b>Choose Video Bitrate:</b> <br/>		
 <div id="javascriptPlugin" style="display:none;">
 	<a href="${bitrate}">${label}</a>
 </div>
@@ -3059,7 +3059,7 @@ $f("javascriptPluginPlayer", "@PLAYER_SWF@", {
 }).bwcheck('#javascriptPlugin',{seperator: " | "});
 
 <div style="display:none;">
-<b>Choose Video Bitrate:</b> <br>	
+<b>Choose Video Bitrate:</b> <br/>	
 <div id="javascriptPlugin" style="display:none;">
 	<a href="${bitrate}">${label}</a>
 </div>
@@ -3070,11 +3070,11 @@ $f("javascriptPluginPlayer", "@PLAYER_SWF@", {
 </div>
 
 
-<br><br><b>Configuration:</b>
+<br/><br/><b>Configuration:</b>
 <table class="listing">
 	<thead>
 		<tr>
-			<th nowrap>property / datatype</th>
+			<th nowrap="nowrap">property / datatype</th>
 			<th>default</th>
 			<th>description</th>
 		</tr>
@@ -3141,7 +3141,7 @@ $f("javascriptPluginPlayer", "@PLAYER_SWF@", {
         <td class="code">seperator <div class="type">string</div></td>
         <td class="code default"></td>
         <td class="description">
-				A seperator character to use for seperating the links ie <br> or | .
+				A seperator character to use for seperating the links ie <br/> or | .
         </td>
     </tr>
 </table>
@@ -3159,7 +3159,7 @@ $f("javascriptPluginPlayer", "@PLAYER_SWF@", {
 	</div>
 
 
-	
+<!-- END -->	
 	
 	
 	
