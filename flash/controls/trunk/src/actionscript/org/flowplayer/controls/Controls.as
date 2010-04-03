@@ -121,13 +121,9 @@ package org.flowplayer.controls {
             }
             _pluginModel.config.autoHide = _config.autoHide.state;
 
-            if (! props || _config.autoHide.state == "never") {
-                log.debug("autoHide set to 'never'");
-                if (_controlBarMover) {
-                    _controlBarMover.stop();
-                }
-                return;
-            }
+            if (_controlBarMover) 
+                _controlBarMover.stop();
+
 
             createControlBarMover();
             _controlBarMover.start();
@@ -218,11 +214,21 @@ package org.flowplayer.controls {
             _animationTimer.start();
         }
 
+		override public function onBeforeCss(styleProps:Object = null):void 
+		{
+			if ( _controlBarMover )
+				_controlBarMover.cancelAnimation();	
+		}
+
         /**
          * @inheritDoc
          */
         override public function css(styleProps:Object = null):Object {
             var result:Object = super.css(styleProps);
+
+			if ( _controlBarMover )
+				_controlBarMover.updatePosition(true);
+	
             var newStyleProps:Object = _config.style.addStyleProps(result);
             if (! styleProps) return newStyleProps;
 
