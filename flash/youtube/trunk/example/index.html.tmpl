@@ -22,24 +22,55 @@
 	<meta name="Author" content="Tero Piirainen" />
 	<meta name="Robots" content="index,follow" /> 
  
-	<link rel="shortcut icon" href="/img/favicon.png" type="image/png" />
-		
-		<link rel="stylesheet" type="text/css" href="http://static.flowplayer.org/css/global-0.25.css" />
+	<link rel="stylesheet" type="text/css" href="http://static.flowplayer.org/css/global-0.25.css" />
 	
-	<script type="text/javascript" src="jquery-1.2.6.min.js"></script>
-	<script src="http://cdn.jquerytools.org/1.1.2/jquery.tools.min.js"></script>
-
-	<script src="http://static.flowplayer.org/js/flowplayer-3.1.4.min.js"></script>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+	<script type="text/javascript"  src="http://cdn.jquerytools.org/1.1.2/jquery.tools.min.js"></script>
+	<script type="text/javascript"  src="http://static.flowplayer.org/js/flowplayer-3.1.4.min.js"></script>	
+	<script type="text/javascript"  src="http://amazon.flowplayer.org/js/tools/tools.overlay.apple-1.0.1.min.js"></script>	
+	
 	
 	<script src="http://static.flowplayer.org/js/jquery.mousewheel.js"></script>
 	<script src="http://static.flowplayer.org/js/flowplayer.playlist-3.0.7.min.js"></script>
-
 	<link rel="stylesheet" type="text/css" href="http://amazon.flowplayer.org/css/playlist.css"/>
 		
-	<script type="text/javascript" src="http://static.flowplayer.org/js/global-0.36.js"></script>
 	
-	<script>
+	
+	
+	<style type="text/css">
+		div.overlay {
+		width:1024px; 
+		height:432px;
 
+		}
+		
+		/* these two settings will remove borders from playlist entries */
+		a:active {  outline:none; }
+	 	:focus   { -moz-outline-style:none; }
+	</style>
+	
+
+	<!--[if lt IE 7]>
+		<style type="text/css">
+			@import "http://static.flowplayer.org/css/ie6.css?v=0.2";
+		</style>
+	<![endif]-->
+	
+	<!--[if lt IE 8]>
+		<style type="text/css">
+			html { overflow-x:hidden; }
+			#content ol, #content ul  {margin-left: 50px; }
+		</style>
+	<![endif]-->	
+
+</head>
+
+<body id="plugins_youtube">
+
+
+	<div id="wrap">			 
+		
+<script type="text/javascript">
 $(function() {		
 		
 	// positions for each overlay
@@ -62,41 +93,6 @@ $(function() {
 	});
 	
 });
-</script>
-	
-	<style>
-		div.overlay {
-		width:1024px; 
-		height:432px;
-
-		}
-		
-		/* these two settings will remove borders from playlist entries */
-		a:active {  outline:none; }
-	 	:focus   { -moz-outline-style:none; }
-	</style>
-	
-
-	<!--[if lt IE 7]>
-		<style>
-			@import "http://static.flowplayer.org/css/ie6.css?v=0.2";
-		</style>
-	<![endif]-->
-	
-	<!--[if lt IE 8]>
-		<style>
-			html { overflow-x:hidden; }
-			#content ol, #content ul  {margin-left: 50px; }
-		</style>
-	<![endif]-->	
-
-</head>
-
-<body id="plugins_youtube">
-
-
-<script language="JavaScript">
-
 // common methods and configs
 
 function showRelatedList(gdata, container)
@@ -132,7 +128,8 @@ function showRelatedList(gdata, container)
 
 var playlist =  [
 			       {
-						url: 'api:PmGiCFPUSM4'					
+						//url: 'api:PmGiCFPUSM4'
+						url: 'api:c1SScNKdUPY'					
 				   }
         		];
 
@@ -151,10 +148,6 @@ $(document).ready(function () {
 });
 
 </script>
-
-	
-	<div id="wrap">			 
-		
 		
 		<div id="content"> 
 		
@@ -689,21 +682,10 @@ This can be useful for providing a playlist of related videos or used in conjuct
     </tr>
 </table>
 </div>
-		
-		<div class="clear"></div> 
-		
-		<div id="footer">
-			
-		</div> 
-		
+
 		
 	</div>
 
-
-	
-	
-	
-	
 			
 </body>
 
