@@ -58,7 +58,9 @@ package org.flowplayer.ui {
             _player = player;
             _stage = stage;
             _disp = displayObject;
-
+			
+			updatePosition();
+			
             if (_config.state != "fullscreen") {
                 startTimerAndInitializeListeners();
             }
@@ -97,6 +99,21 @@ package org.flowplayer.ui {
             }
         }
 
+		public function cancelAnimation():void {
+			_player.animationEngine.cancel(_disp);
+		}
+
+		public function updatePosition(showControls:Boolean = false):void
+		{
+			log.warn("Updating to new position !!");
+			_originalPos = getDisplayProperties();
+			if ( showControls )
+			{
+				cancelAnimation();
+				show();
+			}
+		}
+
         private function getDisplayProperties():Object {
             if (_model && _model.getDisplayObject() == _disp) {
                 return DisplayProperties(_player.pluginRegistry.getPlugin(_model.name)).clone() as DisplayProperties;
@@ -118,8 +135,7 @@ package org.flowplayer.ui {
         }
 
         private function get hiddenPos():Object {
-            _originalPos = getDisplayProperties();
-            var hiddenPos:Object = clone(_originalPos);
+        	var hiddenPos:Object = clone(_originalPos);
             if (useFadeOut) {
                 _hwFullScreen = true;
                 hiddenPos.alpha = 0;
@@ -139,8 +155,8 @@ package org.flowplayer.ui {
                     stop();
                 }
                 _disp.alpha = 0;
-                _player.animationEngine.cancel(_disp);
-                show();
+                cancelAnimation();	
+				show();
             }
         }
 
@@ -166,21 +182,26 @@ package org.flowplayer.ui {
         }
 
         private function onMouseOver(event:MouseEvent):void {
+	log.warn("MOUSE OVER");
             _mouseOver = true;
         }
 
         private function onMouseOut(event:MouseEvent):void {
+	log.warn("MOUSE OUT");
             _mouseOver = false;
         }
 
 
 
 		private function mouseLeave(event:Event = null):void {
+			_stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+				
 			stopHideTimer();
 			stopMouseOutTimer();
-			_player.animationEngine.cancel(_disp);
+			cancelAnimation();	
+
 			hide();
-			_stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+			//stop();
 		}
 
 
@@ -216,7 +237,7 @@ package org.flowplayer.ui {
 
         private function onMouseMove(event:MouseEvent):void {
             _stage.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-            _player.animationEngine.cancel(_disp);
+            cancelAnimation();	
             show();
             if (isShowing() && _hideTimer) {
 //                log.debug("onMouseMove(): already showing");
@@ -267,9 +288,16 @@ package org.flowplayer.ui {
         }
 
         private function hide(event:TimerEvent = null, ignoreMouseOver:Boolean = false):void {
-            if (! isShowing()) return;
 
-            log.debug("mouse pos " + _stage.mouseX + "x" + _stage.mouseY + " mouse on stage " + _mouseOver);
+            if (! isShowing()) 
+			{
+				if (_hideTimer) {
+	                _hideTimer.stop();
+	            }
+				return;
+			}
+
+log.warn("HIDING ? " + (ignoreMouseOver ? 'true ' : 'false ')+ (_mouseOver ? 'true ' : 'false '))
             if (! ignoreMouseOver && _mouseOver) return;
 
             log.debug("dispatching onBeforeHidden");
@@ -293,9 +321,6 @@ package org.flowplayer.ui {
         private function show():void {
             // fetch the current props, they might have changed because of some
             var currentProps:Object = getDisplayProperties();
-            if (!_originalPos) {
-                _originalPos = getDisplayProperties();
-            }
 
             if (_hwFullScreen) {
                 currentProps.alpha = _originalPos.alpha;
