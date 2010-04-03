@@ -631,7 +631,7 @@ package org.flowplayer.controls {
         private function onPlayStarted(event:ClipEvent):void {
             log.debug("received " + event);
             if (_playButton) {
-                _playButton.down = ! event.isDefaultPrevented();
+                _playButton.down = ! event.isDefaultPrevented() && _player.isPlaying();
             }
             enableFullscreenButton(event.target as Clip);
         }
