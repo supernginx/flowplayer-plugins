@@ -327,7 +327,7 @@ package org.flowplayer.controls {
             }
 			
 			_config.player = player;
-            _player.onLoad(onPlayerLoad);
+//            _player.onLoad(onPlayerLoad);
 
             createChildren();
             loader = player.createLoader();
@@ -344,10 +344,10 @@ package org.flowplayer.controls {
             _pluginModel.dispatchOnLoad();
         }
 
-        private function onPlayerLoad(event:PlayerEvent):void {
-            // creation of slowmotion buttons is delayed up to this point
-            createSlowmotionButtons(_player.animationEngine); 
-        }
+//        private function onPlayerLoad(event:PlayerEvent):void {
+//            // creation of slowmotion buttons is delayed up to this point
+//            createSlowmotionButtons(_player.animationEngine); 
+//        }
 
         private function initSkin():void {
             // must allowDomain because otherwise the dynamically loaded buttons cannot access this controlbar
@@ -398,7 +398,9 @@ package org.flowplayer.controls {
 		}
 
         private function createSlowmotionButtons(animationEngine:AnimationEngine):void {
-            if (hasSlowMotion() && SkinClasses.getSlowMotionBwdButton() != null)
+            var slomo:Boolean = hasSlowMotion() && SkinClasses.getSlowMotionBwdButton() != null;
+            log.debug("createSlowmotionButtons(), hasSlowMotion? " + slomo);
+            if (slomo)
             {
                 _slowMotionFwdButton = addChildWidget(createWidget(_slowMotionFwdButton, "slowmotion", SlowMotionFwdButton, _config, animationEngine), ButtonEvent.CLICK, function(e:ButtonEvent):void {
                     onSlowMotionClicked(false, true);
@@ -425,7 +427,7 @@ package org.flowplayer.controls {
             _stopButton = addChildWidget(createWidget(_stopButton, "stop", StopButton, _config, animationEngine), ButtonEvent.CLICK, onStopClicked);
             _nextButton = addChildWidget(createWidget(_nextButton, "playlist", NextButton, _config, animationEngine), ButtonEvent.CLICK, "next");
             _prevButton = addChildWidget(createWidget(_prevButton, "playlist", PrevButton, _config, animationEngine), ButtonEvent.CLICK, "previous");
-
+            createSlowmotionButtons(animationEngine);
             _muteVolumeButton = addChildWidget(createWidget(_muteVolumeButton, "mute", ToggleVolumeMuteButton, _config, animationEngine), ButtonEvent.CLICK, onMuteVolumeClicked) as AbstractToggleButton;
             _volumeSlider = addChildWidget(createWidget(_volumeSlider, "volume", VolumeScrubber, _config, animationEngine, this), VolumeSlider.DRAG_EVENT, onVolumeSlider) as VolumeScrubber;
 
@@ -433,7 +435,6 @@ package org.flowplayer.controls {
 
             createTimeView();
             createScrubberUpdateTimer();
-            log.debug("created all buttons");
             _initialized = true;
         }
 
