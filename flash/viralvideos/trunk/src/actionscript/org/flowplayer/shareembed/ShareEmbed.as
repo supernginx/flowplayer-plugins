@@ -367,5 +367,13 @@ package org.flowplayer.shareembed {
         public function animate(styleProps:Object):Object {
             return {};
         }
+
+        public function onBeforeCss(styleProps:Object = null):void {
+            _autoHide.cancelAnimation();
+        }
+
+        public function onBeforeAnimate(styleProps:Object):void {
+            _autoHide.cancelAnimation();
+        }
     }
 }
