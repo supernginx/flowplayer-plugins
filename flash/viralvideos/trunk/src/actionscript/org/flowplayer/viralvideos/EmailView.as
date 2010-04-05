@@ -45,9 +45,7 @@ package org.flowplayer.viralvideos {
         private var _emailFromLabel:TextField;
         private var _emailFromInput:TextField;
         private var _statusLabel:TextField;
-
         private var _sendBtn:LabelButton;
-
         private var _videoURL:String;
 
         public function EmailView(plugin:DisplayPluginModel, player:Flowplayer, config:Config, style:Object) {
