@@ -12,17 +12,8 @@
     </content>
     <orderEntry type="jdk" jdkName="flex_sdk_3" jdkType="Flex SDK Type" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/as3corelib.swc!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module" module-name="core" />
     <orderEntry type="module" module-name="common" />
+    <orderEntry type="module" module-name="core" />
   </component>
 </module>
 
