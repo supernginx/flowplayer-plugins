@@ -52,7 +52,7 @@ package org.flowplayer.analytics {
 				"trackingMode": "AS3",
 				"bridgeObject": "",
 				"googleId": "",
-				"debug": true,
+				"debug": false,
 				"labels": {
 					"start": "start",
 					"begin": "play",
