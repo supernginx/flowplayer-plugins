@@ -200,7 +200,7 @@ package org.flowplayer.viralvideos {
             param.email = _emailFromInput.text;
             param.to = _emailToInput.text;
             //format the message from the message template
-            param.message = formatString(_config.email.texts.template, _messageInput.text, _videoURL, _config.email.texts.title ? _config.email.texts.title : _videoURL);
+            param.message = formatString(_config.email.texts.template, _messageInput.text, _videoURL, _videoURL);
             param.subject = _config.email.texts.subject;
             param.token = _config.email.token;
 
