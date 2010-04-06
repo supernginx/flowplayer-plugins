@@ -14,7 +14,7 @@ package org.flowplayer.viralvideos.config {
 
     public class ShareConfig {
         private var _title:String = "Click on an icon to share this video";
-        private var _shareTitle:String = "A cool video";
+        private var _description:String = "A cool video";
         private var _body:String = "";
         private var _category:String = "";
         private var _popupOnClick:Boolean = true;
@@ -157,12 +157,12 @@ package org.flowplayer.viralvideos.config {
             _bebo = value;
         }
 
-        public function get shareTitle():String {
-            return _shareTitle;
+        public function get description():String {
+            return _description;
         }
 
-        public function set shareTitle(value:String):void {
-            _shareTitle = value;
+        public function set description(value:String):void {
+            _description = value;
         }
     }
 
