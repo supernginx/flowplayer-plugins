@@ -14,6 +14,12 @@ package org.flowplayer.ui {
     public class ButtonConfig {
         private var _color:String;
         private var _overColor:String;
+        private var _fontColor:String;
+        private var _lineColor:String;
+
+        /*
+         * Color.
+         */
 
         public function get color():Number {
             return StyleSheetUtil.colorValue(_color);
@@ -37,6 +43,11 @@ package org.flowplayer.ui {
             _color = color;
         }
 
+        /*
+         * Over color.
+         */
+
+
         public function get overColor():Number {
             return StyleSheetUtil.colorValue(_overColor);
         }
@@ -58,5 +69,44 @@ package org.flowplayer.ui {
         public function setOverColor(color:String):void {
             _overColor = color;
         }
+
+        /*
+         * Line color.
+         */
+
+        public function setLineColor(color:String):void {
+            _lineColor = color;
+        }
+
+        public function get lineColor():Number {
+            return StyleSheetUtil.colorValue(_lineColor);
+        }
+
+        public function get lineAlpha():Number {
+            return StyleSheetUtil.colorAlpha(_lineColor);
+        }
+
+        public function get lineColorRGB():Array {
+            return StyleSheetUtil.rgbValue(lineColor);
+        }
+
+        public function get lineColorRGBA():Array {
+            var rgba:Array = lineColorRGB;
+            rgba.push(lineAlpha);
+            return rgba;
+        }
+
+        /*
+         * Font color.
+         */
+
+        public function get fontColor():Number {
+            return StyleSheetUtil.colorValue(_fontColor);
+        }
+
+        public function setFontColor(color:String):void {
+            _fontColor = color;
+        }
+        
     }
 }

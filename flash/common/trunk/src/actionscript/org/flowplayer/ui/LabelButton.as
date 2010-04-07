@@ -56,7 +56,7 @@ package org.flowplayer.ui {
             var text:TextField = TextUtil.createTextField(false, null, 12, true);
             text.selectable = false;
             text.type = TextFieldType.DYNAMIC;
-            text.textColor = 0xffffff;
+            text.textColor = config.fontColor;
             text.defaultTextFormat.align = TextFormatAlign.CENTER;
             addChild(text);
             text.text = _label;
