@@ -30,6 +30,7 @@ package org.flowplayer.viralvideos {
         public function Tab(plugin:DisplayPluginModel, player:Flowplayer, text:String, style:Object) {
             super("viral-tab", player, player.createLoader());
             rootStyle = style;
+            css(style);
 
             _plugin = plugin;
             _player = player;
@@ -39,7 +40,7 @@ package org.flowplayer.viralvideos {
         }
 
         override protected function onResize():void {
-            _field.width = _field.textWidth + 5;
+            _field.width = _field.textWidth + 7;
             _field.height = _field.textHeight + 3;
             Arrange.center(_field, width);
             _field.y = 5;
@@ -56,7 +57,8 @@ package org.flowplayer.viralvideos {
             }
 
             _field = _player.createTextField(10);
-            _field.htmlText = htmlText;
+            _field.styleSheet = style.styleSheet;
+            _field.htmlText = "<span class=\"title\">" + htmlText + "</span>";
             _field.selectable = false;
             _field.height = 20;
             _field.x = 5;

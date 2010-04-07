@@ -172,6 +172,7 @@ package org.flowplayer.viralvideos.config
                 _buttonConfig = new ButtonConfig();
                 _buttonConfig.setColor("rgba(140,142,140,1)");
                 _buttonConfig.setOverColor("rgba(140,142,140,1)");
+                _buttonConfig.setFontColor("rgb(255,255,255)")
             }
             return _buttonConfig;
         }
