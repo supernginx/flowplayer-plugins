@@ -363,7 +363,8 @@ package org.flowplayer.controls.slider {
 			bar.graphics.endFill();
 			
 			if (gradientAlphas) {
-				GraphicsUtil.addGradient(bar, 0, gradientAlphas, height/1.5, leftEdge);
+				var gradientHeight:Number = height/1.5;
+				GraphicsUtil.addGradient(bar, 0, gradientAlphas, gradientHeight, leftEdge,  (height-gradientHeight) / 2);
 			} else {
 				GraphicsUtil.removeGradient(bar);
 			}
