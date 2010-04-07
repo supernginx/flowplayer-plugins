@@ -26,6 +26,7 @@ Fixes:
 - fixed progressbar issue when resizing while seeking 
 - fixed scrubber behaviour with instream clips and specific controlbar configuration
 - fixed autoHide behavior
+- fixed gradient positioning in sliders
 
 3.1.4
 -----
