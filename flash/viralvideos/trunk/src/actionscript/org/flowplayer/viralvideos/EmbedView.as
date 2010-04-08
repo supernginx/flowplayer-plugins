@@ -34,6 +34,7 @@ package org.flowplayer.viralvideos {
         private var _embedCode:TextField;
         private var _copyBtn:LabelButton;
         private var _titleLabel:TextField;
+        private var _infoLabel:TextField;
         private var _optionsLabel:TextField;
         private var _buttonColorLabel:TextField;
         private var _bgColorLabel:TextField;
@@ -55,6 +56,7 @@ package org.flowplayer.viralvideos {
             createOptionsContainer();
 
             _titleLabel = createLabel("<span class=\"title\">" + _config.embed.title + "</span>");
+            _infoLabel = createLabel();
             _optionsLabel = createLabel("<span class=\"title\">" + _config.embed.options + "</span>", _optionsContainer);
             _sizeLabel = createLabel("<span class=\"label\">" + _config.embed.size + "</span>", _optionsContainer);
             _bgColorLabel = createLabel("<span class=\"label\">" + _config.embed.backgroundColor + "</span>", _optionsContainer);
@@ -138,9 +140,11 @@ package org.flowplayer.viralvideos {
             _embedCode.scrollH = _embedCode.scrollV = 0;
         }
 
-        private function createLabel(htmlText:String, parent:DisplayObject = null):TextField {
+        private function createLabel(htmlText:String = null, parent:DisplayObject = null):TextField {
             var field:TextField = createLabelField();
-            field.htmlText = htmlText;
+            if (htmlText != null) {
+                field.htmlText = htmlText;
+            }
             (parent ? parent : this).addChild(field);
             return field;
         }
@@ -181,7 +185,7 @@ package org.flowplayer.viralvideos {
 
         private function arrangeOptions():void {
             // Size: [width] x [height]
-            const INPUT_LEFT:Number = 120;
+            const INPUT_LEFT:Number = _bgColorLabel.textWidth + 20;
             _optionsContainer.y = _copyBtn.y + _copyBtn.height + 10;
 
             _sizeLabel.y = _optionsLabel.height + PADDING_Y_TALL;
@@ -222,9 +226,13 @@ package org.flowplayer.viralvideos {
             _embedCode.x = MARGIN_X;
             _embedCode.y = _titleLabel.y + _titleLabel.height + 10;
 
-            _copyBtn.setSize(90, 30);
+            _copyBtn.setSize(80, 25);
             _copyBtn.x = width - _copyBtn.width - MARGIN_X;
             _copyBtn.y = _embedCode.y + _embedCode.height + 10;
+
+            _infoLabel.y = _copyBtn.y;
+            _infoLabel.x = MARGIN_X;
+            _infoLabel.width = width;
 
             arrangeOptions();
             setSelection();
@@ -243,7 +251,8 @@ package org.flowplayer.viralvideos {
             System.setClipboard(_config.embed.playerEmbed.getEmbedCode());
             stage.focus = _embedCode;
             setSelection();
-            _titleLabel.htmlText = '<span class="info">Copied to clipboard</span>';
+            _infoLabel.htmlText = '<span class="info">Copied to clipboard</span>';
+            createLabelReset(_infoLabel);
         }
     }
 }

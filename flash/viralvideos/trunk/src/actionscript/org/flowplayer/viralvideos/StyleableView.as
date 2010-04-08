@@ -10,12 +10,12 @@
  */
 package org.flowplayer.viralvideos {
     import flash.events.FocusEvent;
+    import flash.events.TimerEvent;
     import flash.text.AntiAliasType;
     import flash.text.TextField;
-
     import flash.text.TextFieldAutoSize;
-
     import flash.text.TextFieldType;
+    import flash.utils.Timer;
 
     import org.flowplayer.model.DisplayPluginModel;
     import org.flowplayer.util.StyleSheetUtil;
@@ -137,6 +137,11 @@ package org.flowplayer.viralvideos {
             return str;
         }
 
+        protected function createLabelReset(label:TextField):void {
+            var timer:Timer = new Timer(5000, 1);
+            timer.addEventListener(TimerEvent.TIMER_COMPLETE, function(event:TimerEvent):void { label.htmlText = ""; } );
+            timer.start();
+        }
     }
 
 }
