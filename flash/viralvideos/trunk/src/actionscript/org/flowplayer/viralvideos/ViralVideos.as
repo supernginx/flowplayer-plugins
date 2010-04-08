@@ -137,7 +137,17 @@ package org.flowplayer.viralvideos {
             createTabs();
 
             _autoHide = new AutoHide(null, _config.autoHide, _player, stage, _iconBar);
+            _autoHide.hide();
+            _autoHide.onShow(onButtonsShow);
             _autoHide.start();
+
+            hideViews();
+            setActiveTab("Email", false);
+            _emailView.show();
+        }
+
+        private function onButtonsShow():Boolean {
+            return ! this.visible || this.alpha == 0;
         }
 
         private function createViews():void {
@@ -218,13 +228,15 @@ package org.flowplayer.viralvideos {
             showViews('Share');
         }
 
-        public function showView(panel:String):void {
-            displayButtons(false);
-
+        private function hideViews():void {
             if (_emailView) _emailView.visible = false;
             if (_embedView) _embedView.visible = false;
             if (_shareView) _shareView.visible = false;
+        }
 
+        public function showView(panel:String):void {
+            displayButtons(false);
+            hideViews();
             if (panel == "Email") _emailView.show();
             if (panel == "Embed") _embedView.show();
             if (panel == "Share") _shareView.show();
@@ -240,7 +252,7 @@ package org.flowplayer.viralvideos {
             _player.setKeyboardShortcutsEnabled(true);
         }
 
-        public function setActiveTab(newTab:String):void {
+        public function setActiveTab(newTab:String, show:Boolean = true):void {
             log.debug("setActiveTab() " + newTab);
 
             if (_emailView) {
@@ -269,7 +281,9 @@ package org.flowplayer.viralvideos {
                 _shareTab.css(_tabCSSProperties);
             }
 
-            showView(newTab);
+            if (show) {
+                showView(newTab);
+            }
             arrangeView(getView(newTab));
 
         }
@@ -353,11 +367,6 @@ package org.flowplayer.viralvideos {
                 log.debug("stopping auto hide and hiding buttons");
                 _autoHide.stop(false);
             }
-        }
-
-        [External]
-        public function show():void {
-            showViews("Email");
         }
 
         public function css(styleProps:Object = null):Object {
