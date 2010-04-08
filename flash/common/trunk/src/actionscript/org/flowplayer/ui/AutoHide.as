@@ -45,6 +45,8 @@ package org.flowplayer.ui {
         private var _mouseOver:Boolean = false;
         private var _hwFullScreen:Boolean;
         private var _model:DisplayPluginModel;
+        private var _hideListener:Function;
+        private var _showListener:Function;
 
         public function AutoHide(model:DisplayPluginModel, config:AutoHideConfig, player:Flowplayer, stage:Stage, displayObject:DisplayObject) {
 //            Assert.notNull(model, "model cannot be null");
@@ -65,6 +67,22 @@ package org.flowplayer.ui {
                 startTimerAndInitializeListeners();
             }
             _stage.addEventListener(FullScreenEvent.FULL_SCREEN, onFullScreen);
+        }
+
+        /**
+         * Adds a hide lisenerer function.
+         * @param hideListener the listener callback function. If this returns false the hiding is prevented.
+         */
+        public function onHide(hideListener:Function):void {
+            _hideListener = hideListener;
+        }
+
+        /**
+         * Adds a show lisenerer function.
+         * @param showListener the listener callback function. If this returns false showing is prevented.
+         */
+        public function onShow(showListener:Function):void {
+            _showListener = showListener;
         }
 
         public function stop(leaveVisible:Boolean = true):void {
@@ -287,7 +305,7 @@ package org.flowplayer.ui {
             return _stage.displayState == StageDisplayState.FULL_SCREEN;
         }
 
-        private function hide(event:TimerEvent = null, ignoreMouseOver:Boolean = false):void {
+        public function hide(event:TimerEvent = null, ignoreMouseOver:Boolean = false):void {
 
             if (! isShowing()) 
 			{
@@ -297,12 +315,17 @@ package org.flowplayer.ui {
 				return;
 			}
 
-log.warn("HIDING ? " + (ignoreMouseOver ? 'true ' : 'false ')+ (_mouseOver ? 'true ' : 'false '))
+            log.warn("HIDING ? " + (ignoreMouseOver ? 'true ' : 'false ')+ (_mouseOver ? 'true ' : 'false '))
             if (! ignoreMouseOver && _mouseOver) return;
 
             log.debug("dispatching onBeforeHidden");
             if (_model && ! _model.dispatchBeforeEvent(PluginEventType.PLUGIN_EVENT, "onBeforeHidden")) {
                 log.debug("hide() onHidden event was prevented, not hiding");
+                return;
+            }
+
+            if (_hideListener != null && ! _hideListener()) {
+                log.debug("hideListener callback function prevented hiding");
                 return;
             }
 
@@ -318,7 +341,7 @@ log.warn("HIDING ? " + (ignoreMouseOver ? 'true ' : 'false ')+ (_mouseOver ? 'tr
             dispatchEvent("onHidden");
         }
 
-        private function show():void {
+        public function show():void {
             // fetch the current props, they might have changed because of some
             var currentProps:Object = getDisplayProperties();
 
@@ -340,6 +363,11 @@ log.warn("HIDING ? " + (ignoreMouseOver ? 'true ' : 'false ')+ (_mouseOver ? 'tr
 
             if (_model && ! _model.dispatchBeforeEvent(PluginEventType.PLUGIN_EVENT, "onBeforeShowed")) {
                 log.debug("show() onShowed event was prevented, not showing");
+                return;
+            }
+
+            if (_showListener != null && ! _showListener()) {
+                log.debug("showListener returned false, will not show");
                 return;
             }
 
