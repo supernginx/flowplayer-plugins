@@ -15,7 +15,6 @@ package org.flowplayer.viralvideos {
     import flash.events.Event;
     import flash.events.IOErrorEvent;
     import flash.events.MouseEvent;
-    import flash.events.TimerEvent;
     import flash.net.URLLoader;
     import flash.net.URLLoaderDataFormat;
     import flash.net.URLRequest;
@@ -23,7 +22,6 @@ package org.flowplayer.viralvideos {
     import flash.net.URLVariables;
     import flash.net.navigateToURL;
     import flash.text.TextField;
-    import flash.utils.Timer;
 
     import org.flowplayer.model.DisplayPluginModel;
     import org.flowplayer.ui.LabelButton;
@@ -220,7 +218,7 @@ package org.flowplayer.viralvideos {
 
         private function setStatus(msg:String):void {
             _statusLabel.htmlText = msg;
-            createStatusLabelReset();
+            createLabelReset(_statusLabel);
         }
 
         private function formSuccess(value:String):void {
@@ -229,12 +227,6 @@ package org.flowplayer.viralvideos {
 
         private function formError(error:String):void {
             setStatus('<span class="error">' + error + '</span>');
-        }
-
-        private function createStatusLabelReset():void {
-            var timer:Timer = new Timer(5000, 1);
-            timer.addEventListener(TimerEvent.TIMER_COMPLETE, function(event:TimerEvent):void { _statusLabel.htmlText = ""; } );
-            timer.start();
         }
 
         private function validateField(field:TextField, fieldName:String, missingFields:Array):void {
@@ -393,7 +385,7 @@ package org.flowplayer.viralvideos {
 
             _sendBtn.x = width - _sendBtn.width - PADDING_X;
             _sendBtn.y = height - _sendBtn.height - MARGIN_Y;
-            _sendBtn.setSize(130, 30);
+            _sendBtn.setSize(100, 25);
 
             _statusLabel.x = PADDING_X;
             _statusLabel.width = width - PADDING_X * 2 - _sendBtn.x;
