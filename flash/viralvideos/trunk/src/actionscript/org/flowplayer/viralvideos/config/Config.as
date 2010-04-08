@@ -108,15 +108,6 @@ package org.flowplayer.viralvideos.config
                     borderRadius: 15,
                     backgroundColor: 'rgba(0, 0, 0, 0.8)',
                     
-                    body: {
-                        fontSize: 14,
-                        fontWeight: 'normal',
-                        fontFamily: 'Arial',
-                        left: 0,
-                        bottom: 0,
-                        textAlign: 'left',
-                        color: '#ffffff'
-                    },
                     '.title': {
                         fontSize: 12,
                         fontWeight: 'bold'
@@ -150,10 +141,6 @@ package org.flowplayer.viralvideos.config
                         fontWeight: 'normal',
                         fontFamily: 'Arial',
                         textAlign: 'left'
-                    },
-                    '.info': {
-                        color: '#CCCCCC',
-                        fontSize: 10
                     }
                 };
             }
@@ -215,7 +202,6 @@ package org.flowplayer.viralvideos.config
         }
 
         public function set icons(config:Object):void {
-            new PropertyBinder(iconButtons).copyProperties(config);
             new PropertyBinder(iconButtons).copyProperties(config);
         }
 
