@@ -22,10 +22,5 @@ package org.flowplayer.controls.config {
         override public function get playlist():Boolean {
             return value("playlist", true);
         }
-
-        [Value]
-		override public function get slowmotion():Boolean {
-            return value("slowmotion", true);
-        }
-    }
+   }
 }

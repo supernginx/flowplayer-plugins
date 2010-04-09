@@ -402,16 +402,16 @@ package org.flowplayer.controls {
             log.debug("createSlowmotionButtons(), hasSlowMotion? " + slomo);
             if (slomo)
             {
-                _slowMotionFwdButton = addChildWidget(createWidget(_slowMotionFwdButton, "slowmotion", SlowMotionFwdButton, _config, animationEngine), ButtonEvent.CLICK, function(e:ButtonEvent):void {
+                _slowMotionFwdButton = addChildWidget(createWidget(_slowMotionFwdButton, "slowMotionFwd", SlowMotionFwdButton, _config, animationEngine), ButtonEvent.CLICK, function(e:ButtonEvent):void {
                     onSlowMotionClicked(false, true);
                 });
-                _slowMotionBwdButton = addChildWidget(createWidget(_slowMotionBwdButton, "slowmotion", SlowMotionBwdButton, _config, animationEngine), ButtonEvent.CLICK, function(e:ButtonEvent):void {
+                _slowMotionBwdButton = addChildWidget(createWidget(_slowMotionBwdButton, "slowMotionBwd", SlowMotionBwdButton, _config, animationEngine), ButtonEvent.CLICK, function(e:ButtonEvent):void {
                     onSlowMotionClicked(false, false);
                 });
-                _slowMotionFFwdButton = addChildWidget(createWidget(_slowMotionFFwdButton, "slowmotion", SlowMotionFFwdButton, _config, animationEngine), ButtonEvent.CLICK, function(e:ButtonEvent):void {
+                _slowMotionFFwdButton = addChildWidget(createWidget(_slowMotionFFwdButton, "slowMotionFFwd", SlowMotionFFwdButton, _config, animationEngine), ButtonEvent.CLICK, function(e:ButtonEvent):void {
                     onSlowMotionClicked(true, true);
                 });
-                _slowMotionFBwdButton = addChildWidget(createWidget(_slowMotionFBwdButton, "slowmotion", SlowMotionFBwdButton, _config, animationEngine), ButtonEvent.CLICK, function(e:ButtonEvent):void {
+                _slowMotionFBwdButton = addChildWidget(createWidget(_slowMotionFBwdButton, "slowMotionFBwd", SlowMotionFBwdButton, _config, animationEngine), ButtonEvent.CLICK, function(e:ButtonEvent):void {
                     onSlowMotionClicked(true, false);
                 });
             }
@@ -743,19 +743,20 @@ package org.flowplayer.controls {
             var leftEdge:Number = getSpaceBeforeFirstWidget();
             var leftControls:Array = [_stopButton];
 			
-			if ( hasSlowMotion() && _slowMotionBwdButton && _slowMotionFBwdButton)
-			{
+			if ( hasSlowMotion() && _slowMotionFBwdButton )
 				leftControls.push(_slowMotionFBwdButton);
+				
+			if ( hasSlowMotion() && _slowMotionBwdButton )
 				leftControls.push(_slowMotionBwdButton);		
-			}
+		
 			
 			leftControls.push(_playButton);
 			
-			if ( hasSlowMotion() && _slowMotionFwdButton && _slowMotionFFwdButton)
-			{
-				leftControls.push(_slowMotionFwdButton);	
+			if ( hasSlowMotion() && _slowMotionFwdButton )
+				leftControls.push(_slowMotionFwdButton);
+				
+			if ( hasSlowMotion() && _slowMotionFFwdButton )		
 				leftControls.push(_slowMotionFFwdButton);	
-			}
 			
 			leftControls.push(_prevButton);
 			leftControls.push(_nextButton);

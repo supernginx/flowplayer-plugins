@@ -13,6 +13,7 @@ centered nicely.
  The tooltips() public method renamed to setTooltips()
 - Added a marginBottom field in the tooltip configuration that allows the tooltip to be closer (or not) from the control bar
 - Added timeBorder, timeBorderColor and timeBorderWidth
+- Added more flexibility in slow motion buttons configuration. You can now hide/show them separately
 
 Fixes:
 - Setting scrubber height ratio using $f().getControls().css({ scrubberHeightRatio: 0.9 }) needed 2 calls to take effect
