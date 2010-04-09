@@ -27,6 +27,7 @@ Fixes:
 - fixed scrubber behaviour with instream clips and specific controlbar configuration
 - fixed autoHide behavior
 - fixed gradient positioning in sliders
+- fixed tooltip that was not hiding
 
 3.1.4
 -----

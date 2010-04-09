@@ -11,6 +11,7 @@ package org.flowplayer.controls {
     import org.flowplayer.controls.config.Config;
     import org.flowplayer.view.Animation;
     import org.flowplayer.view.AnimationEngine;
+	import org.flowplayer.util.Log;
 
     /**
 	 * Tooltip based on a class by Duncan Reid, www.hy-brid.com
@@ -36,6 +37,7 @@ package org.flowplayer.controls {
 		private var _animationEngine:AnimationEngine;
 		private var _tween:Animation;
 		private var _config:Config;
+		private var log:Log = new Log(this);
 		
 		public function DefaultToolTip(config:Config, animationEngine:AnimationEngine):void {
 			_config = config;
@@ -100,6 +102,12 @@ package org.flowplayer.controls {
 		
 		public function hide():void {
 			if (! this.parent) return;
+			
+			if (_tween) {
+				_tween.cancel();
+				this.alpha = _config.style.tooltipAlpha;
+			}
+			
 			this.animate( false );
 		}
 		
@@ -249,6 +257,7 @@ package org.flowplayer.controls {
 				_animationEngine.fadeIn(this, 500);
 				_timer.reset();
 			} else {
+				_timer.stop();
 				_tween = _animationEngine.fadeOut(this, 500, onComplete);
 			}
 		}

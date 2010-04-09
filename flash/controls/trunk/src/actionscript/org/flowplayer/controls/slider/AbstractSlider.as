@@ -173,6 +173,8 @@ package org.flowplayer.controls.slider {
 		}
 		
 		private function onMouseLeaveStage(event:Event):void {
+			_tooltip.hide();
+			
 			if (_dragTimer.running) {
 				onMouseUp();
 			}
