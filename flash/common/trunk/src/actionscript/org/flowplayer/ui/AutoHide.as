@@ -118,13 +118,24 @@ package org.flowplayer.ui {
         }
 
 		public function cancelAnimation():void {
+			log.debug("cancelAnimation");
 			_player.animationEngine.cancel(_disp);
 		}
 
 		public function updatePosition(showControls:Boolean = false):void
 		{
-			log.warn("Updating to new position !!");
-			_originalPos = getDisplayProperties();
+			var pos:Object = getDisplayProperties();
+			
+			if ( ! _originalPos )
+				_originalPos = pos;
+			
+			// don't update position when hidden. Sometimes happens when changing height while hiding (bug #63)
+			if ( ! pos.position.top.hasValue() || pos.position.top.hasValue() && pos.position.top.px != getHiddenPosition() )
+			{
+				_originalPos = pos;
+			}	
+			
+			
 			if ( showControls )
 			{
 				cancelAnimation();
@@ -351,12 +362,15 @@ package org.flowplayer.ui {
                 // restore top or bottom from our pre-hide position
                 if (_originalPos is DisplayProperties) {
                     if (_originalPos.position.top.hasValue()) {
+						log.debug("restoring to top "+ _originalPos.position.top);
                         currentProps.top = _originalPos.position.top;
                     }
                     if (_originalPos.position.bottom.hasValue()) {
+						log.debug("restoring to bottom "+ _originalPos.position.bottom);
                         currentProps.bottom = _originalPos.position.bottom;
                     }
                 } else {
+					log.debug("restoring to y "+ _originalPos.y);
                     currentProps.y = _originalPos.y;
                 }
             }
