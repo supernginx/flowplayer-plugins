@@ -11,7 +11,8 @@
 package org.flowplayer.bwcheck.strategy {
 
 
-	import org.flowplayer.view.Flowplayer;
+    import org.flowplayer.util.Log;
+    import org.flowplayer.view.Flowplayer;
 	import org.flowplayer.bwcheck.model.BitrateItem;
 	import org.flowplayer.bwcheck.Config;
 	
@@ -20,35 +21,42 @@ package org.flowplayer.bwcheck.strategy {
 	 */
 	public class StreamSelectionDefault implements StreamSelection {
 		
-
+        private var log:Log = new Log(this);
 		
 		public function StreamSelectionDefault(config:Config) {
-	
 		}
 		
 		public function getStreamIndex(bandwidth:Number, bitrateProperties:Array, player:Flowplayer):Number {
-			
 			var screenWidth:Number = player.screen.getDisplayObject().width;
-			
-			var index:Number = bitrateProperties.length - 1;
-			
+			log.debug("screen width is " + screenWidth + ", bandwidth is " + bandwidth);
+
 			for (var i:Number=0; i < bitrateProperties.length; i++) {
-				
-				if (screenWidth >= bitrateProperties[i].width && 
+				log.debug("candidate stream has width " + bitrateProperties[i].width + ", bitrate " + bitrateProperties[i].bitrate);
+				if (screenWidth >= bitrateProperties[i].width &&
 					 bandwidth >= bitrateProperties[i].bitrate && bitrateProperties[i].bitrate) {
-					return i;	 	
+                    log.debug("selecting bitrate with width " + bitrateProperties[i].width);
+                    return i;
 					break;
 				}
 			}
-			return index;
+			return 0;
 		}
 		
 		public function getStream(bandwidth:Number, bitrateProperties:Array, player:Flowplayer):BitrateItem {
 			return bitrateProperties[getStreamIndex(bandwidth, bitrateProperties, player)] as BitrateItem;
 		}
-		
-	
-		
-		
-	}
+
+
+        public function getDefaultStream(bitrateProperties:Array, player:Flowplayer):BitrateItem {
+            log.debug("getDefaultStream()");
+            for (var i:Number=0; i < bitrateProperties.length; i++) {
+                if (bitrateProperties[i]["default"]) {
+                    return bitrateProperties[i];
+                    break;
+                }
+            }
+            log.debug("getDefaultStream(), did not find a default stream");
+            return bitrateProperties[0];
+        }
+    }
 }
