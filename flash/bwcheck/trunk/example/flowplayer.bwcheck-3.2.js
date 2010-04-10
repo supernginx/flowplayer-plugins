@@ -1,16 +1,5 @@
 /**
- * flowplayer.playlist 3.0.7. Flowplayer JavaScript plugin.
- * 
- * This file is part of Flowplayer, http://flowplayer.org
- *
- * Author: Tero Piirainen, <info@flowplayer.org>
- * Copyright (c) 2008 Flowplayer Ltd
- *
- * Dual licensed under MIT and GPL 2+ licenses
- * SEE: http://www.opensource.org/licenses
- * 
- * Date: 2009-02-16 06:51:28 -0500 (Mon, 16 Feb 2009)
- * Revision: 1454 
+ * flowplayer.playlist
  */ 
 (function($) {
 	
@@ -27,7 +16,7 @@
 			bitrateInfoClass:'bitrate-info',
 			disabledClass: 'bitrate-disabled',
 			bwCheckPlugin: 'bwcheck',
-			template: '<a href="${bitrate}">${bitrate} k</a>',
+			template: '<a href="{bitrate}">{bitrate} k</a>',
 			disabledText: '(not valid with this player size )',
 			fadeTime: 500,
 			seperator: ""
@@ -56,10 +45,10 @@
 				if (key=="bitrate" && labels) {
 					var label = (plugin && labels.length > 0 && labels[val] ? labels[val] : val + " k");
 					if (label) {
-						el = el.replace("$\{label\}", label).replace("$%7B" +key+ "%7D", label);
+						el = el.replace("\{label\}", label).replace("$%7B" +key+ "%7D", label);
 					}
 				}
-				el = el.replace("$\{" +key+ "\}", val).replace("$%7B" +key+ "%7D", val);			
+				el = el.replace("\{" +key+ "\}", val).replace("$%7B" +key+ "%7D", val);			
 			}); 
 			
 			return el;
