@@ -326,7 +326,9 @@ package org.flowplayer.captions {
                     log.debug("all caption files loaded, calling play");
                     _player.playlist.unbind(onBeforeBegin, ClipEventType.BEGIN, true);
                     _initialized = true;
-                    _player.play();
+
+					if ( clip.autoPlay )
+						setTimeout( _player.play, 200);
                 }
             });
         }

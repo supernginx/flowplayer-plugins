@@ -5,6 +5,7 @@ Version history:
 - Fixed visibility issue
 - Fixed multiple lines subtitles (#36)
 - Increasing font size when going fullscreen (#37)
+- Clip's autoPlay field wasn't taken in account (#66)
 
 3.1.4
 -----
