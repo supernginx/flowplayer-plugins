@@ -50,7 +50,7 @@ package org.flowplayer.bwcheck.strategy {
         public function getDefaultStream(bitrateProperties:Array, player:Flowplayer):BitrateItem {
             log.debug("getDefaultStream()");
             for (var i:Number=0; i < bitrateProperties.length; i++) {
-                if (bitrateProperties[i]["default"]) {
+                if (bitrateProperties[i]["isDefault"]) {
                     return bitrateProperties[i];
                     break;
                 }

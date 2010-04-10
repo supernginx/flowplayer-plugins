@@ -69,9 +69,21 @@ package org.flowplayer.bwcheck.monitor
 		}
 		
 		public function set bitrateProperties(value:Array):void {
+            log.debug("received bitrate properites:");
+            for (var i:int = 0; i < value.length; i++) {
+                var prop:BitrateItem = value[i];
+                log.debug("bitrate ID " + prop.index + ": "+ prop.bitrate + ": " + prop.url + ", width: " + prop.width);
+            }
 			_bitrateProperties = value;
 		}
-		
+
+        public function set currentStreamId(value:int):void {
+            log.debug("set currentStreamId() " + value);
+            _prevStreamID = _curStreamID;
+            _curStreamID = value;
+            _switchMode = false;
+        }
+
 		public function set bitrateStorage(storage:BitrateStorage):void {
 			_bitrateStorage = storage;
 		}
@@ -139,6 +151,7 @@ package org.flowplayer.bwcheck.monitor
 		}
 		
 		private function getMaxBandwidth():void {
+//            log.debug("getMaxBandwidth()");
             try {
                 if (bandwidthlimit>-1) {
                     var maxbw:Number =  _netStream.info.maxBytesPerSecond*8/1024;
@@ -236,7 +249,7 @@ package org.flowplayer.bwcheck.monitor
 				}
 				
 				// if stream less than the lowest bitrate, bitrates sorted descending
-				if(nextStreamID < bitratesLength) {
+				if(nextStreamID < _bitrateProperties.length - 1) {
 	 				if(getBitrateProp(nextStreamID).bitrate >= _droppedFramesLockRate) {
 						log.debug("next rate: "+getBitrateProp(nextStreamID).bitrate+" lock rate: "+_droppedFramesLockRate);
 						return;
@@ -250,13 +263,18 @@ package org.flowplayer.bwcheck.monitor
 				_previousDroppedFrames = _netStream.info.droppedFrames;
 				_previousDroppedFramesTime = getTimer();
 			} else {
-				SwitchUpOnMaxBandwidth();		
+				switchUpOnMaxBandwidth();
 			}
 		}
 
-        // TODO: this function needs refactoring, nobody can understand this
-		private function checkVodQOSAndSwitch():void {
+        private function dropFrameRate(nowTime:int):Number {
+            return (_netStream.info.droppedFrames - _previousDroppedFrames) * 1000 / (nowTime - _previousDroppedFramesTime);
+        }
 
+        // TODO: this function needs refactoring, nobody can understand this
+        private function checkVodQOSAndSwitch():void {
+            getMaxBandwidth();
+            
 
 			log.debug("getQOSAndSwitch called");
 			log.debug("max bw: "+_maxBandwidth+" cur bitrate: " + this.currentStreamBitRate + " buffer: "+_netStream.bufferLength+ "fps: "+_netStream.currentFPS);
@@ -266,18 +284,24 @@ package org.flowplayer.bwcheck.monitor
 
 			//downscale
 			var nowTime:int = getTimer();
-	
-			if( (_netStream.bufferLength < _preferredBufferLength)|| ((_maxBandwidth < getBitrateProp(_curStreamID).bitrate) && (_maxBandwidth != 0)) 
-				|| ((_netStream.info.droppedFrames - _previousDroppedFrames)*1000/(nowTime - _previousDroppedFramesTime) > _netStream.currentFPS*0.25)) {
-					
+
+            var dropFrameRate:Number = dropFrameRate(nowTime);
+
+            var bufferBelowPreferred:Boolean = _netStream.bufferLength < _preferredBufferLength;
+            var dropFrameRateTooLarge:Boolean = dropFrameRate > _netStream.currentFPS*0.25;
+            var bandwidthTooLow:Boolean = _maxBandwidth < getBitrateProp(_curStreamID).bitrate && _maxBandwidth != 0;
+
+            log.debug("bufferBelowPreferred? " + bufferBelowPreferred + ", bandwidthTooLow? " + bandwidthTooLow + ", bandwidthTooLow? " + bandwidthTooLow);
+            if( bufferBelowPreferred || bandwidthTooLow || bandwidthTooLow) {
+
 				//start with lowest stream
 				var nextStreamID:int = bitratesLength;
-				
+
 				if(_netStream.bufferLength < _preferredBufferLength || (_maxBandwidth < getBitrateProp(_curStreamID).bitrate)) {
-				
-					
+
+
 					nextStreamID = getStreamID();
-					
+
 					//check if stream is lower
 					if( nextStreamID > _curStreamID) {
 						if(_maxBandwidth < getBitrateProp(_curStreamID).bitrate) {
@@ -287,7 +311,7 @@ package org.flowplayer.bwcheck.monitor
 						}
 					}
 
-					if(_netStream.bufferLength > _curBufferTime && _curBufferTime != _preferredBufferLength) 
+					if(_netStream.bufferLength > _curBufferTime && _curBufferTime != _preferredBufferLength)
 					{
 						_curBufferTime =  _preferredBufferLength;
 						log.debug("setting buffer time to "+_curBufferTime);
@@ -296,8 +320,9 @@ package org.flowplayer.bwcheck.monitor
 				} else {
 					log.debug("Switching down because of dropped fps "+(_netStream.info.droppedFrames - _previousDroppedFrames)*1000/(nowTime - _previousDroppedFramesTime)+ " is greather than 0.25 of fps: "+ _netStream.currentFPS*0.25);
 					// init lock timer and flag lock rate
+                    log.debug("_curStreamID " + _curStreamID);
 					_droppedFramesLockRate = getBitrateProp(_curStreamID).bitrate;
-					
+
 					if((droppedFramesTimer.currentCount < _config.droppedFramesLockLimit)  && !droppedFramesTimer.running) {
 						droppedFramesTimer.start();
 						log.debug("Activating lock to prevent switching to " + _droppedFramesLockRate + " | Offense Number " + droppedFramesTimer.currentCount);
@@ -311,22 +336,25 @@ package org.flowplayer.bwcheck.monitor
 						log.debug("switching to the aggressive mode");
 						nextStreamID = 0;
 						///check more frequently
-						qosTimer.delay = _switchQOSTimerDelay*1000/2;									
-				} 	
+						qosTimer.delay = _switchQOSTimerDelay*1000/2;
+				}
 
-				if(nextStreamID > bitratesLength) {
-	 				if(getBitrateProp(nextStreamID).bitrate >= _droppedFramesLockRate) {
+                log.debug("nextStreamID: " + nextStreamID);
+				if(nextStreamID <= bitratesLength) {
+                    var bitrateProp:BitrateItem = getBitrateProp(nextStreamID);
+                    if(bitrateProp && bitrateProp.bitrate >= _droppedFramesLockRate) {
+                         log.debug("bitrate would be larger than dropped frames lock rate, not switching");
 						return;
 					}
 				}
-					
+
 				if(_curStreamID != nextStreamID) {
 					switchStream(nextStreamID);
 				}
 				_previousDroppedFrames = _netStream.info.droppedFrames;
-				_previousDroppedFramesTime = getTimer();				
+				_previousDroppedFramesTime = getTimer();
 			} else {
-				SwitchUpOnMaxBandwidth();
+				switchUpOnMaxBandwidth();
 				///also reverting QOS interval
 				if(qosTimer.delay != _switchQOSTimerDelay*1000) {
 					qosTimer.delay = _switchQOSTimerDelay*1000;
@@ -366,8 +394,8 @@ package org.flowplayer.bwcheck.monitor
 			return nextStreamID;
 		}
 		
-		private function SwitchUpOnMaxBandwidth():void {
-
+		private function switchUpOnMaxBandwidth():void {
+            log.debug("switchUpOnMaxBandwidth()");
 			var nowTime:int = getTimer();
 			
 
@@ -375,35 +403,19 @@ package org.flowplayer.bwcheck.monitor
 			var nextStreamID:int = 0;
 			
 			nextStreamID = getStreamID();
-
+            log.debug("nextStreamID " + nextStreamID + " current stream Id " + _curStreamID);
 			if( nextStreamID > _curStreamID) {
-				//we are testing if we can switch up here... so dont go down
-				nextStreamID = _curStreamID;
-			}  else if (nextStreamID < _curStreamID) {
+                log.debug("would be switching down??, returning");
+                nextStreamID = _curStreamID;
+                return;
+            }  else if (nextStreamID < _curStreamID) {
 				///go up only if the buffer length looks good
 				if(_netStream.bufferLength < _curBufferTime) {
+                    log.debug("not enough in buffer to switch up, returning");
 					nextStreamID = _curStreamID;
+                    return;
 				}
 			}
-			
-			//regardless of bandwidth if the dropped frame count is higher than 25% of fps
-			//then switch to lower bitrate
-			/*
-
-			///Shouldnt need this here.. should be caught earlier in qosAndSwitch
-			if(_curStreamID > 0 && ((droppedFrames - _previousDroppedFrames)*1000/(nowTime - _previousDroppedFramesTime) > this.currentFPS*0.25)) {
-				nextStreamID = _curStreamID-1;
-				debug("switching down because of dropped frames");
-				// init lock timer and flag lock rate
-				_droppedFramesLockRate = dsPlayList[dsPlayIndex].streams[_curStreamID].rate;
-				if((droppedFramesTimer.currentCount < DROPPED_FRAMES_LOCK_LIMIT)  && !droppedFramesTimer.running) {
-					droppedFramesTimer.start();
-					debug("Activating lock to prevent switching to " + _droppedFramesLockRate + " | Offense Number " + droppedFramesTimer.currentCount);
-				}					
-
-			}
-			*/
-
 		
 			if(nextStreamID > bitratesLength) {
 				nextStreamID = bitratesLength;
@@ -413,6 +425,7 @@ package org.flowplayer.bwcheck.monitor
 			//bitrates greater than the lowest bitrate
 			if(nextStreamID < bitratesLength) {
 				if(getBitrateProp(nextStreamID).bitrate >= _droppedFramesLockRate) {
+                    log.debug("bitrate would be larger than droppedFramesLockRate, not switching");
 					return;
 				}
 			}
@@ -421,8 +434,6 @@ package org.flowplayer.bwcheck.monitor
 				log.debug("switch up current max bandwidth: "+_maxBandwidth + " with stream id: " + nextStreamID);
 				switchStream(nextStreamID);
 			} 
-			
-			log.debug("stream id: " + nextStreamID);
 
 			if(_curBufferTime != _preferredBufferLength) 
 			{
@@ -439,31 +450,40 @@ package org.flowplayer.bwcheck.monitor
 		 */		
 
 		private function switchStream(streamID:Number = 0): void {
+            log.debug("switchStream(), streamID " + streamID);
 			if(streamID < 0)
 				streamID = 0;
 
 			if(streamID > bitratesLength)
 				streamID = bitratesLength;
 
-			if(streamID == _curStreamID)
+			if(streamID == _curStreamID) {
+                log.debug("switchStream(), already on this stream");
 				return;
-				
-			if(_switchMode == true) //dont send another transition if the previous 
-				return;			   //one is in process already
+            }
 
-			_prevStreamID = _curStreamID;
-			_curStreamID = streamID;
-			
+            //dont send another transition if the previous one is in process already
+			if(_switchMode == true) {
+                log.debug("switchStream() previous switch in progress");
+				return;
+            }
+
+// ----------------------------------------------------------------------------------------------------------------
+// these cannot be reset here!! The stream selection strategy might not actually select the stream we propose here
+// BitrateProvider calls the currentStreamId setter of this class when the current stream ID has been selected.
+//			_prevStreamID = _curStreamID;
+//			_curStreamID = streamID;
+// ----------------------------------------------------------------------------------------------------------------
+
 			var obj:Object = {
 				maxBandwidth: _maxBandwidth,
 				streamID: streamID
 			};
 			
 			log.debug("Switching stream with max bandwidth " + _bitrateStorage.maxBandwidth);
-			
+
+            _switchMode = true;
 			dispatch(obj, DynamicStreamEvent.SWITCH_STREAM);
-			
-			_switchMode = true;
 		}
 		
 		protected function dispatch(info:Object, eventName:String):void
@@ -533,7 +553,7 @@ package org.flowplayer.bwcheck.monitor
 		{
             log.debug("Buffer Full. Starting Qos");
 			getMaxBandwidth();
-			SwitchUpOnMaxBandwidth();
+			switchUpOnMaxBandwidth();
 			_isBuffering = false;
             createQosTimer();
 			qosTimer.start();

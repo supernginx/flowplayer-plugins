@@ -19,6 +19,7 @@ package org.flowplayer.bwcheck.monitor {
         function set bitrateProperties(value:Array):void
 		function set bitrateStorage(storage:BitrateStorage):void 
         function set netStream(netStream:NetStream):void
+        function set currentStreamId(value:int):void
 		function start():void
 		function stop():void
 		function onStart(event:ClipEvent = null):void
