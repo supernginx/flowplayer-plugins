@@ -19,7 +19,10 @@ package org.flowplayer.bwcheck.strategy {
 	internal interface StreamSelection {
 		
 		function getStreamIndex(bandwidth:Number, bitrateProperties:Array, player:Flowplayer):Number
-		function getStream(bandwidth:Number, bitrateProperties:Array, player:Flowplayer):BitrateItem
-		
+
+        function getStream(bandwidth:Number, bitrateProperties:Array, player:Flowplayer):BitrateItem
+        
+        function getDefaultStream(bitrateProperties:Array, player:Flowplayer):BitrateItem
+
 	}
 }
