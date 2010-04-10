@@ -14,11 +14,12 @@ package org.flowplayer.bwcheck.model {
 	 * @author danielr
 	 */
 	public class BitrateItem {
-		
 		public var url:String;
 		public var width:Number;
 		public var height:Number;
-	    public var bitrate:Number;
-	}
+        public var bitrate:Number;
+        public var isDefault:Boolean;
+        public var index:int;
+    }
 }
 
