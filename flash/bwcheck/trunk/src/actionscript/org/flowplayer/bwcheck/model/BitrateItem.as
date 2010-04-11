@@ -20,6 +20,7 @@ package org.flowplayer.bwcheck.model {
         public var bitrate:Number;
         public var isDefault:Boolean;
         public var index:int;
+        public var label:String;
     }
 }
 
