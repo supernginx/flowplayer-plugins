@@ -6,6 +6,7 @@ Version history:
 - Fixed multiple lines subtitles (#36)
 - Increasing font size when going fullscreen (#37)
 - Clip's autoPlay field wasn't taken in account (#66)
+- Wrong resize when going fullscreen if caption view was not displayed
 
 3.1.4
 -----

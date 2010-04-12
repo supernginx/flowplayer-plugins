@@ -165,6 +165,11 @@ package org.flowplayer.captions {
             }
         }
 
+		private function initializeRatios():void {
+			_captionHeightRatio = _captionView.height / _player.screen.getDisplayObject().height;
+			_captionWidthRatio = _captionView.width / _player.screen.getDisplayObject().width;
+		}
+
         private function onPlayerInitialized(event:PlayerEvent):void {
             initCaptionView();
 
@@ -174,16 +179,24 @@ package org.flowplayer.captions {
                 _player.addToPanel(_button, _config.button);
 
                 _button.isDown = _viewModel.visible;
-                _button.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void {
+                _button.clickArea.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void {
                     _button.isDown = _player.togglePlugin(_config.captionTarget);
                 });
             }
             if (hasCaptionFile()) {
                 loadCaptionFiles();
             }
-
-			_captionHeightRatio = _captionView.height / _player.screen.getDisplayObject().height;
-			_captionWidthRatio = _captionView.width / _player.screen.getDisplayObject().width;
+					
+			if ( _viewModel.visible )
+				initializeRatios();
+			else
+			{
+				_captionView.alpha = 0;
+				_player.togglePlugin(_config.captionTarget);
+				initializeRatios();
+				_player.togglePlugin(_config.captionTarget);
+				_captionView.alpha = 1;
+			}
 			
 			_player.playlist.onPause(function(event:ClipEvent):void {
 				if ( _currentCaption != null )
@@ -244,15 +257,9 @@ package org.flowplayer.captions {
 			if ( newY > _player.screen.getDisplayObject().height / 2 )
 				newY = _captionView.y - (newHeight - _captionView.height);
 		
-			
 			var newX:Number = _captionView.x - (newWidth - _captionView.width) ;
-						
-			_captionView.height = newHeight;
-			_captionView.width  = newWidth;
-					
-			_captionView.x = newX;
-			_captionView.y = newY;
 
+			_player.css(_config.captionTarget, {y: newY, x: newX, height: newHeight, width: newWidth});
 		}
 
         private function onPlayerResized(event:LayoutEvent):void {
