@@ -18,14 +18,17 @@ package org.flowplayer.captions {
 
     public class CCButton extends AbstractSprite {
         private var _text:TextField;
-        private var _hitArea:Sprite;
+        private var _background:Sprite;
         private var _textColor:Number;
         private var _label:String;
 
         public function CCButton(player:Flowplayer, label:String) {
             _label = label;
+			_background = new Sprite();
+			_background.buttonMode = true;
+			addChild(_background);
             createText(player);
-            buttonMode = true;
+            
             isDown = true;
         }
 
@@ -35,12 +38,17 @@ package org.flowplayer.captions {
             _text.y = 0;
         }
 
+		public function get clickArea():Sprite
+		{
+			return _background;
+		}
+
         private function drawBackground():void {
-            graphics.clear(),
-                    graphics.lineStyle(2, 0x555555);
-            graphics.beginFill(0xaaaaaa, 1);
-            graphics.drawRoundRect(0, 0, width, height, 6, 6);
-            graphics.endFill();
+            _background.graphics.clear(),
+            _background.graphics.lineStyle(2, 0x555555);
+            _background.graphics.beginFill(0xaaaaaa, 1);
+            _background.graphics.drawRoundRect(0, 0, width, height, 6, 6);
+            _background.graphics.endFill();
         }
 
         private function createText(player:Flowplayer):void {
