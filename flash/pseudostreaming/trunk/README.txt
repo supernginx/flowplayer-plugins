@@ -3,6 +3,7 @@ Version history:
 3.1.3
 -----
 - fixed to work with bwcheck, so that random seeking works when bitrate is switched in the middle of a clip
+- fixed issue when autoPlay is false, autoBuffering is true and video without metadatas
 
 3.1.2
 -----
