@@ -29,6 +29,7 @@ Fixes:
 - fixed autoHide behavior
 - fixed gradient positioning in sliders
 - fixed tooltip that was not hiding
+- fixed controlbar with semi transparent background hiding even if mouse is over
 
 3.1.4
 -----
