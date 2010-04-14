@@ -1,6 +1,10 @@
 Version history:
 
-3.1.3
+3.1.2-dev
+---------
+- some small fixes
+
+3.1.1
 -----
 - compatible with the new ConnectionProvider and URLResolver API
 

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="Flex" version="4">
   <component name="Flex.Build.Configuration">
-    <option name="DO_BUILD" value="true" />
-    <option name="OUTPUT_FILE_NAME" value="cluster.swf" />
     <option name="TARGET_PLAYER_VERSION" value="9" />
+    <option name="VERSION" value="3" />
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />

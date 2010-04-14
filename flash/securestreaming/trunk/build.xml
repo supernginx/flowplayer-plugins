@@ -6,8 +6,9 @@
 	<import file="${devkit-dir}/plugin-build.xml"/>
 	<property name="flowplayer_lib" value="${devkit-dir}/flowplayer.swc" />
 	
-	<property name="version" value="3.1.3-dev" />
+	<property name="version" value="3.1.2-dev" />
 	<property name="basename" value="flowplayer.securestreaming" />
+    <property name="releasedir" value="${basename}" />
 	<property name="plugin-binary" value="${basename}.swf" />
 	<property name="plugin-binary-versioned" value="${basename}-${version}.swf" />
 	<property name="plugin-main-class" value="org/flowplayer/securestreaming/SecureStreamingPlugin.as" />

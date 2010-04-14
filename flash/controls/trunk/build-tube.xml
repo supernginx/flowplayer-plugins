@@ -6,6 +6,7 @@
 
     <!-- filename for the plugin swf -->
     <property name="basename" value="flowplayer.controls-tube" />
+    <property name="releasedir" value="flowplayer.controls" />
 
     <!-- location of the skin swd, anc swc -->
     <property name="library-path" value="src/flash/tube" />

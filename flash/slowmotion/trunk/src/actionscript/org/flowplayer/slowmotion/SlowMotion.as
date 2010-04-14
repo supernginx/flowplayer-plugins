@@ -47,6 +47,7 @@ package org.flowplayer.slowmotion {
         }
 
         public function onLoad(player:Flowplayer):void {
+            log.debug("onLoad()");
             _player = player;
 			
 			var handler:Function = function(event:KeyboardEvent, fast:Boolean):void {
@@ -146,6 +147,7 @@ package org.flowplayer.slowmotion {
 		private function lookupSpeedIndicator():void
 		{
 			_speedIndicator = _player.pluginRegistry.getPlugin(_config.speedIndicator) as PluginModel;
+            log.debug("lookupSpeedIndicator() " + _speedIndicator ? "found speed indicator" : "speed indicator not present");
 
 			if ( _speedIndicator && getQualifiedClassName(_speedIndicator.pluginObject) != 'org.flowplayer.content::Content' )
 				throw new Error("The specified speedIndicator is not a Content plugin");

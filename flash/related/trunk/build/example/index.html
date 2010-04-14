@@ -8,7 +8,7 @@
 		Flash embedding and provides the Flowplayer API.
 	-->
 	<script type="text/javascript" src="jquery-1.2.6.min.js"></script>
-	<script type="text/javascript" src="flowplayer-3.1.0.min.js"></script>
+	<script type="text/javascript" src="flowplayer-3.1.3.min.js"></script>
 	
 	<!-- some minimal styling, can be removed -->
 	<link rel="stylesheet" type="text/css" href="style.css">
@@ -36,23 +36,20 @@
 
 		
 		<script>
-		$f("captions", {src:"../flowplayer.swf",bgcolor:'#333333'}, {
-
+		$f("captions", {src:"../flowplayer.swf",bgcolor:'#000000'}, {
+            log: { level: 'debug', filter: 'org.flowplayer.related.*' },
 			playlist: [
 	
 				// 1:st clip
 				{
-					url: 'KimAronson-TwentySeconds73213.flv',
+					url: 'file:///Users/api/code/core/build/honda_accord.flv'
 					//url: 'metacafe',
-					customProperties: {
-						related: 'related.txt'
-						//related: 'http://admin.electrocode.net/related/'
-					}
 				},
-				
+				/*
 				// 2:nd clip
 				{
 					url: 'skyandice-400', 
+					provider: 'rtmp',
 					customProperties: {
 						related: [
 						
@@ -60,43 +57,34 @@
 							{
 								// normal clip properties
 								url: 'metacafe', 
+								provider: 'rtmp',
 								accelerated: 'false',
 								
 								// custom properties for "related videos" the plugin
 								title: 'My descriptive title for the video',
 								thumbnail: '/thumbs/video2.jpg'
 								
-								/*
-									these are "normal" clips and can also have related videos
-						
-									when related videos are not explicitly specified then those
-									related videos are fetched from the URL that is specified 
-									for the plugin
-								*/		
-								
 							},
 							
 							// 2:nd related clip
 							{
 								url: 'metacafe', 
+								provider: 'rtmp',
 								scaling: 'orig', 
 								title: 'Another good title for the video',
 								thumbnail: '/thumbs/video3.jpg',
 								
 								// disable related videos for this clip
 								related: null
-							}, 
-							
-							// simple strings are also supported just like in playlist 
-							'metacafe'
+							}
 						]
 					}
-				}
+				}*/
 			], 
 			clip: {
 				baseUrl: 'http://blip.tv/file/get/',
 				//provider: 'rtmp',
-				autoPlay: false,
+				autoPlay: true,
 				onStart: function(clip)  {
 			
 				}
@@ -117,23 +105,8 @@
 				},
 				related: {
 					url:'../flowplayer.related-3.0.0.swf',
-					items: 4,
-					showOnFinish: true,
-					//related: 'http://admin.electrocode.net/related/',
-					related: 'related.txt',
-					image: 'thumbnail',
-					title: 'title',
-					subTitle: null,
-					showUrl: false,
-					bottom: 30,
-					left: 10,
-					height: 150,
-					screen: {
-						left: 0,
-						top: 0,
-						opacity: 0.8,
-						height: 150
-					},
+                    related: 'related.txt',
+
 					onBeforeShow: function() {
 					
 					},
@@ -154,7 +127,7 @@
 					
 					}
 				}
-			},
+			}
 		
 		
 		});
