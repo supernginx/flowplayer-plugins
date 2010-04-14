@@ -10,6 +10,7 @@
 
 package org.flowplayer.controls {
     import flash.display.DisplayObject;
+	import flash.display.Sprite;
     import flash.events.Event;
     import flash.events.TimerEvent;
     import flash.system.ApplicationDomain;
@@ -69,9 +70,9 @@ package org.flowplayer.controls {
         private var _progressTracker:DisplayObject;
         private var _prevButton:DisplayObject;
         private var _nextButton:DisplayObject;
-				private var _slowMotionFwdButton:DisplayObject;
+		private var _slowMotionFwdButton:DisplayObject;
         private var _slowMotionBwdButton:DisplayObject;
-				private var _slowMotionFFwdButton:DisplayObject;
+		private var _slowMotionFFwdButton:DisplayObject;
         private var _slowMotionFBwdButton:DisplayObject;
         private var _stopButton:DisplayObject;
         private var _scrubber:Scrubber;
@@ -90,9 +91,16 @@ package org.flowplayer.controls {
         private var _currentControlsConfig:Object;
         private var _originalConfig:Object;
 
+		// #71, need to have a filled sprite who takes all the space to get events to work
+		private var _bgFill:Sprite;
+
         public function Controls() {
             log.debug("creating ControlBar");
             this.visible = false;
+
+			_bgFill = new Sprite();
+			addChild(_bgFill);
+			
             height = DEFAULT_HEIGHT;
             addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
         }
@@ -258,6 +266,12 @@ package org.flowplayer.controls {
         override protected function onResize():void {
             if (! _initialized) return;
             log.debug("arranging, width is " + width);
+
+			_bgFill.graphics.clear();
+			_bgFill.graphics.beginFill(0, 0);
+			_bgFill.graphics.drawRect(0, 0, width, height);
+			_bgFill.graphics.endFill();
+
             var leftEdge:Number = arrangeLeftEdgeControls();
             arrangeRightEdgeControls(leftEdge);
             initializeVolume();
