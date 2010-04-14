@@ -1,1 +1,26 @@
-[{"url":"test.flv","title":"Test","thumbnail":"images/video.png"},{"url":"test1.flv","title":"Test","thumbnail":"images/video1.png"}, {"url":"test2.flv","title":"Test","thumbnail":"images/video2.png"},{"url":"test3.flv","title":"Test","thumbnail":"images/video3.png"}, {"url":"test4.flv","title":"Test","thumbnail":"images/video3.png"}, {"url":"test5.flv","title":"Test","thumbnail":"images/video3.png"}]
+[	{"url":"metacafe","provider": 'rtmp',"title":"Metacafe","thumbnail":"images/Thumb1.jpg"}, 	
+	{"url":"test1.flv","title":"Test 2","thumbnail":"images/Thumb2.jpg"},	
+	{"url":"test2.flv","title":"Test 3","thumbnail":"images/Thumb3.jpg"},	
+	{"url":"test3.flv","title":"Test 4","thumbnail":"images/Thumb4.jpg"}, 	
+	{"url":"test4.flv","title":"Test 4","thumbnail":"images/Thumb5.jpg"}, 	
+	{"url":"test5.flv","title":"Test 5","thumbnail":"images/Thumb5.jpg"},
+	{"url":"metacafe","provider": 'rtmp',"title":"Metacafe 2","thumbnail":"images/Thumb6.jpg"},
+	{"url":"test1.flv","title":"Test 6","thumbnail":"images/Thumb7.jpg"},
+	{"url":"test2.flv","title":"Test 7","thumbnail":"images/Thumb8.jpg"},
+	{"url":"test3.flv","title":"Test 8","thumbnail":"images/Thumb9.jpg"}, 
+	{"url":"test4.flv","title":"Test 9","thumbnail":"images/Thumb10.jpg"}, 
+	{"url":"test5.flv","title":"Test 10","thumbnail":"images/Thumb11.jpg"},
+	
+	{"url":"metacafe","provider": 'rtmp',"title":"Metacafe 3","thumbnail":"images/Thumb1.jpg"}, 	
+	{"url":"test1.flv","title":"Test 11","thumbnail":"images/Thumb2.jpg"},	
+	{"url":"test2.flv","title":"Test 12","thumbnail":"images/Thumb3.jpg"},	
+	{"url":"test3.flv","title":"Test 13","thumbnail":"images/Thumb4.jpg"}, 	
+	{"url":"test4.flv","title":"Test 14","thumbnail":"images/Thumb5.jpg"}, 	
+	{"url":"test5.flv","title":"Test 15","thumbnail":"images/Thumb5.jpg"},
+	{"url":"metacafe","provider": 'rtmp',"title":"Metacafe 4","thumbnail":"images/Thumb6.jpg"},
+	{"url":"test1.flv","title":"Test 16","thumbnail":"images/Thumb7.jpg"},
+	{"url":"test2.flv","title":"Test 17","thumbnail":"images/Thumb8.jpg"},
+	{"url":"test3.flv","title":"Test 18","thumbnail":"images/Thumb9.jpg"}, 
+	{"url":"test4.flv","title":"Test 19","thumbnail":"images/Thumb10.jpg"}, 
+	{"url":"test5.flv","title":"Test 20","thumbnail":"images/Thumb11.jpg"} 
+]

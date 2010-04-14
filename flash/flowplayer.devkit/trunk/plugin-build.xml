@@ -276,7 +276,9 @@
 	</target>
 
     <target name="release-remote" depends="release-swfs">
-        <remotecopy remotedir="${basename}" keyfile="${keyfile}" pass="${pass}">
+        
+        <echo message="release-remote: releasing to ${releasedir}" />
+        <remotecopy bucketname="flowplayer-releases/${releasedir}" keyfile="${keyfile}" pass="${pass}">
             <releasefiles>
                 <fileset dir="${dist-dir}">
                     <include name="${basename}-${version}.zip" />
@@ -302,7 +304,7 @@
     </target>
 
     <target name="release-swfs">
-        <remotecopy remotedir="swf" keyfile="${keyfile}" pass="${pass}">
+        <remotecopy bucketname="flowplayer-releases/swf" keyfile="${keyfile}" pass="${pass}">
             <releasefiles>
                 <fileset dir="${build-dir}">
                     <include name="${plugin-binary-versioned}" />

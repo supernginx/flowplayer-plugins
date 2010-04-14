@@ -11,22 +11,18 @@
     </taskdef>
 
     <macrodef name="remotecopy">
-        <attribute name="remotedir" default="" />
+        <attribute name="bucketname" />
         <attribute name="keyfile" />
         <attribute name="pass" />
         <element name="releasefiles" />
         
         <sequential>
-            <condition property="bucketname" value="flowplayer-releases" else="flowplayer-releases/@{remotedir}" >
-                    <equals arg1="@{remotedir}" arg2="" />
-            </condition>
-
-            <echo message="releasing to flowplayer-releases/@{remotedir}" />
+            <echo message="bucketname @{bucketname}" />
 
             <S3Upload verbose="true"
                         accessId="${aws-accessId}"
                         secretKey="${aws-secretKey}"
-                        bucket="${bucketname}"
+                        bucket="@{bucketname}"
                         publicRead="true">
                 <releasefiles />
             </S3Upload>

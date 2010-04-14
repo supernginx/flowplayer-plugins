@@ -10,6 +10,7 @@
 	<property name="flowplayer_lib" value="${devkit-dir}/flowplayer.swc" />
 	
 	<property name="basename" value="flowplayer.rtmp" />
+    <property name="releasedir" value="${basename}" />
 	<property name="plugin-binary" value="${basename}.swf" />
 	<property name="plugin-binary-versioned" value="${basename}-${version}.swf" />
 	<property name="plugin-swc" value="${basename}.swc" />

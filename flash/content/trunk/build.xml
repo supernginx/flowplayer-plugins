@@ -10,6 +10,7 @@
 	
 
 	<property name="basename" value="flowplayer.content" />
+    <property name="releasedir" value="${basename}" />
 	<property name="plugin-binary" value="${basename}.swf" />
 	<property name="plugin-binary-versioned" value="${basename}-${version}.swf" />
 	<property name="plugin-main-class" value="org/flowplayer/content/Content.as" />

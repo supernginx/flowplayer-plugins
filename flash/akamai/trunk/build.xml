@@ -9,6 +9,7 @@
 	
 	<property name="version" value="3.1.4-dev" />
 	<property name="basename" value="flowplayer.akamai" />
+    <property name="releasedir" value="flowplayer.akamai" />
 	<property name="plugin-binary" value="${basename}.swf" />
 	<property name="plugin-binary-versioned" value="${basename}-${version}.swf" />
     <property name="plugin-main-class" value="org/flowplayer/akamai/AkamaiPlugin.as" />
