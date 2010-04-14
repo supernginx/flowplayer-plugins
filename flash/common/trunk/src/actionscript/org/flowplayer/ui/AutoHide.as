@@ -211,12 +211,12 @@ package org.flowplayer.ui {
         }
 
         private function onMouseOver(event:MouseEvent):void {
-	log.warn("MOUSE OVER");
+	//log.warn("MOUSE OVER");
             _mouseOver = true;
         }
 
         private function onMouseOut(event:MouseEvent):void {
-	log.warn("MOUSE OUT");
+	//log.warn("MOUSE OUT");
             _mouseOver = false;
         }
 
