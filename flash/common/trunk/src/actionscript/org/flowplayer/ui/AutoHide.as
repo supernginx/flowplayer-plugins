@@ -126,18 +126,17 @@ package org.flowplayer.ui {
 		{
 			var pos:Object = getDisplayProperties();
 			
-			if ( ! _originalPos )
+			if ( ! _originalPos) {
 				_originalPos = pos;
+            }
 			
 			// don't update position when hidden. Sometimes happens when changing height while hiding (bug #63)
-			if ( ! pos.position.top.hasValue() || pos.position.top.hasValue() && pos.position.top.px != getHiddenPosition() )
-			{
+			if (pos.hasOwnProperty("position") && (! pos.position.top.hasValue() || pos.position.top.hasValue() && pos.position.top.px != getHiddenPosition())) {
 				_originalPos = pos;
 			}	
 			
 			
-			if ( showControls )
-			{
+			if (showControls) {
 				cancelAnimation();
 				show();
 			}
