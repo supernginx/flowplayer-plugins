@@ -416,16 +416,16 @@ package org.flowplayer.controls {
             log.debug("createSlowmotionButtons(), hasSlowMotion? " + slomo);
             if (slomo)
             {
-                _slowMotionFwdButton = addChildWidget(createWidget(_slowMotionFwdButton, "slowMotionFwd", SlowMotionFwdButton, _config, animationEngine), ButtonEvent.CLICK, function(e:ButtonEvent):void {
+                _slowMotionFwdButton = addChildWidget(createWidget(_slowMotionFwdButton, "slowForward", SlowMotionFwdButton, _config, animationEngine), ButtonEvent.CLICK, function(e:ButtonEvent):void {
                     onSlowMotionClicked(false, true);
                 });
-                _slowMotionBwdButton = addChildWidget(createWidget(_slowMotionBwdButton, "slowMotionBwd", SlowMotionBwdButton, _config, animationEngine), ButtonEvent.CLICK, function(e:ButtonEvent):void {
+                _slowMotionBwdButton = addChildWidget(createWidget(_slowMotionBwdButton, "slowBackward", SlowMotionBwdButton, _config, animationEngine), ButtonEvent.CLICK, function(e:ButtonEvent):void {
                     onSlowMotionClicked(false, false);
                 });
-                _slowMotionFFwdButton = addChildWidget(createWidget(_slowMotionFFwdButton, "slowMotionFFwd", SlowMotionFFwdButton, _config, animationEngine), ButtonEvent.CLICK, function(e:ButtonEvent):void {
+                _slowMotionFFwdButton = addChildWidget(createWidget(_slowMotionFFwdButton, "fastForward", SlowMotionFFwdButton, _config, animationEngine), ButtonEvent.CLICK, function(e:ButtonEvent):void {
                     onSlowMotionClicked(true, true);
                 });
-                _slowMotionFBwdButton = addChildWidget(createWidget(_slowMotionFBwdButton, "slowMotionFBwd", SlowMotionFBwdButton, _config, animationEngine), ButtonEvent.CLICK, function(e:ButtonEvent):void {
+                _slowMotionFBwdButton = addChildWidget(createWidget(_slowMotionFBwdButton, "fastBackward", SlowMotionFBwdButton, _config, animationEngine), ButtonEvent.CLICK, function(e:ButtonEvent):void {
                     onSlowMotionClicked(true, false);
                 });
             }
