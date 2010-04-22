@@ -38,9 +38,9 @@ package org.flowplayer.ui {
             face.width = width;
             face.height = height;
             _text.width = _text.textWidth + 10;
-            _text.height = height - 4;
-            Arrange.center(_text, width);
-            _text.y = height - _text.height;
+            _text.height = _text.textHeight + 6;
+            Arrange.center(_text, width, height);
+//            _text.y = height - _text.height;
 
             _overArea.graphics.clear();
             _overArea.graphics.beginFill(0,0);
