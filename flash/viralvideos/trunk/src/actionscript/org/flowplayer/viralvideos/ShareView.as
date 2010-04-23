@@ -10,11 +10,13 @@
 package org.flowplayer.viralvideos {
 
     import flash.events.MouseEvent;
+    import flash.external.ExternalInterface;
     import flash.net.URLRequest;
     import flash.net.navigateToURL;
     import flash.text.TextField;
 
     import org.flowplayer.model.DisplayPluginModel;
+    import org.flowplayer.model.PluginError;
     import org.flowplayer.ui.AbstractButton;
     import org.flowplayer.util.Arrange;
     import org.flowplayer.util.URLUtil;
@@ -81,7 +83,10 @@ package org.flowplayer.viralvideos {
 
         public function createIcons():void {
             //get the current video page
-            _videoURL = URLUtil.pageUrl;
+            if (! ExternalInterface.available) {
+                model.dispatchError(PluginError.ERROR, "ExternalInterface not available, social site sharing not possible");
+            }
+            _videoURL = ExternalInterface.call("self.location.href.toString");
             log.debug("Page URL to share is " + _videoURL);
             _iconArray = new Array();
 //            _facebookIcon = new FacebookIcon() as Sprite;
