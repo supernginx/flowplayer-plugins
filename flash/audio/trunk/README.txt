@@ -1,6 +1,6 @@
 Version history:
 
-3.1.4
+3.2.0
 -----
 - added a new plugin event "onDuration" that is dispatched whenever a new duration value is estimated and the
 clip.duration value was changed. The new duration value is passed as event argument.
