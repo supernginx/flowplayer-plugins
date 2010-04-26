@@ -1,6 +1,6 @@
 Version history:
 
-3.1.5
+3.2.0
 -----
 - Fixed visibility issue
 - Fixed multiple lines subtitles (#36)
