@@ -1,5 +1,12 @@
 Version history:
 
+3.2.0
+-----
+- New configuration model
+- Considers the screen size when selecting streams
+- Switches when entering and exiting fullscreen
+- Support for specifying bitrates in RSS files
+
 3.1.3
 -----
 - issues fixed in FMS dynamic stream switching
