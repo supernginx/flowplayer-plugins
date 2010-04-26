@@ -1,6 +1,6 @@
 Version history:
 
-3.1.4
+3.2.0
 -----
 Fixes:
 - Fix for parsing a BOSS smil file (was firing error #1009 if protocol was not specified in the file)
