@@ -1,6 +1,6 @@
 Version history:
 
-3.1.6
+3.2.0
 -----
 Fixes:
 - did not send messages to Analytics: http://flowplayer.org/forum/5/28992#post-35001
