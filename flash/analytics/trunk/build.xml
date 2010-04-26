@@ -6,7 +6,7 @@
 	<property name="flowplayer_lib" value="../core/build/flowplayer.swc" />
     <property name="library-path" value="lib" />
 
-    <property name="version" value="3.1.6-dev" />
+    <property name="version" value="3.2.0" />
     <property name="basename" value="flowplayer.analytics" />
     <property name="releasedir" value="flowplayer.analytics" />
     <property name="plugin-binary" value="${basename}.swf" />
