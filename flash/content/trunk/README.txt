@@ -1,5 +1,9 @@
 Version history:
 
+3.2.0
+-----
+- Added new added onBeforeCss() and onBeforeAnimate() callback functions, that are now part of the Styleable interface.
+
 3.1.0
 -----
 Changes:
