@@ -93,18 +93,6 @@ package org.flowplayer.viralvideos {
 
         private function initializeConfig():void {
             log.debug("initializeConfig() " + _config);
-            //loop through the plugins and replace the plugin urls with absolute full domain urls
-            for (var plugin:String in _config.plugins) {
-                if (_config.plugins[plugin].url) {
-                    var url:String = URLUtil.isCompleteURLWithProtocol(_config.plugins[plugin].url)
-                            ? _config.plugins[plugin].url
-                            : _config.plugins[plugin].url.substring(_config.plugins[plugin].url.lastIndexOf("/") + 1, _config.plugins[plugin].url.length);
-
-                    _config.plugins[plugin].url = URLUtil.completeURL(_config.baseURL, url);
-                }
-            }
-
-
             _config.plugins[_viralPluginConfiguredName].emailScriptURL = null;
             _config.plugins[_viralPluginConfiguredName].emailScriptTokenURL = null;
             _config.plugins[_viralPluginConfiguredName].emailScriptToken = null;
