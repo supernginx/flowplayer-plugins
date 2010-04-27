@@ -110,8 +110,7 @@ package org.flowplayer.viralvideos {
                 }
             }
 
-//            var playerSwf:String = URLUtil.completeURL(URLUtil.pageUrl, _player.config.playerSwfName);
-            var configStr:String = JSON.encode(_config);
+            var configStr:String = escape(JSON.encode(_config));
 
             var code:String =
                     '<object id="' + _player.id + '" width="' + width + '" height="' + height + '" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"> ' + "\n" +
