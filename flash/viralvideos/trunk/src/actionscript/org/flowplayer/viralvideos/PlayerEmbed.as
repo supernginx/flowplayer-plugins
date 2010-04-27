@@ -100,7 +100,6 @@ package org.flowplayer.viralvideos {
         }
 
         public function getEmbedCode():String {
-            log.debug("getEmbedCode() ", _controlsOptions);
             if (_controlsOptions) {
                 if (! _config.plugins["controls"]) {
                     _config.plugins["controls"] = _controlsOptions;
@@ -111,7 +110,7 @@ package org.flowplayer.viralvideos {
                 }
             }
 
-            var playerSwf:String = URLUtil.completeURL(URLUtil.pageUrl, _player.config.playerSwfName);
+//            var playerSwf:String = URLUtil.completeURL(URLUtil.pageUrl, _player.config.playerSwfName);
             var configStr:String = JSON.encode(_config);
 
             var code:String =
@@ -121,9 +120,9 @@ package org.flowplayer.viralvideos {
                     '	<param value="high" name="quality"/>' + "\n" +
                     '	<param value="true" name="cachebusting"/>' + "\n" +
                     '	<param value="#000000" name="bgcolor"/>' + "\n" +
-                    '	<param name="movie" value="' + playerSwf + '" />' + "\n" +
+                    '	<param name="movie" value="' + _player.config.playerSwfUrl + '" />' + "\n" +
                     '	<param value="config=' + configStr + '" name="flashvars"/>' + "\n" +
-                    '	<embed src="' + playerSwf + '" type="application/x-shockwave-flash" width="' + width + '" height="' + height + '" allowfullscreen="true" allowscriptaccess="always" cachebusting="true" flashvars="config=' + configStr + '" bgcolor="#000000" quality="true"/>' + "\n" +
+                    '	<embed src="' + _player.config.playerSwfUrl + '" type="application/x-shockwave-flash" width="' + width + '" height="' + height + '" allowfullscreen="true" allowscriptaccess="always" cachebusting="true" flashvars="config=' + configStr + '" bgcolor="#000000" quality="true"/>' + "\n" +
                     '</object>';
 
 
