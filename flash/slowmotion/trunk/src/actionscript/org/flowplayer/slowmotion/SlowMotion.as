@@ -78,6 +78,14 @@ package org.flowplayer.slowmotion {
             _timeProvider = new SlowMotionTimeProvider(_model, _provider, _providerName, _player.playlist);
             _provider.timeProvider = _timeProvider;
 
+			var resetSpeed:Function = function(event:ClipEvent):void {
+				_requestedSpeed = 1;
+			};
+			
+			_player.playlist.onStop(resetSpeed);
+			_player.playlist.onFinish(resetSpeed);
+			_player.playlist.onPlaylistReplace(resetSpeed);
+
             lookupSpeedIndicator();
 
             _model.dispatchOnLoad();
