@@ -40,6 +40,8 @@ package org.flowplayer.slowmotion {
 
 		private var _speedIndicator:PluginModel;
 		private var _speedIndicatorTimer:Timer;
+		
+		private var _requestedSpeed:Number;
 
         public function onConfig(model:PluginModel):void {
             _model = model;
@@ -49,15 +51,14 @@ package org.flowplayer.slowmotion {
         public function onLoad(player:Flowplayer):void {
             log.debug("onLoad()");
             _player = player;
+			_requestedSpeed = 1;
 			
-			var handler:Function = function(event:KeyboardEvent, fast:Boolean):void {
+			var handler:Function = function(event:KeyboardEvent, increaseSpeed:Boolean):void {
 				if ( ! event.ctrlKey )	return;
 				
-				var nextSpeed:Number = getNextSpeed(fast, true);
-				if ( nextSpeed == 0 )
-					normal();
-				else
-					forward(nextSpeed);
+				var nextSpeed:Number = getClosestSpeed(increaseSpeed);
+				log.warn("Speeding now at "+ nextSpeed);
+				forward(nextSpeed);
 			};
 			
 			var fastmotion:Function = function(event:KeyboardEvent):void {};
@@ -89,18 +90,24 @@ package org.flowplayer.slowmotion {
                 normal();
                 return;
             }
+
+			_requestedSpeed = multiplier;
             setFastPlay(multiplier, fps, 1);
         }
 
         [External]
         public function backward(multiplier:Number = 4, fps:Number = -1):void {
             log.debug("backward()");
+
+			_requestedSpeed = -multiplier;
             setFastPlay(multiplier, fps, -1);
         }
 
         [External]
         public function normal():void {
             log.debug("normal()");
+
+			_requestedSpeed = 1;
 			showSpeedIndicator(1, 0);
             _provider.netStream.seek(_timeProvider.getTime(netStream));
         }
@@ -221,17 +228,44 @@ package org.flowplayer.slowmotion {
             return _provider.netStream;
         }
 
-		public function getNextSpeed(fast:Boolean, forward:Boolean):Number
-		{
+		public function getClosestSpeed(increaseSpeed:Boolean):Number {
+			var speeds:Array = [1/8, 1/4, 1/2, 1, 2, 4, 8];
+			
+			log.debug("Current speed is "+ _requestedSpeed);
+			
+			var normalizedSpeedIndex:int = 0;
+			if ( _requestedSpeed <= speeds[0] )
+				normalizedSpeedIndex = 0;
+			else if ( _requestedSpeed >= speeds[speeds.length -1] )
+				normalizedSpeedIndex = speeds.length -1;
+			else {	// we are somewhere between
+				for ( var i:Number = 0; i < speeds.length - 2; i++ ) {
+				//	log.debug("checking if "+_requestedSpeed+" >= "+ speeds[i] + " && "+ _requestedSpeed + " <= "+ speeds[i+1]); 
+					if ( _requestedSpeed >= speeds[i] && _requestedSpeed <= speeds[i+1] ) {
+						normalizedSpeedIndex = i+1;
+						break;
+					}
+				}
+			}
+			
+			log.debug("Current speed index "+ normalizedSpeedIndex + " = "+ speeds[normalizedSpeedIndex]);
+			
+			if ( (increaseSpeed && normalizedSpeedIndex == speeds.length -1) || (! increaseSpeed && normalizedSpeedIndex == 0) )
+				return speeds[normalizedSpeedIndex];
+			else 
+				return speeds[normalizedSpeedIndex + (increaseSpeed ? 1 : -1)];			
+		}
+
+		public function getNextSpeed(fast:Boolean, goForward:Boolean):Number {
 			var fastSpeeds:Array = [2, 4, 8, 1];
 			var slowSpeeds:Array = [1/2, 1/4, 1/8, 1];
 			
-			var currentSpeed:Number = info ? info.speedMultiplier  : 1;
-			var isForward:Boolean   = info ? info.forwardDirection : true;
+			var currentSpeed:Number = _requestedSpeed > 0 ? _requestedSpeed : -_requestedSpeed;
+			var isForward:Boolean   = _requestedSpeed > 0;
 			
 			var nextSpeed:Number = 1;
 			
-			if ( forward == isForward )	// same direction
+			if ( goForward == isForward )	// same direction
 			{
 				if ( fast ) // fast
 					nextSpeed   = fastSpeeds[((fastSpeeds.indexOf(currentSpeed)+1)%fastSpeeds.length)];
@@ -243,7 +277,7 @@ package org.flowplayer.slowmotion {
 			else
 				nextSpeed = slowSpeeds[0];
 				
-			log.debug("Next speed "+ nextSpeed + " forward ? "+ forward);
+			log.debug("Next speed "+ nextSpeed + " forward ? "+ goForward);
 			
 			return nextSpeed;
 		}
