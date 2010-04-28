@@ -36,6 +36,9 @@ package org.flowplayer.slowmotion {
             _provider = provider;
             _playlist = playlist;
             playlist.onStart(onStart, function(clip:Clip):Boolean { return clip.provider == providerName; });
+			playlist.onStop(reset);
+			playlist.onFinish(reset);
+			playlist.onPlaylistReplace(reset);
         }
 
         public function getTime(netStream:NetStream):Number {
@@ -44,6 +47,7 @@ package org.flowplayer.slowmotion {
             if (_info.isTrickPlay) {
                 return _info.adjustedTime(time);
             }
+
             return time;
         }
 
@@ -51,8 +55,13 @@ package org.flowplayer.slowmotion {
             return _info;
         }
 
+		private function reset(event:ClipEvent):void {
+			_info = new SlowMotionInfo(_playlist.current, false, true, 0, 1);
+		}
+
         private function onStart(event:ClipEvent):void {
-            log.debug("onStart(), netStream: " + netStream);
+            log.warn("onStart(), netStream: " + netStream);
+			reset(event);
             netStream.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
         }
 
@@ -60,20 +69,21 @@ package org.flowplayer.slowmotion {
         {
             log.debug("onNetStatus(): ");
             for (var propName:String in infoObject.info) {
-                log.debug("  "+propName + " = " + infoObject.info[propName]);
+                log.warn("  "+propName + " = " + infoObject.info[propName]);
             }
 
             // use the NetStream.Play.Start to get the current fast play settings
             if (infoObject.info.code == "NetStream.Play.Start") {
+	log.warn("Got Start")
                 if (infoObject.info.isFastPlay != undefined && infoObject.info.isFastPlay) {
                     _info = new SlowMotionInfo(_playlist.current, true, Number(infoObject.info.fastPlayDirection) > 0, infoObject.info.fastPlayOffset as Number, infoObject.info.fastPlayMultiplier as Number);
-                    log.debug("isFastPlay = true");
+                    log.warn("isFastPlay = true");
                 }
                 else {
-                    _info = new SlowMotionInfo(_playlist.current, false, true, 0, 1);
-                    log.debug("isFastPlay = false");
+                    
+                    //log.warn("isFastPlay = false");
                 }
-                log.debug("dispatching PluginEvent 'onTrickPlay'");
+                log.warn("dispatching PluginEvent 'onTrickPlay'");
                 _model.dispatch(PluginEventType.PLUGIN_EVENT, "onTrickPlay", _info);
             }
         }
