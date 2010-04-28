@@ -10,8 +10,8 @@
  
 package org.flowplayer.bwcheck.strategy {
 
-
-	import org.flowplayer.view.Flowplayer;
+	import org.flowplayer.util.Log;
+    import org.flowplayer.view.Flowplayer;
 	import org.flowplayer.bwcheck.model.BitrateItem;
 	import org.flowplayer.bwcheck.Config;
 	
@@ -21,6 +21,7 @@ package org.flowplayer.bwcheck.strategy {
 	public class StreamSelectionResizable implements StreamSelection {
 		
 		private var _config:Config;
+		private var log:Log = new Log(this);
 		
 		public function StreamSelectionResizable(config:Config) {
 			_config = config;
@@ -57,7 +58,17 @@ package org.flowplayer.bwcheck.strategy {
 		}
 		
 	
-		
+		public function getDefaultStream(bitrateProperties:Array, player:Flowplayer):BitrateItem {
+            log.debug("getDefaultStream()");
+            for (var i:Number=0; i < bitrateProperties.length; i++) {
+                if (bitrateProperties[i]["isDefault"]) {
+                    return bitrateProperties[i];
+                    break;
+                }
+            }
+            log.debug("getDefaultStream(), did not find a default stream");
+            return bitrateProperties[0];
+        }
 		
 	}
 }

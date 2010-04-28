@@ -21,11 +21,15 @@ package org.flowplayer.bwcheck.strategy {
 	public class StreamSelectionFactory implements StreamSelection {
 		
 		private var _strategy:StreamSelection;
+		private var _resizable:StreamSelectionResizable;
 		
 		public function StreamSelectionFactory(config:Config) {
-			var strategyCls:Class = getStrategy(config.streamSelectionStrategy);
-			_strategy = new strategyCls(config);
-			
+			try {
+				var strategyCls:Class = getStrategy(config.streamSelectionStrategy);
+				_strategy = new strategyCls(config);
+			} catch (e:Error) {
+				
+			}
 			if (_strategy == null) _strategy = new StreamSelectionDefault(config);
 		}
 		
