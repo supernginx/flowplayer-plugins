@@ -129,12 +129,19 @@ function showRelatedList(gdata, container)
 var playlist =  [
 			       {
 						//url: 'api:PmGiCFPUSM4'
-						url: 'api:c1SScNKdUPY'					
+						url: 'api:Q_6qRyYn-68'					
+				   }
+        		];
+        		
+var bwPlaylist =  [
+			       {
+						//url: 'api:PmGiCFPUSM4'
+						url: 'api:Q_6qRyYn-68'					
 				   }
         		];
 
 
-var loggingConfig = { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.cluster.*,org.flowplayer.rtmp.*, org.flowplayer.youtube.*' };
+var loggingConfig = { level: 'debug', filter: 'org.flowplayer.controller.CompositeClipUrlResolver,org.flowplayer.bwcheck.*, org.flowplayer.cluster.*,org.flowplayer.rtmp.*, org.flowplayer.youtube.*' };
 
 $(document).ready(function () {	
 	
@@ -400,6 +407,150 @@ $f("basic", "@PLAYER_SWF@", {
         </td>
     </tr>
 </table>
+
+
+<a name="basic"></a>
+<h2><em>Youtube with Bandwidth Check</em> Example</h2>
+
+<p>
+    This example demonstrates a basic setup to play the video. 
+</p>
+
+
+
+<div style="width:900px;">
+   
+
+<!-- player container-->
+
+
+<a 
+	href="http://video.flowplayer.org/skyandice.flv" 
+	style="display:block;width:425px;height:300px;float:left;" 
+	id="bwcheck">
+	
+	<!-- splash image inside the container -->
+	<img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" />
+	
+</a>
+
+<div id="playlistContainer" style="float:left;width:190px;margin-left:50px; margin-top:0px;"></div>
+
+<!-- Flowplayer installation and configuration -->
+<script language="JavaScript">
+
+$f("bwcheck", "@PLAYER_SWF@", {
+	playlist: bwPlaylist,
+	// configure the required plugin
+	plugins:  {
+		
+		controls: { autoHide: true },
+		youtube: {
+			url:'@MAIN_PLAYER_SWF@',
+			enableGdata: false
+		},
+		content: {
+			url: '../flowplayer.content.swf',
+			top: 0,
+			left: 0,
+			width: 250 
+		},
+		bwcheck: {  
+			url: '../flowplayer.bwcheck.swf',   
+			netConnectionUrl: 'http://releases.flowplayer.org/swf/flowplayer-3.1.5.swf',
+			bitrateProfileName: 'YoutubeBitrateProfile',
+			streamSelectionStrategy: 'resizable',
+			maxContainerWidth: 854,
+			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
+				var content = $f().getPlugin('content');
+				
+				$("#bwcheck")
+							.width(parseInt(mappedBitrate.width))
+							.height(parseInt(mappedBitrate.height));	
+							
+				var info = "Chosen bitrate is: " + mappedBitrate.bitrate + "<br /> Video file served: " + streamName + "<br /> Old Video file served: " + oldStreamName;
+				content.setHtml(info);
+			},
+			// this method is called when the bandwidth check is done
+			onBwDone: function bwDoneInfo(mappedBitrate, detectedBitrate) {
+				var content = $f().getPlugin('content');
+				
+				$("#bwcheck")
+							.width(parseInt(mappedBitrate.width))
+							.height(parseInt(mappedBitrate.height));
+							
+				var info = "Your speed is: " + detectedBitrate + "<br /> Your chosen bitrate: " + mappedBitrate.bitrate + "<br /> Video file served: " + mappedBitrate.url;
+				content.setHtml(info);
+			}
+		}
+
+		
+	},
+	clip: {
+		provider: 'youtube',
+		urlResolvers: ['youtube','bwcheck'],
+		onBegin: function (clip) {
+				
+		}
+	},
+	log: loggingConfig
+	
+});
+</script>	
+
+
+
+
+
+</div>
+
+<br clear="all" />
+
+<button rel="div.overlay:eq(1)" type="button">Configuration For This Example</button>
+
+<div class="overlay">
+<div class="box code">
+<pre><code class="javascript">
+
+
+var playlist =  [
+			       {
+						url: 'api:PmGiCFPUSM4'					
+				   }
+        		];
+        		
+$f("basic", "@PLAYER_SWF@", {
+	playlist: playlist,
+	// configure the required plugin
+	plugins:  {
+		
+		controls: { autoHide: true },
+		youtube: {
+					url:'@MAIN_PLAYER_SWF@',
+					enableGdata: true,
+					
+					onApiData: function(gdata) {	
+						showRelatedList(gdata, "#playlistContainer");
+					}
+					
+					
+		}
+
+		
+	},
+	clip: {
+		provider: 'youtube',
+		urlResolvers: 'youtube',
+		onBegin: function (clip) {
+				
+		}
+	},
+	log: loggingConfig
+	
+});
+</code></pre>
+</div>
+</div>
 
 
 
