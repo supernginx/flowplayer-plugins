@@ -74,15 +74,19 @@ package org.flowplayer.slowmotion {
 
             // use the NetStream.Play.Start to get the current fast play settings
             if (infoObject.info.code == "NetStream.Play.Start") {
-	log.warn("Got Start")
-                if (infoObject.info.isFastPlay != undefined && infoObject.info.isFastPlay) {
-                    _info = new SlowMotionInfo(_playlist.current, true, Number(infoObject.info.fastPlayDirection) > 0, infoObject.info.fastPlayOffset as Number, infoObject.info.fastPlayMultiplier as Number);
-                    log.warn("isFastPlay = true");
-                }
-                else {
+				log.debug("Got Start")
+                if (infoObject.info.isFastPlay != undefined) {
+					if ( infoObject.info.isFastPlay ) {
+						_info = new SlowMotionInfo(_playlist.current, true, Number(infoObject.info.fastPlayDirection) > 0, infoObject.info.fastPlayOffset as Number, infoObject.info.fastPlayMultiplier as Number);
+	                    log.debug("isFastPlay = true");
+					}
+					else {
+						log.debug("isFastPlay = false");
+						reset(null);
+					}
                     
-                    //log.warn("isFastPlay = false");
                 }
+ 
                 log.warn("dispatching PluginEvent 'onTrickPlay'");
                 _model.dispatch(PluginEventType.PLUGIN_EVENT, "onTrickPlay", _info);
             }
