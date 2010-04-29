@@ -31,7 +31,7 @@ package org.flowplayer.captions {
     import org.flowplayer.view.FlowStyleSheet;
     import org.flowplayer.view.Flowplayer;
     import org.flowplayer.view.Styleable;
-	import org.flowplayer.model.PlayerEventType;
+    import org.flowplayer.model.PlayerEventType;
 
     /**
      * A Subtitling and Captioning Plugin. Supports the following:
@@ -77,7 +77,7 @@ package org.flowplayer.captions {
      *
      * simpleFormatting: true
      *
-     * @author danielr
+     * @author danielr, Anssi Piirainen (api@iki.fi)
      */
     public class Caption extends AbstractSprite implements Plugin, Styleable {
         private var _captions:Array = new Array();
@@ -93,11 +93,11 @@ package org.flowplayer.captions {
         private var _numFilesLoaded:int;
         private var _initialized:Boolean;
 
-		private var _currentCaption:Object;
-		private var _captionHeightRatio:Number;
-		private var _captionWidthRatio:Number;
-		private var _captionFontSizes:Object;
-		
+        private var _currentCaption:Object;
+        private var _captionHeightRatio:Number;
+        private var _captionWidthRatio:Number;
+        private var _captionFontSizes:Object;
+
         /**
          * Sets the plugin model. This gets called before the plugin
          * has been added to the display list and before the player is set.
@@ -153,10 +153,10 @@ package org.flowplayer.captions {
             }
         }
 
-		private function initializeRatios():void {
-			_captionHeightRatio = _captionView.height / _player.screen.getDisplayObject().height;
-			_captionWidthRatio = _captionView.width / _player.screen.getDisplayObject().width;
-		}
+        private function initializeRatios():void {
+            _captionHeightRatio = _captionView.height / _player.screen.getDisplayObject().height;
+            _captionWidthRatio = _captionView.width / _player.screen.getDisplayObject().width;
+        }
 
         private function onPlayerInitialized(event:PlayerEvent):void {
             initCaptionView();
@@ -171,81 +171,85 @@ package org.flowplayer.captions {
                     _button.isDown = _player.togglePlugin(_config.captionTarget);
                 });
             }
-					
-			if ( _viewModel.visible )
-				initializeRatios();
-			else
-			{
-				_captionView.alpha = 0;
-				_player.togglePlugin(_config.captionTarget);
-				initializeRatios();
-				_player.togglePlugin(_config.captionTarget);
-				_captionView.alpha = 1;
-			}
-			
-			_player.playlist.onPause(function(event:ClipEvent):void {
-				if ( _currentCaption != null )
-					clearInterval(_currentCaption.captionInterval);
-			});
-			
-			_player.playlist.onResume(function(event:ClipEvent):void {
-				if ( _currentCaption != null )
-				{
-					var newDuration:Number = _currentCaption.endTime - _player.status.time;
-					if ( newDuration > 0 )
-						_currentCaption.captionInterval = setInterval(clearCaption, newDuration);
-				}
-			});
-			
-			_player.playlist.onStop(function(event:ClipEvent):void {	clearCaption();		});
-			_player.playlist.onSeek(function(event:ClipEvent):void {	clearCaption();		});
-			
-			_player.onFullscreen(resizeCaptionView);
-			_player.onFullscreenExit(resizeCaptionView);
+
+            if (_viewModel.visible)
+                initializeRatios();
+            else
+            {
+                _captionView.alpha = 0;
+                _player.togglePlugin(_config.captionTarget);
+                initializeRatios();
+                _player.togglePlugin(_config.captionTarget);
+                _captionView.alpha = 1;
+            }
+
+            _player.playlist.onPause(function(event:ClipEvent):void {
+                if (_currentCaption != null)
+                    clearInterval(_currentCaption.captionInterval);
+            });
+
+            _player.playlist.onResume(function(event:ClipEvent):void {
+                if (_currentCaption != null)
+                {
+                    var newDuration:Number = _currentCaption.endTime - _player.status.time;
+                    if (newDuration > 0)
+                        _currentCaption.captionInterval = setInterval(clearCaption, newDuration);
+                }
+            });
+
+            _player.playlist.onStop(function(event:ClipEvent):void {
+                clearCaption();
+            });
+            _player.playlist.onSeek(function(event:ClipEvent):void {
+                clearCaption();
+            });
+
+            _player.onFullscreen(resizeCaptionView);
+            _player.onFullscreenExit(resizeCaptionView);
 
 
         }
 
-		private function resizeCaptionView(event:PlayerEvent):void
-		{			
-			var newWidth:Number = _player.screen.getDisplayObject().width * _captionWidthRatio;
-			var newHeight:Number = _player.screen.getDisplayObject().height * _captionHeightRatio;
-			
-			if ( event.type == (PlayerEventType.FULLSCREEN).name )
-			{
-				_captionFontSizes = {};
-				var styleNames:Array = _captionView.style.styleSheet.styleNames;
-				for ( var i:int = 0; i < styleNames.length; i++ )
-				{				
-					if ( _captionView.style.getStyle(styleNames[i]).fontSize )
-					{
-						var style:Object =  _captionView.style.getStyle(styleNames[i]);
-						
-						_captionFontSizes[styleNames[i]] = style.fontSize;
-						
-						style.fontSize = style.fontSize * newHeight /  _captionView.height;
-						_captionView.style.setStyle(styleNames[i], style);
-					}
-				}
-			}
-			else
-			{	// setting back fontsizes ..
-				for ( var styleName:String in _captionFontSizes )
-				{
-					 style =  _captionView.style.getStyle(styleName);
-					style.fontSize = _captionFontSizes[styleName];
-					_captionView.style.setStyle(styleName, style);
-				}
-			}	
-			
-			var newY:Number = _captionView.y;
-			if ( newY > _player.screen.getDisplayObject().height / 2 )
-				newY = _captionView.y - (newHeight - _captionView.height);
-		
-			var newX:Number = _captionView.x - (newWidth - _captionView.width) ;
+        private function resizeCaptionView(event:PlayerEvent):void
+        {
+            var newWidth:Number = _player.screen.getDisplayObject().width * _captionWidthRatio;
+            var newHeight:Number = _player.screen.getDisplayObject().height * _captionHeightRatio;
 
-			_player.css(_config.captionTarget, {y: newY, x: newX, height: newHeight, width: newWidth});
-		}
+            if (event.type == (PlayerEventType.FULLSCREEN).name)
+            {
+                _captionFontSizes = {};
+                var styleNames:Array = _captionView.style.styleSheet.styleNames;
+                for (var i:int = 0; i < styleNames.length; i++)
+                {
+                    if (_captionView.style.getStyle(styleNames[i]).fontSize)
+                    {
+                        var style:Object = _captionView.style.getStyle(styleNames[i]);
+
+                        _captionFontSizes[styleNames[i]] = style.fontSize;
+
+                        style.fontSize = style.fontSize * newHeight / _captionView.height;
+                        _captionView.style.setStyle(styleNames[i], style);
+                    }
+                }
+            }
+            else
+            {    // setting back fontsizes ..
+                for (var styleName:String in _captionFontSizes)
+                {
+                    style = _captionView.style.getStyle(styleName);
+                    style.fontSize = _captionFontSizes[styleName];
+                    _captionView.style.setStyle(styleName, style);
+                }
+            }
+
+            var newY:Number = _captionView.y;
+            if (newY > _player.screen.getDisplayObject().height / 2)
+                newY = _captionView.y - (newHeight - _captionView.height);
+
+            var newX:Number = _captionView.x - (newWidth - _captionView.width);
+
+            _player.css(_config.captionTarget, {y: newY, x: newX, height: newHeight, width: newWidth});
+        }
 
         private function onPlayerResized(event:LayoutEvent):void {
             log.debug("onPlayerResized");
@@ -390,10 +394,10 @@ package org.flowplayer.captions {
             clearInterval(_currentCaption.captionInterval);
             _currentCaption = null;
 
-			if ( clearHTML )
-            	_captionView.html = "";
+            if (clearHTML)
+                _captionView.html = "";
         }
-		
+
         protected function onCuepoint(event:ClipEvent):void {
             log.debug("onCuepoint", event.info.parameters);
 
@@ -411,25 +415,25 @@ package org.flowplayer.captions {
                 }
             }
 
-			clearCaption(false);
+            clearCaption(false);
 
             _template = _config.template;
             var bgColor:String = (_captionView.style.getStyle("." + event.info.parameters.style).backgroundColor ? _captionView.style.getStyle("." + event.info.parameters.style).backgroundColor
                     : _captionView.style.rootStyle.backgroundColor);
 
             _captionView.css({backgroundColor: bgColor});
-			var text:String = (_template ? parseTemplate(event.info) : event.info.parameters.text);
-			text = text.replace(/\n/, '<br>');
-			
+            var text:String = (_template ? parseTemplate(event.info) : event.info.parameters.text);
+            text = text.replace(/\n/, '<br>');
+
             _captionView.html = "<p class='" + event.info.parameters.style + "'>" + text + "</p>";
-            if (Number(event.info.parameters.end) > 0) 
-			{
-				_currentCaption = {
-					captionInterval: setInterval(clearCaption, Number(event.info.parameters.end)),
-					beginTime: _player.status.time,
-					endTime: _player.status.time + Number(event.info.parameters.end)
-				};
-			}
+            if (Number(event.info.parameters.end) > 0)
+            {
+                _currentCaption = {
+                    captionInterval: setInterval(clearCaption, Number(event.info.parameters.end)),
+                    beginTime: _player.status.time,
+                    endTime: _player.status.time + Number(event.info.parameters.end)
+                };
+            }
         }
 
         protected function initCaptionView():void {
