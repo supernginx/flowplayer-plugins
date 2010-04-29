@@ -82,6 +82,7 @@ package org.flowplayer.slowmotion {
 				_requestedSpeed = 1;
 			};
 			
+			_player.playlist.onSeek(resetSpeed);
 			_player.playlist.onStop(resetSpeed);
 			_player.playlist.onFinish(resetSpeed);
 			_player.playlist.onPlaylistReplace(resetSpeed);
