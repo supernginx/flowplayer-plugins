@@ -5,6 +5,7 @@ Version history:
 Fixes:
 - Now resets the bufferStart value to zero when replaying a clip. Because it failed to reset it the buffer bar and
   progress bar were not drawn correctly when replaying.
+- Now supports rtmpe/rtmpte parallel connecting attempts
 
 3.1.3
 -----
