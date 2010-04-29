@@ -89,9 +89,9 @@ package org.flowplayer.captions {
         private var _viewModel:DisplayPluginModel;
         private var _template:String;
         private var _button:CCButton;
-        private var _initialized:Boolean;
         private var _totalFiles:int;
         private var _numFilesLoaded:int;
+        private var _initialized:Boolean;
 
 		private var _currentCaption:Object;
 		private var _captionHeightRatio:Number;
@@ -135,7 +135,7 @@ package org.flowplayer.captions {
          */
         public function onLoad(player:Flowplayer):void {
             log.debug("onLoad");
-
+            _initialized = false;
             _player = player;
             _player.playlist.onCuepoint(onCuepoint);
 
@@ -145,23 +145,11 @@ package org.flowplayer.captions {
             _viewModel = _player.pluginRegistry.getPlugin(_config.captionTarget) as DisplayPluginModel;
             _captionView = _viewModel.getDisplayObject();
 
-            // we need to delay loading of the captions file.
-            // otherwise there will be problems initializing in IE.
-            if (hasCaptionFile()) {
-                _player.playlist.onBeforeBegin(onBeforeBegin);
-            } else {
-                _initialized = true;
-            }
-
             _player.onLoad(onPlayerInitialized);
-            _model.dispatchOnLoad();
-        }
-
-        private function onBeforeBegin(event:ClipEvent):void {
-            log.debug("onBeforeBegin " + event.target);
-
-            if (! _initialized) {
-                event.preventDefault();
+            if (hasCaptionFile()) {
+                loadCaptionFiles();
+            } else {
+                _model.dispatchOnLoad();
             }
         }
 
@@ -182,9 +170,6 @@ package org.flowplayer.captions {
                 _button.clickArea.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void {
                     _button.isDown = _player.togglePlugin(_config.captionTarget);
                 });
-            }
-            if (hasCaptionFile()) {
-                loadCaptionFiles();
             }
 					
 			if ( _viewModel.visible )
@@ -330,12 +315,9 @@ package org.flowplayer.captions {
                 _numFilesLoaded++;
                 log.debug(_numFilesLoaded + " captions files out of " + _totalFiles + " loaded");
                 if (_numFilesLoaded == _totalFiles && ! _initialized) {
-                    log.debug("all caption files loaded, calling play");
-                    _player.playlist.unbind(onBeforeBegin, ClipEventType.BEGIN, true);
+                    log.debug("all caption files loaded, dispatching onLoad()");
                     _initialized = true;
-
-					if ( clip.autoPlay )
-						setTimeout( _player.play, 200);
+                    _model.dispatchOnLoad();
                 }
             });
         }
