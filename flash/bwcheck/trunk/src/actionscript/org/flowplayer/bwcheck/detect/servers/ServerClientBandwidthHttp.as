@@ -114,15 +114,17 @@ package org.flowplayer.bwcheck.detect.servers
 		{
 			log.debug("requesting reference file " + _url);
 			
-			this._startTime = getTimer();
-			log.debug("start: " + _startTime.toString());
-
-			var request:URLRequest = new URLRequest(_url);
+			
+			var request:URLRequest = new URLRequest(_url + "?" + Math.random());
 			_nocache = new URLRequestHeader("Cache-Control", "no-store, no-cache, must-revalidate");
 			var headers:Array = new Array(_nocache);
 			request.requestHeaders = headers;
 			request.method = URLRequestMethod.GET;
 			loader.load(request);
+			
+			this._startTime = getTimer();
+			log.debug("start: " + _startTime.toString());
+			
 		}
 		
 		protected function onResult(obj:Object):void
