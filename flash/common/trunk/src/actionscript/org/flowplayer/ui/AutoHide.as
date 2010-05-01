@@ -49,7 +49,7 @@ package org.flowplayer.ui {
         private var _showListener:Function;
 
         public function AutoHide(model:DisplayPluginModel, config:AutoHideConfig, player:Flowplayer, stage:Stage, displayObject:DisplayObject) {
-//            Assert.notNull(model, "model cannot be null");
+            //            Assert.notNull(model, "model cannot be null");
             Assert.notNull(config, "config cannot be null");
             Assert.notNull(player, "player cannot be null");
             Assert.notNull(stage, "stage cannot be null");
@@ -60,9 +60,9 @@ package org.flowplayer.ui {
             _player = player;
             _stage = stage;
             _disp = displayObject;
-			
-			updatePosition();
-			
+
+            updatePosition();
+
             if (_config.state != "fullscreen") {
                 startTimerAndInitializeListeners();
             }
@@ -94,11 +94,11 @@ package org.flowplayer.ui {
                 hide(null, true);
             }
             stopHideTimer();
-			stopMouseOutTimer();
+            stopMouseOutTimer();
             _stage.removeEventListener(FullScreenEvent.FULL_SCREEN, onFullScreen);
             _stage.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
             _stage.removeEventListener(Event.RESIZE, onStageResize);
-			_stage.removeEventListener(Event.MOUSE_LEAVE, startMouseOutTimer);
+            _stage.removeEventListener(Event.MOUSE_LEAVE, startMouseOutTimer);
             _disp.removeEventListener(MouseEvent.ROLL_OVER, onMouseOver);
             _disp.removeEventListener(MouseEvent.ROLL_OUT, onMouseOut);
         }
@@ -117,30 +117,30 @@ package org.flowplayer.ui {
             }
         }
 
-		public function cancelAnimation():void {
-			log.debug("cancelAnimation");
-			_player.animationEngine.cancel(_disp);
-		}
+        public function cancelAnimation():void {
+            log.debug("cancelAnimation");
+            _player.animationEngine.cancel(_disp);
+        }
 
-		public function updatePosition(showControls:Boolean = false):void
-		{
-			var pos:Object = getDisplayProperties();
-			
-			if ( ! _originalPos) {
-				_originalPos = pos;
+        public function updatePosition(showControls:Boolean = false):void
+        {
+            var pos:Object = getDisplayProperties();
+
+            if (! _originalPos) {
+                _originalPos = pos;
             }
-			
-			// don't update position when hidden. Sometimes happens when changing height while hiding (bug #63)
-			if (pos.hasOwnProperty("position") && (! pos.position.top.hasValue() || pos.position.top.hasValue() && pos.position.top.px != getHiddenPosition())) {
-				_originalPos = pos;
-			}	
-			
-			
-			if (showControls) {
-				cancelAnimation();
-				show();
-			}
-		}
+
+            // don't update position when hidden. Sometimes happens when changing height while hiding (bug #63)
+            if (pos.hasOwnProperty("position") && (! pos.position.top.hasValue() || pos.position.top.hasValue() && pos.position.top.px != getHiddenPosition())) {
+                _originalPos = pos;
+            }
+
+
+            if (showControls) {
+                cancelAnimation();
+                show();
+            }
+        }
 
         private function getDisplayProperties():Object {
             if (_model && _model.getDisplayObject() == _disp) {
@@ -163,7 +163,7 @@ package org.flowplayer.ui {
         }
 
         private function get hiddenPos():Object {
-        	var hiddenPos:Object = clone(_originalPos);
+            var hiddenPos:Object = clone(_originalPos);
             if (useFadeOut) {
                 _hwFullScreen = true;
                 hiddenPos.alpha = 0;
@@ -183,8 +183,8 @@ package org.flowplayer.ui {
                     stop();
                 }
                 _disp.alpha = 0;
-                cancelAnimation();	
-				show();
+                cancelAnimation();
+                show();
             }
         }
 
@@ -199,9 +199,9 @@ package org.flowplayer.ui {
         }
 
         private function startTimerAndInitializeListeners():void {
-//            log.info("startTimerAndInitializeListeners()");
+            //            log.info("startTimerAndInitializeListeners()");
             startHideTimer();
-			_stage.addEventListener(Event.MOUSE_LEAVE, startMouseOutTimer);
+            _stage.addEventListener(Event.MOUSE_LEAVE, startMouseOutTimer);
             _stage.addEventListener(FullScreenEvent.FULL_SCREEN, onFullScreen);
             _stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
             _stage.addEventListener(Event.RESIZE, onStageResize);
@@ -210,31 +210,29 @@ package org.flowplayer.ui {
         }
 
         private function onMouseOver(event:MouseEvent):void {
-	//log.warn("MOUSE OVER");
+            //log.warn("MOUSE OVER");
             _mouseOver = true;
         }
 
         private function onMouseOut(event:MouseEvent):void {
-	//log.warn("MOUSE OUT");
+            //log.warn("MOUSE OUT");
             _mouseOver = false;
         }
 
 
+        private function mouseLeave(event:Event = null):void {
+            _stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 
-		private function mouseLeave(event:Event = null):void {
-			_stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-				
-			stopHideTimer();
-			stopMouseOutTimer();
-			cancelAnimation();	
+            stopHideTimer();
+            stopMouseOutTimer();
+            cancelAnimation();
 
-			hide();
-			//stop();
-		}
-
+            hide();
+            //stop();
+        }
 
 
-		private function startMouseOutTimer(event:Event = null):void {
+        private function startMouseOutTimer(event:Event = null):void {
             log.debug("startMouseOutTimer(), delay is " + _config.mouseOutDelay);
             if (_config.mouseOutDelay == 0) {
                 mouseLeave();
@@ -261,14 +259,12 @@ package org.flowplayer.ui {
         }
 
 
-
-
         private function onMouseMove(event:MouseEvent):void {
             _stage.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-            cancelAnimation();	
+            cancelAnimation();
             show();
             if (isShowing() && _hideTimer) {
-//                log.debug("onMouseMove(): already showing");
+                //                log.debug("onMouseMove(): already showing");
                 _hideTimer.stop();
                 _hideTimer.start();
                 return;
@@ -286,7 +282,7 @@ package org.flowplayer.ui {
         }
 
         private function startHideTimer():void {
-//            log.info("startHideTimer(), delay is " + _config.hideDelay);
+            //            log.info("startHideTimer(), delay is " + _config.hideDelay);
             if (_config.hideDelay == 0) {
                 hide();
                 return;
@@ -296,7 +292,7 @@ package org.flowplayer.ui {
             }
             // check if hideDelay has changed
             else if (_config.hideDelay != _hideTimer.delay) {
-//                log.info("startHideTimer(), using new delay " + _config.hideDelay);
+                //                log.info("startHideTimer(), using new delay " + _config.hideDelay);
                 _hideTimer.stop();
                 _hideTimer = new Timer(_config.hideDelay);
             }
@@ -317,15 +313,15 @@ package org.flowplayer.ui {
 
         public function hide(event:TimerEvent = null, ignoreMouseOver:Boolean = false):void {
 
-            if (! isShowing()) 
-			{
-				if (_hideTimer) {
-	                _hideTimer.stop();
-	            }
-				return;
-			}
+            if (! isShowing())
+            {
+                if (_hideTimer) {
+                    _hideTimer.stop();
+                }
+                return;
+            }
 
-            log.warn("HIDING ? " + (ignoreMouseOver ? 'true ' : 'false ')+ (_mouseOver ? 'true ' : 'false '))
+            log.warn("HIDING ? " + (ignoreMouseOver ? 'true ' : 'false ') + (_mouseOver ? 'true ' : 'false '))
             if (! ignoreMouseOver && _mouseOver) return;
 
             log.debug("dispatching onBeforeHidden");
@@ -361,15 +357,15 @@ package org.flowplayer.ui {
                 // restore top or bottom from our pre-hide position
                 if (_originalPos is DisplayProperties) {
                     if (_originalPos.position.top.hasValue()) {
-						log.debug("restoring to top "+ _originalPos.position.top);
+                        log.debug("restoring to top " + _originalPos.position.top);
                         currentProps.top = _originalPos.position.top;
                     }
                     if (_originalPos.position.bottom.hasValue()) {
-						log.debug("restoring to bottom "+ _originalPos.position.bottom);
+                        log.debug("restoring to bottom " + _originalPos.position.bottom);
                         currentProps.bottom = _originalPos.position.bottom;
                     }
                 } else {
-					log.debug("restoring to y "+ _originalPos.y);
+                    log.debug("restoring to y " + _originalPos.y);
                     currentProps.y = _originalPos.y;
                 }
             }
