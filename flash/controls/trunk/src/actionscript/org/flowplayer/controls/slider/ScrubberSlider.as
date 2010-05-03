@@ -250,6 +250,10 @@ package org.flowplayer.controls.slider {
 		private function drawBufferBar(leftEdge:Number, rightEdge:Number):void {
 			drawBar(_bufferBar, _config.style.bufferColor, _config.style.bufferAlpha, _config.style.bufferGradient, leftEdge, rightEdge);
 		}
+		
+		private function drawProgressBar(leftEdge:Number, rightEdge:Number = 0):void {
+			drawBar(_progressBar, _config.style.progressColor, _config.style.progressAlpha, _config.style.progressGradient, leftEdge || 0, rightEdge || _dragger.x + _dragger.width - 2);
+		}
 
 		override protected function get sliderAlpha():Number {
             return _config.style.sliderAlpha;
@@ -282,9 +286,7 @@ package org.flowplayer.controls.slider {
 //			drawProgressBar(_bufferStart * width);
 //		}
 
-		private function drawProgressBar(leftEdge:Number, rightEdge:Number = 0):void {
-			drawBar(_progressBar, _config.style.progressColor, _config.style.progressAlpha, _config.style.progressGradient, leftEdge || 0, rightEdge || _dragger.x + _dragger.width - 2);
-		}
+		
 
 		public function set allowRandomSeek(value:Boolean):void {
 			_allowRandomSeek = value;
