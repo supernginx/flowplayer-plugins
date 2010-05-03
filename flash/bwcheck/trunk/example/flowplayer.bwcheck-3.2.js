@@ -1,16 +1,12 @@
 /**
  * flowplayer.bwcheck
- *
- * Author: Daniel Rossi
  */
 (function($) {
 
 	$f.addPlugin("bwcheck", function(container, options) {
 
-
 		// self points to current Player instance
 		var self = this;
-
 
 		var opts = {
 			selectedBitrateClass: 'bitrate-selected',
@@ -27,18 +23,10 @@
 		$.extend(opts, options);
 
 		var wrap = container;
-
-
-
 		var template = null;
 		var labels = null;
 		var plugin = self.getPlugin(opts.bwCheckPlugin) || null;
-
-
 		var els = null;
-
-
-//{{{ "private" functions
 
 		function parseTemplate(values) {
 			var el = template;
@@ -56,7 +44,6 @@
 			return el;
 		}
 
-
 		function buildBitrateList() {
 			wrap.fadeOut(opts.fadeTime).empty();
 
@@ -67,7 +54,8 @@
 
 
 			var index = 0;
-			$.each(self.getClip().bitrates, function() {
+			var clip = self.getClip();
+			$.each(clip.bitrates, function() {
 				var el = parseTemplate(this);
 				el = $(el);
 				el.attr("index",this.bitrate);
@@ -108,8 +96,6 @@
 				index++;
 			});
 
-
-
 			//if the parent div wrapper is set to display:none fade in the parent
 			if (wrap.parent().css('display') == "none") {
 				wrap.show();
@@ -127,20 +113,12 @@
 			return false;
 		}
 
-
 		function clearCSS() {
 			els.removeClass(opts.bitrateClass);
 			els.removeClass(opts.selectedBitrateClass);
 			els.removeClass(opts.bitrateInfoClass);
 		}
 
-
-//}}}
-
-
-		/* setup playlists with onClick handlers */
-
-		// internal playlist
 		function showBitrateList() {
 
 			wrap = $(wrap);
@@ -155,40 +133,8 @@
 			}
 		}
 
-		function setupEvents() {
-			  if (plugin) {
-				 plugin.onStreamSwitch(function(mappedBitrate, streamName, oldStreamName) {
-					 //getEl(mappedBitrate.bitrate).removeClass(opts.bitrateClass);
-					 //getEl(mappedBitrate.bitrate).addClass(opts.selectedBitrateClass);
-					 alert("yes");
-			 	 });
-
-			 	 plugin.onBwDone(function(mappedBitrate, detectedBitrate) {
-			 		//getEl(mappedBitrate.bitrate).removeClass(opts.bitrateClass);
-					//getEl(mappedBitrate.bitrate).addClass(opts.selectedBitrateClass);
-			 		 alert("yes");
-			 		//wrap.filter("[index=" + mappedBitrate.bitrate + "]").hide();
-			 	 });
-
-			  }
-		}
-
-
-		self.onStart(function(clip) {
+		self.onBeforeBegin(function(clip) {
 			showBitrateList();
-			setupEvents();
-		});
-
-
-
-		self.onUnload(function() {
-			//clearCSS();
-		});
-
-
-		self.onClipAdd(function(clip, index) {
-			//els.eq(index).before(toString(clip));
-			//bindClicks();
 		});
 
 		return self;
