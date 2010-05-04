@@ -227,7 +227,7 @@ package org.flowplayer.captions {
 
                         _captionFontSizes[styleNames[i]] = style.fontSize;
 
-                        style.fontSize = style.fontSize * newHeight / _captionView.height;
+                        style.fontSize = style.fontSize * newWidth / _captionView.width;
                         _captionView.style.setStyle(styleNames[i], style);
                     }
                 }
