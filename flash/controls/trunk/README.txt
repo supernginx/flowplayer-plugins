@@ -1,6 +1,6 @@
 Version history:
 
-3.1.6
+3.2.0
 -----
 - New external methods and some existing methods renamed. New set of methods for setting and getting things:
     getConfig(), setWidgets(), getWidgets(), setAutoHide(), getAutoHide(), setTooltips(), getTooltips(), setEnabled(), getEnabled()
