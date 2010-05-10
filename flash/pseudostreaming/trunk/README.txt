@@ -1,5 +1,9 @@
 Version history:
 
+3.2.1
+-----
+- fixed duration after seek
+
 3.1.3
 -----
 - compatible with the new ConnectionProvider and URLResolver API
