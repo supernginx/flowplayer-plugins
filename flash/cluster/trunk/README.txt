@@ -1,5 +1,9 @@
 Version history:
 
+3.2.1
+-----
+- now uses the durationFunc of the RTMP plugin
+
 3.2.0
 -----
 - fix for clustering RTMP servers 
