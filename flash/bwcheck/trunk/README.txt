@@ -1,5 +1,13 @@
 Version history:
 
+3.2.1
+-----
+Fixes:
+- this plugin did not work properly with playlists, in fact it was only possible to use it with one configured clip
+- stream selection now works properly if the bitrates array does not contain video width values
+- stream selection works better if the configured bitrates all exceed available BW: In this case the default bitrate is
+  selected and if the default is not configured the smallest bitrate is used
+
 3.2.0
 -----
 - New configuration model

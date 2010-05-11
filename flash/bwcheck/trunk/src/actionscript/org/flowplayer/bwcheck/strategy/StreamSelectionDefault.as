@@ -31,32 +31,47 @@ package org.flowplayer.bwcheck.strategy {
 			log.debug("screen width is " + screenWidth + ", bandwidth is " + bandwidth);
 
 			for (var i:Number=0; i < bitrateProperties.length; i++) {
-				log.debug("candidate stream has width " + bitrateProperties[i].width + ", bitrate " + bitrateProperties[i].bitrate);
-				if (screenWidth >= bitrateProperties[i].width &&
-					 bandwidth >= bitrateProperties[i].bitrate && bitrateProperties[i].bitrate) {
-                    log.debug("selecting bitrate with width " + bitrateProperties[i].width);
+                var item:BitrateItem = bitrateProperties[i];
+
+				log.debug("candidate stream has width " + item.width + ", bitrate " + item.bitrate);
+                var fitsScreen:Boolean = ! item.width || screenWidth >= item.width;
+                var enoughBw:Boolean = bandwidth >= item.bitrate;
+                var bitrateSpecified:Boolean = item.bitrate as Boolean;
+                log.info("fits screen? " + fitsScreen + ", enough BW? " + enoughBw + ", bitrate specified? " + bitrateSpecified);
+
+                if (fitsScreen && enoughBw && bitrateSpecified) {
+                    log.debug("selecting bitrate with width " + item.width + " and bitrate " + item.bitrate);
                     return i;
 					break;
 				}
 			}
-			return 0;
+            log.warn("getStreamIndex() suitable stream not found, returning -1");
+			return -1;
 		}
 		
 		public function getStream(bandwidth:Number, bitrateProperties:Array, player:Flowplayer):BitrateItem {
-			return bitrateProperties[getStreamIndex(bandwidth, bitrateProperties, player)] as BitrateItem;
+            var index:Number = getStreamIndex(bandwidth, bitrateProperties, player);
+            if (index == -1) return getDefaultStream(bitrateProperties, player);
+            return bitrateProperties[index] as BitrateItem;
 		}
 
 
         public function getDefaultStream(bitrateProperties:Array, player:Flowplayer):BitrateItem {
             log.debug("getDefaultStream()");
+            var item:BitrateItem;           
             for (var i:Number=0; i < bitrateProperties.length; i++) {
                 if (bitrateProperties[i]["isDefault"]) {
-                    return bitrateProperties[i];
+                    item = bitrateProperties[i];
                     break;
                 }
             }
-            log.debug("getDefaultStream(), did not find a default stream");
-            return bitrateProperties[0];
+            if (! item) {
+                item = bitrateProperties[bitrateProperties.length - 1];
+                log.debug("getDefaultStream(), did not find a default stream -> using the one with lowest bitrate " + item);
+            } else {
+                log.debug("getDefaultStream(), found default item " + item);
+            }
+            return item;
         }
     }
 }
