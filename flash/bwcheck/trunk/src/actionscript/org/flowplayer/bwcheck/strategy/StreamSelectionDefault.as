@@ -36,7 +36,7 @@ package org.flowplayer.bwcheck.strategy {
 				log.debug("candidate stream has width " + item.width + ", bitrate " + item.bitrate);
                 var fitsScreen:Boolean = ! item.width || screenWidth >= item.width;
                 var enoughBw:Boolean = bandwidth >= item.bitrate;
-                var bitrateSpecified:Boolean = item.bitrate as Boolean;
+                var bitrateSpecified:Boolean = item.bitrate > 0;
                 log.info("fits screen? " + fitsScreen + ", enough BW? " + enoughBw + ", bitrate specified? " + bitrateSpecified);
 
                 if (fitsScreen && enoughBw && bitrateSpecified) {
