@@ -98,7 +98,19 @@ package org.flowplayer.viralvideos {
             _config.plugins[_viralPluginConfiguredName].emailScriptToken = null;
             _config.playerId = null;
         }
-
+		
+		private function fixPluginsURL(config:Object):Object {			
+			for ( var pluginName:String in config.plugins ) {
+				var plugin:Object = _player.pluginRegistry.getPlugin(pluginName).pluginObject;
+				var pluginUrl:String = plugin ? plugin.loaderInfo.url : "";
+				if ( pluginUrl ) {
+					config.plugins[pluginName]["url"] = pluginUrl;
+				}
+			}
+			
+			return config;
+		}
+		
         public function getEmbedCode():String {
             if (_controlsOptions) {
                 if (! _config.plugins["controls"]) {
@@ -110,7 +122,9 @@ package org.flowplayer.viralvideos {
                 }
             }
 
-            var configStr:String = escape(JSON.encode(_config));
+			var conf:Object = fixPluginsURL(_config);
+
+            var configStr:String = escape(JSON.encode(conf));
 
             var code:String =
                     '<object id="' + _player.id + '" width="' + width + '" height="' + height + '" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"> ' + "\n" +
