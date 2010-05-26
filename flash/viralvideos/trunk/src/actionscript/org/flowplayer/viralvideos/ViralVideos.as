@@ -142,8 +142,18 @@ package org.flowplayer.viralvideos {
             _autoHide.start();
 
             hideViews();
-            setActiveTab("Email", false);
-            _emailView.show();
+
+			// show first view
+			if ( _emailView ) {
+            	setActiveTab("Email", false);
+            	_emailView.show();
+			} else if ( _embedView ) {
+				setActiveTab("Embed", false);
+            	_embedView.show();
+			} else if ( _shareView ) {
+				setActiveTab("Share", false);
+            	_shareView.show();
+			}
         }
 
         private function onButtonsShow():Boolean {
@@ -169,6 +179,9 @@ package org.flowplayer.viralvideos {
                 gradient = [gradArr[0], gradArr[0]];
             }
             _tabCSSProperties = getViewCSSProperties();
+			if ( ! _tabCSSProperties )
+				_tabCSSProperties = {};
+				
             var defaultTabProps:Object = { backgroundGradient: 'medium', border: 'none', borderRadius: 15 };
             for (var prop:String in defaultTabProps) {
                 _tabCSSProperties[prop] = defaultTabProps[prop]; 
@@ -237,9 +250,9 @@ package org.flowplayer.viralvideos {
         public function showView(panel:String):void {
             displayButtons(false);
             hideViews();
-            if (panel == "Email") _emailView.show();
-            if (panel == "Embed") _embedView.show();
-            if (panel == "Share") _shareView.show();
+            if (panel == "Email" && _emailView) _emailView.show();
+            if (panel == "Embed" && _embedView) _embedView.show();
+            if (panel == "Share" && _shareView) _shareView.show();
         }
 
 
@@ -268,15 +281,15 @@ package org.flowplayer.viralvideos {
                 _shareTab.css({backgroundGradient: 'medium'})
             }
 
-            if (newTab == "Email") {
+            if (newTab == "Email" && _emailView) {
                 _emailMask.height = TAB_HEIGHT;
                 _emailTab.css(_tabCSSProperties);
             }
-            if (newTab == "Embed") {
+            if (newTab == "Embed" && _embedView) {
                 _embedMask.height = TAB_HEIGHT;
                 _embedTab.css(_tabCSSProperties);
             }
-            if (newTab == "Share") {
+            if (newTab == "Share" && _shareView) {
                 _shareMask.height = TAB_HEIGHT;
                 _shareTab.css(_tabCSSProperties);
             }
@@ -317,7 +330,7 @@ package org.flowplayer.viralvideos {
             if (liveTab == "Email") return _emailView;
             if (liveTab == "Embed") return _embedView;
             if (liveTab == "Share") return _shareView;
-            return null
+            return null;
         }
 
         private function createTab(xpos:int, mask:Sprite, tabTitle:String):Tab {
