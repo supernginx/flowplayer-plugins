@@ -34,24 +34,41 @@ package org.flowplayer.viralvideos {
         }
 
         private function resizeIcon(dim:Number):void {
-            _embedIcon.height = _embedIcon.width = dim;
-            _emailIcon.height = _emailIcon.width = dim;
-            _shareIcon.height = _shareIcon.width = dim;
+			if ( _embedIcon )
+            	_embedIcon.height = _embedIcon.width = dim;
+			if ( _emailIcon )
+            	_emailIcon.height = _emailIcon.width = dim;
+            if ( _shareIcon )
+				_shareIcon.height = _shareIcon.width = dim;
         }
 
         override protected function onResize():void {
             log.debug("onResize() " + width + " x " + height);
-            var horizontal:Boolean = width > height;
-
-            if (horizontal) {
-                resizeIcon(height);
-                _embedIcon.x = _emailIcon.x + _emailIcon.width + 5;
-                _shareIcon.x = _embedIcon.x + _embedIcon.width + 5;
-            } else {
-                resizeIcon(width);
-                _embedIcon.y = _emailIcon.y + _emailIcon.height + 5;
-                _shareIcon.y = _embedIcon.y + _embedIcon.height + 5;                
-            }
+           
+            resizeIcon(width);
+			var nextY:int = 0;
+			
+			if ( _emailIcon ) {
+				_emailIcon.x = 0;
+				_emailIcon.y = 0;
+				
+				nextY = nextY + _emailIcon.height + 5;
+			}
+			
+			if ( _embedIcon ) {
+				_embedIcon.y = nextY;
+				_embedIcon.x = 0;
+				
+				nextY = nextY + _embedIcon.height + 5;
+			}
+			
+			if ( _shareIcon ) {
+				_shareIcon.y = nextY;
+				_shareIcon.x = 0;
+				
+				nextY = nextY + _shareIcon.height + 5;
+			}           
+            
         }
 
         private function createIcons():void {
@@ -63,17 +80,20 @@ package org.flowplayer.viralvideos {
             if (_config.embed) {
                 _embedIcon = new EmbedIcon(_config.iconButtons, _player.animationEngine);
                 addChild(_embedIcon);
-                _embedIcon.y = _emailIcon.y + _emailIcon.height + 5;
             }
 
             if (_config.share) {
                 _shareIcon = new ShareIcon(_config.iconButtons, _player.animationEngine);
                 addChild(_shareIcon);
-                _shareIcon.y = _embedIcon.y + _embedIcon.height + 5;
             }
+
+			
 
             var props:DisplayProperties = _config.iconDisplayProperties;
             props.setDisplayObject(this);
+			
+			onResize();
+
             log.debug("icon bar props " + props.dimensions);
             _player.addToPanel(this, props);
         }
@@ -85,15 +105,18 @@ package org.flowplayer.viralvideos {
         }
 
         public function onEmail(listener:Function):void {
-            addIconClickListener(_emailIcon, listener);
+			if ( _emailIcon )
+            	addIconClickListener(_emailIcon, listener);
         }
 
         public function onEmbed(listener:Function):void {
-            addIconClickListener(_embedIcon, listener);
+			if ( _embedIcon )
+            	addIconClickListener(_embedIcon, listener);
         }
 
         public function onShare(listener:Function):void {
-            addIconClickListener(_shareIcon, listener);
+			if ( _shareIcon )
+            	addIconClickListener(_shareIcon, listener);
         }
     }
 }
