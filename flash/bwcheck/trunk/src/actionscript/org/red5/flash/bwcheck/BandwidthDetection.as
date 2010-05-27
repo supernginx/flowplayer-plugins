@@ -22,7 +22,7 @@ package org.red5.flash.bwcheck
 	public class BandwidthDetection extends EventDispatcher implements IBandwidthDetection
 	{
         protected var log:Log = new Log(this);
-		protected var nc:NetConnection;
+		protected var _nc:NetConnection;
 		protected var _service:String = "checkBandwidth";
 		protected var _url:String;
 		
@@ -61,7 +61,7 @@ package org.red5.flash.bwcheck
 		
 		public function set connection(connect:NetConnection):void
 		{
-			nc = connect;
+			_nc = connect;
 		}
 		
 		public function set url(url:String):void

@@ -45,7 +45,6 @@ package org.flowplayer.bwcheck.strategy {
 					break;
 				}
 			}
-            log.warn("getStreamIndex() suitable stream not found, returning -1");
 			return -1;
 		}
 		

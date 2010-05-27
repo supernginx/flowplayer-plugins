@@ -57,9 +57,9 @@ package org.red5.flash.bwcheck
 		
 		override public function start():void
 		{
-			nc.client = this;
+			_nc.client = this;
 			var obj:Array = new Array();
-			nc.call(_service, res);
+			_nc.call(_service, res);
 		}
 		
 		private function onResult(obj:Object):void
@@ -69,7 +69,7 @@ package org.red5.flash.bwcheck
 				this.beginningValues = obj;
 				this.beginningValues.time = now;
 				this.pakSent[sent++] = now;
-				nc.call(_service, res, now);
+				_nc.call(_service, res, now);
 			} else {
 				this.pakRecv[this.count] = now;
 				this.pakInterval = (this.pakRecv[this.count] - this.pakSent[this.count])*1;
@@ -82,7 +82,7 @@ package org.red5.flash.bwcheck
 					this.overhead = obj.cOutBytes - this.beginningValues.cOutBytes;
 					
 					this.pakSent[sent++] = now;
-					nc.call(_service, res, now, payload);
+					_nc.call(_service, res, now, payload);
 					dispatchStatus(info);
 					
 				}
@@ -92,7 +92,7 @@ package org.red5.flash.bwcheck
 				{
 					this.pakSent[sent++] = now;
 					this.cumLatency++;
-					nc.call(_service, res, now, payload);
+					_nc.call(_service, res, now, payload);
 					dispatchStatus(info);
 				} else if ( this.sent == this.count ) {	
 					// See if we need to normalize latency

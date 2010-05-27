@@ -47,8 +47,8 @@ package org.flowplayer.bwcheck.detect.servers
 		override public function start():void
 		{
             log.debug("start() calling service " + _service);
-			nc.client = this;
-            nc.call(_service, null);
+			_nc.client = this;
+            _nc.call(_service, null);
 		}
 
         public function close(... rest):void {
