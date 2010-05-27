@@ -1,5 +1,10 @@
 Version history:
 
+3.2.2
+-----
+Fixes:
+- fixing bwcheck with FMS, was unable to re-detect during playback
+
 3.2.1
 -----
 Fixes:

@@ -36,8 +36,8 @@ package org.red5.flash.bwcheck
 
 		override public function start():void
 		{
-			nc.client = this;
-			nc.call(_service,res);
+			_nc.client = this;
+			_nc.call(_service,res);
 		}
 		
 		protected function onResult(obj:Object):void

@@ -31,26 +31,27 @@ package org.flowplayer.bwcheck.detect.servers {
 			
 			if (_bandwidthDetection == null) _bandwidthDetection = new ServerClientBandwidthHttp();
 		}
-		
+
 		public function set url(url:String):void {
 			_bandwidthDetection.url = url;
 		}
-		
+
 		public function set service(service:String):void {
 			_bandwidthDetection.service = service;
 		}
-		
+
 		public function set connection(connect:NetConnection):void {
 			_bandwidthDetection.connection = connect;
+            connect.client = _bandwidthDetection;
 		}
-		
+
 		public function start():void {
 			_bandwidthDetection.start();
 		}
-		
+
 		public function addEventListener(type:String,listener:Function,useCapture:Boolean = false,priority:int = 0,useWeakReference:Boolean = false):void {
 			_bandwidthDetection.addEventListener(type, listener);
 		}
-		
+
 	}
 }

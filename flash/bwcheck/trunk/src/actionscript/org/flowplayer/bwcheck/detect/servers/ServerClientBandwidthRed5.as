@@ -41,8 +41,8 @@ package org.flowplayer.bwcheck.detect.servers
 
 		override public function start():void
 		{
-			nc.client = this;
-			nc.call(_service,res);
+			_nc.client = this;
+			_nc.call(_service,res);
 		}
 		
 		protected function onResult(obj:Object):void
