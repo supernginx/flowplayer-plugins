@@ -1,5 +1,11 @@
 Version history:
 
+3.2.1
+-----
+
+Fixes:
+- Wrong scrubber behavior when seek was prevented
+
 3.2.0
 -----
 - New external methods and some existing methods renamed. New set of methods for setting and getting things:

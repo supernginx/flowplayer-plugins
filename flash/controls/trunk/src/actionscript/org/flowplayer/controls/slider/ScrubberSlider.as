@@ -139,7 +139,13 @@ package org.flowplayer.controls.slider {
 
         private function beforeSeek(event:ClipEvent):void {
             log.debug("beforeSeek()");
-            if (event.isDefaultPrevented()) return;
+            if (event.isDefaultPrevented() ) {
+				log.debug("Default prevented ")
+				stop();
+				updateDraggerPos(_config.player.status.time, event.target as Clip);
+				doStart(event.target as Clip, _config.player.status.time);
+				return;
+			}
 
 			
             updateDraggerPos(event.info as Number, event.target as Clip);
