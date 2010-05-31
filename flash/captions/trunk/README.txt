@@ -1,5 +1,12 @@
 Version history:
 
+3.2.1
+-----
+- Added ability to have line breaks with timed text caption files:
+<p begin = "00:00:00.01" dur="04.00">
+    A lazy fox jumps<br/>over a busy cat
+</p>
+
 3.2.0
 -----
 - Fixed visibility issue
