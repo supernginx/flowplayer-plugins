@@ -23,12 +23,14 @@ package org.flowplayer.rtmp {
         private var _connectionClient:Object;
         private var _connection:NetConnection;
         private var _failureListener:Function;
+        private var _failed:Boolean;
 
         public function Connector(url:String, connectionClient:Object, onSuccess:Function, onFailure:Function) {
             _url = url;
             _connectionClient = connectionClient;
             _successListener = onSuccess;
             _failureListener = onFailure;
+            _failed = false;
             log.debug("created with connection client " + _connectionClient);
         }
 
@@ -66,18 +68,21 @@ package org.flowplayer.rtmp {
                     log.debug("this connector is stopped, will not call successListener");
                     _connection.close();
                 }
+                return;
                 
-            } else if (event.info.code == "NetConnection.Connect.Rejected") {
-                if (event.info.ex && event.info.ex.code == 302) {
-                    log.debug("starting a timeout to connect to a redirected URL " + event.info.ex.redirect);
-                    setTimeout(function():void{
-                        log.debug("connecting to a redirected URL " + event.info.ex.redirect);
-                        _connection.connect(event.info.ex.redirect);
-                    }, 100);
+            }
 
-				}
+            if (event.info.code == "NetConnection.Connect.Rejected" && event.info.ex && event.info.ex.code == 302) {
+                log.debug("starting a timeout to connect to a redirected URL " + event.info.ex.redirect);
+                setTimeout(function():void{
+                    log.debug("connecting to a redirected URL " + event.info.ex.redirect);
+                    _connection.connect(event.info.ex.redirect);
+                }, 100);
+                return;
+            }
 
-            } else if (["NetConnection.Connect.Failed", "NetConnection.Connect.Rejected", "NetConnection.Connect.AppShutdown", "NetConnection.Connect.InvalidApp"].indexOf(event.info.code) >= 0) {
+            if (["NetConnection.Connect.Failed", "NetConnection.Connect.Rejected", "NetConnection.Connect.AppShutdown", "NetConnection.Connect.InvalidApp"].indexOf(event.info.code) >= 0) {
+                _failed = true;
                 if (_failureListener != null) {
                     _failureListener();
                 }
@@ -94,6 +99,10 @@ package org.flowplayer.rtmp {
 
         public function toString():String {
             return "Connector, [" + _url + "]";
+        }
+
+        public function get failed():Boolean {
+            return _failed;
         }
     }
 }

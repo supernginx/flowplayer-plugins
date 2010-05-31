@@ -1,5 +1,14 @@
 Version history:
 
+3.2.1
+-----
+Fixes:
+- Does not report connection errors unnecessarily any more
+
+3.2.0
+-----
+- changes related to bandwidth detection compatibility
+
 3.1.4
 -----
 Fixes:
