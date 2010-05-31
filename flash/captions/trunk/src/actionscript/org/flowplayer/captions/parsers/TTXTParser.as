@@ -94,10 +94,20 @@ package org.flowplayer.captions.parsers
                     parameters.end = endTime;
                     parameters.lang = lang;
                     parameters.style = pStyle;
-                    parameters.text = p.text().toString();
+
+                    var content:String = "";
+                    for each (var child:XML in p.children()) {
+                        if (child.localName() == "br") {
+                            content += "<br/>";
+                        } else {
+                            content += child.toString();
+                        }
+                    }
+
+                    parameters.text = content;
                     cue.parameters = parameters;
                     arr.push(cue);
-                    log.debug("added cuepoint " + cue);
+                    log.debug("added cuepoint " + cue + " with text " + parameters.text);
                     cueRow++;
                 }
 
