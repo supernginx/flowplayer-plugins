@@ -102,10 +102,12 @@ package org.flowplayer.viralvideos {
 		private function fixPluginsURL(config:Object):Object {			
 			for ( var pluginName:String in config.plugins ) {
 				var plugin:Object = _player.pluginRegistry.getPlugin(pluginName).pluginObject;
-				var pluginUrl:String = plugin ? plugin.loaderInfo.url : "";
-				if ( pluginUrl ) {
-					config.plugins[pluginName]["url"] = pluginUrl;
-				}
+                if (plugin.hasOwnProperty("loaderInfo")) {
+                    var pluginUrl:String = plugin ? plugin.loaderInfo.url : "";
+                    if ( pluginUrl ) {
+                        config.plugins[pluginName]["url"] = pluginUrl;
+                    }
+                }
 			}
 			
 			return config;
