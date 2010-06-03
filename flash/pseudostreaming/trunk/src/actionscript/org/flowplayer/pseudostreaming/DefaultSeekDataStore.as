@@ -32,8 +32,8 @@ public class DefaultSeekDataStore {
             log.error("error getting keyframes " + e.message);
             clip.dispatch(ClipEventType.ERROR, e.message);
         }
-        log.info("_keyFrameTimes array lenth is " + (_keyFrameTimes ? _keyFrameTimes.length+"" : "null array"));
-        log.info("_keyFrameFilePositions array lenth is " + (_keyFrameFilePositions ? _keyFrameFilePositions.length+"" : "null array"));
+//        log.info("_keyFrameTimes array lenth is " + (_keyFrameTimes ? _keyFrameTimes.length+"" : "null array"));
+//        log.info("_keyFrameFilePositions array lenth is " + (_keyFrameFilePositions ? _keyFrameFilePositions.length+"" : "null array"));
     }
 
     public static function create(clip:Clip, metaData:Object):DefaultSeekDataStore {
