@@ -1,5 +1,9 @@
 Version history:
 
+3.2.2
+-----
+- fixed duration after seek
+
 3.2.1
 -----
 - fixed duration after seek

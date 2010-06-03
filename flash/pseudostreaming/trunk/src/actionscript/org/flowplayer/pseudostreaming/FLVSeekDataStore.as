@@ -37,7 +37,7 @@ public class FLVSeekDataStore extends DefaultSeekDataStore {
     
     private function extractKeyFrames(metaData:Object):Object {
         var keyFrames:Object = metaData.keyframes;
-        log.debug("keyFrames: "+keyFrames);
+//        log.debug("keyFrames: "+keyFrames);
         if (! keyFrames) {
             log.info("No keyframes in this file, random seeking cannot be done");
             return null;
