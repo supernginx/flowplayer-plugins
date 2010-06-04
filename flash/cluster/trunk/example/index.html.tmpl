@@ -65,6 +65,42 @@
 
 	<div id="wrap">	
 
+<script type="text/javascript">
+
+// common methods and configs
+
+function switchStreamInfo(mappedBitrate, streamName, oldStreamName) {
+	var content = $f().getPlugin('content');
+	
+	var info = "Chosen bitrate is: " + mappedBitrate.bitrate + "<br /> Video file served: " + streamName + "<br /> Old Video file served: " + oldStreamName;
+	content.setHtml(info);
+}
+
+function bwDoneInfo(mappedBitrate, detectedBitrate) {
+	var content = $f().getPlugin('content');
+	var info = "Your speed is: " + detectedBitrate + "<br /> Your chosen bitrate: " + mappedBitrate.bitrate + "<br /> Video file served: " + mappedBitrate.url;
+	content.setHtml(info);
+}
+
+
+
+var pseudoPlaylist =  [
+			            {
+			              url: "bbb_320x180.flv"
+			            }
+        			];
+        			
+var wowzaPlaylist = [
+			            {
+			              url: "vod/demo.flowplayer/bbb_320x180"
+						}
+			        ];
+			        
+var loggingConfig = { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.cluster.*,org.flowplayer.rtmp.*, org.flowplayer.controller.*' };
+
+
+</script>
+
 		<div id="content"> 
 
 <h1 style="background-image:url(http://www.flowplayer.org/img/title/streaminge.png)">
@@ -135,7 +171,9 @@ var info = document.getElementById("info");
 flowplayer("player", "@PLAYER_SWF@", {
 	log: { level: 'debug', filter: 'org.flowplayer.cluster.*' },
     plugins:  {
-
+		pseudo: {
+			url: '../flowplayer.pseudostreaming.swf'
+		},
 		// cluster plugin configuration
 		cluster: {
 
@@ -148,7 +186,7 @@ flowplayer("player", "@PLAYER_SWF@", {
 				 'http://nonexistent.flowplayer.org/video',
 
 				 // this one will answer (if the server is up)
-				 'http://static.flowplayer.org/video'
+				 'http://vod01.netdna.com/vod/demo.flowplayer/pseudo/'
 			],
 
 			// callback method for connection attempt
@@ -163,11 +201,11 @@ flowplayer("player", "@PLAYER_SWF@", {
 		}
 
     },
-
+	playlist: pseudoPlaylist,
 	 // use our cluster plugin as a "URL resolver"
     clip: {
         urlResolvers: 'cluster',
-
+		provider: 'pseudo',
         onStart: function(clip) {
 			  info.innerHTML += "clip started: " + clip.url;
         }
@@ -189,7 +227,9 @@ var info = document.getElementById("info");
 flowplayer("player", "@PLAYER_SWF@", {
 	log: { level: 'debug', filter: 'org.flowplayer.cluster.*' },
     plugins:  {
-
+		pseudo: {
+			url: '../flowplayer.pseudostreaming.swf'
+		},
 		// cluster plugin configuration
 		cluster: {
 
@@ -202,31 +242,32 @@ flowplayer("player", "@PLAYER_SWF@", {
 				 'http://nonexistent.flowplayer.org/video',
 
 				 // this one will answer (if the server is up)
-				 'http://static.flowplayer.org/video'
+				 'http://vod01.netdna.com/vod/demo.flowplayer/pseudo/'
 			],
 
 			// callback method for connection attempt
 			onConnect: function(host, index) {
-				info.innerHTML += "attempting to connect: " + host + "&lt;br /&gt;";
+				info.innerHTML += "attempting to connect: " + host + "<br />";
 			},
 
 			// callback method for connection failure
 			onConnectFailed: function(host, index) {
-				info.innerHTML += "connection failed to: " + host + "&lt;br /&gt;";
+				info.innerHTML += "connection failed to: " + host + "<br />";
 			}
 		}
 
     },
-
+	playlist: pseudoPlaylist,
 	 // use our cluster plugin as a "URL resolver"
     clip: {
         urlResolvers: 'cluster',
-
+		provider: 'pseudo',
         onStart: function(clip) {
 			  info.innerHTML += "clip started: " + clip.url;
         }
     }
-});</code></pre>
+});
+</code></pre>
 </div>
 
 
@@ -325,13 +366,16 @@ flowplayer("balancer", "@PLAYER_SWF@", {
 	
 	// configuration for the clustering plugin
 	plugins:  {
+		pseudo: {
+			url: '../flowplayer.pseudostreaming.swf'
+		},
 		cluster: {
 			url: '@MAIN_PLAYER_SWF@',
 			
 			// two working hosts
 			hosts: [
-				'http://static.flowplayer.org/video',
-				'http://flowplayer.org/video'
+				 'http://vod01.netdna.com/vod/demo.flowplayer/pseudo/',
+				 'http://vod01.netdna.com/vod/demo.flowplayer/pseudo/'
 			],
 			
 			// that are load balanced (accessed randomly)
@@ -344,11 +388,12 @@ flowplayer("balancer", "@PLAYER_SWF@", {
 			}
 		}
     },	 
-
+	playlist: pseudoPlaylist,
     clip: {
 		 
-		  // our clip uses clustering plugin
+		 // our clip uses clustering plugin
         urlResolvers: 'cluster',
+		provider: 'pseudo',
 
         onStart: function(clip) {
            infoBox.innerHTML += "started clip: " + clip.url;
@@ -360,25 +405,25 @@ flowplayer("balancer", "@PLAYER_SWF@", {
 
 </div>
 
-<p>
-   We have two different video servers: <samp>static.flowplayer.org</samp> is hosted by Simple CDN and the other server is our own server. These two are accessed randomly so that in the end both servers will be loaded evenly. The load balancing is enabled with the <samp>loadBalance</samp> property.
-</p>
+
 
 <div class="box code">
 <pre><code class="javascript">// a global variable that references our info box
 var infoBox = document.getElementById("balanceInfo");
 
 flowplayer("balancer", "@PLAYER_SWF@", {
-	
 	// configuration for the clustering plugin
 	plugins:  {
+		pseudo: {
+			url: '../flowplayer.pseudostreaming.swf'
+		},
 		cluster: {
 			url: '@MAIN_PLAYER_SWF@',
 			
 			// two working hosts
 			hosts: [
-				'http://static.flowplayer.org/video',
-				'http://flowplayer.org/video'
+				 'http://vod01.netdna.com/vod/demo.flowplayer/pseudo/',
+				 'http://vod01.netdna.com/vod/demo.flowplayer/pseudo/'
 			],
 			
 			// that are load balanced (accessed randomly)
@@ -387,22 +432,24 @@ flowplayer("balancer", "@PLAYER_SWF@", {
 			
 			// callback method that updates our info box
 			onConnect: function(host, index) {
-				 infoBox.innerHTML += "attempting to connect to: " + host + "&lt;br /&gt;";
+				 infoBox.innerHTML += "attempting to connect to: " + host + "<br />";
 			}
 		}
     },	 
-
+	playlist: pseudoPlaylist,
     clip: {
 		 
-		  // our clip uses clustering plugin
+		 // our clip uses clustering plugin
         urlResolvers: 'cluster',
+		provider: 'pseudo',
 
         onStart: function(clip) {
            infoBox.innerHTML += "started clip: " + clip.url;
         }
     }
 	 
-});</code></pre>
+});
+</code></pre>
 </div>
 
 
@@ -414,38 +461,234 @@ flowplayer("balancer", "@PLAYER_SWF@", {
 <h2>Clustering RTMP servers</h2>
 <p>A cluster of RTMP servers is configured like this:</p>
 
-<div class="box code">
-<pre><code class="javascript">flowplayer("player", "@PLAYER_SWF@", {
+<div style="width:425px;margin:30px auto">
 
-    clip: {
-        // for FMS we don't use the file extension here
-        url: 'Extremists',
-        provider: 'rtmp',
+<!-- player container-->
 
-        // the clustering plugin is configured as a connectionProvider
-        // when used with RTMP
-        connectionProvider: 'clustering'
-    },
+<a
+	href="flowplayer-700.flv"
+	style="display:block;width:425px;height:300px;"
+	id="rtmpPlayer">
 
+	<!-- splash image inside the container -->
+	<img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" />
+
+</a>
+
+<div class="box" id="info">
+	<h2>Events related to the cluster appear here:</h2>
+</div>
+
+<!-- Flowplayer installation and configuration -->
+<script language="JavaScript">
+
+// a global variable that references our info box
+var info = document.getElementById("info");
+
+flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
+	log: { level: 'debug', filter: 'org.flowplayer.cluster.*' },
     plugins:  {
-        // we don't need the netConnectionUrl here because it is
-        // taken from the hosts array of the cluster
-        rtmp: {
+		rtmp: {
              url: '../flowplayer.rtmp.swf'
         },
-        clustering: {
-            url: '@MAIN_PLAYER_SWF@',
-            netConnectionUrl: 'rtmp://cyzy7r959.rtmphost.com/flowplayer',
+		// cluster plugin configuration
+		cluster: {
 
-            // Our hosts array contains the netConnectionUrls to the servers
-            hosts: [
-                {host:'rtmp://cyzy7r959.badhost1.com/flowplayer'},
-                {host:'rtmp://cyzy7r959.badhost2.com/flowplayer'},
-                {host:'rtmp://cyzy7r959.rtmphost.com/flowplayer'}
-            ]
+			url: '@MAIN_PLAYER_SWF@',
+
+			// our hosts on the cluster
+			hosts: [
+				  // first two hosts will fail
+				 'rtmp://vod02.netdna.com/play',
+				 'rtmp://vod01.netdna.com/play'
+			],
+
+			// callback method for connection attempt
+			onConnect: function(host, index) {
+				info.innerHTML += "attempting to connect: " + host + "<br />";
+			},
+
+			// callback method for connection failure
+			onConnectFailed: function(host, index) {
+				info.innerHTML += "connection failed to: " + host + "<br />";
+			}
+		}
+
+    },
+	playlist: wowzaPlaylist,
+	 // use our cluster plugin as a "URL resolver"
+    clip: {
+		provider: 'rtmp',
+		connectionProvider: 'cluster',
+        onStart: function(clip) {
+			  info.innerHTML += "clip started: " + clip.url;
         }
     }
-});</code></pre>
+});
+</script>
+
+</div>
+
+<div class="box code">
+<pre><code class="javascript">
+flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
+	log: { level: 'debug', filter: 'org.flowplayer.cluster.*' },
+    plugins:  {
+		rtmp: {
+             url: '../flowplayer.rtmp.swf'
+        },
+		// cluster plugin configuration
+		cluster: {
+
+			url: '@MAIN_PLAYER_SWF@',
+
+			// our hosts on the cluster
+			hosts: [
+				  // first two hosts will fail
+				 'rtmp://vod02.netdna.com/play',
+				 'rtmp://vod01.netdna.com/play'
+			],
+
+			// callback method for connection attempt
+			onConnect: function(host, index) {
+				info.innerHTML += "attempting to connect: " + host + "<br />";
+			},
+
+			// callback method for connection failure
+			onConnectFailed: function(host, index) {
+				info.innerHTML += "connection failed to: " + host + "<br />";
+			}
+		}
+
+    },
+	playlist: wowzaPlaylist,
+	 // use our cluster plugin as a "URL resolver"
+    clip: {
+		provider: 'rtmp',
+		connectionProvider: 'cluster',
+        onStart: function(clip) {
+			  info.innerHTML += "clip started: " + clip.url;
+        }
+    }
+});
+
+</code></pre>
+</div>
+
+
+<h2>Clustering RTMP servers with RTMPT fallback</h2>
+
+<div style="width:425px;margin:30px auto">
+
+<!-- player container-->
+
+<a
+	href="flowplayer-700.flv"
+	style="display:block;width:425px;height:300px;"
+	id="rtmptPlayer">
+
+	<!-- splash image inside the container -->
+	<img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" />
+
+</a>
+
+<div class="box" id="info">
+	<h2>Events related to the cluster appear here:</h2>
+</div>
+
+<!-- Flowplayer installation and configuration -->
+<script language="JavaScript">
+
+// a global variable that references our info box
+var info = document.getElementById("info");
+
+flowplayer("rtmptPlayer", "@PLAYER_SWF@", {
+	log: { level: 'debug', filter: 'org.flowplayer.cluster.*' },
+    plugins:  {
+		rtmp: {
+             url: '../flowplayer.rtmp.swf'
+        },
+		// cluster plugin configuration
+		cluster: {
+
+			url: '@MAIN_PLAYER_SWF@',
+
+			// our hosts on the cluster
+			hosts: [
+				  // first two hosts will fail
+				 'rtmp://vod02.netdna.com/play',
+				 'rtmpt://rtmp01.netdna.com/play'
+			],
+
+			// callback method for connection attempt
+			onConnect: function(host, index) {
+				info.innerHTML += "attempting to connect: " + host + "<br />";
+			},
+
+			// callback method for connection failure
+			onConnectFailed: function(host, index) {
+				info.innerHTML += "connection failed to: " + host + "<br />";
+			}
+		}
+
+    },
+	playlist: wowzaPlaylist,
+	 // use our cluster plugin as a "URL resolver"
+    clip: {
+		provider: 'rtmp',
+		connectionProvider: 'cluster',
+        onStart: function(clip) {
+			  info.innerHTML += "clip started: " + clip.url;
+        }
+    }
+});
+</script>
+
+</div>
+
+<div class="box code">
+<pre><code class="javascript">
+flowplayer("rtmptPlayer", "@PLAYER_SWF@", {
+	log: { level: 'debug', filter: 'org.flowplayer.cluster.*' },
+    plugins:  {
+		rtmp: {
+             url: '../flowplayer.rtmp.swf'
+        },
+		// cluster plugin configuration
+		cluster: {
+
+			url: '@MAIN_PLAYER_SWF@',
+
+			// our hosts on the cluster
+			hosts: [
+				  // first two hosts will fail
+				 'rtmp://vod02.netdna.com/play',
+				 'rtmpt://rtmp01.netdna.com/play'
+			],
+
+			// callback method for connection attempt
+			onConnect: function(host, index) {
+				info.innerHTML += "attempting to connect: " + host + "<br />";
+			},
+
+			// callback method for connection failure
+			onConnectFailed: function(host, index) {
+				info.innerHTML += "connection failed to: " + host + "<br />";
+			}
+		}
+
+    },
+	playlist: wowzaPlaylist,
+	 // use our cluster plugin as a "URL resolver"
+    clip: {
+		provider: 'rtmp',
+		connectionProvider: 'cluster',
+        onStart: function(clip) {
+			  info.innerHTML += "clip started: " + clip.url;
+        }
+    }
+});
+</code></pre>
 </div>
 
 
