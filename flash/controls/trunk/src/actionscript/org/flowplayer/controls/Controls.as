@@ -90,7 +90,8 @@ package org.flowplayer.controls {
         private var _initialized:Boolean;
         private var _currentControlsConfig:Object;
         private var _originalConfig:Object;
-
+		private var _durationReached:Boolean;
+		
 		// #71, need to have a filled sprite who takes all the space to get events to work
 		private var _bgFill:Sprite;
 
@@ -563,7 +564,7 @@ package org.flowplayer.controls {
             }
             if (_timeView) {
                 _timeView.duration = status.clip.live && duration == 0 ? -1 : duration;
-                _timeView.time = status.time;
+                _timeView.time = _durationReached ? duration : status.time;
             }
         }
 
@@ -588,12 +589,17 @@ package org.flowplayer.controls {
             playlist.onStop(onPlayStopped);
             playlist.onBufferStop(onPlayStopped);
             playlist.onFinish(onPlayStopped);
+			playlist.onBeforeFinish(durationReached);
             _player.onFullscreen(onPlayerFullscreenEvent);
             _player.onFullscreenExit(onPlayerFullscreenEvent);
             _player.onMute(onPlayerMuteEvent);
             _player.onUnmute(onPlayerMuteEvent);
             _player.onVolume(onPlayerVolumeEvent);
         }
+
+		private function durationReached(event:ClipEvent):void {
+			_durationReached = true;
+		}
 
         private function onPlayerVolumeEvent(event:PlayerEvent):void {
             if (! _volumeSlider) return;
@@ -608,6 +614,7 @@ package org.flowplayer.controls {
 
         private function onPlayBegin(event:ClipEvent):void {
             log.debug("onPlayBegin(): received " + event);
+			_durationReached = false;
             var clip:Clip = event.target as Clip;
             handleClipConfig(clip);
         }
@@ -648,6 +655,7 @@ package org.flowplayer.controls {
             if (_playButton) {
                 _playButton.down = ! event.isDefaultPrevented() && _player.isPlaying();
             }
+			_durationReached = false;
             enableFullscreenButton(event.target as Clip);
         }
 
@@ -701,6 +709,7 @@ package org.flowplayer.controls {
         }
 
         private function onPlayResumed(event:ClipEvent):void {
+			_durationReached = false;
             log.info("received onResume, time " + _player.status.time);
             if (!_playButton) return;
             _playButton.down = true;
