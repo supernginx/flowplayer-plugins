@@ -1,5 +1,11 @@
 Version history:
 
+3.2.2
+-----
+Fixes
+- Fixed current time when clip finishes before the specified duration
+
+
 3.2.1
 -----
 

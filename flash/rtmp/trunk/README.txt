@@ -1,5 +1,10 @@
 Version history:
 
+3.2.2
+-----
+Fixes:
+- Now reaches the end of the video when the server sends a NetStream.Play.Stop.
+
 3.2.1
 -----
 Fixes:
