@@ -4,6 +4,7 @@ Version history:
 -----
 Fixes:
 - Now reaches the end of the video when the server sends a NetStream.Play.Stop.
+- Now reaches the end of the video when the server sends a little bit less stream than expected, using start:
 
 3.2.1
 -----
