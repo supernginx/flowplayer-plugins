@@ -12,6 +12,11 @@ package org.flowplayer.viralvideos.config {
     import org.flowplayer.viralvideos.PlayerEmbed;
 
     public class EmbedConfig {
+		public static const DEFAULT:int = -1;
+		public static const OVERRIDE_FALSE:int	  = 0;
+		public static const OVERRIDE_TRUE:int    = 1;
+		
+	
         private var _title:String = "Copy and paste this code to your web page";
         private var _options:String = "Customize size and colors";
         private var _backgroundColor:String = "Background color";
@@ -19,6 +24,11 @@ package org.flowplayer.viralvideos.config {
         private var _size:String = "Size (pixels)";
         private var _copy:String = "Copy";
         private var _playerEmbed:PlayerEmbed;
+		private var _autoPlay:int = DEFAULT;
+		private var _autoBuffering:int = DEFAULT;
+		private var _prerollUrl:String = null;
+		private var _postrollUrl:String = null;
+		private var _linkUrl:String = null;
 
         public function get title():String {
             return _title;
@@ -74,6 +84,54 @@ package org.flowplayer.viralvideos.config {
 
         public function set copy(value:String):void {
             _copy = value;
+        }
+
+		public function get autoPlay():Boolean {
+			return _autoPlay == OVERRIDE_TRUE;
+		}
+		
+		public function get isAutoPlayOverriden():Boolean {
+			return _autoPlay != DEFAULT;
+		}
+		
+		public function set autoPlay(value:Boolean):void {
+			_autoPlay = value ? OVERRIDE_TRUE : OVERRIDE_FALSE;
+		}
+		
+		public function get autoBuffering():Boolean {
+			return _autoBuffering == OVERRIDE_TRUE;
+		}
+		
+		public function get isAutoBufferingOverriden():Boolean {
+			return _autoBuffering != DEFAULT;
+		}
+		
+		public function set autoBuffering(value:Boolean):void {
+			_autoBuffering = value ? OVERRIDE_TRUE : OVERRIDE_FALSE;
+		}
+		
+		public function get prerollUrl():String {
+            return _prerollUrl;
+        }
+
+        public function set prerollUrl(value:String):void {
+            _prerollUrl = value;
+        }
+
+		public function get postrollUrl():String {
+            return _postrollUrl;
+        }
+
+        public function set postrollUrl(value:String):void {
+            _postrollUrl = value;
+        }
+
+		public function get linkUrl():String {
+            return _linkUrl;
+        }
+
+        public function set linkUrl(value:String):void {
+            _linkUrl = value;
         }
     }
 }

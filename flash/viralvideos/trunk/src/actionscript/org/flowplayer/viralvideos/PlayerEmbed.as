@@ -18,13 +18,17 @@ package org.flowplayer.viralvideos {
     import org.flowplayer.util.URLUtil;
     import org.flowplayer.view.Flowplayer;
     import org.flowplayer.view.StyleableSprite;
+	import org.flowplayer.viralvideos.config.EmbedConfig;
+	
+	import flash.utils.ByteArray;
 
     public class PlayerEmbed {
         private var log:Log = new Log(this);
         private var _player:Flowplayer;
         private var _stage:Stage;
         private var _viralPluginConfiguredName:String;
-        private var _config:Object;
+		private var _config:EmbedConfig;
+        private var _playerConfig:Object;
         private var _height:int;
         private var _width:int;
         private var _controls:StyleableSprite;
@@ -33,11 +37,13 @@ package org.flowplayer.viralvideos {
         private var _controlsOptions:Object;
         private var _autoHide:Boolean;
 
-        public function PlayerEmbed(player:Flowplayer, viralPluginConfiguredName:String, stage:Stage, configString:String) {
+        public function PlayerEmbed(player:Flowplayer, viralPluginConfiguredName:String, stage:Stage, config:EmbedConfig) {
             _player = player;
             _viralPluginConfiguredName = viralPluginConfiguredName;
             _stage = stage;
-            _config = JSON.decode(configString);
+            _playerConfig = JSON.decode(stage.loaderInfo.parameters["config"]);
+			_config = config;
+			
             initializeConfig();
             lookupControls();
         }
@@ -92,11 +98,11 @@ package org.flowplayer.viralvideos {
         }
 
         private function initializeConfig():void {
-            log.debug("initializeConfig() " + _config);
-            _config.plugins[_viralPluginConfiguredName].emailScriptURL = null;
-            _config.plugins[_viralPluginConfiguredName].emailScriptTokenURL = null;
-            _config.plugins[_viralPluginConfiguredName].emailScriptToken = null;
-            _config.playerId = null;
+            log.debug("initializeConfig() " + _playerConfig);
+            _playerConfig.plugins[_viralPluginConfiguredName].emailScriptURL = null;
+            _playerConfig.plugins[_viralPluginConfiguredName].emailScriptTokenURL = null;
+            _playerConfig.plugins[_viralPluginConfiguredName].emailScriptToken = null;
+            _playerConfig.playerId = null;
         }
 		
 		private function fixPluginsURL(config:Object):Object {			
@@ -113,18 +119,55 @@ package org.flowplayer.viralvideos {
 			return config;
 		}
 		
-        public function getEmbedCode():String {
-            if (_controlsOptions) {
-                if (! _config.plugins["controls"]) {
-                    _config.plugins["controls"] = _controlsOptions;
+		private function updateConfig(_playerConfig:Object):Object {
+			var copier:ByteArray = new ByteArray();
+			copier.writeObject(_playerConfig);
+			copier.position = 0;
+			var updatedConfig:Object = (copier.readObject());
+			
+			
+			if (_controlsOptions) {
+                if (! updatedConfig.plugins["controls"]) {
+                    updatedConfig.plugins["controls"] = _controlsOptions;
                 } else {
                     for (var prop:String in _controlsOptions) {
-                        _config.plugins["controls"][prop] = _controlsOptions[prop];
+                        updatedConfig.plugins["controls"][prop] = _controlsOptions[prop];
                     }
                 }
             }
-
-			var conf:Object = fixPluginsURL(_config);
+			
+			updatedConfig = fixPluginsURL(updatedConfig);
+						
+			var clip:Object = updatedConfig.clip || {};
+			clip.autoPlay = _config.isAutoPlayOverriden ? _config.autoPlay : clip.autoPlay;
+			clip.autoBuffering = _config.isAutoBufferingOverriden ? _config.autoBuffering : clip.autoBuffering;
+			clip.linkUrl = _config.linkUrl ? _config.linkUrl : clip.linkUrl;
+			updatedConfig.clip = clip;
+			
+			var playlist:Array = updatedConfig.playlist || [];
+			if ( playlist.length == 0 )
+				playlist.push(clip);
+				
+			if ( _config.isAutoPlayOverriden )
+				playlist[0].autoPlay = _config.autoPlay;
+				
+			if ( _config.isAutoBufferingOverriden )
+				playlist[0].autoBuffering = _config.autoBuffering;
+				
+			if ( _config.prerollUrl )
+				playlist.splice(0, 0, {url: _config.prerollUrl});
+			
+			if ( _config.postrollUrl )
+				playlist.push({url: _config.postrollUrl });
+				
+			updatedConfig.playlist = playlist;
+						
+			return updatedConfig;
+		}
+		
+        public function getEmbedCode():String {
+            
+			var conf:Object = updateConfig(_playerConfig);
 
             var configStr:String = escape(JSON.encode(conf));
 
