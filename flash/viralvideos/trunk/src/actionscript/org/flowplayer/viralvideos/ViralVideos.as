@@ -129,7 +129,7 @@ package org.flowplayer.viralvideos {
         }
 
         private function onPlayerLoad(event:PlayerEvent):void {
-            _playerEmbed = new PlayerEmbed(_player, _model.name, stage, stage.loaderInfo.parameters["config"]);
+            _playerEmbed = new PlayerEmbed(_player, _model.name, stage, _config.embed);
             _config.playerEmbed = _playerEmbed;
 
             createViews();
