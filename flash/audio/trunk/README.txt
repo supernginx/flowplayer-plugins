@@ -1,5 +1,9 @@
 Version history:
 
+3.2.1
+-----
+- fix to work properly if accessing the ID3 tag fails because Flash security prevents it
+
 3.2.0
 -----
 - added a new plugin event "onDuration" that is dispatched whenever a new duration value is estimated and the
