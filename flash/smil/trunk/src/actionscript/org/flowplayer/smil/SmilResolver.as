@@ -99,19 +99,46 @@ package org.flowplayer.smil{
             return null;
         }
 
-        private function updateClip(clip:Clip, smilFile:String):void {
-            var result:Array = parseSmil(smilFile);
-            log.debug("updateClip() baseUrl")
+        private function updateClip(clip:Clip, smilContent:String):void {
+			var result:Array = parseSmil(smilContent);
+				
+			//log.debug("Got result : ", result);	
+				
             clip.setCustomProperty("netConnectionUrl", result[0]);
             clip.baseUrl = null;
-            clip.setResolvedUrl(this, result[1]);
+
+			if ( result[1] is Array ) {
+				if (!clip.getCustomProperty("bitrates")) clip.setCustomProperty("bitrates", []);
+				
+				for ( var i:int = 0; i < result[1].length; i++ )
+					clip.customProperties["bitrates"].push({url: result[1][i][0], bitrate: result[1][i][1]});
+			} else {
+				clip.setResolvedUrl(this, result[1]);
+			}    
+			
+			//log.debug("updated clip ", clip);        
         }
 
-        private function parseSmil(smilFile:String):Array {
-            log.debug("parsing SMIL file " + smilFile);
-            var smil:XML = new XML(smilFile);
-            return [smil.children()[0].children()[0].@base.toString(), smil.children()[1].children()[0].@src.toString()];
-        }
+		private function parseSmil(smilContent:String):Array {
+			var smil:XML = new XML(smilContent);
+			
+			var result:Array = [];
+			result.push(new String(smil.head.meta.@base));
+			
+			if ( smil.body.child("switch").length() ) {	
+				log.debug("Got switch tag");		
+				var item:XML;
+				var bitrates:Array = [];
+				for each(item in  smil.body.child("switch").video ) {
+					bitrates.push([new String(item.@src), new Number(item.attribute("system-bitrate"))]);
+	            }
+				result.push(bitrates);
+			} else {
+				result.push(new String(smil.body.video.@src));
+			}
+			
+			return result;
+		}
+	}
 
-    }
 }

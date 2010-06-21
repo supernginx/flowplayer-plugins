@@ -1,5 +1,9 @@
 Version history:
 
+3.2.2
+-----
+ - Added bandwidth management
+
 3.1.3
 -----
 - refactored to be a ClipURLResolver
