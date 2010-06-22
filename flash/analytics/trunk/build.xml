@@ -1,7 +1,8 @@
-<project name="Google Analytics plugin for Flowplayer" default="build">
+<project name="Google Analytics plugin for Flowplayer" default="deploy">
     <property file="build.generated.properties"/>
+    <property file="build.properties"/>
 
-	<property file="../flowplayer.devkit//plugin-build.properties" />
+	<property file="../flowplayer.devkit/plugin-build.properties" />
 	<import file="../flowplayer.devkit/plugin-build.xml"/>
 	<property name="flowplayer_lib" value="../core/build/flowplayer.swc" />
     <property name="library-path" value="lib" />
