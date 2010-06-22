@@ -19,12 +19,10 @@ package org.flowplayer.analytics {
 
     import com.google.analytics.GATracker;
 
-    import flash.external.ExternalInterface;
+	import flash.external.ExternalInterface;		
 
-    import org.flowplayer.model.Clip;
-    import org.flowplayer.model.ClipEvent;
-    import org.flowplayer.model.Plugin;
-    import org.flowplayer.model.PluginModel;
+    import org.flowplayer.model.*;
+
     import org.flowplayer.view.Flowplayer;
     import org.flowplayer.view.StyleableSprite;
 
@@ -37,12 +35,10 @@ package org.flowplayer.analytics {
 		private var _bridgeTrackerObject:String;	// Your ga.js tracking object
 		private var _googleId:String;				// Your Google id -- not necessary if using bridge mode
 		private var _mydebug:Boolean;				// are we debugging?
-		private var _embeddedURL:String;			// we'll store the URL of the page the movie is on, if AllowScriptAccess="always" -- otherwise, 'Unknown'.
-
 		private var _labels:Object;
+		private var _embeddedURL:String;
 
 		public function GoogleTracker() { 			// constructor
-			
 		}
 
 		public function getDefaultConfig():Object {
@@ -76,8 +72,27 @@ package org.flowplayer.analytics {
 
 		public function onLoad(player:Flowplayer):void {
 			_model.dispatchOnLoad();				// dispatch onLoad so that the player knows this plugin is initialized
-			_trackingMode = _model.config.trackingMode;
-			_bridgeTrackerObject = _model.config.bridgeObject || "window.pageTracker";
+			
+			if ( ! _model.config.trackingMode ) {
+				if ( _model.config.googleId && _model.config.bridgeObject ) {
+					_trackingMode = "Bridge";	// preference to bridge
+				} else if ( ! _model.config.googleId && _model.config.bridgeObject ) {
+					_trackingMode = "Bridge";
+				} else {
+					_trackingMode = "AS3";
+				}
+			}
+			
+			if ( _trackingMode == "Bridge" ) {
+				if ( _model.config.bridgeObject ) {
+					_bridgeTrackerObject = _model.config.bridgeObject;
+				} else if ( _model.config.googleId ) {
+					_bridgeTrackerObject = _model.config.googleId;
+				} else {
+					_bridgeTrackerObject = "window.pageTracker";
+				}
+			}
+			
 			_googleId = _model.config.googleId;
 			_mydebug = _model.config.debug
 			_player = player;						// get our local reference to the player
@@ -87,90 +102,93 @@ package org.flowplayer.analytics {
 			for (var i:String in _model.config.labels) {
 				_labels[i] = _model.config.labels[i];
 			}
+			
+			_embeddedURL = getEmbeddedUrl();
+
+			instantiateTracker();
+
+			var createClipTracker:Function = function(eventName:String):Function {
+				return function(event:ClipEvent):void {
+					if (_labels[eventName] != false) doTrackEvent(_labels[eventName], event.target as Clip);
+				}
+			}
 
 
-			// Set all the listeners for each action we want to track.
-			// First, the clip-level events
-			_player.playlist.onMetaData( function(event:ClipEvent):void {
-				// this is stupid.  If tracker isn't yet instantiated, then tracker.isReady fails.  So, if tracker doesn't exist or if tracker isn't ready,  instantiate it.  WTF?
-				try  {
-					if (!_tracker.isReady()) {
-						 instantiateTracker();
-						}
-					} catch(errObject:Error) {
-						instantiateTracker();
-				}
-				// Get the one piece Google doesn't give us: on what webpage is the video showing?  Again, embed parameter AllowScriptAccess="always" -- so this doesn't work on MySpace.
-				_embeddedURL = "host: " + ExternalInterface.call("window.location.href.toString");
-			});
-			_player.playlist.onStart( function(event:ClipEvent):void {
-				if (_labels.start != false) doTrackEvent(_labels.start, event.target as Clip);
-			});
-			_player.playlist.onBegin( function(event:ClipEvent):void {
-				if (_player.status.time != 0) { // if you check exactly at 0, this will fire an error in IE8's Flash debugger, can't find a workaround so replay isn't tracked.
-					if (_labels.begin != false) doTrackEvent(_labels.begin, event.target as Clip);
-				}
-			});
-			_player.playlist.onPause( function(event:ClipEvent):void {
-				if (_labels.pause != false) doTrackEvent(_labels.pause, event.target as Clip);
-			});
-			_player.playlist.onResume( function(event:ClipEvent):void {
-				if (_labels.resume != false) doTrackEvent(_labels.resume, event.target as Clip);
-			});
-			_player.playlist.onSeek( function(event:ClipEvent):void {
-				if (_labels.seek != false) doTrackEvent(_labels.seek, event.target as Clip);
-			});
-			_player.playlist.onStop( function(event:ClipEvent):void {
-				if (_labels.stop != false) doTrackEvent(_labels.stop, event.target as Clip);
-			});
-			_player.playlist.onFinish( function(event:ClipEvent):void {
-				if (_labels.finish != false) doTrackEvent(_labels.finish, event.target as Clip);
-			});
+			_player.playlist.onStart(createClipTracker("start"));
+			_player.playlist.onBegin(createClipTracker("begin"));
+			_player.playlist.onPause(createClipTracker("pause"));
+			_player.playlist.onResume(createClipTracker("resume"));
+			_player.playlist.onSeek(createClipTracker("seek"));
+			_player.playlist.onStop(createClipTracker("stop"));
+			_player.playlist.onFinish(createClipTracker("finish"));
+			
 			// now the player-level events
-			_player.onMute( function():void {
-				if (_labels.mute != false) doPlayerTrackEvent(_labels.mute);
-			});
-			_player.onUnmute( function():void {
-				if (_labels.unmute != false) doPlayerTrackEvent(_labels.unmute);
-			});
-			_player.onFullscreen( function():void {
-				if (_labels.fullscreen != false) doPlayerTrackEvent(_labels.fullscreen);
-			});
-			_player.onFullscreenExit( function():void {
-				if (_labels.fullscreenexit != false) doPlayerTrackEvent(_labels.fullscreenexit);
-			});
+			
+			var createPlayerTracker:Function = function(eventName:String):Function {
+				return function(event:PlayerEvent):void {
+					if (_labels[eventName] != false) doTrackEvent(_labels[eventName]);
+				}
+			}
+			
+			_player.onMute(createPlayerTracker("mute"));
+			_player.onUnmute(createPlayerTracker("unmute"));
+			_player.onFullscreen(createPlayerTracker("fullscreen"));
+			_player.onFullscreenExit(createPlayerTracker("fullscreenexit"));
 
 		}
+		
+		public function getEmbeddedUrl():String {
+			if (!ExternalInterface.available) return "Unknown";
+			try {
+				var href:String = ExternalInterface.call("self.location.href.toString");
+				return "host: "+ href;
+			} catch (e:Error) {
+                log.error("error in getEmbeddedUrl(): " + e);
+            }
+            return "Unknown";
+        }
 
 		// tracker instantiation.
 		private function instantiateTracker():void {
-			if (_trackingMode == "Bridge") {
-				// ExternalInterface.available = true;
-				_tracker = new GATracker( this, _bridgeTrackerObject, "Bridge", _mydebug);
-			} else {
-				_tracker = new GATracker( this, _googleId, "AS3", _mydebug);
+			
+			try {
+				if (_trackingMode == "Bridge") {
+					if ( ! ExternalInterface.available ) {
+						_model.dispatchError(PluginError.ERROR, "Unable to create tracked in Bridge mode because ExternalInterface is not available");
+					}
+					log.debug("Creating tracker in Bridge mode using "+ _bridgeTrackerObject + ", debug ? "+ (_mydebug?"true":"false"));
+					_tracker = new GATracker( this, _bridgeTrackerObject , "Bridge", _mydebug);
+				} else {
+					if ( ! _googleId ) {
+						_model.dispatchError(PluginError.ERROR, "Google ID not specified");
+					}
+					
+					log.debug("Creating tracker in AS3 mode using "+ _googleId + ", debug ? "+ (_mydebug?"true":"false"));
+					_tracker = new GATracker( this, _googleId, "AS3", _mydebug);
+				}
+			} catch(e:Error) {
+				log.error("Unable to create tracker", e);
 			}
 		}
 
 
 		// 			if the local server URL is unavailable, change the null to a prettier 'Unknown'
 		//			Finally, send the time each event happened.
-		private function doTrackEvent(_eventLabel:String, _clip:Clip):void {
-			if (_embeddedURL == null) {
-				_embeddedURL = "Unknown";
+		private function doTrackEvent(eventName:String, clip:Clip = null):void {			
+			if ( clip == null )
+				clip = _player.currentClip;
+			
+			try {
+				log.debug("Tracking "+eventName + "["+(clip.completeUrl + (clip.isInStream ? ": instream" : ""))+"] : "+(_player.status ? _player.status.time : 0)+" on page "+ _embeddedURL);
+            	_tracker.trackEvent(_embeddedURL, eventName, clip.completeUrl + (clip.isInStream ? ": instream" : ""), int(_player.status ? _player.status.time : 0) ); 
+			} catch (e:Error) {
+				log.error("Got error while tracking event "+ eventName);
 			}
-            _tracker.trackEvent(_embeddedURL, _eventLabel, _clip.completeUrl + (_clip.isInStream ? ": instream" : ""), int(_player.status.time) ); 
-		}
-		private function doPlayerTrackEvent(_eventLabel:String):void {
-			if (_embeddedURL == null) {
-				_embeddedURL = "Unknown";
-			}
-			_tracker.trackEvent(_embeddedURL, _eventLabel, _player.playlist.getClip(0).completeUrl, _player.status.time);
 		}
 
 		[External]
-		public function trackEvent(_eventLabel:String):void {
-			doPlayerTrackEvent(_eventLabel);
+		public function trackEvent(eventName:String):void {
+			doTrackEvent(eventName);
 		}
 
 		[External]
