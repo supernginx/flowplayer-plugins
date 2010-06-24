@@ -124,15 +124,17 @@ var httpPlaylist =  [
 			              		    ]
 			            }
         			];
+        			
+        			
 
 var psuedoPlaylist =  [
 			            {
 			              url: "bbb.flv", 
 			              bitrates: [
-			              			{url: "bbb_160x90.flv", width: 160, height: 90, bitrate: 100},
-			              			{url: "bbb_320x180.flv", width: 320, height: 180, bitrate: 180},
-			              			{url: "bbb_480x270.flv", width: 480, height: 270, bitrate: 270},
-			              			{url: "bbb_640x360.flv", width: 640, height: 360, bitrate: 360}
+			              			{url: "bbb_160x90.flv", width: 160, height: 90, bitrate: 100, label: "100k"},
+			              			{url: "bbb_320x180.flv", width: 320, height: 180, bitrate: 180, label: "180k"},
+			              			{url: "bbb_480x270.flv", width: 480, height: 270, bitrate: 270, label: "270k"},
+			              			{url: "bbb_640x360.flv", width: 640, height: 360, bitrate: 360, label: "360k"}
 			              		    ]
 			            }
         			];
@@ -141,10 +143,10 @@ var fmsPlaylist =  [
 			            {
 			              url: "bbb.flv", 
 			              bitrates: [
-			              			{url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
-			              			{url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
-			              			{url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
-			              			{url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
+			              			{url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100, label: "100k"},
+			              			{url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180, label: "180k"},
+			              			{url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270, label: "270k"},
+			              			{url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360, label: "360k"}
 			              		    ]
 			            }
         			];
@@ -154,10 +156,10 @@ var wowzaPlaylist = [
 			              url: "flv:bbb", 
 			
 			              bitrates: [
-			                        {url: "vod/demo.flowplayer/bbb_160x90", width: 160, height: 90, bitrate: 100},
-			                        {url: "vod/demo.flowplayer/bbb_320x180", width: 320, height: 180, bitrate: 180},
-			                        {url: "vod/demo.flowplayer/bbb_480x270", width: 480, height: 270, bitrate: 270},
-			                        {url: "vod/demo.flowplayer/bbb_640x360", width: 640, height: 360, bitrate: 360}
+			                        {url: "vod/demo.flowplayer/bbb_160x90", width: 160, height: 90, bitrate: 100, label: "100k"},
+			                        {url: "vod/demo.flowplayer/bbb_320x180", width: 320, height: 180, bitrate: 180, label: "180k"},
+			                        {url: "vod/demo.flowplayer/bbb_480x270", width: 480, height: 270, bitrate: 270, label: "270k"},
+			                        {url: "vod/demo.flowplayer/bbb_640x360", width: 640, height: 360, bitrate: 360, label: "360k"}
 						           ]
 						}
 			        ]
@@ -379,10 +381,10 @@ var httpPlaylist =  [
 			            {
 			              url: "bbb.flv", 
 			              bitrates: [
-			              			{url: "bbb_160x90.flv", width: 160, height: 90, bitrate: 100},
-			              			{url: "bbb_320x180.flv", width: 320, height: 180, bitrate: 180},
-			              			{url: "bbb_480x270.flv", width: 480, height: 270, bitrate: 270},
-			              			{url: "bbb_640x360.flv", width: 640, height: 360, bitrate: 360}
+			              			{url: "bbb_160x90.flv", width: 160, height: 90, bitrate: 100, label: "100k"},
+			              			{url: "bbb_320x180.flv", width: 320, height: 180, bitrate: 180, label: "180k"},
+			              			{url: "bbb_480x270.flv", width: 480, height: 270, bitrate: 270, label: "270k"},
+			              			{url: "bbb_640x360.flv", width: 640, height: 360, bitrate: 360, label: "360k"}
 			              		    ]
 			            }
         			];
@@ -467,7 +469,10 @@ And optional
 </p>
  <ul>
    <li>height</li>
+   <li>label</li>
 </ul>
+
+<p>A text label as the value (label: "300 k") can be configured to be used in conjunction with the bwcheck javascript plugin to provide video bitrate feedback. </p>
  
 
 
@@ -478,10 +483,10 @@ playlist: [
             {
               url: "flv:bbb", 
               bitrates: [
-              				{url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100},
-              				{url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180},
-              				{url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270},
-              				{url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360}
+              				{url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100, label: "100k"},
+              				{url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180, label: "180k"},
+              				{url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270, label: "270k"},
+              				{url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360, label: "360k"}
               			  ]
           
             }
@@ -546,7 +551,7 @@ playlist: [
         </td>
     </tr>
     <tr>
-        <td class="code">enableDynamic <div class="type">boolean</div></td>
+        <td class="code">dynamic <div class="type">boolean</div></td>
         <td class="code default">false</td>
         <td class="description">
 				Enables dynamic stream switching for Adobe Flash Media Server 3 and Wowza Media Server 2. <a href="#dynamic">See below</a> for more details.
@@ -593,7 +598,7 @@ playlist: [
         </td>
     </tr>
     <tr>
-        <td class="code">enableDynamicBuffer<div class="type">boolean</div></td>
+        <td class="code">dynamicBuffer<div class="type">boolean</div></td>
         <td class="code default">false</td>
         <td class="description">
         	When enabled, this feature will dynamically calculate the best buffer time to suit the available bandwidth.
@@ -606,13 +611,6 @@ playlist: [
         	When enabled, this feature will enable the quality of service monitor for both non-dynamic rtmp and dynamic rtmp streams. 
         	The quality of service monitor dynamically upgrades / downgrades the stream in realtime. 
         	If using the non-dynamic rtmp stream, the stream switching is possible but not seamless. 
-        </td>
-    </tr>
-    <tr>
-        <td class="code">labels <div class="type">object</div></td>
-        <td class="code default"></td>
-        <td class="description">
-				An object of bitrate labels with the bitrate as the key and a text label as the value ie {300: "300 k"}. To be used in conjunction with other plugins to provide video bitrate feedback. 
         </td>
     </tr>
 </table>
@@ -954,7 +952,7 @@ $f("rtmpManualPlayer", "@PLAYER_SWF@", {
 
 			// Use this connection for bandwidth detection
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
-			labels: {100:"100 k", 180:"180 k", 270: "270 k", 360: "360 k"},
+			
 			bitrateProfileName: 'RTMPBitrateProfile',
 			
 			onStreamSwitch: switchStreamInfo,
@@ -992,7 +990,7 @@ $f("rtmpManualPlayer", "@PLAYER_SWF@", {
 <div style="display:none;">
 <b>Choose Video Bitrate:</b> <br/>	
 <div id="changeManualBitrate" style="display:none;">
-	<label><input type="radio" name="bitrateBtn" value="${bitrate}" />${label}</label>
+	<label><input type="radio" name="bitrateBtn" value="{bitrate}" />{label}</label>
 </div>
 </div>
 
@@ -1025,7 +1023,7 @@ $f("rtmpManualPlayer", "@PLAYER_SWF@", {
 
 			// Use this connection for bandwidth detection
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
-			labels: {100:"100 k", 180:"180 k", 270: "270 k", 360: "360 k"},
+			
 			bitrateProfileName: 'RTMPBitrateProfile',
 			
 			onStreamSwitch: switchStreamInfo,
@@ -1129,8 +1127,8 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 			// Use this connection for bandwidth detection
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
-			enableDynamic: true,
-			labels: {100:"100 k", 180:"180 k", 270: "270 k", 360: "360 k"},
+			dynamic: true,
+			
 			//required to enable initial bandwidth checking while als having dynamic switching enabled
 			checkOnStart:true, 
 			onStreamSwitch: switchStreamInfo,
@@ -1165,7 +1163,7 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 <div style="display:none;">
 <b>Choose Video Bitrate:</b> <br/>	
 <div id="changeDynamicBitrate" style="display:none;">
-	<label><input type="radio" name="bitrateBtn" value="${bitrate}" />${label}</label>
+	<label><input type="radio" name="bitrateBtn" value="{bitrate}" />{label}</label>
 </div>
 </div>
 		
@@ -1195,8 +1193,8 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 			// Use this connection for bandwidth detection
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
-			enableDynamic: true,
-			labels: {100:"100 k", 180:"180 k", 270: "270 k", 360: "360 k"},
+			dynamic: true,
+			
 			//required to enable initial bandwidth checking while als having dynamic switching enabled
 			checkOnStart:true, 
 			onStreamSwitch: switchStreamInfo,
@@ -1283,8 +1281,8 @@ flowplayer("rtmpDynamicFMSPlayer", "@PLAYER_SWF@", {
 			// Use this connection for bandwidth detection
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
-			labels: {100:"100 k", 180:"180 k", 270: "270 k", 360: "360 k"},
-			//enableDynamic: true,
+			
+			//dynamic: true,
 			//checkOnStart:true, 
 			
 			onStreamSwitch: switchStreamInfo,
@@ -1319,7 +1317,7 @@ flowplayer("rtmpDynamicFMSPlayer", "@PLAYER_SWF@", {
 <div style="display:none;">
 <b>Choose Video Bitrate:</b> <br/>			
 <div id="changeDynamicFMSBitrate" style="display:none;">
-	<label><input type="radio" name="bitrateBtn" value="${bitrate}" />${label}</label>
+	<label><input type="radio" name="bitrateBtn" value="{bitrate}" />{label}</label>
 </div>		
 </div>
 
@@ -1349,8 +1347,8 @@ flowplayer("rtmpDynamicFMSPlayer", "@PLAYER_SWF@", {
 			// Use this connection for bandwidth detection
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
-			labels: {100:"100 k", 180:"180 k", 270: "270 k", 360: "360 k"},
-			enableDynamic: true,
+			
+			dynamic: true,
 			checkOnStart:true, 
 			
 			onStreamSwitch: switchStreamInfo,
@@ -1433,7 +1431,7 @@ flowplayer("rtmpDynamicNoCheckPlayer", "@PLAYER_SWF@", {
 			// Use this connection for bandwidth detection
 			//netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
-			enableDynamic: true,
+			dynamic: true,
 			onStreamSwitch: switchStreamInfo,
 			// this method is called when the bandwidth check is done
 			onBwDone: bwDoneInfo
@@ -1484,7 +1482,7 @@ flowplayer("rtmpDynamicNoCheckPlayer", "@PLAYER_SWF@", {
 			// Use this connection for bandwidth detection
 			//netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
-			enableDynamic: true,
+			dynamic: true,
 			onStreamSwitch: switchStreamInfo,
 			// this method is called when the bandwidth check is done
 			onBwDone: bwDoneInfo
@@ -1560,11 +1558,11 @@ flowplayer("rtmpSelectionPlayer", "@PLAYER_SWF@", {
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			// Use this connection for bandwidth detection
 			bitrateProfileName: 'RTMPBitrateProfile',
-			enableDynamic: true,
+			dynamic: true,
 			checkOnStart:true, 
 			streamSelectionStrategy: 'resizable',
 			maxContainerWidth: 640,
-			labels: {100:"100 k", 180:"180 k", 270: "270 k", 360: "360 k"},
+			
 			
 			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
 				switchStreamInfo(mappedBitrate, streamName, oldStreamName);
@@ -1607,7 +1605,7 @@ flowplayer("rtmpSelectionPlayer", "@PLAYER_SWF@", {
 <div style="display:none;">
 <b>Choose Video Bitrate:</b> <br/>	
 <div id="changeSelectionBitrate" style="display:none;">
-	<label><input type="radio" name="bitrateBtn" value="${bitrate}" />${label}</label>
+	<label><input type="radio" name="bitrateBtn" value="{bitrate}" />{label}</label>
 </div>
 </div>
 
@@ -1638,11 +1636,11 @@ flowplayer("rtmpSelectionPlayer", "@PLAYER_SWF@", {
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			// Use this connection for bandwidth detection
 			bitrateProfileName: 'RTMPBitrateProfile',
-			enableDynamic: true,
+			dynamic: true,
 			checkOnStart:true, 
 			streamSelectionStrategy: 'resizable',
 			maxContainerWidth: 640,
-			labels: {100:"100 k", 180:"180 k", 270: "270 k", 360: "360 k"},
+			
 			
 			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
 				switchStreamInfo(mappedBitrate, streamName, oldStreamName);
@@ -1814,11 +1812,11 @@ flowplayer("rtmpSelectionResizePlayer", "@PLAYER_SWF@", {
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			// Use this connection for bandwidth detection
 			bitrateProfileName: 'RTMPBitrateProfile',
-			enableDynamic: true,
+			dynamic: true,
 			checkOnStart:true, 
 			streamSelectionStrategy: 'resizable',
 			maxContainerWidth: 800,
-			labels: {100:"100 k", 180:"180 k", 270: "270 k", 360: "360 k"},
+			
 			
 			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
 				switchStreamInfo(mappedBitrate, streamName, oldStreamName);
@@ -1920,7 +1918,7 @@ flowplayer("rtmpSelectionResizePlayer", "@PLAYER_SWF@", {
 <div style="display:none;">
 <b>Choose Video Bitrate:</b> <br/>	
 <div id="changeSelectionResizeBitrate" style="display:none;">
-	<label><input type="radio" name="bitrateBtn" value="${bitrate}" />${label}</label>
+	<label><input type="radio" name="bitrateBtn" value="{bitrate}" />{label}</label>
 </div>
 </div>
 
@@ -2025,11 +2023,11 @@ flowplayer("rtmpSelectionResizePlayer", "@PLAYER_SWF@", {
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			// Use this connection for bandwidth detection
 			bitrateProfileName: 'RTMPBitrateProfile',
-			enableDynamic: true,
+			dynamic: true,
 			checkOnStart:true, 
 			streamSelectionStrategy: 'resizable',
 			maxContainerWidth: 800,
-			labels: {100:"100 k", 180:"180 k", 270: "270 k", 360: "360 k"},
+			
 			
 			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
 				switchStreamInfo(mappedBitrate, streamName, oldStreamName);
@@ -2381,7 +2379,7 @@ flowplayer("rtmpRSSPlayer", "@PLAYER_SWF@", {
 			serverType: 'wowza',
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
-			enableDynamic: true,
+			dynamic: true,
 			checkOnStart: true,
 			onStreamSwitch: switchStreamInfo,
 			// this method is called when the bandwidth check is done
@@ -2435,7 +2433,7 @@ flowplayer("rtmpRSSPlayer", "@PLAYER_SWF@", {
 			serverType: 'wowza',
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
-			enableDynamic: true,
+			dynamic: true,
 			checkOnStart: true,
 			onStreamSwitch: switchStreamInfo,
 			// this method is called when the bandwidth check is done
@@ -2509,7 +2507,7 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
 			// Use this connection for bandwidth detection
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
-			enableDynamicBuffer: true,
+			dynamicBuffer: true,
 			
 			onStreamSwitch: switchStreamInfo,
 			// this method is called when the bandwidth check is done
@@ -2565,7 +2563,7 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
 			// Use this connection for bandwidth detection
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
-			enableDynamicBuffer: true,
+			dynamicBuffer: true,
 			
 			onStreamSwitch: switchStreamInfo,
 			// this method is called when the bandwidth check is done
@@ -2791,7 +2789,7 @@ flowplayer("rtmpErrorPlayer", "@PLAYER_SWF@", {
         </td>
         <td class="code type"></td>
         <td class="description">
-			Changes the stream to the specified bitrate. The specified value should be one of the values contained in the <samp>bitrates</samp> array. If the player is currently playing a clip, the stream corresponding to the specified bitrate is started. If <a href="#dynamic">dynamic stream switching</a> is enabled, the stream switches dynamically while playing, otherwise the stream plays from the start of the clip. <strong>Note:</strong> Dynamic stream switching is disabled when this method is called so that the dynamic adaption does not override the bitrate specified using this method. You can enable dynamic switching again using the <samp>enableDynamic()</samp> method (see below).
+			Changes the stream to the specified bitrate. The specified value should be one of the values contained in the <samp>bitrates</samp> array. If the player is currently playing a clip, the stream corresponding to the specified bitrate is started. If <a href="#dynamic">dynamic stream switching</a> is enabled, the stream switches dynamically while playing, otherwise the stream plays from the start of the clip. <strong>Note:</strong> Dynamic stream switching is disabled when this method is called so that the dynamic adaption does not override the bitrate specified using this method. You can enable dynamic switching again using the <samp>dynamic()</samp> method (see below).
         </td>
     </tr>
     <tr>
@@ -2805,7 +2803,7 @@ flowplayer("rtmpErrorPlayer", "@PLAYER_SWF@", {
     </tr>
     <tr>
         <td class="code">
-            <strong>enableDynamic</strong>(enabled)
+            <strong>dynamic</strong>(enabled)
         </td>
         <td class="code type"></td>
         <td class="description">
@@ -2975,7 +2973,7 @@ $f("javascriptPluginPlayer", "@PLAYER_SWF@", {
 
 			// Use this connection for bandwidth detection
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
-			labels: {100:"100 k", 180:"180 k", 270: "270 k", 360: "360 k"},
+			
 			bitrateProfileName: 'RTMPBitrateProfile',
 			
 			onStreamSwitch: switchStreamInfo,
@@ -3039,7 +3037,7 @@ $f("javascriptPluginPlayer", "@PLAYER_SWF@", {
 
 			// Use this connection for bandwidth detection
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
-			labels: {100:"100 k", 180:"180 k", 270: "270 k", 360: "360 k"},
+			
 			bitrateProfileName: 'RTMPBitrateProfile',
 			
 			onStreamSwitch: switchStreamInfo,
@@ -3113,9 +3111,9 @@ $f("javascriptPluginPlayer", "@PLAYER_SWF@", {
     </tr>
     <tr>
         <td class="code">template <div class="type">string</div></td>
-        <td class="code default"><a href="${bitrate}">${bitrate} k</a></td>
+        <td class="code default"><a href="{bitrate}">{bitrate} k</a></td>
         <td class="description">
-        	The template config to be used for generating the links. The fields of the bitrates clip config are used as the template variables ie ${bitrate}.
+        	The template config to be used for generating the links. The fields of the bitrates clip config are used as the template variables ie {bitrate}.
         	If the wrapper has the template set, it will be used instead of the template config.
         </td>
     </tr>
