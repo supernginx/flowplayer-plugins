@@ -38,7 +38,7 @@
 						el = el.replace("\{label\}", label).replace("$%7B" +key+ "%7D", label);
 					}
 				}
-				el = el.replace("\{" +key+ "\}", val).replace("$%7B" +key+ "%7D", val);
+				el = el.replace("\{" +key+ "\}", val).replace("%7B" +key+ "%7D", val);
 			});
 
 			return el;
