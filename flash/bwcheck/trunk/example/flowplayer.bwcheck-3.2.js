@@ -32,11 +32,8 @@
 			var el = template;
 
 			$.each(values, function(key, val) {
-				if (key=="bitrate" && labels) {
-					var label = (plugin && labels.length > 0 && labels[val] ? labels[val] : val + " k");
-					if (label) {
-						el = el.replace("\{label\}", label).replace("$%7B" +key+ "%7D", label);
-					}
+				if (key=="bitrate" && !values.label) {
+					el = el.replace("\{label\}", val + " k").replace("%7B" +key+ "%7D", val + " k");
 				}
 				el = el.replace("\{" +key+ "\}", val).replace("%7B" +key+ "%7D", val);
 			});
@@ -48,7 +45,8 @@
 			wrap.fadeOut(opts.fadeTime).empty();
 
 
-			labels = plugin.getLabels();
+			labels = plugin.labels;
+	
 			var widthCheck = (plugin.getSelectionStrategy() == "default");
 			var containerWidth = $("#" + self.id()).width();
 
@@ -63,7 +61,7 @@
 
 
 				if (this.width > containerWidth && widthCheck) {
-
+					
 
 					if (el.is('a')) {
 						el.removeAttr("href");
@@ -74,8 +72,8 @@
 						el.attr("disabled");
 						el.addClass(opts.disabledClass);
 					}
-					el.find('a').removeAttr("href").addClass(opts.disabledClass);
-					el.find('input').attr("disabled",true).addClass(opts.disabledClass);
+					//el.find('a').removeAttr("href").addClass(opts.disabledClass);
+					//el.find('input').attr("disabled",true).addClass(opts.disabledClass);
 
 					wrap.append(el);
 					wrap.append(" " + opts.disabledText + " ");
@@ -84,7 +82,7 @@
 					el.click(function() {
 						el.removeClass(opts.activeClass);
 
-						wrap.children().removeClass(opts.selectedBitrateClass).addClass(opts.activeClass);
+						wrap.children(":not([class="+opts.disabledClass+"])").removeClass(opts.selectedBitrateClass).addClass(opts.activeClass);
 						el.addClass(opts.selectedBitrateClass);
 						play($(this).attr("index"));
 						if ($(this).is('a')) return false;
@@ -136,6 +134,10 @@
 		self.onBeforeBegin(function(clip) {
 			showBitrateList();
 		});
+		
+		/*self.getPlugin("bwcheck").onStreamSwitch(function(mappedBitrate, streamName, oldStreamName) {
+
+		});*/
 
 		return self;
 
