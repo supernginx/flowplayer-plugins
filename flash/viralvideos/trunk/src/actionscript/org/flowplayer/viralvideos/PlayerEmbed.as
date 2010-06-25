@@ -166,11 +166,12 @@ package org.flowplayer.viralvideos {
 		}
 		
         public function getEmbedCode():String {
-            
-			var conf:Object = updateConfig(_playerConfig);
-
-            var configStr:String = escape(JSON.encode(conf));
-
+            var configStr:String = _config.configUrl;
+			if ( ! configStr ) {
+				var conf:Object = updateConfig(_playerConfig);
+             	configStr = escape(JSON.encode(conf));
+			}
+			
             var code:String =
                     '<object id="' + _player.id + '" width="' + width + '" height="' + height + '" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"> ' + "\n" +
                     '	<param value="true" name="allowfullscreen"/>' + "\n" +

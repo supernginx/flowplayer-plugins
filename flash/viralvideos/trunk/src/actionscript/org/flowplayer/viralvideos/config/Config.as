@@ -31,6 +31,12 @@ package org.flowplayer.viralvideos.config
         private var _iconDisplayProperties:DisplayProperties;
 
         public function Config() {
+			_iconDisplayProperties = new DisplayPropertiesImpl(null, "viral-icons", false);
+			_iconDisplayProperties.top = "20%";
+			_iconDisplayProperties.right = "7%";
+			_iconDisplayProperties.width = "10%";
+			_iconDisplayProperties.height = "30%";
+						
             _autoHide = new AutoHideConfig();
             _autoHide.fullscreenOnly = false;
             _autoHide.hideStyle = "fade";
@@ -45,6 +51,15 @@ package org.flowplayer.viralvideos.config
         public function set baseURL(value:String):void {
             _baseURL = value;
         }
+
+		public function set iconsPosition(iconsPosition:Object):void {
+			var propsToCopy:Array = ['top', 'bottom', 'right', 'left', 'width', 'height'];
+			for ( var i:int = 0; i < propsToCopy.length; i++ ) {
+				if ( iconsPosition[propsToCopy[i]] ) {
+					_iconDisplayProperties[propsToCopy[i]] = iconsPosition[propsToCopy[i]];
+				}
+			}
+		}
 
         public function get email():EmailConfig {
             return _email;
@@ -191,13 +206,6 @@ package org.flowplayer.viralvideos.config
         }
 
         public function get iconDisplayProperties():DisplayProperties {
-            if (! _iconDisplayProperties) {
-                _iconDisplayProperties = new DisplayPropertiesImpl(null, "viral-icons", false);
-                _iconDisplayProperties.top = "20%";
-                _iconDisplayProperties.right = "7%";
-                _iconDisplayProperties.width = "10%";
-                _iconDisplayProperties.height = "30%";
-            }
             return _iconDisplayProperties;
         }
 

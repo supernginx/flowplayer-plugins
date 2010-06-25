@@ -29,6 +29,7 @@ package org.flowplayer.viralvideos.config {
 		private var _prerollUrl:String = null;
 		private var _postrollUrl:String = null;
 		private var _linkUrl:String = null;
+		private var _configUrl:String = null;
 
         public function get title():String {
             return _title;
@@ -132,6 +133,14 @@ package org.flowplayer.viralvideos.config {
 
         public function set linkUrl(value:String):void {
             _linkUrl = value;
+        }
+
+		public function get configUrl():String {
+            return _configUrl;
+        }
+
+        public function set configUrl(value:String):void {
+            _configUrl = value;
         }
     }
 }

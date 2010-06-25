@@ -86,7 +86,8 @@ package org.flowplayer.viralvideos {
             if (! ExternalInterface.available) {
                 model.dispatchError(PluginError.ERROR, "ExternalInterface not available, social site sharing not possible");
             }
-            _videoURL = encodeURIComponent(ExternalInterface.call("self.location.href.toString"));
+
+            _videoURL = encodeURIComponent(_config.shareUrl ? _config.shareUrl : ExternalInterface.call("self.location.href.toString"));
             log.debug("Page URL to share is " + _videoURL);
             _iconArray = new Array();
 //            _facebookIcon = new FacebookIcon() as Sprite;
