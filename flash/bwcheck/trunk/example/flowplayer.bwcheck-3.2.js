@@ -122,8 +122,8 @@
 			wrap = $(wrap);
 			if (self.getClip().bitrates.length > 0) {
 
-				template = wrap.is(":empty") ? opts.template : wrap.html();
-
+				if (!template) template = wrap.is(":empty") ? opts.template : wrap.html();
+				wrap.empty();
 
 
 				buildBitrateList();
