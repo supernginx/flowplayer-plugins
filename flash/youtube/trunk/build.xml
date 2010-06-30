@@ -3,6 +3,8 @@
 	<property file="${user.home}/plugin.properties" />
 	<property file="build.properties" />
 	
+	<property name="devkit-dir" value="../flowplayer.devkit" />
+	
 	<property file="${devkit-dir}/plugin-build.properties" />
 	<import file="${devkit-dir}/plugin-build.xml"/>
 	<property name="flowplayer_lib" value="${devkit-dir}/flowplayer.swc" />

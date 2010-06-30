@@ -23,15 +23,16 @@
 	<meta name="Robots" content="index,follow" /> 
  
 	<link rel="stylesheet" type="text/css" href="http://static.flowplayer.org/css/global-0.25.css" />
+	<link rel="stylesheet" type="text/css" href="bwcheck.css" />
 	
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
-	<script type="text/javascript"  src="http://cdn.jquerytools.org/1.1.2/jquery.tools.min.js"></script>
-	<script type="text/javascript"  src="http://static.flowplayer.org/js/flowplayer-3.1.4.min.js"></script>	
-	<script type="text/javascript"  src="http://amazon.flowplayer.org/js/tools/tools.overlay.apple-1.0.1.min.js"></script>	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+	<script src="http://static.flowplayer.org/js/flowplayer-3.2.2.min.js"></script>
+	<script src="http://static.flowplayer.org/js/flowplayer.playlist-3.0.8.min.js"></script> 
+	<script type="text/javascript" src="flowplayer.bwcheck-3.2.js"></script>
 	
-	
+	<script type="text/javascript" src="http://cdn.jquerytools.org/1.2.3/full/jquery.tools.min.js"></script>
+	<script type="text/javascript" src="http://amazon.flowplayer.org/js/tools/tools.overlay.apple-1.0.1.min.js"></script>	
 	<script src="http://static.flowplayer.org/js/jquery.mousewheel.js"></script>
-	<script src="http://static.flowplayer.org/js/flowplayer.playlist-3.0.7.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="http://amazon.flowplayer.org/css/playlist.css"/>
 		
 	
@@ -39,7 +40,7 @@
 	
 	<style type="text/css">
 		div.overlay {
-		width:1024px; 
+		width:800px; 
 		height:432px;
 
 		}
@@ -113,7 +114,6 @@ function showRelatedList(gdata, container)
 	
 	content += '</div></div><a class="go down"></a>';
 	
-
 	$(container).html(content);
 	
 	$("div.playlist").scrollable({
@@ -122,37 +122,42 @@ function showRelatedList(gdata, container)
 		next:'a.down',
 		prev:'a.up'
 	});
+	
+	$f().playlist("div.clips");
 }
 
 
 
-var playlist =  [
+var basicPlaylist =  [
+				   {
+				   		url: 'api:Q_6qRyYn-68'
+				   }
+        		];
+        		
+var relatedPlaylist =  [
+				   {
+				   		url: 'api:Q_6qRyYn-68'
+				   }
+        		];
+        		
+var manualPlaylist =  [
 			       {
-						//url: 'api:PmGiCFPUSM4'
-						url: 'api:Q_6qRyYn-68'					
+						url: 'api:phnDOQp354A'					
+				   },
+				   {
+				   		url: 'api:Q_6qRyYn-68'
 				   }
         		];
         		
 var bwPlaylist =  [
 			       {
-						//url: 'api:PmGiCFPUSM4'
-						url: 'api:Q_6qRyYn-68'					
+						url: 'api:phnDOQp354A'					
 				   }
         		];
 
 
-var loggingConfig = { level: 'debug', filter: 'org.flowplayer.controller.CompositeClipUrlResolver,org.flowplayer.bwcheck.*, org.flowplayer.cluster.*,org.flowplayer.rtmp.*, org.flowplayer.youtube.*' };
+var loggingConfig = { level: 'debug', filter: 'org.flowplayer.controls.*, org.flowplayer.controller.*,org.flowplayer.bwcheck.*, org.flowplayer.cluster.*,org.flowplayer.rtmp.*, org.flowplayer.youtube.*' };
 
-$(document).ready(function () {	
-	
-	$("div.playlist").scrollable({
-		items:'div.clips',
-		vertical:true,
-		next:'a.down',
-		prev:'a.up'
-	});
-		
-});
 
 </script>
 		
@@ -200,6 +205,8 @@ $(document).ready(function () {
 	</li>
 </ul>
 
+<!-- Paypal Section -->
+
 
 <h2>Examples</h2>
 
@@ -220,7 +227,7 @@ $(document).ready(function () {
 
 <a 
 	href="http://video.flowplayer.org/skyandice.flv" 
-	style="display:block;width:425px;height:300px;float:left;" 
+	style="display:block;width:640px;height:385px;float:left;" 
 	id="basic">
 	
 	<!-- splash image inside the container -->
@@ -228,41 +235,26 @@ $(document).ready(function () {
 	
 </a>
 
-<div id="playlistContainer" style="float:left;width:190px;margin-left:50px; margin-top:0px;"></div>
 
 <!-- Flowplayer installation and configuration -->
 <script language="JavaScript">
 
 $f("basic", "@PLAYER_SWF@", {
-	playlist: playlist,
+	playlist: basicPlaylist,
 	// configure the required plugin
 	plugins:  {
-		
 		controls: { autoHide: true },
 		youtube: {
-					url:'@MAIN_PLAYER_SWF@',
-					enableGdata: true,
-					
-					onApiData: function(gdata) {
-					console.log(gdata);	
-						showRelatedList(gdata, "#playlistContainer");
-					}
-					
-					
+			url:'@MAIN_PLAYER_SWF@'
 		}
-
-		
 	},
 	clip: {
 		provider: 'youtube',
-		urlResolvers: 'youtube',
-		onBegin: function (clip) {
-				
-		}
+		urlResolvers: 'youtube'
 	},
 	log: loggingConfig
 	
-}).playlist("div.clips");
+});
 </script>	
 
 
@@ -278,35 +270,6 @@ $f("basic", "@PLAYER_SWF@", {
 <div class="overlay">
 <div class="box code">
 <pre><code class="javascript">
-function showRelatedList(gdata, container)
-{
-	
-	var relatedVideos = gdata.relatedVideos;
-	
-
-	var content = '<br/><b>Related Videos:</b><br/>';
-	content += '<a class="go up"></a><div class="playlist"><div class="clips low">';
-	
-	
-	jQuery.each( relatedVideos, function(index, item){
-		content += '<a href="'+ item.url +'" '+ (index==0 ? 'class="first"' : "") +'>';
-		content += item.title + "<br/>";
-		content += "<em>" + Math.round(item.duration / 60) + " min</em></a>";
-	});
-	
-	content += '</div></div><a class="go down"></a>';
-	
-
-	$(container).html(content);
-	
-	$("div.playlist").scrollable({
-		items:'div.clips',
-		vertical:true,
-		next:'a.down',
-		prev:'a.up'
-	});
-}
-
 
 var playlist =  [
 			       {
@@ -318,31 +281,18 @@ $f("basic", "@PLAYER_SWF@", {
 	playlist: playlist,
 	// configure the required plugin
 	plugins:  {
-		
 		controls: { autoHide: true },
 		youtube: {
-					url:'@MAIN_PLAYER_SWF@',
-					enableGdata: true,
-					
-					onApiData: function(gdata) {	
-						showRelatedList(gdata, "#playlistContainer");
-					}
-					
-					
+			url:'@MAIN_PLAYER_SWF@'
 		}
-
-		
 	},
 	clip: {
 		provider: 'youtube',
-		urlResolvers: 'youtube',
-		onBegin: function (clip) {
-				
-		}
+		urlResolvers: 'youtube'
 	},
 	log: loggingConfig
 	
-}).playlist("div.clips");
+});
 </code></pre>
 </div>
 </div>
@@ -408,8 +358,430 @@ $f("basic", "@PLAYER_SWF@", {
     </tr>
 </table>
 
+<a name="related"></a>
+<h2><em>Related Videos Playlist</em> Example</h2>
 
-<a name="basic"></a>
+<p>
+    This example demonstrates using the gdata api callback method to obtain the related videos and build a playlist.  
+</p>
+
+
+
+<div style="width:900px;">
+   
+
+<!-- player container-->
+
+
+<a 
+	href="http://video.flowplayer.org/skyandice.flv" 
+	style="display:block;width:640px;height:385px;float:left;" 
+	id="related">
+	
+	<!-- splash image inside the container -->
+	<img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" />
+	
+</a>
+
+<div id="playlistContainer" style="float:left;width:190px;margin-left:50px; margin-top:0px;"></div>
+
+<!-- Flowplayer installation and configuration -->
+<script language="JavaScript">
+
+$f("related", "@PLAYER_SWF@", {
+	playlist: relatedPlaylist,
+	// configure the required plugin
+	plugins:  {
+		
+		controls: { autoHide: true },
+		youtube: {
+					url:'@MAIN_PLAYER_SWF@',
+					enableGdata: true,
+					
+					onApiData: function(gdata) {
+						showRelatedList(gdata, "#playlistContainer");
+				}		
+		}
+	},
+	clip: {
+		provider: 'youtube',
+		urlResolvers: 'youtube',
+		onBegin: function (clip) {
+				
+		}
+	},
+	log: loggingConfig
+	
+});
+</script>	
+
+</div>
+
+<br clear="all" />
+
+<button rel="div.overlay:eq(1)" type="button">Configuration For This Example</button>
+
+<div class="overlay">
+<div class="box code">
+<pre><code class="javascript">
+function showRelatedList(gdata, container)
+{
+	
+	var relatedVideos = gdata.relatedVideos;
+	
+
+	var content = '<br/><b>Related Videos:</b><br/>';
+	content += '<a class="go up"></a><div class="playlist"><div class="clips low">';
+	
+	
+	jQuery.each( relatedVideos, function(index, item){
+		content += '<a href="'+ item.url +'" '+ (index==0 ? 'class="first"' : "") +'>';
+		content += item.title + "<br/>";
+		content += "<em>" + Math.round(item.duration / 60) + " min</em></a>";
+	});
+	
+	content += '</div></div><a class="go down"></a>';
+	
+
+	$(container).html(content);
+	
+	$("div.playlist").scrollable({
+		items:'div.clips',
+		vertical:true,
+		next:'a.down',
+		prev:'a.up'
+	});
+	
+	$f().playlist("div.clips");
+}
+
+
+var playlist =  [
+			       {
+						url: 'api:PmGiCFPUSM4'					
+				   }
+        		];
+        		
+$f("related", "@PLAYER_SWF@", {
+	playlist: relatedPlaylist,
+	// configure the required plugin
+	plugins:  {
+		
+		controls: { autoHide: true },
+		youtube: {
+					url:'@MAIN_PLAYER_SWF@',
+					enableGdata: true,
+					
+					onApiData: function(gdata) {	
+						showRelatedList(gdata, "#playlistContainer");
+					}
+					
+					
+		}
+
+		
+	},
+	clip: {
+		provider: 'youtube',
+		urlResolvers: 'youtube',
+		onBegin: function (clip) {
+				
+		}
+	},
+	log: loggingConfig
+	
+});
+</code></pre>
+</div>
+</div>
+
+<a name="playlist"></a>
+<h2><em>Youtube Video Playlist</em> Example</h2>
+
+
+<p>
+    This example demonstrates using the flowplayer playlist plugin with youtube videos.   
+</p>
+
+
+
+<div style="width:900px;">
+   
+
+<!-- player container-->
+
+
+<a 
+	style="display:block;width:640px;height:385px;float:left;" 
+	id="playlist">
+	
+	<!-- splash image inside the container -->
+	<img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" />
+	
+</a>
+
+
+
+<!-- Flowplayer installation and configuration -->
+<script language="JavaScript">
+
+$(function() {
+
+$("div.playlist").scrollable({
+		items:'div.clips',
+		vertical:true,
+		next:'a.down',
+		prev:'a.up'
+});
+
+$f("playlist", "@PLAYER_SWF@", {
+	// configure the required plugin
+	plugins:  {
+		
+		controls: { autoHide: true },
+		youtube: {
+				url:'@MAIN_PLAYER_SWF@',
+					
+		}
+	},
+	clip: {
+		provider: 'youtube',
+		urlResolvers: 'youtube',
+		onBegin: function (clip) {
+				
+		}
+	},
+	log: loggingConfig
+	
+}).playlist("#manualPlaylist:first", {loop:true});
+
+});
+</script>	
+
+<div id="playlistManualContainer" style="float:left;width:190px;margin-left:50px; margin-top:0px;">
+<br/><b>Youtube Videos Playlist:</b><br/>
+<a class="go up"></a>
+<div class="playlist">
+<div class="clips low" id="manualPlaylist">
+<a href="api:E-QV4n-z-9k" class="first">Move D - Eastman<br/><em>7 min</em></a>
+<a href="api:FhZ_kTZoUlg" >Move D - Cymbelin (WARP) 1996<br/><em>7 min</em></a>
+<a href="api:g6ER0ESbJn0" >Move D - Heidelberg Gals<br/><em>10 min</em></a>
+<a href="api:BxvBk_dSrKQ" >Move D - Jus House<br/><em>5 min</em></a>
+<a href="api:gTa_aIeg2gE" >Move D - October in Moscow<br/><em>7 min</em></a>
+<a href="api:iXo-_TzM0A4" >Surgeon - Electric Chicken<br/><em>5 min</em></a>
+<a href="api:myPwJIw45s4" >Move-D - Drøne<br/><em>10 min</em></a>
+<a href="api:-YKUX8fo6rY" >Air Liquide - Psy 9<br/><em>11 min</em></a>
+<a href="api:AR2UPJ-JCRk" >sctv 03 - 09 move d: 77 sunset strip<br/><em>7 min</em></a>
+<a href="api:qZRZzyamH54" >Move D - Amazing Discoveries<br/><em>8 min</em></a>
+<a href="api:dlKL___rBAM" >Night Music: "Soft Winds/Lux Aurumque"<br/><em>8 min</em></a>
+<a href="api:VtsUqOdsZuY" >Nuron - Mirage<br/><em>6 min</em></a>
+<a href="api:wQucHFex91E" >Bergheim 34 ram move d - d man brucken 7 remix (Random Access Memory)<br/><em>6 min</em></a>
+<a href="api:ifhcWeXIOZs" >Grace Jones - Walking in the Rain<br/><em>4 min</em></a>
+<a href="api:NGS--kKQXH4" >Mustt Mustt-Nusrat Fateh Ali Khan<br/><em>4 min</em></a>
+<a href="api:dC8YKJUBk0c" >space night earthviews 4 Part2<br/><em>10 min</em></a>
+<a href="api:yXj0dF7LAyE" >Imogen Heap - Canvas<br/><em>5 min</em></a>
+<a href="api:XXZbo_0LIdQ" >SPACE NIGHT - earthviews IV (part 3) move d. - amazing discoveries<br/><em>8 min</em></a>
+<a href="api:yeultXx_FNE" >Beyond The Machine : Move D<br/><em>5 min</em></a><a href="api:_LjnVIilTb0" >[- MINIMAL -] Kunststoff - Unleashed<br/><em>10 min</em></a>
+<a href="api:IoEK_E3z_Sc" >"eu sei que vou te amar" -Steinar Raknes - "Tangos, ballads & more"<br/><em>2 min</em></a>
+<a href="api:TNi99utfX-w" >Sensorama - Echtzeit<br/><em>6 min</em></a>
+<a href="api:WWg2zFGjLl8" >Move D - Like I was King (Black label mix) [Compost Black label]<br/><em>6 min</em></a>
+<a href="api:YmT75-CJhdA" >Balil - Parasight<br/><em>8 min</em></a>
+<a href="api:UYUjbVPrEDI" >Massiv feat. Beirut - Weil wir der Wahrheit nicht ins Auge sehen - Kopf oder Zahl Soundtrack (OST)<br/><em>3 min</em></a>
+</div>
+</div>
+<a class="go down"></a>
+</div>
+
+
+
+</div>
+
+<br clear="all" />
+
+<button rel="div.overlay:eq(2)" type="button">Configuration For This Example</button>
+
+<div class="overlay">
+<div class="box code">
+<pre><code class="javascript">
+$(function() {
+
+$("div.playlist").scrollable({
+		items:'div.clips',
+		vertical:true,
+		next:'a.down',
+		prev:'a.up'
+});
+
+$f("playlist", "@PLAYER_SWF@", {
+	// configure the required plugin
+	plugins:  {
+		
+		controls: { autoHide: true },
+		youtube: {
+				url:'@MAIN_PLAYER_SWF@',
+					
+		}
+	},
+	clip: {
+		provider: 'youtube',
+		urlResolvers: 'youtube',
+		onBegin: function (clip) {
+				
+		}
+	},
+	log: loggingConfig
+	
+}).playlist("#manualPlaylist:first", {loop:true});
+
+});
+
+<div id="playlistManualContainer" style="float:left;width:190px;margin-left:50px; margin-top:0px;">
+<br/><b>Youtube Videos Playlist:</b><br/>
+<a class="go up"></a>
+<div class="playlist">
+<div class="clips low" id="manualPlaylist">
+<a href="api:E-QV4n-z-9k" class="first">Move D - Eastman<br/><em>7 min</em></a>
+<a href="api:FhZ_kTZoUlg" >Move D - Cymbelin (WARP) 1996<br/><em>7 min</em></a>
+<a href="api:g6ER0ESbJn0" >Move D - Heidelberg Gals<br/><em>10 min</em></a>
+<a href="api:BxvBk_dSrKQ" >Move D - Jus House<br/><em>5 min</em></a>
+<a href="api:gTa_aIeg2gE" >Move D - October in Moscow<br/><em>7 min</em></a>
+<a href="api:iXo-_TzM0A4" >Surgeon - Electric Chicken<br/><em>5 min</em></a>
+<a href="api:myPwJIw45s4" >Move-D - Drøne<br/><em>10 min</em></a>
+<a href="api:-YKUX8fo6rY" >Air Liquide - Psy 9<br/><em>11 min</em></a>
+<a href="api:AR2UPJ-JCRk" >sctv 03 - 09 move d: 77 sunset strip<br/><em>7 min</em></a>
+<a href="api:qZRZzyamH54" >Move D - Amazing Discoveries<br/><em>8 min</em></a>
+<a href="api:dlKL___rBAM" >Night Music: "Soft Winds/Lux Aurumque"<br/><em>8 min</em></a>
+<a href="api:VtsUqOdsZuY" >Nuron - Mirage<br/><em>6 min</em></a>
+<a href="api:wQucHFex91E" >Bergheim 34 ram move d - d man brucken 7 remix (Random Access Memory)<br/><em>6 min</em></a>
+<a href="api:ifhcWeXIOZs" >Grace Jones - Walking in the Rain<br/><em>4 min</em></a>
+<a href="api:NGS--kKQXH4" >Mustt Mustt-Nusrat Fateh Ali Khan<br/><em>4 min</em></a>
+<a href="api:dC8YKJUBk0c" >space night earthviews 4 Part2<br/><em>10 min</em></a>
+<a href="api:yXj0dF7LAyE" >Imogen Heap - Canvas<br/><em>5 min</em></a>
+<a href="api:XXZbo_0LIdQ" >SPACE NIGHT - earthviews IV (part 3) move d. - amazing discoveries<br/><em>8 min</em></a>
+<a href="api:yeultXx_FNE" >Beyond The Machine : Move D<br/><em>5 min</em></a><a href="api:_LjnVIilTb0" >[- MINIMAL -] Kunststoff - Unleashed<br/><em>10 min</em></a>
+<a href="api:IoEK_E3z_Sc" >"eu sei que vou te amar" -Steinar Raknes - "Tangos, ballads & more"<br/><em>2 min</em></a>
+<a href="api:TNi99utfX-w" >Sensorama - Echtzeit<br/><em>6 min</em></a>
+<a href="api:WWg2zFGjLl8" >Move D - Like I was King (Black label mix) [Compost Black label]<br/><em>6 min</em></a>
+<a href="api:YmT75-CJhdA" >Balil - Parasight<br/><em>8 min</em></a>
+<a href="api:UYUjbVPrEDI" >Massiv feat. Beirut - Weil wir der Wahrheit nicht ins Auge sehen - Kopf oder Zahl Soundtrack (OST)<br/><em>3 min</em></a>
+</div>
+</div>
+<a class="go down"></a>
+</div>
+</code></pre>
+</div>
+</div>
+
+
+<a name="manualVideoPlaylist"></a>
+<h2><em>Youtube Video Manual Playlist</em> Example</h2>
+
+
+<p>
+    This example demonstrates using the flowplayer playlist config with youtube videos.   
+</p>
+
+
+
+<div style="width:900px;">
+   
+
+<!-- player container-->
+
+
+<a 
+	style="display:block;width:640px;height:385px;float:left;" 
+	id="manualVideoPlaylist">
+	
+	<!-- splash image inside the container -->
+	<img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" />
+	
+</a>
+
+
+
+<!-- Flowplayer installation and configuration -->
+<script language="JavaScript">
+
+$f("manualVideoPlaylist", "@PLAYER_SWF@", {
+	// configure the required plugin
+	playlist: manualPlaylist,
+	plugins:  {
+		
+		controls: { autoHide: true },
+		youtube: {
+				url:'@MAIN_PLAYER_SWF@',
+					
+		}
+	},
+	clip: {
+		provider: 'youtube',
+		urlResolvers: 'youtube',
+		onBegin: function (clip) {
+				
+		}
+	},
+	log: loggingConfig
+	
+});
+
+
+</script>	
+
+
+
+</div>
+
+<br clear="all" />
+
+<button rel="div.overlay:eq(2)" type="button">Configuration For This Example</button>
+
+<div class="overlay">
+<div class="box code">
+<pre><code class="javascript">
+$(function() {
+
+
+
+$f("manualPlaylist", "@PLAYER_SWF@", {
+	// configure the required plugin
+	playlist: [
+	
+				{
+					url: 'api:phnDOQp354A'					
+				},
+				{
+					url: 'api:FhZ_kTZoUlg'
+				}
+	],
+	plugins:  {
+		
+		controls: { autoHide: true },
+		youtube: {
+				url:'@MAIN_PLAYER_SWF@',
+					
+		}
+	},
+	clip: {
+		provider: 'youtube',
+		urlResolvers: 'youtube',
+		onBegin: function (clip) {
+				
+		}
+	},
+	log: loggingConfig
+	
+});
+
+});
+
+
+
+</code></pre>
+</div>
+</div>
+
+<a name="bwcheck"></a>
 <h2><em>Youtube with Bandwidth Check</em> Example</h2>
 
 <p>
@@ -426,7 +798,7 @@ $f("basic", "@PLAYER_SWF@", {
 
 <a 
 	href="http://video.flowplayer.org/skyandice.flv" 
-	style="display:block;width:425px;height:300px;float:left;" 
+	style="display:block;width:640px;height:385px;float:left;" 
 	id="bwcheck">
 	
 	<!-- splash image inside the container -->
@@ -447,7 +819,85 @@ $f("bwcheck", "@PLAYER_SWF@", {
 		controls: { autoHide: true },
 		youtube: {
 			url:'@MAIN_PLAYER_SWF@',
-			enableGdata: false
+			enableGdata: false,
+			bitratesOnStart: true,
+		},
+		content: {
+			url: '../flowplayer.content.swf',
+			top: 0,
+			left: 0,
+			width: 250 
+		},
+		bwcheck: {  
+			url: '../flowplayer.bwcheck.swf',   
+			netConnectionUrl: 'http://releases.flowplayer.org/swf/flowplayer-3.1.5.swf',
+			bitrateProfileName: 'YoutubeBitrateProfile',
+			streamSelectionStrategy: 'resizable',
+			maxContainerWidth: 854,
+			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
+				var content = $f().getPlugin('content');
+				
+				/*$("#bwcheck")
+							.width(parseInt(mappedBitrate.width))
+							.height(parseInt(mappedBitrate.height));	*/
+							
+				var info = "Chosen bitrate is: " + mappedBitrate.bitrate + "<br /> Video file served: " + streamName + "<br /> Old Video file served: " + oldStreamName;
+				content.setHtml(info);
+			},
+			// this method is called when the bandwidth check is done
+			onBwDone: function bwDoneInfo(mappedBitrate, detectedBitrate) {
+				var content = $f().getPlugin('content');
+				
+				/*$("#bwcheck")
+							.width(parseInt(mappedBitrate.width))
+							.height(parseInt(mappedBitrate.height));*/
+							
+				var info = "Your speed is: " + detectedBitrate + "<br /> Your chosen bitrate: " + mappedBitrate.bitrate + "<br /> Video file served: " + mappedBitrate.url;
+				content.setHtml(info);
+			}
+		}
+
+		
+	},
+	clip: {
+		provider: 'youtube',
+		urlResolvers: ['youtube','bwcheck'],
+		onBegin: function (clip) {
+				
+		}
+	},
+	log: loggingConfig
+	
+}).bwcheck('#javascriptPlugin',{seperator: " | "});
+</script>	
+
+</div>
+
+
+<div style="display:none;">
+<b>Choose Video Bitrate:</b> <br/>		
+<div id="javascriptPlugin" style="display:none;">
+	<a href="{bitrate}">{label}</a>
+</div>
+</div>
+
+<br clear="all" />
+
+<button rel="div.overlay:eq(3)" type="button">Configuration For This Example</button>
+
+<div class="overlay">
+<div class="box code">
+<pre><code class="javascript">
+$f("bwcheck", "@PLAYER_SWF@", {
+	playlist: bwPlaylist,
+	// configure the required plugin
+	plugins:  {
+		
+		controls: { autoHide: true },
+		youtube: {
+			url:'@MAIN_PLAYER_SWF@',
+			enableGdata: false,
+			bitratesOnStart: true,
 		},
 		content: {
 			url: '../flowplayer.content.swf',
@@ -489,58 +939,6 @@ $f("bwcheck", "@PLAYER_SWF@", {
 	clip: {
 		provider: 'youtube',
 		urlResolvers: ['youtube','bwcheck'],
-		onBegin: function (clip) {
-				
-		}
-	},
-	log: loggingConfig
-	
-});
-</script>	
-
-
-
-
-
-</div>
-
-<br clear="all" />
-
-<button rel="div.overlay:eq(1)" type="button">Configuration For This Example</button>
-
-<div class="overlay">
-<div class="box code">
-<pre><code class="javascript">
-
-
-var playlist =  [
-			       {
-						url: 'api:PmGiCFPUSM4'					
-				   }
-        		];
-        		
-$f("basic", "@PLAYER_SWF@", {
-	playlist: playlist,
-	// configure the required plugin
-	plugins:  {
-		
-		controls: { autoHide: true },
-		youtube: {
-					url:'@MAIN_PLAYER_SWF@',
-					enableGdata: true,
-					
-					onApiData: function(gdata) {	
-						showRelatedList(gdata, "#playlistContainer");
-					}
-					
-					
-		}
-
-		
-	},
-	clip: {
-		provider: 'youtube',
-		urlResolvers: 'youtube',
 		onBegin: function (clip) {
 				
 		}
@@ -832,12 +1230,10 @@ This can be useful for providing a playlist of related videos or used in conjuct
         </td>
     </tr>
 </table>
+
 </div>
 
 		
 	</div>
-
-			
 </body>
-
 </html>
