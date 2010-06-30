@@ -7,7 +7,7 @@
  * Released under the MIT License:
  * http://www.opensource.org/licenses/mit-license.php
  */
-package org.flowplayer.youtube {
+package org.flowplayer.youtube.events {
 
 	/**
 	 * @author danielr
