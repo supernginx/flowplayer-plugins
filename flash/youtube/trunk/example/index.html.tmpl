@@ -24,17 +24,18 @@
  
 	<link rel="stylesheet" type="text/css" href="http://static.flowplayer.org/css/global-0.25.css" />
 	<link rel="stylesheet" type="text/css" href="bwcheck.css" />
+
 	
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
 	<script src="http://static.flowplayer.org/js/flowplayer-3.2.2.min.js"></script>
 	<script src="http://static.flowplayer.org/js/flowplayer.playlist-3.0.8.min.js"></script> 
 	<script type="text/javascript" src="flowplayer.bwcheck-3.2.js"></script>
 	
 	<script type="text/javascript" src="http://cdn.jquerytools.org/1.2.3/full/jquery.tools.min.js"></script>
-	<script type="text/javascript" src="http://amazon.flowplayer.org/js/tools/tools.overlay.apple-1.0.1.min.js"></script>	
 	<script src="http://static.flowplayer.org/js/jquery.mousewheel.js"></script>
 	<link rel="stylesheet" type="text/css" href="http://amazon.flowplayer.org/css/playlist.css"/>
-		
+	
+	
 	
 	
 	
@@ -79,7 +80,6 @@ $(function() {
 		
 	// setup triggers
 	$("button[rel]").each(function(i) {
-			
 		$(this).overlay({
 
 			// common configuration for each overlay
@@ -156,7 +156,7 @@ var bwPlaylist =  [
         		];
 
 
-var loggingConfig = { level: 'debug', filter: 'org.flowplayer.controls.*, org.flowplayer.controller.*,org.flowplayer.bwcheck.*, org.flowplayer.cluster.*,org.flowplayer.rtmp.*, org.flowplayer.youtube.*' };
+var loggingConfig = { level: 'debug', filter: 'org.flowplayer.view.Screen, org.flowplayer.controller.*,org.flowplayer.bwcheck.*, org.flowplayer.cluster.*,org.flowplayer.rtmp.*, org.flowplayer.youtube.*' };
 
 
 </script>
@@ -265,9 +265,7 @@ $f("basic", "@PLAYER_SWF@", {
 
 <br clear="all" />
 
-<button rel="div.overlay:eq(0)" type="button">Configuration For This Example</button>
 
-<div class="overlay">
 <div class="box code">
 <pre><code class="javascript">
 
@@ -295,7 +293,7 @@ $f("basic", "@PLAYER_SWF@", {
 });
 </code></pre>
 </div>
-</div>
+
 
 
 
@@ -336,7 +334,7 @@ $f("basic", "@PLAYER_SWF@", {
         </td>
     </tr>
     <tr>
-        <td class="code">gdataApiFormat <div class="type">string</di></td>
+        <td class="code">gdataApiFormat <div class="type">string</div></td>
         <td class="code default">5</td>
         <td class="description">
         	The format number for the  Gdata feed.
@@ -419,9 +417,6 @@ $f("related", "@PLAYER_SWF@", {
 
 <br clear="all" />
 
-<button rel="div.overlay:eq(1)" type="button">Configuration For This Example</button>
-
-<div class="overlay">
 <div class="box code">
 <pre><code class="javascript">
 function showRelatedList(gdata, container)
@@ -493,7 +488,7 @@ $f("related", "@PLAYER_SWF@", {
 });
 </code></pre>
 </div>
-</div>
+
 
 <a name="playlist"></a>
 <h2><em>Youtube Video Playlist</em> Example</h2>
@@ -598,9 +593,7 @@ $f("playlist", "@PLAYER_SWF@", {
 
 <br clear="all" />
 
-<button rel="div.overlay:eq(2)" type="button">Configuration For This Example</button>
 
-<div class="overlay">
 <div class="box code">
 <pre><code class="javascript">
 $(function() {
@@ -670,7 +663,7 @@ $f("playlist", "@PLAYER_SWF@", {
 </div>
 </code></pre>
 </div>
-</div>
+
 
 
 <a name="manualVideoPlaylist"></a>
@@ -734,9 +727,7 @@ $f("manualVideoPlaylist", "@PLAYER_SWF@", {
 
 <br clear="all" />
 
-<button rel="div.overlay:eq(2)" type="button">Configuration For This Example</button>
 
-<div class="overlay">
 <div class="box code">
 <pre><code class="javascript">
 $(function() {
@@ -779,7 +770,7 @@ $f("manualPlaylist", "@PLAYER_SWF@", {
 
 </code></pre>
 </div>
-</div>
+
 
 <a name="bwcheck"></a>
 <h2><em>Youtube with Bandwidth Check</em> Example</h2>
@@ -806,7 +797,7 @@ $f("manualPlaylist", "@PLAYER_SWF@", {
 	
 </a>
 
-<div id="playlistContainer" style="float:left;width:190px;margin-left:50px; margin-top:0px;"></div>
+
 
 <!-- Flowplayer installation and configuration -->
 <script language="JavaScript">
@@ -834,6 +825,7 @@ $f("bwcheck", "@PLAYER_SWF@", {
 			bitrateProfileName: 'YoutubeBitrateProfile',
 			streamSelectionStrategy: 'resizable',
 			maxContainerWidth: 854,
+			rememberBitrate: true,
 			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
 				var content = $f().getPlugin('content');
 				
@@ -881,11 +873,11 @@ $f("bwcheck", "@PLAYER_SWF@", {
 </div>
 </div>
 
+
+
 <br clear="all" />
 
-<button rel="div.overlay:eq(3)" type="button">Configuration For This Example</button>
 
-<div class="overlay">
 <div class="box code">
 <pre><code class="javascript">
 $f("bwcheck", "@PLAYER_SWF@", {
@@ -911,6 +903,7 @@ $f("bwcheck", "@PLAYER_SWF@", {
 			bitrateProfileName: 'YoutubeBitrateProfile',
 			streamSelectionStrategy: 'resizable',
 			maxContainerWidth: 854,
+		    rememberBitrate: true,
 			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
 				var content = $f().getPlugin('content');
 				
@@ -948,7 +941,7 @@ $f("bwcheck", "@PLAYER_SWF@", {
 });
 </code></pre>
 </div>
-</div>
+
 
 
 
