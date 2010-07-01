@@ -129,7 +129,7 @@ package org.flowplayer.youtube {
          	return _youTubePlayer.getVolume();
         }
         
-        public function setVolume(inVolume:Number):void
+        public function set volume(inVolume:Number):void
         {
             _youTubePlayer.setVolume(inVolume);
         }
