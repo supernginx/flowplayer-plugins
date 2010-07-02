@@ -252,6 +252,21 @@
 			</zipfileset>
 		</zip>
 	</target>
+	
+	<target name="zip-with-examples" depends="prepare, build">
+		<zip destfile="${dist-dir}/${basename}-${version}.zip">
+			<zipfileset prefix="${basename}" dir=".">
+				<include name="LICENSE.txt" />
+				<include name="README.txt" />
+			</zipfileset>
+			<zipfileset prefix="${basename}" dir="${build-dir}">
+				<include name="${plugin-binary-versioned}" />
+				<include name="flowplayer.swf" />
+				<include name="flowplayer.controls.swf" />
+				<include name="example/*" />
+			</zipfileset>
+		</zip>
+	</target>
     
     <target name="write-zip-url">
 <echo file="${url-file}" append="true">&#60;a href="http://flowplayer-releases.s3.amazonaws.com/${basename}/${basename}-${version}.zip"&#62;${basename}-${version}.zip&#60;/a&#62; &#60;br /&#62;
