@@ -1103,6 +1103,48 @@ $f("quality", "@PLAYER_SWF@", {
 </div>
 
 
+<a name="api"></a>
+<h2>JavaScript API</h2>
+
+<h3>Methods</h3>
+
+<table class="listing">
+    <thead>
+		<tr>
+			<th class="col1">method</th>
+			<th class="col2">returns</th>
+			<th class="col3">description</th>
+		</tr>
+    </thead>
+    <tr>
+        <td class="code">
+				<strong>getBitrates</strong>
+        </td>
+        <td class="code type">array</td>
+        <td class="description">
+			Returns a list of available quality levels / bitrates for the video. 
+        </td>
+    </tr>
+    <tr>
+        <td class="code">
+            <strong>setPlaybackQuality</strong>(suggestedQuality)
+        </td>
+        <td class="code type"></td>
+        <td class="description">
+			Sets the playback video quality for the current video. Accepted levels are small, medium, large, hd720, hd1080. 
+        </td>
+    </tr>
+    <tr>
+        <td class="code">
+            <strong>getPlaybackQuality</strong>
+        </td>
+        <td class="code type">string</td>
+        <td class="description">
+			Gets the playback video quality for the current video. Levels are small, medium, large, hd720, hd1080. 
+        </td>
+    </tr>
+</table>
+
 
 <h3>Events</h3>
 
