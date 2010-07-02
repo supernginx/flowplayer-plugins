@@ -121,7 +121,6 @@
 
 			wrap = $(wrap);
 			if (self.getClip().bitrates.length > 0) {
-
 				if (!template) template = wrap.is(":empty") ? opts.template : wrap.html();
 				wrap.empty();
 
@@ -131,8 +130,10 @@
 			}
 		}
 
-		self.onBeforeBegin(function(clip) {
-			showBitrateList();
+	
+		
+		self.onStart(function(clip) {
+			 showBitrateList();
 		});
 		
 		/*self.getPlugin("bwcheck").onStreamSwitch(function(mappedBitrate, streamName, oldStreamName) {

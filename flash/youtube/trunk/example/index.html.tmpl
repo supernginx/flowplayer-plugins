@@ -155,6 +155,12 @@ var bwPlaylist =  [
 				   }
         		];
 
+var qPlaylist =  [
+			       {
+						url: 'api:phnDOQp354A'					
+				   }
+        		];
+
 
 var loggingConfig = { level: 'debug', filter: 'org.flowplayer.view.Screen, org.flowplayer.controller.*,org.flowplayer.bwcheck.*, org.flowplayer.cluster.*,org.flowplayer.rtmp.*, org.flowplayer.youtube.*' };
 
@@ -183,25 +189,29 @@ var loggingConfig = { level: 'debug', filter: 'org.flowplayer.view.Screen, org.f
     The Youtube Flowplayer plugin uses the Youtube AS3 API to play Youtube videos directly within Flowplayer.   
 </p>
 <p>
-	The plugin obtains a list of quality levels to be used for a bitrates config array to be used with the bwcheck plugin. 
+	The plugin can obtain a list of quality levels to be used for a bitrates config array to be used with the bwcheck plugin. 
+	The plugin can also be used without the bwcheck plugin to display a list of youtube video quality levels to select manually. 
 </p>
 
 <p>
-	The plugin also obtains a list of related videos from the API feed and configures a related config array to be used with the related videos plugin. 
+	The plugin also obtains a list of related videos from the Gdata API feed and configures a related config array to be used with the related videos plugin. The Gdata information can also be obtained from the event onApiData. 
 </p>
 
+<p>
+	The plugin works with manual playlists aswell in combination with the flowplayer playlist javascript api. 
+</p>
 
 <h2>Features</h2>
 
 <ul>
 	<li>
-		 Support for Bandwidth Checking and Related Videos features.
+		 Support for Bandwidth Checking and bitrate selection, Video Quality Selection and Related Videos features.
 	</li>
 	<li>
-		 Provides an event for obtaining detailed data for the video to be used for customised features via the javascript API.
+		 Provides events for obtaining detailed data for the video to be used for customised features aswell as quality level changes via the javascript API.
 	</li>
 	<li>
-		 Full control of the player controls including fullscreen.
+		 Full control of the player controls including fullscreen with some extra api methods exposed for changing / obtaining bitrate quality levels. 
 	</li>
 </ul>
 
@@ -354,6 +364,21 @@ $f("basic", "@PLAYER_SWF@", {
 			When enabled the Gdata feed will be collected and video information will be returned via the onApiData event. This will collect information like related videos, category, tags, title, description etc.
         </td>
     </tr>
+    <tr>
+        <td class="code">bitratesOnStart <div class="type">boolean</div></td>
+        <td class="code default">false</td>
+        <td class="description">
+			This setting will tell the plugin to obtain the quality levels / bitrates for the video before startup. 
+			This is required when used in combination with the bwcheck plugin to fill the bitrates list dynamically, this is required as the Youtube API does not expose bitrates before playback or via their data API.  
+        </td>
+    </tr>
+    <tr>
+        <td class="code">videoFormats <div class="type">array</div></td>
+        <td class="code default"></td>
+        <td class="description">
+			Obtain the preset youtube video format information. 
+        </td>
+    </tr>
 </table>
 
 <a name="related"></a>
@@ -495,7 +520,7 @@ $f("related", "@PLAYER_SWF@", {
 
 
 <p>
-    This example demonstrates using the flowplayer playlist plugin with youtube videos.   
+    This example demonstrates using the flowplayer javascript playlist plugin with youtube videos.   
 </p>
 
 
@@ -628,39 +653,7 @@ $f("playlist", "@PLAYER_SWF@", {
 
 });
 
-<div id="playlistManualContainer" style="float:left;width:190px;margin-left:50px; margin-top:0px;">
-<br/><b>Youtube Videos Playlist:</b><br/>
-<a class="go up"></a>
-<div class="playlist">
-<div class="clips low" id="manualPlaylist">
-<a href="api:E-QV4n-z-9k" class="first">Move D - Eastman<br/><em>7 min</em></a>
-<a href="api:FhZ_kTZoUlg" >Move D - Cymbelin (WARP) 1996<br/><em>7 min</em></a>
-<a href="api:g6ER0ESbJn0" >Move D - Heidelberg Gals<br/><em>10 min</em></a>
-<a href="api:BxvBk_dSrKQ" >Move D - Jus House<br/><em>5 min</em></a>
-<a href="api:gTa_aIeg2gE" >Move D - October in Moscow<br/><em>7 min</em></a>
-<a href="api:iXo-_TzM0A4" >Surgeon - Electric Chicken<br/><em>5 min</em></a>
-<a href="api:myPwJIw45s4" >Move-D - Drøne<br/><em>10 min</em></a>
-<a href="api:-YKUX8fo6rY" >Air Liquide - Psy 9<br/><em>11 min</em></a>
-<a href="api:AR2UPJ-JCRk" >sctv 03 - 09 move d: 77 sunset strip<br/><em>7 min</em></a>
-<a href="api:qZRZzyamH54" >Move D - Amazing Discoveries<br/><em>8 min</em></a>
-<a href="api:dlKL___rBAM" >Night Music: "Soft Winds/Lux Aurumque"<br/><em>8 min</em></a>
-<a href="api:VtsUqOdsZuY" >Nuron - Mirage<br/><em>6 min</em></a>
-<a href="api:wQucHFex91E" >Bergheim 34 ram move d - d man brucken 7 remix (Random Access Memory)<br/><em>6 min</em></a>
-<a href="api:ifhcWeXIOZs" >Grace Jones - Walking in the Rain<br/><em>4 min</em></a>
-<a href="api:NGS--kKQXH4" >Mustt Mustt-Nusrat Fateh Ali Khan<br/><em>4 min</em></a>
-<a href="api:dC8YKJUBk0c" >space night earthviews 4 Part2<br/><em>10 min</em></a>
-<a href="api:yXj0dF7LAyE" >Imogen Heap - Canvas<br/><em>5 min</em></a>
-<a href="api:XXZbo_0LIdQ" >SPACE NIGHT - earthviews IV (part 3) move d. - amazing discoveries<br/><em>8 min</em></a>
-<a href="api:yeultXx_FNE" >Beyond The Machine : Move D<br/><em>5 min</em></a><a href="api:_LjnVIilTb0" >[- MINIMAL -] Kunststoff - Unleashed<br/><em>10 min</em></a>
-<a href="api:IoEK_E3z_Sc" >"eu sei que vou te amar" -Steinar Raknes - "Tangos, ballads & more"<br/><em>2 min</em></a>
-<a href="api:TNi99utfX-w" >Sensorama - Echtzeit<br/><em>6 min</em></a>
-<a href="api:WWg2zFGjLl8" >Move D - Like I was King (Black label mix) [Compost Black label]<br/><em>6 min</em></a>
-<a href="api:YmT75-CJhdA" >Balil - Parasight<br/><em>8 min</em></a>
-<a href="api:UYUjbVPrEDI" >Massiv feat. Beirut - Weil wir der Wahrheit nicht ins Auge sehen - Kopf oder Zahl Soundtrack (OST)<br/><em>3 min</em></a>
-</div>
-</div>
-<a class="go down"></a>
-</div>
+
 </code></pre>
 </div>
 
@@ -671,7 +664,7 @@ $f("playlist", "@PLAYER_SWF@", {
 
 
 <p>
-    This example demonstrates using the flowplayer playlist config with youtube videos.   
+    This example demonstrates using a manual playlist config with youtube videos.   
 </p>
 
 
@@ -776,7 +769,8 @@ $f("manualPlaylist", "@PLAYER_SWF@", {
 <h2><em>Youtube with Bandwidth Check</em> Example</h2>
 
 <p>
-    This example demonstrates a basic setup to play the video. 
+    This example demonstrates integration with the bandwidth check plugin to manage the video bitrate playback. 
+    The bwcheck javascript plugin is also used to display the video bitrates for manual selection. 
 </p>
 
 
@@ -824,14 +818,11 @@ $f("bwcheck", "@PLAYER_SWF@", {
 			netConnectionUrl: 'http://releases.flowplayer.org/swf/flowplayer-3.1.5.swf',
 			bitrateProfileName: 'YoutubeBitrateProfile',
 			streamSelectionStrategy: 'resizable',
-			maxContainerWidth: 854,
+			maxContainerWidth: 1920,
 			rememberBitrate: true,
 			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
 				var content = $f().getPlugin('content');
-				
-				/*$("#bwcheck")
-							.width(parseInt(mappedBitrate.width))
-							.height(parseInt(mappedBitrate.height));	*/
+	
 							
 				var info = "Chosen bitrate is: " + mappedBitrate.bitrate + "<br /> Video file served: " + streamName + "<br /> Old Video file served: " + oldStreamName;
 				content.setHtml(info);
@@ -839,10 +830,7 @@ $f("bwcheck", "@PLAYER_SWF@", {
 			// this method is called when the bandwidth check is done
 			onBwDone: function bwDoneInfo(mappedBitrate, detectedBitrate) {
 				var content = $f().getPlugin('content');
-				
-				/*$("#bwcheck")
-							.width(parseInt(mappedBitrate.width))
-							.height(parseInt(mappedBitrate.height));*/
+	
 							
 				var info = "Your speed is: " + detectedBitrate + "<br /> Your chosen bitrate: " + mappedBitrate.bitrate + "<br /> Video file served: " + mappedBitrate.url;
 				content.setHtml(info);
@@ -866,7 +854,7 @@ $f("bwcheck", "@PLAYER_SWF@", {
 </div>
 
 
-<div style="display:none;">
+<div style="display:none; float:left;">
 <b>Choose Video Bitrate:</b> <br/>		
 <div id="javascriptPlugin" style="display:none;">
 	<a href="{bitrate}">{label}</a>
@@ -902,14 +890,12 @@ $f("bwcheck", "@PLAYER_SWF@", {
 			netConnectionUrl: 'http://releases.flowplayer.org/swf/flowplayer-3.1.5.swf',
 			bitrateProfileName: 'YoutubeBitrateProfile',
 			streamSelectionStrategy: 'resizable',
-			maxContainerWidth: 854,
+			maxContainerWidth: 1920,
 		    rememberBitrate: true,
 			onStreamSwitch: function(mappedBitrate, streamName, oldStreamName) {
 				var content = $f().getPlugin('content');
 				
-				$("#bwcheck")
-							.width(parseInt(mappedBitrate.width))
-							.height(parseInt(mappedBitrate.height));	
+		
 							
 				var info = "Chosen bitrate is: " + mappedBitrate.bitrate + "<br /> Video file served: " + streamName + "<br /> Old Video file served: " + oldStreamName;
 				content.setHtml(info);
@@ -918,10 +904,6 @@ $f("bwcheck", "@PLAYER_SWF@", {
 			onBwDone: function bwDoneInfo(mappedBitrate, detectedBitrate) {
 				var content = $f().getPlugin('content');
 				
-				$("#bwcheck")
-							.width(parseInt(mappedBitrate.width))
-							.height(parseInt(mappedBitrate.height));
-							
 				var info = "Your speed is: " + detectedBitrate + "<br /> Your chosen bitrate: " + mappedBitrate.bitrate + "<br /> Video file served: " + mappedBitrate.url;
 				content.setHtml(info);
 			}
@@ -943,6 +925,183 @@ $f("bwcheck", "@PLAYER_SWF@", {
 </div>
 
 
+<a name="quality"></a>
+<h2><em>Youtube with Video Quality Selection</em> Example</h2>
+
+<p>
+    This example demonstrates video quality / bitrate selection without the use of the bwcheck plugin. 
+    It will obtain the available quality levels / bitrates for the video on startup, and generate a selection to provide manual quality selection. 
+    The onVideoQualityChange event is used to provide feedback of the quality change. 
+</p>
+
+
+
+<div style="width:900px;">
+   
+
+<!-- player container-->
+
+
+<a 
+	href="http://video.flowplayer.org/skyandice.flv" 
+	style="display:block;width:640px;height:385px;float:left;" 
+	id="quality">
+	
+	<!-- splash image inside the container -->
+	<img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" />
+	
+</a>
+
+
+
+<!-- Flowplayer installation and configuration -->
+<script language="JavaScript">
+
+$f("quality", "@PLAYER_SWF@", {
+	playlist: qPlaylist,
+	// configure the required plugin
+	plugins:  {
+		
+		controls: { autoHide: true },
+		youtube: {
+			url:'@MAIN_PLAYER_SWF@',
+			bitratesOnStart: false,
+			onVideoQualityChange: function(level, videoFormat) {
+				var content = $f().getPlugin('content');
+				var info = "Chosen bitrate is: " + videoFormat.bitrate + "<br /> Video Quality Served: " + level + "<br />";
+				content.setHtml(info);
+			},
+			
+		},
+		content: {
+			url: '../flowplayer.content.swf',
+			top: 0,
+			left: 0,
+			width: 250 
+		}
+		
+	},
+	clip: {
+		provider: 'youtube',
+		urlResolvers: 'youtube',
+		onStart: function(clip) {
+
+            
+            var bitrates = $f().getPlugin("youtube").getBitrates();
+
+            	$.each(bitrates, function() {
+         
+            		var el = $("<a> " + this.label + "(" + this.format + ") </a> | ");
+            		el.attr("index",this.format);
+            		el.attr("href",this.bitrate);
+            		el.addClass('bitrate-active');
+            		el.click(function() {
+						el.removeClass('bitrate-active');
+
+						$("#qualitySelection a").removeClass('bitrate-selected').addClass('bitrate-active');
+						el.addClass('bitrate-selected');
+						
+						$f().getPlugin("youtube").setPlaybackQuality($(this).attr("index"));
+	
+						return false;
+					});
+            		
+            		
+            		$("#qualitySelection").append(el);
+            	});
+            	
+            
+        }
+	},
+	log: loggingConfig
+	
+});
+
+
+</script>	
+
+
+</div>
+
+<div style="float:left;">
+<b>Choose Video Bitrate:</b> <br/>		
+<div id="qualitySelection">
+
+</div>
+</div>
+
+
+
+
+<br clear="all" />
+
+
+<div class="box code">
+<pre><code class="javascript">
+
+$f("quality", "@PLAYER_SWF@", {
+	playlist: qPlaylist,
+	// configure the required plugin
+	plugins:  {
+		
+		controls: { autoHide: true },
+		youtube: {
+			url:'@MAIN_PLAYER_SWF@',
+			bitratesOnStart: false,
+			onVideoQualityChange: function(level, videoFormat) {
+				var content = $f().getPlugin('content');
+				var info = "Chosen bitrate is: " + videoFormat.bitrate + "<br /> Video Quality Served: " + level + "<br />";
+				content.setHtml(info);
+			},
+			
+		},
+		content: {
+			url: '../flowplayer.content.swf',
+			top: 0,
+			left: 0,
+			width: 250 
+		}
+		
+	},
+	clip: {
+		provider: 'youtube',
+		urlResolvers: 'youtube',
+		onStart: function(clip) {
+
+            
+            var bitrates = $f().getPlugin("youtube").getBitrates();
+
+            	$.each(bitrates, function() {
+         
+            		var el = $("<a> " + this.label + "(" + this.format + ") </a> | ");
+            		el.attr("index",this.format);
+            		el.attr("href",this.bitrate);
+            		el.addClass('bitrate-active');
+            		el.click(function() {
+						el.removeClass('bitrate-active');
+
+						$("#qualitySelection a").removeClass('bitrate-selected').addClass('bitrate-active');
+						el.addClass('bitrate-selected');
+						
+						$f().getPlugin("youtube").setPlaybackQuality($(this).attr("index"));
+	
+						return false;
+					});
+            		
+            		
+            		$("#qualitySelection").append(el);
+            	});
+            	
+            
+        }
+	},
+	log: loggingConfig
+	
+});
+
+</code></pre>
+</div>
+
 
 
 <h3>Events</h3>
@@ -962,6 +1121,17 @@ $f("bwcheck", "@PLAYER_SWF@", {
 
 				<ul>
 					<li><samp>gdata</samp> the gdata object with information of the video. </li>
+				</ul>
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>onVideoQualityChange()</em></td>
+        <td class="description">
+				Fires when the video playback quality has changed. The callback is fed with the following arguments:
+
+				<ul>
+					<li><samp>level</samp> the youtube video quality level. </li>
+					<li><samp>videoFormat</samp> the video format object for this level which includes the bitrate, dimensions etc. </li>
 				</ul>
         </td>
     </tr>
@@ -1114,6 +1284,81 @@ The bitrates property is to be used in conjuncton with the bandwidth check plugi
         <td class="code"><em>url</em></td>
         <td class="description">
 				The video url.
+        </td>
+    </tr>
+</table>
+
+
+<h3>Video Formats</h3>
+
+<p>The video formats, is an array of preset youtube video quality format objects with the youtube levels small, medium, large, hd720, hd1080 used as keys.
+</p>
+
+<table class="listing">
+	<thead>
+		<tr>
+			<th nowrap>Property</th>
+			<th style="width:450px">Description</th>
+		</tr>
+	</thead>
+	<tr>
+        <td class="code"><em>fmt</em></td>
+        <td class="description">
+				The video format code.
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>label</em></td>
+        <td class="description">
+				The label of the bitrate option provided by a static map of bitrate / quality  levels.
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>shortlabel</em></td>
+        <td class="description">
+				The video format code. 
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>vq</em></td>
+        <td class="description">
+				The video quality code.  
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>fmt_map</em></td>
+        <td class="description">
+				The video format map ie 22/2000000/9/0/115 , where 22 is the format code, 2000000 is the bitrate and 9/0/1115 is the minimum flash version support for the video. 
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>type</em></td>
+        <td class="description">
+				The video mimetype.  
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>qid</em></td>
+        <td class="description">
+				The video quality id.  
+        </td>
+    </tr>
+	<tr>
+        <td class="code"><em>width</em></td>
+        <td class="description">
+				The video width.
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>height</em></td>
+        <td class="description">
+				The video height.
+        </td>
+    </tr>
+    <tr>
+        <td class="code"><em>bitrate</em></td>
+        <td class="description">
+				The video bitrate.
         </td>
     </tr>
 </table>
