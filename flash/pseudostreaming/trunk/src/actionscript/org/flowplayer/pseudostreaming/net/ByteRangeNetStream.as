@@ -28,6 +28,9 @@ package org.flowplayer.pseudostreaming.net
 	import org.httpclient.events.HttpStatusEvent;
 	import org.httpclient.http.Get;
 	
+	import org.flowplayer.pseudostreaming.DefaultSeekDataStore;
+
+	
 	
 	public class ByteRangeNetStream extends NetStream
 	{
@@ -37,6 +40,9 @@ package org.flowplayer.pseudostreaming.net
 		private var _eTag:String;
 		private var _bytesTotal:uint = 0;
 		private var _bytesLoaded:uint = 0;
+		private var _seekTime:uint = 0;
+		private var _currentURL:String;
+		private var _seekDataStore:DefaultSeekDataStore;
 		protected var log:Log = new Log(this);
 		
 		public function ByteRangeNetStream(connection:NetConnection, peerID:String="connectToFMS")
@@ -66,6 +72,7 @@ package org.flowplayer.pseudostreaming.net
 		
 		private function onComplete(event:HttpRequestEvent):void {
 			//close();
+			
 		}
 		
 		private function onClose(event:Event):void {
@@ -81,6 +88,7 @@ package org.flowplayer.pseudostreaming.net
 				case 200:
 				default:
 					_eTag = event.response.header.getValue("ETag");
+					if (!_bytesTotal) _bytesTotal = event.response.contentLength;
 					_bytesTotal = event.response.contentLength;
 					_httpHeader = event.response.header;
 				break;
@@ -126,23 +134,35 @@ package org.flowplayer.pseudostreaming.net
 			dispatchEvent(new NetStatusEvent(NetStatusEvent.NET_STATUS,false,false, {code:"NetStream.Play.Start", level:"status"})); 
 		
 			var uri:URI = new URI(parameters[0]);
+			_currentURL = parameters[0];
 			var request:HttpRequest = new Get();
 			
-			if (parameters[1]) {
+			
+			if (parameters[1] && parameters[2]) {
+				
+				_seekTime = parameters[1];
+				_seekDataStore = parameters[2];
+				
+				_bytesLoaded = getByteRange(_seekTime);
 				
 				request.addHeader("If-Range", _eTag);	
-				request.addHeader("Range", "bytes="+parameters[1]+"-");	
+				request.addHeader("Range", "bytes="+_bytesLoaded+"-");	
 				
 				this.appendBytesAction(NetStreamAppendBytesAction.RESET_SEEK);
 				
 				var bytes:ByteArray = new ByteArray();
 				appendBytes(bytes);
-				
+			
 				dispatchEvent(new NetStatusEvent(NetStatusEvent.NET_STATUS,false,false, {code:"NetStream.Play.Seek", level:"status"})); 
 				
 			}	
-		
+			
+	
 			_client.request(uri, request);
+		}
+		
+		private function getByteRange(start:Number):Number {
+			return  _seekDataStore.getQueryStringStartValue(start);
 		}
 		
 		override public function close():void
@@ -152,11 +172,21 @@ package org.flowplayer.pseudostreaming.net
 			dispatchEvent(new NetStatusEvent(NetStatusEvent.NET_STATUS,false,false, {code:"NetStream.Play.Stop", level:"status"})); 
 			super.close();
 		}
+		
+		override public function seek(seconds:Number):void {
+			play(_currentURL, seconds, _seekDataStore);	
+		}
 
 		private function onData(event:HttpDataEvent):void {				
 			var bytes:ByteArray = event.bytes; 
 			_bytesLoaded += bytes.length;
+			
+		
 			this.appendBytes(bytes);
+		}
+		
+		override public function get time():Number {
+			return _seekTime + super.time;	
 		}
 		
 	}
