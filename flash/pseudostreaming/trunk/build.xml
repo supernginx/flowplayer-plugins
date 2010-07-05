@@ -2,10 +2,14 @@
 
 	<property file="${user.home}/plugin.properties" />
 	<property file="build.properties" />
-	
 	<property file="${devkit-dir}/plugin-build.properties" />
-	<import file="${devkit-dir}/plugin-build.xml"/>
+	
 	<property name="flowplayer_lib" value="${devkit-dir}/flowplayer.swc" />
+	<property name="extra-sources" value="../core/lib/corelib/src" />
+	<property name="plugin-libs" value="lib/as3crypto-1_3_patched.swc" />
+	
+	
+	<import file="${devkit-dir}/plugin-build.xml"/>
 	
 	<property name="basename" value="flowplayer.pseudostreaming" />
     <property name="releasedir" value="${basename}" />
