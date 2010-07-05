@@ -89,7 +89,7 @@ package org.flowplayer.pseudostreaming.net
 				default:
 					_eTag = event.response.header.getValue("ETag");
 					if (!_bytesTotal) _bytesTotal = event.response.contentLength;
-					_bytesTotal = event.response.contentLength;
+					//_bytesTotal = event.response.contentLength;
 					_httpHeader = event.response.header;
 				break;
 			}
