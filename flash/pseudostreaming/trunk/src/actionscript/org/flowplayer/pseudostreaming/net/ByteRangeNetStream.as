@@ -14,6 +14,7 @@ package org.flowplayer.pseudostreaming.net
 	import flash.net.URLRequestHeader;
 	import flash.net.URLStream;
 	import flash.utils.ByteArray;
+	import flash.system.Security;
 	
 	import org.flowplayer.util.Log;
 	
@@ -117,6 +118,10 @@ package org.flowplayer.pseudostreaming.net
 			} catch (e:Error) {
 				
 			}
+			
+			Security.allowInsecureDomain("*");
+			Security.allowDomain("*");
+			
 			
 			_client = new HttpClient();
 			var httplistener:HttpListener = new HttpListener();
