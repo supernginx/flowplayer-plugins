@@ -1,5 +1,9 @@
 Version history:
 
+3.2.3
+-----
+- seeking using HTTP byte range requests
+
 3.2.2
 -----
 - fixed duration after seek
