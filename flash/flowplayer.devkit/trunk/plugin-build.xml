@@ -92,7 +92,7 @@
 				<arg line="-keep-as3-metadata=Value,External" />
 				<arg line="'${src-as}/@{plugin-main-class}'" />
 				<arg line="-output '${build-dir}/@{out}'" />
-                <arg line="-target-player '10.0.0'" />
+                <arg line="-target-player '10.1.0'" />
                 <arg line="-incremental=true"/>
 			</exec>
 		</sequential>
