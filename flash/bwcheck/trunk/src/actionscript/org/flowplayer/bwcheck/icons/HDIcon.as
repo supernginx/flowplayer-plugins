@@ -23,21 +23,28 @@ package org.flowplayer.bwcheck.icons {
         }
         
         override protected function onMouseDown(event:MouseEvent):void {
-        	super.onMouseDown(event);
+        	
 			
 			var hdText:DisplayObject = face.getChildByName("hdText");
 			
-			toggleStateOn = (toggleStateOn ? false : true);
+			this.toggle = (toggleStateOn ? false : true);
+			
+			log.debug(this.toggle.toString());
+			//toggle = toggleStateOn;
 			
 			if (hdText && hdText is MovieClip) {
                 log.debug("calling gotoAndStop(10) on " + face);
                 MovieClip(face).gotoAndStop(toggleStateOn ? 2 : 1);
             }
+            
+            super.onMouseDown(event);
 		}
 		
 		override protected function showMouseOutState(clip:DisplayObjectContainer):void {
 			
 			super.showMouseOutState(clip);
+			
+			//toggle = toggleStateOn;
 			
 			var hdText:DisplayObject = clip.getChildByName("hdText");
 			
@@ -46,5 +53,24 @@ package org.flowplayer.bwcheck.icons {
                 MovieClip(hdText).gotoAndStop(toggleStateOn ? 2 : 1);
             }
         }
+        
+        public function set toggle(toggle:Boolean):void {
+        	
+        	/*var hdText:DisplayObject = face.getChildByName("hdText");
+        	
+        	toggleStateOn = toggle;
+        	
+        	if (hdText && hdText is MovieClip) {
+                log.debug("calling gotoAndStop(10) on " + face);
+                MovieClip(face).gotoAndStop(toggleStateOn ? 2 : 1);
+            }*/
+            toggleStateOn = toggle;
+            
+        }
+        
+        public function get toggle():Boolean {
+        	return toggleStateOn;
+        }
+        
     }
 }

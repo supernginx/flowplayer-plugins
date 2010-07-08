@@ -12,10 +12,12 @@ package org.flowplayer.bwcheck {
         private var _player:Flowplayer;
         private var _config:Config;
         private var _hdIcon:HDIcon;
+        private var _hdOn:Boolean;
 
-        public function IconBar(config:Config, player:Flowplayer) {
+        public function IconBar(config:Config, player:Flowplayer, hdOn:Boolean = false) {
             _config = config;
             _player = player;
+            _hdOn = hdOn;
             createIcons();
         }
 
@@ -39,10 +41,9 @@ package org.flowplayer.bwcheck {
         }
 
         private function createIcons():void {
-            //if (_config.hd) {
-                _hdIcon = new HDIcon(_config.iconButtons, _player.animationEngine);
-                addChild(_hdIcon);
-            //}
+            _hdIcon = new HDIcon(_config.iconButtons, _player.animationEngine);
+            _hdIcon.toggle = _hdOn;
+            addChild(_hdIcon);
 
             var props:DisplayProperties = _config.iconDisplayProperties;
             props.setDisplayObject(this);
@@ -53,15 +54,16 @@ package org.flowplayer.bwcheck {
             _player.addToPanel(this, props);
         }
 
-        private function addIconClickListener(icon:DisplayObject, listener:Function):void {
+        private function addIconClickListener(icon:DisplayObject, listener:Function, ...args):void {
             icon.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void {
-                listener();
+                listener(args);
             });
         }
 
         public function onHd(listener:Function):void {
+        	log.error("FUCK" + _hdIcon.toggle.toString());
 			if ( _hdIcon )
-            	addIconClickListener(_hdIcon, listener);
+            	addIconClickListener(_hdIcon, listener, _hdIcon.toggle);
         }
 
     }
