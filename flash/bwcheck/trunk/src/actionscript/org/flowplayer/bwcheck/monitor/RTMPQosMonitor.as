@@ -61,6 +61,7 @@ package org.flowplayer.bwcheck.monitor
 		private var bandwidthlimit:int = -1;
 		private var _bitrateStorage:BitrateStorage;
 		private var _bitrateProperties:Array;
+		private var bandwidthTooLowChecked:Boolean;
 		
 		public function RTMPQosMonitor(config:Config)
 		{
@@ -297,18 +298,30 @@ package org.flowplayer.bwcheck.monitor
 
             var bufferBelowPreferred:Boolean = _netStream.bufferLength < _preferredBufferLength;
             var dropFrameRateTooLarge:Boolean = dropFrameRate > _netStream.currentFPS*0.25;
-            var bandwidthTooLow:Boolean = _maxBandwidth < getBitrateProp(_curStreamID).bitrate && _maxBandwidth != 0;
+            var bandwidthTooLow:Boolean = _maxBandwidth < getBitrateProp(_curStreamID).bitrate && _maxBandwidth != 0 && !bandwidthTooLowChecked;
 
             log.debug("bufferBelowPreferred? " + bufferBelowPreferred + ", bandwidthTooLow? " + bandwidthTooLow + ", dropFrameRateTooLarge? " + dropFrameRateTooLarge);
             if( bufferBelowPreferred || bandwidthTooLow || bandwidthTooLow) {
 
 				//start with lowest stream
 				var nextStreamID:int = bitratesLength;
-
-				if(_netStream.bufferLength < _preferredBufferLength || (_maxBandwidth < getBitrateProp(_curStreamID).bitrate)) {
-
-
+				
+				if (_maxBandwidth < getBitrateProp(_curStreamID).bitrate && !bandwidthTooLowChecked) {
+					bandwidthTooLowChecked = true;
+					
 					nextStreamID = getStreamID();
+					_maxRate = getBitrateProp(nextStreamID).bitrate;
+					if(_netStream.bufferLength > _curBufferTime && _curBufferTime != _preferredBufferLength)
+					{
+						_curBufferTime =  _preferredBufferLength;
+						//log.debug("setting buffer time to "+_curBufferTime);
+						_netStream.bufferTime = _curBufferTime;
+					}
+					
+				} if(_netStream.bufferLength < _preferredBufferLength) {
+					bandwidthTooLowChecked = false;
+					_maxRate = getBitrateProp(0).bitrate;
+					
 					//log.error(nextStreamID + " " + _curStreamID);
 					//check if stream is lower
 					/*if( nextStreamID > _curStreamID) {
@@ -331,7 +344,7 @@ package org.flowplayer.bwcheck.monitor
 					// init lock timer and flag lock rate
                     //log.debug("_curStreamID " + _curStreamID);
 					_droppedFramesLockRate = getBitrateProp(_curStreamID).bitrate;
-
+					//bandwidthTooLowChecked = false;
 					if((droppedFramesTimer.currentCount < _config.droppedFramesLockLimit)  && !droppedFramesTimer.running) {
 						droppedFramesTimer.start();
 						log.debug("Activating lock to prevent switching to " + _droppedFramesLockRate + " | Offense Number " + droppedFramesTimer.currentCount);
