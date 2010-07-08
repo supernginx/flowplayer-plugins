@@ -42,10 +42,14 @@ package org.flowplayer.bwcheck.detect.servers
             return true;
         }
 
-        public function onBWDone(kbitDown:int, deltaDown:int, deltaTime:int, latency:int):void
+        public function onBWDone(...args):void
 		{
             log.debug("onBWDone, " + info);
 			var obj:Object = new Object();
+			var kbitDown:int = args[0];
+			var deltaDown:int = args[1];
+			var deltaTime:int = args[2]; 
+			var latency:int = args[3];
 			obj.kbitDown = kbitDown;
 			obj.delatDown = deltaDown;
 			obj.deltaTime = deltaTime;

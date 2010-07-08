@@ -21,6 +21,7 @@ package org.flowplayer.bwcheck.model {
         public var isDefault:Boolean;
         public var index:int;
         public var label:String;
+        public var hd:Boolean;
 
         public function toString():String {
             return url + ", " + bitrate;
