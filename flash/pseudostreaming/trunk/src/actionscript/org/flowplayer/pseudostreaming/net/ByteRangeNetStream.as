@@ -15,6 +15,7 @@ package org.flowplayer.pseudostreaming.net
 	import flash.net.URLStream;
 	import flash.utils.ByteArray;
 	import flash.system.Security;
+	import flash.utils.setTimeout;
 	
 	import org.flowplayer.util.Log;
 	
@@ -45,6 +46,7 @@ package org.flowplayer.pseudostreaming.net
 		private var _currentURL:String;
 		private var _seekDataStore:DefaultSeekDataStore;
 		protected var log:Log = new Log(this);
+		private var _ended:Boolean;
 		
 		public function ByteRangeNetStream(connection:NetConnection, peerID:String="connectToFMS")
 		{
@@ -72,12 +74,24 @@ package org.flowplayer.pseudostreaming.net
 		}
 		
 		private function onComplete(event:HttpRequestEvent):void {
-			//close();
+	
 			
 		}
 		
+		private function streamComplete():void {
+			_seekTime = _seekTime + 1;
+			dispatchEvent(new NetStatusEvent(NetStatusEvent.NET_STATUS,false,false, {code:"NetStream.Play.Stop", level:"status"})); 
+			_ended = true;
+			this.appendBytesAction(NetStreamAppendBytesAction.END_SEQUENCE);
+		}
+		
 		private function onClose(event:Event):void {
-			//close();
+	
+			//send complete status once the buffer length is finished
+			if (_bytesLoaded >= _bytesTotal) {
+				setTimeout(streamComplete, this.bufferLength * 1000);
+			}
+			
 		}
 		
 		private function onStatus(event:HttpStatusEvent):void {
@@ -90,7 +104,6 @@ package org.flowplayer.pseudostreaming.net
 				default:
 					_eTag = event.response.header.getValue("ETag");
 					if (!_bytesTotal) _bytesTotal = event.response.contentLength;
-					//_bytesTotal = event.response.contentLength;
 					_httpHeader = event.response.header;
 				break;
 			}
@@ -130,7 +143,7 @@ package org.flowplayer.pseudostreaming.net
 			_client.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
 			_client.addEventListener(HttpDataEvent.DATA, onData);
 			_client.addEventListener(HttpStatusEvent.STATUS, onStatus);
-			_client.addEventListener(HttpRequestEvent.COMPLETE, onComplete);
+			//_client.addEventListener(HttpRequestEvent.COMPLETE, onComplete);
 			_client.addEventListener(Event.CLOSE, onClose);
 			_client.addEventListener(HttpErrorEvent.ERROR, onError);
 			_client.addEventListener(HttpErrorEvent.TIMEOUT_ERROR, onTimeoutError);
@@ -142,12 +155,12 @@ package org.flowplayer.pseudostreaming.net
 			_currentURL = parameters[0];
 			var request:HttpRequest = new Get();
 			
-			
-			if (parameters[1] && parameters[2]) {
+			_ended = false;
+			if (Number(parameters[1]) && DefaultSeekDataStore(parameters[2])) {
 				
-				_seekTime = parameters[1];
-				_seekDataStore = parameters[2];
-				
+				_seekTime = Number(parameters[1]);
+				_seekDataStore = DefaultSeekDataStore(parameters[2]);
+
 				_bytesLoaded = getByteRange(_seekTime);
 				
 				request.addHeader("If-Range", _eTag);	
@@ -160,7 +173,13 @@ package org.flowplayer.pseudostreaming.net
 			
 				dispatchEvent(new NetStatusEvent(NetStatusEvent.NET_STATUS,false,false, {code:"NetStream.Play.Seek", level:"status"})); 
 				
-			}	
+			} else {
+				//reset seek, bytes loaded and send bytes reset actions
+				_seekTime = 0;
+				_bytesLoaded = 0;
+				this.appendBytesAction(NetStreamAppendBytesAction.END_SEQUENCE);
+				this.appendBytesAction(NetStreamAppendBytesAction.RESET_BEGIN);
+			}
 			
 	
 			_client.request(uri, request);
@@ -170,14 +189,6 @@ package org.flowplayer.pseudostreaming.net
 			return  _seekDataStore.getQueryStringStartValue(start);
 		}
 		
-		override public function close():void
-		{
-			_client.close();
-			_client = null;
-			dispatchEvent(new NetStatusEvent(NetStatusEvent.NET_STATUS,false,false, {code:"NetStream.Play.Stop", level:"status"})); 
-			super.close();
-		}
-		
 		override public function seek(seconds:Number):void {
 			play(_currentURL, seconds, _seekDataStore);	
 		}
@@ -185,8 +196,6 @@ package org.flowplayer.pseudostreaming.net
 		private function onData(event:HttpDataEvent):void {				
 			var bytes:ByteArray = event.bytes; 
 			_bytesLoaded += bytes.length;
-			
-		
 			this.appendBytes(bytes);
 		}
 		
