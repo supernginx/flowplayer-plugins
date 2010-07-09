@@ -208,6 +208,17 @@ package org.flowplayer.viralvideos.config
         public function get iconDisplayProperties():DisplayProperties {
             return _iconDisplayProperties;
         }
+        
+        public function set iconProperties(config:Object):void {
+        	
+        	var props:DisplayProperties = iconDisplayProperties;
+        	if (config.top) props.top = config.top;
+            if (config.right) props.right = config.right;
+            if (config.left) props.left = config.left;
+            if (config.width) props.width = config.width;
+            if (config.height) props.height = config.height;
+            _iconDisplayProperties = props;
+        }
 
         public function set icons(config:Object):void {
             new PropertyBinder(iconButtons).copyProperties(config);
