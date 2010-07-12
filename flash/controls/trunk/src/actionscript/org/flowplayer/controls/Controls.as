@@ -584,6 +584,7 @@ package org.flowplayer.controls {
             playlist.onBeforeBegin(onPlayStarted);
             playlist.onBegin(onPlayBegin);
             playlist.onMetaData(onPlayStarted);
+            playlist.onStart(onPlayStarted); // bug #120
             playlist.onPause(onPlayPaused);
             playlist.onResume(onPlayResumed);
             playlist.onStop(onPlayStopped);
