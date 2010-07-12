@@ -4,7 +4,7 @@ Version history:
 -----
 Fixes
 - Fixed current time when clip finishes before the specified duration
-
+- Fixed change the button states when only onStart is dispatched and no onMetadata, bug #120
 
 3.2.1
 -----
