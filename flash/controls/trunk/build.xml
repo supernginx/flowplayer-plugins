@@ -6,6 +6,7 @@
 
     <!-- filename for the plugin swf -->
     <property name="basename" value="flowplayer.controls" />
+    <property name="releasedir" value="flowplayer.controls" />
 
     <!-- location of the skin swd, anc swc -->
     <property name="library-path" value="src/flash/modern" />
@@ -22,7 +23,35 @@
     <property name="plugin-main-class" value="org/flowplayer/controls/Controls.as" />
     <property name="compiler-define" value="CONFIG::skin,'true' -define=CONFIG::hasSlowMotion,'true'" />
 
-    <target name="release-remote">
+
+    <target name="build-skinless">
+        <ant antfile="build-skinless.xml" target="build" inheritall="false" />
+    </target>
+
+    <target name="build-tube">
+        <ant antfile="build-tube.xml" target="build" inheritall="false" />
+    </target>
+
+	<target name="build-air">
+        <ant antfile="build-air.xml" target="build" inheritall="false" />
+    </target>
+
+    <target name="build-all" depends="build, build-skinless, build-tube, build-air" />
+
+    <target name="zip" depends="prepare, build-all">
+        <echo message="zipping controls" />
+        <zip destfile="${dist-dir}/${basename}-${version}.zip">
+            <zipfileset prefix="${basename}" dir=".">
+                <include name="LICENSE.txt" />
+                <include name="README.txt" />
+            </zipfileset>
+            <zipfileset prefix="${basename}" dir="${build-dir}">
+                <include name="${plugin-binary-versioned}" />
+                <include name="flowplayer.controls-skinless-${version}.swf" />
+                <include name="flowplayer.controls-tube-${version}.swf" />
+				<include name="flowplayer.controls-air-${version}.swf" />
+            </zipfileset>
+        </zip>
     </target>
     
 </project>
