@@ -27,13 +27,14 @@ package org.flowplayer.captions.parsers
 
         private function parseRows(item:*, index:int, array:Array):void
         {
+            if (!item) return;
             log.debug("parsing " + item);
             var rows:Array = item.split(/\r?\n/);
             var time_pattern:RegExp = /(\d{2}:\d{2}:\d{2}(?:,\d*)?) --> (\d{2}:\d{2}:\d{2}(?:,\d*)?)/;
             var hasValidTime:Boolean = time_pattern.test(rows[1]);
 
             if (!hasValidTime) {
-                log.error("Invalid time format for #" + (rows[0]));
+                log.error("Invalid time format for #" + (rows[0]) + item);
                 return;
             }
 
