@@ -47,6 +47,7 @@ package org.flowplayer.pseudostreaming.net
 		private var _seekDataStore:DefaultSeekDataStore;
 		protected var log:Log = new Log(this);
 		private var _ended:Boolean;
+		private var _serverAcceptsBytes:Boolean;
 		
 		public function ByteRangeNetStream(connection:NetConnection, peerID:String="connectToFMS")
 		{
@@ -104,9 +105,17 @@ package org.flowplayer.pseudostreaming.net
 				default:
 					_eTag = event.response.header.getValue("ETag");
 					if (!_bytesTotal) _bytesTotal = event.response.contentLength;
+					
 					_httpHeader = event.response.header;
+					
+					if (!_serverAcceptsBytes && _httpHeader.find("Accept-Ranges")) {
+						log.debug("Server accepts byte ranges");
+						_serverAcceptsBytes = true; 
+					}
+					
 				break;
 			}
+			
 		}
 		
 		public function getRequestHeader():HttpHeader {
@@ -156,7 +165,7 @@ package org.flowplayer.pseudostreaming.net
 			var request:HttpRequest = new Get();
 			
 			_ended = false;
-			if (Number(parameters[1]) && DefaultSeekDataStore(parameters[2])) {
+			if (Number(parameters[1]) && DefaultSeekDataStore(parameters[2]) && _serverAcceptsBytes) {
 				
 				_seekTime = Number(parameters[1]);
 				_seekDataStore = DefaultSeekDataStore(parameters[2]);
