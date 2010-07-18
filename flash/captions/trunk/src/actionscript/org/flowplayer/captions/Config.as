@@ -15,22 +15,13 @@ package org.flowplayer.captions
     import org.flowplayer.util.Arrange;
 
     public class Config {
-        private var _captions:Array = new Array();
         private var _autoLayout:Boolean = true;
         private var _simpleFormatting:Boolean = false;
-        private var _showCaptions:Boolean = true;
         private var _captionTarget:String;
         private var _template:String;
         private static const BUTTON_DEFAULTS:Object = { width: 20, height: 15, right: 5, bottom: 35, name: "cc_button", label: 'CC' };
         private var _button:Object = BUTTON_DEFAULTS;
 
-        public function get captions():Array {
-            return _captions;
-        }
-
-        public function set captions(captions:Array):void {
-            _captions = captions;
-        }
 
         public function get captionTarget():String {
             return _captionTarget;
@@ -62,14 +53,6 @@ package org.flowplayer.captions
 
         public function set simpleFormatting(simpleFormatting:Boolean):void {
             _simpleFormatting = simpleFormatting;
-        }
-
-        public function get showCaptions():Boolean {
-            return _showCaptions;
-        }
-
-        public function set showCaptions(showCaptions:Boolean):void {
-            _showCaptions = showCaptions;
         }
 
         public function get button():Object {

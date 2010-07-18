@@ -13,26 +13,27 @@
  */
 (function($) {
 	
-	$f.addPlugin("captions", function(wrap, options) {
+	$f.addPlugin("captions", function(container, options) {
 	
 		// self points to current Player instance
 		var self = this;	
 		var api = null;
 		var opts = {
-			playingClass: 'playing',
-			pausedClass: 'paused',
-			progressClass:'progress',
+			activeClass: 'active',
 			template: '<img src="images/${time}.jpg"/>',
 			padTime: true,
-			loop: false,
-			playOnClick: true
+			fadeTime: 500
 		};		
 		
 		$.extend(opts, options);
-		wrap = $(wrap);		
-		var template = wrap.is(":empty") ? opts.template : wrap.html(); 
+		var wrap = container;
+		var template = null;
+		
+		//wrap = $(wrap);		
+		//alert(wrap.html());
+		//var template = wrap.is(":empty") ? opts.template : wrap.html(); 
 		var el = "";
-		wrap.empty();		
+		//wrap.empty();		
 			
 	
 		function seek()
@@ -62,8 +63,15 @@
 		
 		// onStart
 		self.onStart(function(clip) {
-			console.log(clip.cuepoints);
-			var index = 0;
+		
+			var index = 1;
+			
+			wrap = $(wrap);		
+			template = wrap.is(":empty") ? opts.template : wrap.html(); 
+			wrap.fadeOut(opts.fadeTime).empty();
+			
+		   // wrap.empty();
+		
 			$.each(clip.cuepoints, function(key, val) {	
 				
 				el = template;
@@ -75,19 +83,26 @@
 					el.attr("index",index);
 					index++;
 					el.click(function() {	
-						//seek(time, this);
-						//console.log();
 						self.seek(time);
 						api.seekTo($(this).attr("index"));
 						//api.next();
 					});
+			
 					wrap.append(el);
 				}
 			});
 			
+			if (wrap.parent().css('display') == "none") {
+				wrap.show();
+				wrap.parent('div').fadeIn(opts.fadeTime);
+			} else {
+				wrap.fadeIn(opts.fadeTime);
+			}
 			
-			$(wrap.parent()).scrollable({items:$(wrap),size:4, clickable:true});
+			
+			$(wrap.parent()).scrollable({items:wrap,size:4, clickable:true, activeClass: opts.activeClass});
 		    api = $(wrap.parent()).scrollable();
+		    
 	
 			$("a.prevPage").click(function() {
 				api.prevPage(500);			
@@ -116,6 +131,8 @@
 			//var cue = els.filter("[@time=" + cuepoint.time + "]");
 			//api.move();
 			api.next();
+		//	alert(api.getIndex());
+			//alert(wrap.html());
 			//self.getPlugin("scrollable").next();
 			//console.log(cue.text());
 			//alert(cuepoint.time);

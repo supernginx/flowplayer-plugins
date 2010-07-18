@@ -32,6 +32,8 @@ package org.flowplayer.captions {
     import org.flowplayer.view.Flowplayer;
     import org.flowplayer.view.Styleable;
     import org.flowplayer.model.PlayerEventType;
+    
+    
 
     /**
      * A Subtitling and Captioning Plugin. Supports the following:
@@ -80,7 +82,6 @@ package org.flowplayer.captions {
      * @author danielr, Anssi Piirainen (api@iki.fi)
      */
     public class Caption extends AbstractSprite implements Plugin, Styleable {
-        private var _captions:Array = new Array();
         private var _player:Flowplayer;
         private var _model:PluginModel;
         private var _captionView:*;
@@ -89,8 +90,8 @@ package org.flowplayer.captions {
         private var _viewModel:DisplayPluginModel;
         private var _template:String;
         private var _button:CCButton;
-        private var _totalFiles:int;
-        private var _numFilesLoaded:int;
+        private var _totalCaptions:int;
+        private var _numCaptionsLoaded:int;
         private var _initialized:Boolean;
 
         private var _currentCaption:Object;
@@ -107,25 +108,19 @@ package org.flowplayer.captions {
 
             _model = plugin;
             _config = new PropertyBinder(new Config(), null).copyProperties(plugin.config) as Config;
-            if (plugin.config) {
-                //log.debug("config object received with html " + plugin.config.html + ", stylesheet " + plugin.config.stylesheet);
-                _captions = _config.captions;
-            }
+           
         }
 
-        public function hasCaptionFile():Boolean {
+        
+        public function hasCaptions():Boolean {
             var clips:Array = _player.playlist.clips;
             for (var i:Number = 0; i < clips.length; i++) {
                 var clip:Clip = clips[i] as Clip;
-                if (clip.customProperties && clip.customProperties["captionUrl"]) {
+                if (clip.customProperties && (clip.getCustomProperty("captions") || clip.getCustomProperty("captionUrl"))) {
                     return true;
                 }
             }
             return false;
-        }
-
-        public function hasCaptions():Boolean {
-            return _captions.length > 0;
         }
 
         /**
@@ -144,10 +139,11 @@ package org.flowplayer.captions {
             }
             _viewModel = _player.pluginRegistry.getPlugin(_config.captionTarget) as DisplayPluginModel;
             _captionView = _viewModel.getDisplayObject();
-
+			
             _player.onLoad(onPlayerInitialized);
-            if (hasCaptionFile()) {
-                loadCaptionFiles();
+
+            if (hasCaptions()) {
+            	loadClipCaptions();
             } else {
                 _model.dispatchOnLoad();
             }
@@ -257,23 +253,29 @@ package org.flowplayer.captions {
             _button.y = _captionView.y;
         }
 
-        private function loadCaptionFiles():void {
+        
+        private function loadClipCaptions():void {
             // count files
-            iterateCaptionFiles(function (clip:Clip):void {
-                _totalFiles++;
+            iterateCaptions(function (clip:Clip):void {
+                _totalCaptions++;
             });
             // load files
-            iterateCaptionFiles(function(clip:Clip):void {
-                loadCaptionFile(clip, clip.getCustomProperty("captionUrl") as String);
+            iterateCaptions(function(clip:Clip):void {
+            	if (clip.getCustomProperty("captions")) {
+            		loadCaption(clip, clip.getCustomProperty("captions") as Array);
+            	} else {
+            		loadCaptionFile(clip, clip.getCustomProperty("captionUrl") as String);
+            	}
             });
         }
-
-        private function iterateCaptionFiles(callback:Function):void {
+        
+		
+		private function iterateCaptions(callback:Function):void {
             var clips:Array = _player.playlist.clips;
             for (var i:Number = 0; i < clips.length; i++) {
                 var clip:Clip = _player.playlist.clips[i] as Clip;
-                var captionUrl:String = clip.customProperties ? clip.customProperties["captionUrl"] : null;
-                if (captionUrl) {
+                var captions:Array = clip.customProperties ? clip.getCustomProperty("captions") as Array : null;
+                if (clip.getCustomProperty("captions") || clip.getCustomProperty("captionUrl")) {
                     callback(clip);
                 }
             }
@@ -287,10 +289,17 @@ package org.flowplayer.captions {
          * 'xml', 'srt', 'tx3g', 'qtxt'
          */
         [External]
-        public function loadCaptions(clipIndex:int, captionURL:String, fileExtension:String = null):void {
-            if (! captionURL) return;
-            log.info("loading captions from " + captionURL);
-            loadCaptionFile(_player.playlist.clips[clipIndex], captionURL, fileExtension);
+        public function loadCaptionsFromFile(clipIndex:int, captionsUrl:String = null):void {
+            if (! captionsUrl) return;
+            log.info("loading captions from " + captionsUrl);
+            loadCaptionFile(_player.playlist.clips[clipIndex], captionsUrl);
+        }
+        
+        [External]
+        public function loadCaptions(clipIndex:int, captions:Array):void {
+            if (! captions) return;
+            log.info("loading captions from " + captions);
+            loadCaption(_player.playlist.clips[clipIndex], captions);
         }
 
         /**
@@ -300,12 +309,23 @@ package org.flowplayer.captions {
             var result:Object = _captionView.css(styleProps);
             return result;
         }
+        
+        protected function loadCaption(clip:Clip, captions:Array):void {
+        	parseCuePoints(clip, captions);
+            _numCaptionsLoaded++;
+            log.debug(_numCaptionsLoaded + " clip captions out of " + _totalCaptions + " loaded");
+            if (_numCaptionsLoaded == _totalCaptions && ! _initialized) {
+            	log.debug("all caption files loaded, dispatching onLoad()");
+                _initialized = true;
+                _model.dispatchOnLoad();
+            }
+        }
 
         /**
          * Joel Hulen - April 20, 2009
          * Modified loadCaptionFile to add the fileExtension parameter.
          */
-        protected function loadCaptionFile(clip:Clip, captionFile:String = null, fileExtension:String = null):void {
+        protected function loadCaptionFile(clip:Clip, captionFile:String = null):void {
             var loader:ResourceLoader = _player.createLoader();
 
             if (captionFile) {
@@ -314,55 +334,52 @@ package org.flowplayer.captions {
             }
 
             loader.load(null, function(loader:ResourceLoader):void {
-                parseCuePoints(clip, captionFile, loader.getContent(captionFile), fileExtension);
+                parseCuePoints(clip, loader.getContent(captionFile));
 
-                _numFilesLoaded++;
-                log.debug(_numFilesLoaded + " captions files out of " + _totalFiles + " loaded");
-                if (_numFilesLoaded == _totalFiles && ! _initialized) {
-                    log.debug("all caption files loaded, dispatching onLoad()");
+                _numCaptionsLoaded++;
+                log.debug(_numCaptionsLoaded + " captions files out of " + _totalCaptions + " loaded");
+                if (_numCaptionsLoaded == _totalCaptions && ! _initialized) {
+                    log.debug("all captions loaded, dispatching onLoad()");
                     _initialized = true;
                     _model.dispatchOnLoad();
                 }
             });
         }
 
-        protected function parseCuePoints(clip:Clip, captionFile:String, captionData:*, fileExtension:String = null):void
+        protected function parseCuePoints(clip:Clip, captionData:*):void
         {
             log.debug("captions file loaded, parsing cuepoints");
-            var parser:CaptionParser = createParser(fileExtension || captionFile.substr(-3), captionData);
+            var parser:CaptionParser = createParser(captionData);
 
             // remove all existing cuepoints
             clip.removeCuepoints(function(cue:Object):Boolean {
-                return cue.hasOwnProperty("__caption")
+                return cue.hasOwnProperty("__caption");
             });
 
             try {
-                clip.addCuepoints(parser.parse(_captions.length > 0 ? _captions : captionData));
+            	clip.addCuepoints(parser.parse(captionData));
+                //clip.addCuepoints(parser.parse(_captions.length > 0 ? _captions : captionData));
             } catch (e:Error) {
                 log.error("parseCuePoints():" + e.message);
             }
             _captionView.style = parser.styles;
         }
 
-        private function createParser(fileExtension:String, captionData:Object):CaptionParser {
-            var parser:CaptionParser;
-            if (_captions.length > 0) {
-                parser = new JSONParser();
-            } else if (captionData) {
-
-                if (fileExtension == CaptionFileTypes.TTXT) {
+        private function createParser(captionData:Object):CaptionParser {
+            	var parser:CaptionParser;
+            	
+            	if (new XML(captionData).localName() == "tt") {
                     log.debug("parsing Timed Text captions");
                     parser = new TTXTParser();
                     TTXTParser(parser).simpleFormatting = _config.simpleFormatting;
-
-                } else if (fileExtension == CaptionFileTypes.SRT) {
+                } else if (String(captionData).charAt(0) == "1") {
                     log.debug("parsing SubRip captions");
                     parser = new SRTParser();
-
+            	} else if (captionData is Array || captionData.toString().indexOf('[')) {
+                	parser = new JSONParser();
                 } else {
                     throw new Error("Unrecognized captions file extension");
                 }
-            }
             parser.styles = _captionView.style;
             return parser;
         }

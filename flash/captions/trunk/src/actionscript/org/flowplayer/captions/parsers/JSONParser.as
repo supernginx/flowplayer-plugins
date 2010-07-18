@@ -11,8 +11,12 @@ package org.flowplayer.captions.parsers
 {
     import org.flowplayer.model.Cuepoint;
     import org.flowplayer.util.Log;
+    import org.flowplayer.config.ConfigParser;
+    import org.flowplayer.flow_internal;
     import org.flowplayer.view.FlowStyleSheet;
-
+	
+	use namespace flow_internal;
+	
     public class JSONParser extends AbstractCaptionParser
     {
 
@@ -49,6 +53,8 @@ package org.flowplayer.captions.parsers
         }
 
         override protected function parseCaptions(data:Object):Array {
+        	
+        	if (!data is Array) data = ConfigParser.parse(String(data));
             (data as Array).forEach(parseRows);
             return _arr;
         }
