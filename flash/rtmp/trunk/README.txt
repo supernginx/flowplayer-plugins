@@ -5,6 +5,7 @@ Version history:
 Fixes:
 - Now reaches the end of the video when the server sends a NetStream.Play.Stop.
 - Now reaches the end of the video when the server sends a little bit less stream than expected, using start:
+- Fix for rtmpt connection arguments passing: http://flowplayer.org/forum/8/45714#post-45714
 
 3.2.1
 -----
