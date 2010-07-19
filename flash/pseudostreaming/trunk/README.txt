@@ -3,6 +3,8 @@ Version history:
 3.2.3
 -----
 - seeking using HTTP byte range requests
+Fixes:
+- fixed to append the query string using the '&' character if the configured clip URL already has a '?' character in it
 
 3.2.2
 -----
