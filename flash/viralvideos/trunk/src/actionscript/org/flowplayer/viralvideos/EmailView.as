@@ -168,11 +168,17 @@ package org.flowplayer.viralvideos {
             _formContainer.addChild(_sendBtn);
 
             //set the video url to the current page
-            _videoURL = URLUtil.pageUrl;
+            _videoURL = getPageUrl();
 
             //arrange the form elements
             arrangeForm();
 
+        }
+        
+        private function getPageUrl():String {
+        	return (String(player.currentClip.getCustomProperty("pageUrl")) 
+        	? String(player.currentClip.getCustomProperty("pageUrl"))
+        	: URLUtil.pageUrl);
         }
 
         private function getEmailToken():void {
