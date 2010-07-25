@@ -17,6 +17,7 @@ package org.flowplayer.viralvideos {
     import org.flowplayer.model.PlayerEvent;
     import org.flowplayer.model.Plugin;
     import org.flowplayer.model.PluginModel;
+    import org.flowplayer.model.PluginEventType;
     import org.flowplayer.viralvideos.config.Config;
     import org.flowplayer.ui.AutoHide;
     import org.flowplayer.ui.CloseButton;
@@ -121,6 +122,12 @@ package org.flowplayer.viralvideos {
         }
 
         private function fadeIn(view:String):void {
+        	var event:String = "onBeforeShow" + view;
+        	if (_model &&  !_model.dispatchBeforeEvent(PluginEventType.PLUGIN_EVENT, event)) {
+				log.debug(event);
+				return;
+			}
+				
             this.visible = true;
             this.alpha = 0;
             _player.setKeyboardShortcutsEnabled(false);

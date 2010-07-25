@@ -17,6 +17,7 @@ package org.flowplayer.viralvideos {
 
     import org.flowplayer.model.DisplayPluginModel;
     import org.flowplayer.model.PluginError;
+    import org.flowplayer.model.PluginEventType;
     import org.flowplayer.ui.AbstractButton;
     import org.flowplayer.util.Arrange;
     import org.flowplayer.util.URLUtil;
@@ -60,12 +61,14 @@ package org.flowplayer.viralvideos {
         private var _iconArray:Array;
         private var _originalIconHeight:Number;
         private var _originalIconWidth:Number;
+        private var _model:DisplayPluginModel;
 
         public function ShareView(plugin:DisplayPluginModel, player:Flowplayer, config:ShareConfig, style:Object) {
             super("viral-share", plugin, player, style);
             rootStyle = style;
             _config = config;
             createIcons();
+            _model = plugin;
         }
 
         public function set embedCode(value:String):void {
@@ -152,7 +155,12 @@ package org.flowplayer.viralvideos {
         private function launchURL(url:String, popUpDimensions:Array):void {
             url = escape(url);
             var request:URLRequest;
-
+            
+            if (_model && ! _model.dispatchBeforeEvent(PluginEventType.PLUGIN_EVENT, "onBeforeShare", url, popUpDimensions)) {
+				log.debug("onBeforeShare");
+				return;
+			}
+			
             //if we are using a popup window, launch javascript with window.open
             if (_config.popupOnClick)
             {
