@@ -136,6 +136,8 @@ package org.flowplayer.captions {
             _player = player;
             _player.playlist.onCuepoint(onCuepoint);
 
+			_player.playlist.commonClip.onNetStreamEvent(onNetStreamCaption);
+
             if (! _config.captionTarget) {
                 throw Error("No captionTarget defined in the configuration");
             }
@@ -424,15 +426,48 @@ package org.flowplayer.captions {
                 _captionView.html = "";
         }
 
+		protected function captionsDisabledForClip(clip:Clip):Boolean {
+			return clip.customProperties && clip.customProperties.hasOwnProperty("showCaptions") && ! clip.customProperties["showCaptions"];
+		}
+
+		protected function onNetStreamCaption(event:ClipEvent):void {
+			if ( event.info != "onTextData" )
+				return;
+
+			var clip:Clip = event.target as Clip;
+			var data:Object = event.info2;
+			var text:String = data['text'];
+			
+			if ( captionsDisabledForClip(clip) )
+				return;
+			
+			if ( ! data.hasOwnProperty('text') )
+				return;
+
+            if (clip.customProperties && clip.customProperties.hasOwnProperty("captionsTrackFilter")) {
+				var captionsTrackFilter:String = clip.customProperties['captionsTrackFilter'];
+				var filterKey:String = captionsTrackFilter.substr(0, captionsTrackFilter.indexOf('='));
+				var filterValue:String = captionsTrackFilter.substr(captionsTrackFilter.indexOf('=')+1);
+				
+				if ( data.hasOwnProperty(filterKey) && (data[filterKey]+"") != filterValue ) {
+					log.debug("Skipping "+ text + ", "+filterKey+" filtered out : "+(data[filterKey]+"")+" != "+filterValue);
+					return;
+				}
+			}
+
+			text = text.replace(/\n/, '<br>');
+
+            _captionView.html = "<p>" + text + "</p>";
+			
+		}
+
         protected function onCuepoint(event:ClipEvent):void {
             log.debug("onCuepoint", event.info.parameters);
 
             var clip:Clip = event.target as Clip;
-            var captionsDisabledForClip:Boolean = clip.customProperties && clip.customProperties.hasOwnProperty("showCaptions") && ! clip.customProperties["showCaptions"];
-            if (captionsDisabledForClip) {
-                return;
-            }
-
+            if ( captionsDisabledForClip(clip) )
+				return;
+				
             if (clip.customProperties && clip.customProperties.hasOwnProperty("captionUrl")) {
                 var cue:Object = event.info;
                 if (! cue.hasOwnProperty("captionType") || cue["captionType"] != "external") {
