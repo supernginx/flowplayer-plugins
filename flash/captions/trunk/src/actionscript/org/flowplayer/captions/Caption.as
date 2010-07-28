@@ -99,6 +99,8 @@ package org.flowplayer.captions {
         private var _captionWidthRatio:Number;
         private var _captionFontSizes:Object;
 
+		private var _captionViewWidth:int = 0;
+
         /**
          * Sets the plugin model. This gets called before the plugin
          * has been added to the display list and before the player is set.
@@ -200,6 +202,9 @@ package org.flowplayer.captions {
                 clearCaption();
             });
 
+			_player.onBeforeFullscreen(function(event:PlayerEvent):void {
+				_captionViewWidth = _captionView.width;
+			});
             _player.onFullscreen(resizeCaptionView);
             _player.onFullscreenExit(resizeCaptionView);
 
@@ -210,6 +215,9 @@ package org.flowplayer.captions {
         {
             var newWidth:Number = _player.screen.getDisplayObject().width * _captionWidthRatio;
             var newHeight:Number = _player.screen.getDisplayObject().height * _captionHeightRatio;
+
+		//	log.info("resizing, width:" +_player.screen.getDisplayObject().width + " * "+_captionWidthRatio+" = "+ newWidth);
+		//	log.info("resizing, width:" +_player.screen.getDisplayObject().height + " * "+_captionHeightRatio+" = "+ newHeight);
 
             if (event.type == (PlayerEventType.FULLSCREEN).name)
             {
@@ -223,7 +231,8 @@ package org.flowplayer.captions {
 
                         _captionFontSizes[styleNames[i]] = style.fontSize;
 
-                        style.fontSize = style.fontSize * newWidth / _captionView.width;
+					//	log.info ("current font size "+style.fontSize+", ratio "+ newWidth+"/"+_captionView.width+" = "+(newWidth / _captionViewWidth));
+                        style.fontSize = style.fontSize * newWidth / _captionViewWidth;
                         _captionView.style.setStyle(styleNames[i], style);
                     }
                 }
