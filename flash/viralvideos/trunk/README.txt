@@ -2,7 +2,10 @@ Version history:
 
 3.2.2
 -----
-- Added prerollUrl, postrollUrl, autoPlay, autoBuffering and linkUrl params to the embed config 
+- Added 'shareUrl' config option that can be used to override the URL to be used when sharing to social sites
+- Added 'configUrl' parameter to specify and external config file to load
+- Added prerollUrl, postrollUrl, autoPlay, autoBuffering and linkUrl params to the embed config
+- Added possibility to specify display properties for the icons (share, embed, email buttons)
 
 3.2.1
 -----

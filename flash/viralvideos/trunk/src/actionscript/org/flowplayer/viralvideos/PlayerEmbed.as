@@ -41,10 +41,8 @@ package org.flowplayer.viralvideos {
             _player = player;
             _viralPluginConfiguredName = viralPluginConfiguredName;
             _stage = stage;
-            _playerConfig = JSON.decode(stage.loaderInfo.parameters["config"]);
-			_config = config;
-			
-            initializeConfig();
+            _config = config;
+            initializeConfig(stage);
             lookupControls();
         }
 
@@ -97,8 +95,19 @@ package org.flowplayer.viralvideos {
             _autoHide = controls["getAutoHide"]()["state"] == "always";
         }
 
-        private function initializeConfig():void {
-            log.debug("initializeConfig() " + _playerConfig);
+        private function initializeConfig(stage:Stage):void {
+            var configObj:* = stage.loaderInfo.parameters["config"];
+
+            if (configObj && String(configObj).indexOf("{") > 0 && ! configObj.hasOwnProperty("url")) {
+                // a regular configuration object
+                _playerConfig = JSON.decode(configObj);
+
+            } else {
+                // had an external config file configured using 'url', use the loaded config object
+                _playerConfig = _player.config.configObject;
+            }
+
+            log.debug("initializeConfig() ", _playerConfig);
             _playerConfig.plugins[_viralPluginConfiguredName].emailScriptURL = null;
             _playerConfig.plugins[_viralPluginConfiguredName].emailScriptTokenURL = null;
             _playerConfig.plugins[_viralPluginConfiguredName].emailScriptToken = null;
