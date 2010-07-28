@@ -57,6 +57,7 @@ package org.flowplayer.viralvideos {
         private var _autoHide:AutoHide;
 
         public function onConfig(plugin:PluginModel):void {
+            log.debug("onConfig()", plugin.config);
             _model = plugin;
             //_config = new PropertyBinder(new Config(), null).copyProperties(plugin.config) as Config;
             _config = new PropertyBinder(new Config(), null).copyProperties(_model.config) as Config;
@@ -110,6 +111,8 @@ package org.flowplayer.viralvideos {
         }
 
         public function onLoad(player:Flowplayer):void {
+            log.debug("onLoad()");
+            
             this.visible = false;
             _player = player;
 
@@ -136,6 +139,7 @@ package org.flowplayer.viralvideos {
         }
 
         private function onPlayerLoad(event:PlayerEvent):void {
+            log.debug("onPlayerLoad() ");
             _playerEmbed = new PlayerEmbed(_player, _model.name, stage, _config.embed);
             _config.playerEmbed = _playerEmbed;
 

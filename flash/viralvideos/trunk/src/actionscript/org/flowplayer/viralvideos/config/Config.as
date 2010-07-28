@@ -27,16 +27,9 @@ package org.flowplayer.viralvideos.config
         private var _baseURL:String = URLUtil.pageUrl;
         private var _buttonConfig:ButtonConfig;
         private var _closeButton:ButtonConfig;
-        private var _iconButtons:ButtonConfig;
-        private var _iconDisplayProperties:DisplayProperties;
+        private var _icons:IconConfig = new IconConfig();
 
-        public function Config() {
-			_iconDisplayProperties = new DisplayPropertiesImpl(null, "viral-icons", false);
-			_iconDisplayProperties.top = "20%";
-			_iconDisplayProperties.right = "7%";
-			_iconDisplayProperties.width = "10%";
-			_iconDisplayProperties.height = "30%";
-						
+        public function Config() {						
             _autoHide = new AutoHideConfig();
             _autoHide.fullscreenOnly = false;
             _autoHide.hideStyle = "fade";
@@ -51,15 +44,6 @@ package org.flowplayer.viralvideos.config
         public function set baseURL(value:String):void {
             _baseURL = value;
         }
-
-		public function set iconsPosition(iconsPosition:Object):void {
-			var propsToCopy:Array = ['top', 'bottom', 'right', 'left', 'width', 'height'];
-			for ( var i:int = 0; i < propsToCopy.length; i++ ) {
-				if ( iconsPosition[propsToCopy[i]] ) {
-					_iconDisplayProperties[propsToCopy[i]] = iconsPosition[propsToCopy[i]];
-				}
-			}
-		}
 
         public function get email():EmailConfig {
             return _email;
@@ -197,31 +181,27 @@ package org.flowplayer.viralvideos.config
         }
 
         public function get iconButtons():ButtonConfig {
-            if (! _iconButtons) {
-                _iconButtons = new ButtonConfig();
-                _iconButtons.setColor("rgba(20,20,20,0.5)");
-                _iconButtons.setOverColor("rgba(0,0,0,1)");
-            }
-            return _iconButtons;
+            return _icons.buttons;
         }
 
         public function get iconDisplayProperties():DisplayProperties {
-            return _iconDisplayProperties;
+            return _icons.displayProps;
         }
-        
-        public function set iconProperties(config:Object):void {
-        	
-        	var props:DisplayProperties = iconDisplayProperties;
-        	if (config.top) props.top = config.top;
-            if (config.right) props.right = config.right;
-            if (config.left) props.left = config.left;
-            if (config.width) props.width = config.width;
-            if (config.height) props.height = config.height;
-            _iconDisplayProperties = props;
-        }
+//
+//        public function set iconProperties(config:Object):void {
+//
+//        	var props:DisplayProperties = iconDisplayProperties;
+//        	if (config.top) props.top = config.top;
+//            if (config.right) props.right = config.right;
+//            if (config.left) props.left = config.left;
+//            if (config.width) props.width = config.width;
+//            if (config.height) props.height = config.height;
+//            _iconDisplayProperties = props;
+//        }
 
         public function set icons(config:Object):void {
-            new PropertyBinder(iconButtons).copyProperties(config);
+            new PropertyBinder(_icons.displayProps).copyProperties(config);
+            new PropertyBinder(_icons.buttons).copyProperties(config);
         }
 
         public function set playerEmbed(embed:PlayerEmbed):void {
