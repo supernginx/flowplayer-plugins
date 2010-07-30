@@ -26,8 +26,6 @@ package org.flowplayer.viralvideos.config {
         private var _playerEmbed:PlayerEmbed;
 		private var _autoPlay:int = DEFAULT;
 		private var _autoBuffering:int = DEFAULT;
-		private var _prerollUrl:String = null;
-		private var _postrollUrl:String = null;
 		private var _linkUrl:String = null;
 		private var _configUrl:String = null;
 
@@ -90,42 +88,26 @@ package org.flowplayer.viralvideos.config {
 		public function get autoPlay():Boolean {
 			return _autoPlay == OVERRIDE_TRUE;
 		}
-		
+
 		public function get isAutoPlayOverriden():Boolean {
 			return _autoPlay != DEFAULT;
 		}
-		
+
 		public function set autoPlay(value:Boolean):void {
 			_autoPlay = value ? OVERRIDE_TRUE : OVERRIDE_FALSE;
 		}
-		
+
 		public function get autoBuffering():Boolean {
 			return _autoBuffering == OVERRIDE_TRUE;
 		}
-		
+
 		public function get isAutoBufferingOverriden():Boolean {
 			return _autoBuffering != DEFAULT;
 		}
-		
+
 		public function set autoBuffering(value:Boolean):void {
 			_autoBuffering = value ? OVERRIDE_TRUE : OVERRIDE_FALSE;
 		}
-		
-		public function get prerollUrl():String {
-            return _prerollUrl;
-        }
-
-        public function set prerollUrl(value:String):void {
-            _prerollUrl = value;
-        }
-
-		public function get postrollUrl():String {
-            return _postrollUrl;
-        }
-
-        public function set postrollUrl(value:String):void {
-            _postrollUrl = value;
-        }
 
 		public function get linkUrl():String {
             return _linkUrl;
