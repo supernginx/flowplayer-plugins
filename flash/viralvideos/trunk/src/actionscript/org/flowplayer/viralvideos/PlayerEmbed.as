@@ -162,13 +162,7 @@ package org.flowplayer.viralvideos {
 				
 			if ( _config.isAutoBufferingOverriden )
 				playlist[0].autoBuffering = _config.autoBuffering;
-				
-			if ( _config.prerollUrl )
-				playlist.splice(0, 0, {url: _config.prerollUrl});
-			
-			if ( _config.postrollUrl )
-				playlist.push({url: _config.postrollUrl });
-				
+							
 			updatedConfig.playlist = playlist;
 						
 			return updatedConfig;
