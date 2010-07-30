@@ -1,4 +1,4 @@
-<project name="Flowplayer audio" default="deploy">
+<project name="Audio plugin for flowplayer" default="deploy">
     <property file="build.generated.properties"/>
 	<property file="${user.home}/plugin.properties" />
 	<property file="build.properties" />
