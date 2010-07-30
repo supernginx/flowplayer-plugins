@@ -312,6 +312,7 @@ $f("range", "@PLAYER_SWF@", {
 });
 </script><div class="box code">
 <pre><code class="javascript">$f("range", "@PLAYER_SWF@", {
+    log: { level: 'debug', filter: 'org.flowplayer.pseudostreaming.*' },
 
 	// configure clip to use "lighthttpd" plugin for providing video data
 	clip: {
