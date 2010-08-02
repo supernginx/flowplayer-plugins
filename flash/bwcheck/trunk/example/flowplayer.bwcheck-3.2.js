@@ -117,19 +117,15 @@
 			els.removeClass(opts.bitrateInfoClass);
 		}
 
-		function showBitrateList() {
-
-			wrap = $(wrap);
-			if (self.getClip().bitrates.length > 0) {
-				if (!template) template = wrap.is(":empty") ? opts.template : wrap.html();
-				wrap.empty();
-
-
-				buildBitrateList();
-
-			}
-		}
-
+        function showBitrateList() {
+            wrap = $(wrap);
+            if (self.getClip().bitrates.length > 0) {
+                template = wrap.is(":empty") ? opts.template : wrap.html();
+                if (wrap.parent().css('display') == "none") {
+                    buildBitrateList();
+                }
+            }
+        }
 	
 		
 		self.onStart(function(clip) {
