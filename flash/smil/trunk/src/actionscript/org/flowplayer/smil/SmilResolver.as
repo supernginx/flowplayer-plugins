@@ -111,7 +111,10 @@ package org.flowplayer.smil{
 				if (!clip.getCustomProperty("bitrates")) clip.setCustomProperty("bitrates", []);
 				
 				for ( var i:int = 0; i < result[1].length; i++ )
-					clip.customProperties["bitrates"].push({url: result[1][i][0], bitrate: result[1][i][1]});
+					{
+                        var bitrateItem:Array = result[1][i];
+                        clip.customProperties["bitrates"].push({url: bitrateItem[0], bitrate: bitrateItem[1], width: bitrateItem[2]});
+                    }
 			} else {
 				clip.setResolvedUrl(this, result[1]);
 			}    
@@ -130,7 +133,14 @@ package org.flowplayer.smil{
 				var item:XML;
 				var bitrates:Array = [];
 				for each(item in  smil.body.child("switch").video ) {
-					bitrates.push([new String(item.@src), new Number(item.attribute("system-bitrate"))]);
+                    var bitrateItem:Array = [new String(item.@src), new Number(item.attribute("system-bitrate"))];
+                    bitrates.push(bitrateItem);
+
+                    // use width if it is specified
+                    var width:Number = new Number(item.attribute("width"));
+                    if (width > 0) {
+                        bitrateItem.push(width);
+                    }
 	            }
 				result.push(bitrates);
 			} else {
