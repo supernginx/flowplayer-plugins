@@ -2,8 +2,9 @@ Version history:
 
 3.2.2
 -----
+- Improvements for Quality Of Service monitoring
 Fixes:
-- fixing bwcheck with FMS, was unable to re-detect during playback
+- Fixed the JS plugin not to show the bitrate list twice
 
 3.2.1
 -----
