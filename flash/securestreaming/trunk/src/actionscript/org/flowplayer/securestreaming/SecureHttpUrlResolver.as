@@ -89,8 +89,8 @@ import flash.events.NetStatusEvent;
 
         private function generateProtection(timestamp:String, file:String):String {
             var secret:String = _config.token;
-            log.debug("secret token is " + secret + ", filename is " + "/" + file);
-            log.debug(secret + "/" + file + timestamp);
+           // log.debug("secret token is " + secret + ", filename is " + "/" + file);
+            //log.debug(secret + "/" + file + timestamp);
             return MD5.hash(secret + "/" + file + timestamp) + "/" + timestamp ;
         }
 

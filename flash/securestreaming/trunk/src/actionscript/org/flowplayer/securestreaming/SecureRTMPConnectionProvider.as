@@ -30,7 +30,7 @@ package org.flowplayer.securestreaming {
 			
             log.debug("SecureRTMPConnectionProvider()");
             _sharedSecret = sharedSecret;
-            log.debug("Using token (shared secret) " + _sharedSecret);
+            //log.debug("Using token (shared secret) " + _sharedSecret);
         }
 
 		override public function connect(ignored:StreamProvider, clip:Clip, successListener:Function, objectEncoding: uint, connectionArgs:Array):void {
