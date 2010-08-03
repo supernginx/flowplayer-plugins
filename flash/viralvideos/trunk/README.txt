@@ -6,6 +6,9 @@ Version history:
 - Added 'configUrl' parameter to specify and external config file to load
 - Added prerollUrl, postrollUrl, autoPlay, autoBuffering and linkUrl params to the embed config
 - Added possibility to specify display properties for the icons (share, embed, email buttons)
+Fixes:
+- Now the embed functionality works properly when the contols plugin is built into the player. Was causing an error
+  when the the user selected colors for the controlbar background and buttons. 
 
 3.2.1
 -----
