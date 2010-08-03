@@ -9,66 +9,41 @@
  */
 
 package org.flowplayer.securestreaming {
-    import com.meychi.ascrypt.TEA;
 
-    import flash.events.NetStatusEvent;
-    import flash.net.NetConnection;
-    import flash.net.Responder;
 
-    import org.flowplayer.controller.DefaultRTMPConnectionProvider;
+    import org.flowplayer.controller.NetStreamControllingStreamProvider;
+    import org.flowplayer.controller.ParallelRTMPConnectionProvider;
+    import org.flowplayer.controller.ParallelRTMPConnector;
     import org.flowplayer.controller.StreamProvider;
     import org.flowplayer.model.Clip;
 
     /**
 	 * @author api
 	 */
-	internal class SecureRTMPConnectionProvider extends DefaultRTMPConnectionProvider {
+	internal class SecureRTMPConnectionProvider extends ParallelRTMPConnectionProvider {
 
-        private var _onSuccess:Function;
         private var _sharedSecret:String;
-
+		private var _provider:NetStreamControllingStreamProvider;
+		
         public function SecureRTMPConnectionProvider(sharedSecret:String) {
+			super(null);
+			
             log.debug("SecureRTMPConnectionProvider()");
             _sharedSecret = sharedSecret;
             log.debug("Using token (shared secret) " + _sharedSecret);
         }
 
-        override public function connect(provider:StreamProvider, clip:Clip, successListener:Function, objectEncoding:uint, connectionArgs:Array):void {
-            log.debug("connect");
-            super.connect(provider, clip, successListener, objectEncoding, connectionArgs);
-        }
+		override public function connect(ignored:StreamProvider, clip:Clip, successListener:Function, objectEncoding: uint, connectionArgs:Array):void {
+			_provider = ignored as NetStreamControllingStreamProvider;
+			super.connect(ignored, clip, successListener, objectEncoding, connectionArgs);
+		}
 
-        override protected function onConnectionStatus(event:NetStatusEvent):void {
-            log.debug("received connection status " + event.info.code);
-            if (event.info.code == "NetConnection.Connect.Success")
-            {
-                if (event.info.secureToken != undefined) {
-                    log.debug("received secure token");
-                    var secureResult:Object = new Object();
-                    secureResult.onResult = function(isSuccessful:Boolean):void {
-                        log.info("secureTokenResponse: " + isSuccessful);
-                        if (! isSuccessful) {
-                            log.error("secure token not accepted.");
-                            handleError("secure token was not accepted by the server");
-                        }
-                    };
-                    connection.call("secureTokenResponse", new Responder(secureResult.onResult as Function), TEA.decrypt(event.info.secureToken, _sharedSecret));
-                } else {
-                    log.error("secure token was not received from the server");
-                    handleError("secure token not received from server");
-                }
-            }
-        }
-
-        private function handleError(message:String):void {
-            if (failureListener != null) {
-                var listener:Function = failureListener;
-                listener(message);
-            }
-        }
-
-        override protected function getNetConnectionUrl(clip:Clip):String {
-            if (isRtmpUrl(clip.completeUrl)) {
+		override protected function createConnector(url:String):ParallelRTMPConnector {
+			return new SecureParallelRTMPConnector(url, _sharedSecret, _connectionClient, onConnectorSuccess, onConnectorFailure);
+		}
+		
+		override protected function getNetConnectionUrl(clip:Clip):String {
+		   if (isRtmpUrl(clip.completeUrl)) {
                 var url:String = clip.completeUrl;
                 var lastSlashPos:Number = url.lastIndexOf("/");
                 return url.substring(0, lastSlashPos);
@@ -76,11 +51,7 @@ package org.flowplayer.securestreaming {
             if (clip.customProperties && clip.customProperties.netConnectionUrl) {
                 return clip.customProperties.netConnectionUrl;
             }
-            return provider.model.config.netConnectionUrl;
-        }
-
-        public static function isRtmpUrl(url:String):Boolean {
-            return url && url.toLowerCase().indexOf("rtmp") == 0;
+            return _provider ? _provider.model.config.netConnectionUrl : null;
         }
 	}
 }
