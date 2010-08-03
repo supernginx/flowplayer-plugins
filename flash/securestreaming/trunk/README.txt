@@ -1,5 +1,9 @@
 Version history:
 
+3.2.1
+---------
+- Added parallel connection mechanism on secure RTMP streams
+
 3.1.2-dev
 ---------
 - some small fixes
