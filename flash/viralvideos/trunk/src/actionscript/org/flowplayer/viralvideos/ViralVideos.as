@@ -148,15 +148,16 @@ package org.flowplayer.viralvideos {
             createTabs();
 
             _autoHide = new AutoHide(null, _config.autoHide, _player, stage, _iconBar);
-            _autoHide.hide();
+//            if (_config.autoHide)
+//            _autoHide.hide();
             _autoHide.onShow(onButtonsShow);
             _autoHide.start();
 
             hideViews();
 
-			// show first view
-			if ( _emailView ) {
-            	setActiveTab("Email", false);
+            // show first view
+            if ( _emailView ) {
+                setActiveTab("Email", false);
             	_emailView.show();
 			} else if ( _embedView ) {
 				setActiveTab("Embed", false);
@@ -250,6 +251,16 @@ package org.flowplayer.viralvideos {
         [External]
         public function share():void {
             showViews('Share');
+        }
+
+        [External]
+        public function setAutoHide(props:Object = null):void {
+            log.debug("setAutoHide()");
+            if (props) {
+                new PropertyBinder(_config.autoHide).copyProperties(props);
+            }
+
+            _autoHide.reset();
         }
 
         private function hideViews():void {

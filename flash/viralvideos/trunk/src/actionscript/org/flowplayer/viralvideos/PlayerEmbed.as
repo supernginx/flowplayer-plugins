@@ -85,8 +85,10 @@ package org.flowplayer.viralvideos {
         }
 
         private function lookupControls():void {
+            log.debug("lookupControls() ");
             var controlsModel:DisplayPluginModel = _player.pluginRegistry.getPlugin("controls") as DisplayPluginModel;
             if (! controlsModel) return;
+            log.debug("lookupControls() " + controlsModel + ", disp " + controlsModel.getDisplayObject());
             _controlsModel = controlsModel;
             _controls = controlsModel.getDisplayObject() as StyleableSprite;
             _controlsOriginalOptions = {};
@@ -116,15 +118,17 @@ package org.flowplayer.viralvideos {
 		
 		private function fixPluginsURL(config:Object):Object {			
 			for ( var pluginName:String in config.plugins ) {
-				var plugin:Object = _player.pluginRegistry.getPlugin(pluginName).pluginObject;
-                if (plugin.hasOwnProperty("loaderInfo")) {
+                var pluginModel:Object = _player.pluginRegistry.getPlugin(pluginName);
+                var plugin:Object = pluginModel.pluginObject;
+                if (! pluginModel.isBuiltIn && plugin.hasOwnProperty("loaderInfo")) {
                     var pluginUrl:String = plugin ? plugin.loaderInfo.url : "";
                     if ( pluginUrl ) {
                         config.plugins[pluginName]["url"] = pluginUrl;
                     }
+                } else if (pluginModel.isBuiltIn) {
+                    delete config.plugins[pluginName]["url"];
                 }
 			}
-			
 			return config;
 		}
 		
@@ -133,7 +137,6 @@ package org.flowplayer.viralvideos {
 			copier.writeObject(_playerConfig);
 			copier.position = 0;
 			var updatedConfig:Object = (copier.readObject());
-			
 			
 			if (_controlsOptions) {
                 if (! updatedConfig.plugins["controls"]) {
@@ -172,7 +175,8 @@ package org.flowplayer.viralvideos {
             var configStr:String = _config.configUrl;
 			if ( ! configStr ) {
 				var conf:Object = updateConfig(_playerConfig);
-             	configStr = escape(JSON.encode(conf));
+//                configStr = JSON.encode(conf);
+                configStr = escape(JSON.encode(conf));
 			}
 			
             var code:String =
