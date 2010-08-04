@@ -13,21 +13,25 @@ package org.flowplayer.viralvideos {
 
     import flash.display.Stage;
 
+    import flash.external.ExternalInterface;
+
     import org.flowplayer.model.DisplayPluginModel;
     import org.flowplayer.util.Log;
     import org.flowplayer.util.URLUtil;
     import org.flowplayer.view.Flowplayer;
     import org.flowplayer.view.StyleableSprite;
-	import org.flowplayer.viralvideos.config.EmbedConfig;
+    import org.flowplayer.viralvideos.config.Config;
+    import org.flowplayer.viralvideos.config.EmbedConfig;
 	
 	import flash.utils.ByteArray;
+
+    import org.flowplayer.viralvideos.config.ShareConfig;
 
     public class PlayerEmbed {
         private var log:Log = new Log(this);
         private var _player:Flowplayer;
         private var _stage:Stage;
         private var _viralPluginConfiguredName:String;
-		private var _config:EmbedConfig;
         private var _playerConfig:Object;
         private var _height:int;
         private var _width:int;
@@ -36,12 +40,13 @@ package org.flowplayer.viralvideos {
         private var _controlsModel:DisplayPluginModel;
         private var _controlsOptions:Object;
         private var _autoHide:Boolean;
+        private var _viralConfig:Config;
 
-        public function PlayerEmbed(player:Flowplayer, viralPluginConfiguredName:String, stage:Stage, config:EmbedConfig) {
+        public function PlayerEmbed(player:Flowplayer, viralPluginConfiguredName:String, stage:Stage, viralConfig:Config) {
             _player = player;
             _viralPluginConfiguredName = viralPluginConfiguredName;
             _stage = stage;
-            _config = config;
+            _viralConfig = viralConfig;
             initializeConfig(stage);
             lookupControls();
         }
@@ -110,13 +115,9 @@ package org.flowplayer.viralvideos {
             }
 
             log.debug("initializeConfig() ", _playerConfig);
-            _playerConfig.plugins[_viralPluginConfiguredName].emailScriptURL = null;
-            _playerConfig.plugins[_viralPluginConfiguredName].emailScriptTokenURL = null;
-            _playerConfig.plugins[_viralPluginConfiguredName].emailScriptToken = null;
-            _playerConfig.playerId = null;
         }
 		
-		private function fixPluginsURL(config:Object):Object {			
+		private function fixPluginsURL(config:Object):void {
 			for ( var pluginName:String in config.plugins ) {
                 var pluginModel:Object = _player.pluginRegistry.getPlugin(pluginName);
                 var plugin:Object = pluginModel.pluginObject;
@@ -129,10 +130,27 @@ package org.flowplayer.viralvideos {
                     delete config.plugins[pluginName]["url"];
                 }
 			}
-			return config;
 		}
+
+        private function fixShareUrl(updatedConfig:Object):void {
+            log.debug("fixShareUrl(), viral enabled? " + Boolean(_viralConfig.share));
+            if (! _viralConfig.share) return;
+
+            var viralConfig:Object = updatedConfig.plugins[_viralPluginConfiguredName];
+            if (! viralConfig.hasOwnProperty("share")) {
+                viralConfig.share = {};
+            }
+            if (! viralConfig.share.shareUrl) {
+                viralConfig.share.shareUrl = URLUtil.pageUrl;
+            }
+        }
 		
 		private function updateConfig(_playerConfig:Object):Object {
+            _playerConfig.plugins[_viralPluginConfiguredName].emailScriptURL = null;
+            _playerConfig.plugins[_viralPluginConfiguredName].emailScriptTokenURL = null;
+            _playerConfig.plugins[_viralPluginConfiguredName].emailScriptToken = null;
+            _playerConfig.playerId = null;
+
 			var copier:ByteArray = new ByteArray();
 			copier.writeObject(_playerConfig);
 			copier.position = 0;
@@ -148,35 +166,35 @@ package org.flowplayer.viralvideos {
                 }
             }
 			
-			updatedConfig = fixPluginsURL(updatedConfig);
-						
-			var clip:Object = updatedConfig.clip || {};
-			clip.autoPlay = _config.isAutoPlayOverriden ? _config.autoPlay : clip.autoPlay;
-			clip.autoBuffering = _config.isAutoBufferingOverriden ? _config.autoBuffering : clip.autoBuffering;
-			clip.linkUrl = _config.linkUrl ? _config.linkUrl : clip.linkUrl;
+			fixPluginsURL(updatedConfig);
+            fixShareUrl(updatedConfig);
+
+            var clip:Object = updatedConfig.clip || {};
+			clip.autoPlay = _viralConfig.embed.isAutoPlayOverriden ? _viralConfig.embed.autoPlay : clip.autoPlay;
+			clip.autoBuffering = _viralConfig.embed.isAutoBufferingOverriden ? _viralConfig.embed.autoBuffering : clip.autoBuffering;
+			clip.linkUrl = _viralConfig.embed.linkUrl ? _viralConfig.embed.linkUrl : clip.linkUrl;
 			updatedConfig.clip = clip;
 			
 			var playlist:Array = updatedConfig.playlist || [];
 			if ( playlist.length == 0 )
 				playlist.push(clip);
 				
-			if ( _config.isAutoPlayOverriden )
-				playlist[0].autoPlay = _config.autoPlay;
+			if ( _viralConfig.embed.isAutoPlayOverriden )
+				playlist[0].autoPlay = _viralConfig.embed.autoPlay;
 				
-			if ( _config.isAutoBufferingOverriden )
-				playlist[0].autoBuffering = _config.autoBuffering;
+			if ( _viralConfig.embed.isAutoBufferingOverriden )
+				playlist[0].autoBuffering = _viralConfig.embed.autoBuffering;
 							
 			updatedConfig.playlist = playlist;
 						
 			return updatedConfig;
 		}
-		
-        public function getEmbedCode():String {
-            var configStr:String = _config.configUrl;
+
+        public function getEmbedCode(escaped:Boolean = false):String {
+            var configStr:String = _viralConfig.embed.configUrl;
 			if ( ! configStr ) {
 				var conf:Object = updateConfig(_playerConfig);
-//                configStr = JSON.encode(conf);
-                configStr = escape(JSON.encode(conf));
+                configStr = escaped ? escape(JSON.encode(conf)) : JSON.encode(conf);
 			}
 			
             var code:String =
@@ -197,12 +215,12 @@ package org.flowplayer.viralvideos {
 
         public function get width():int {
             if (_width > 0) return _width;
-            return _stage.width;
+            return _stage.stageWidth;
         }
 
         public function get height():int {
             if (_height > 0) return _height;
-            return _stage.height;
+            return _stage.stageHeight;
         }
 
         public function get controls():StyleableSprite {

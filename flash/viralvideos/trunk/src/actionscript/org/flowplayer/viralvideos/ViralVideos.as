@@ -140,7 +140,7 @@ package org.flowplayer.viralvideos {
 
         private function onPlayerLoad(event:PlayerEvent):void {
             log.debug("onPlayerLoad() ");
-            _playerEmbed = new PlayerEmbed(_player, _model.name, stage, _config.embed);
+            _playerEmbed = new PlayerEmbed(_player, _model.name, stage, _config);
             _config.playerEmbed = _playerEmbed;
 
             createViews();
@@ -261,6 +261,11 @@ package org.flowplayer.viralvideos {
             }
 
             _autoHide.reset();
+        }
+
+        [External]
+        public function getEmbedCode(escaped:Boolean = false):String {
+            return _playerEmbed.getEmbedCode(escaped);
         }
 
         private function hideViews():void {
