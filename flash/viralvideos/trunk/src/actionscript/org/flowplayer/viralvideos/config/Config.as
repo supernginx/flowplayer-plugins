@@ -24,7 +24,6 @@ package org.flowplayer.viralvideos.config
         private var _embed:EmbedConfig = new EmbedConfig();
         private var _autoHide:AutoHideConfig;
         private var _canvas:Object;
-        private var _baseURL:String = URLUtil.pageUrl;
         private var _buttonConfig:ButtonConfig;
         private var _closeButton:ButtonConfig;
         private var _icons:IconConfig = new IconConfig();
@@ -35,14 +34,6 @@ package org.flowplayer.viralvideos.config
             _autoHide.hideStyle = "fade";
             _autoHide.delay = 2000;
             _autoHide.duration = 1000;
-        }
-
-        public function get baseURL():String {
-            return _baseURL;
-        }
-
-        public function set baseURL(value:String):void {
-            _baseURL = value;
         }
 
         public function get email():EmailConfig {
