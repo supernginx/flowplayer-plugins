@@ -160,12 +160,12 @@ package org.flowplayer.viralvideos {
 
         private function changeCode():void {
             log.debug("changeCode");
-            _embedCode.htmlText = '<span class="embed">' + _config.embed.playerEmbed.getEmbedCode().replace(/\</g, "&lt;").replace(/\>/g, "&gt;") + '</span>';
+            _embedCode.htmlText = '<span class="embed">' + _config.embed.playerEmbed.getEmbedCode(true).replace(/\</g, "&lt;").replace(/\>/g, "&gt;") + '</span>';
         }
 
         private function initEmbedCodeSettings():void {
-            _config.embed.playerEmbed.width = _widthTxt.text as Number;
-            _config.embed.playerEmbed.height = _heightTxt.text as Number;
+            _config.embed.playerEmbed.width = value(_widthTxt);
+            _config.embed.playerEmbed.height = value(_heightTxt);
             changeCode();
         }
 
@@ -248,7 +248,7 @@ package org.flowplayer.viralvideos {
 
         private function onCopyToClipboard(event:MouseEvent):void {
             initEmbedCodeSettings();
-            System.setClipboard(_config.embed.playerEmbed.getEmbedCode());
+            System.setClipboard(_config.embed.playerEmbed.getEmbedCode(true));
             stage.focus = _embedCode;
             setSelection();
             _infoLabel.htmlText = '<span class="info">Copied to clipboard</span>';
