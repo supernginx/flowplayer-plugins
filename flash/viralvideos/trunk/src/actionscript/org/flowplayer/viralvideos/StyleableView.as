@@ -62,7 +62,6 @@ package org.flowplayer.viralvideos {
             field.autoSize = TextFieldAutoSize.LEFT;
             field.antiAliasType = AntiAliasType.ADVANCED;
             field.height = 15;
-
             field.styleSheet = style.styleSheet;
             return field;
         }

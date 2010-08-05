@@ -111,6 +111,7 @@ package org.flowplayer.viralvideos {
 
             } else {
                 // had an external config file configured using 'url', use the loaded config object
+                //_playerConfig = _player.config.configObject;
                 _playerConfig = _player.config.configObject;
             }
 
