@@ -126,20 +126,23 @@ $f("player", "@PLAYER_SWF@", {
 				// a token value used for spam protection
 				tokenUrl: 'http://flowplayer.electrocode.net/viralvideos/index/token'				
 			},
+			onClose: function() {
+			   console.log("onClose");
+			},
 			onBeforeShowEmbed: function() {
-			      alert("yes");
+			    
 			      //openOverlay();
 			      // return false to prevent the viral flash plugin to open the normal popup
-			      return false;
+			    //  return false;
 			},
 			onBeforeShowShare: function() {
-			      alert("yes");
+			   
 			      //openOverlay();
 			      // return false to prevent the viral flash plugin to open the normal popup
 			      return false;
 			},
 			onBeforeShare: function(url, dimensions) {
-			      alert(url);
+			   
 			     
 			      // return false to prevent the viral flash plugin to open the normal popup
 			      return false;

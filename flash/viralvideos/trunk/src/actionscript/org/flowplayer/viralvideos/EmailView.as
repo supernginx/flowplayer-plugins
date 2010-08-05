@@ -61,6 +61,7 @@ package org.flowplayer.viralvideos {
         private function titleLabel():TextField {
             var field:TextField = createLabelField();
             field.htmlText = "<span class=\"title\">" + _config.email.texts.title + "</span>";
+            
             return field;
         }
 

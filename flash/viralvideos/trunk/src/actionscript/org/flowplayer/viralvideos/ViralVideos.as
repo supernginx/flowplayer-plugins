@@ -260,7 +260,7 @@ package org.flowplayer.viralvideos {
                 new PropertyBinder(_config.autoHide).copyProperties(props);
             }
 
-            _autoHide.reset();
+           // _autoHide.reset();
         }
 
         [External]
@@ -290,6 +290,8 @@ package org.flowplayer.viralvideos {
         private function onFadeOut():void {
             displayButtons(true);
             _player.setKeyboardShortcutsEnabled(true);
+            
+            _model.dispatch(PluginEventType.PLUGIN_EVENT, "onClose");
         }
 
         public function setActiveTab(newTab:String, show:Boolean = true):void {
