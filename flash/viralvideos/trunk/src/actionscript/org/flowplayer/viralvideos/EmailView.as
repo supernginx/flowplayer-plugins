@@ -15,6 +15,7 @@ package org.flowplayer.viralvideos {
     import flash.events.Event;
     import flash.events.IOErrorEvent;
     import flash.events.MouseEvent;
+    import flash.events.TimerEvent;
     import flash.net.URLLoader;
     import flash.net.URLLoaderDataFormat;
     import flash.net.URLRequest;
@@ -22,6 +23,8 @@ package org.flowplayer.viralvideos {
     import flash.net.URLVariables;
     import flash.net.navigateToURL;
     import flash.text.TextField;
+
+    import flash.utils.Timer;
 
     import org.flowplayer.model.DisplayPluginModel;
     import org.flowplayer.ui.LabelButton;
@@ -221,11 +224,18 @@ package org.flowplayer.viralvideos {
         private function sendLocalEmail():void {
             var request:URLRequest = new URLRequest(formatString("mailto:{0}?subject={1}&body={2}", _emailToInput.text, escape(_config.email.texts.subject), escape(formatString(_config.email.texts.template, _messageInput.text, _videoURL, _videoURL))));
             navigateToURL(request, "_self");
+            createCloseTimer();
         }
 
         private function setStatus(msg:String):void {
             _statusLabel.htmlText = msg;
             createLabelReset(_statusLabel);
+        }
+
+        protected function createCloseTimer():void {
+            var timer:Timer = new Timer(1000, 1);
+            timer.addEventListener(TimerEvent.TIMER_COMPLETE, function(event:TimerEvent):void { ViralVideos(model.getDisplayObject()).close(); } );
+            timer.start();
         }
 
         private function formSuccess(value:String):void {
@@ -322,7 +332,7 @@ package org.flowplayer.viralvideos {
                     formSuccess(message.success);
                 }
             }
-
+            createCloseTimer();
         }
 
         private function onTokenError(event:IOErrorEvent):void {
