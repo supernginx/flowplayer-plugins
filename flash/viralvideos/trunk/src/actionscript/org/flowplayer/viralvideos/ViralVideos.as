@@ -93,7 +93,7 @@ package org.flowplayer.viralvideos {
         private function createCloseButton(icon:DisplayObject = null):void {
             _closeButton = new CloseButton(_config.closeButton, _player.animationEngine);
             addChild(_closeButton);
-            _closeButton.addEventListener(MouseEvent.CLICK, onCloseClicked);
+            _closeButton.addEventListener(MouseEvent.CLICK, close);
         }
 
         private function createIconBar():void {
@@ -283,7 +283,7 @@ package org.flowplayer.viralvideos {
         }
 
 
-        private function onCloseClicked(event:MouseEvent):void {
+        public function close(event:MouseEvent = null):void {
             _player.animationEngine.fadeOut(this, 500, onFadeOut);
         }
 
