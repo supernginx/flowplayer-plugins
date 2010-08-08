@@ -12,11 +12,8 @@ package org.flowplayer.controls.slider {
     import flash.display.DisplayObject;
     import flash.display.Sprite;
     import flash.events.MouseEvent;
-
     import flash.events.TimerEvent;
     import flash.utils.*;
-
-    import mx.effects.easing.Linear;
 
     import org.flowplayer.controls.config.Config;
     import org.flowplayer.model.Clip;
@@ -203,7 +200,9 @@ package org.flowplayer.controls.slider {
                             var duration:Number = (clip.duration - time) * 1000;  
                             log.debug("doStart(), starting an animation to x pos " + endPos + ", the duration is " + clip.duration + ", current pos is " + _dragger.x);
                             updateDraggerPos(currentTime, clip);
-                            animationEngine.animateProperty(_dragger, "x", endPos, duration, null, Linear.easeOut);
+                            animationEngine.animateProperty(_dragger, "x", endPos, duration, null, function(t:Number, b:Number, c:Number, d:Number):Number {
+                                return c * t / d + b;
+                            });
                         }
                     });
             _startDetectTimer.start();

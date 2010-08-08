@@ -236,7 +236,7 @@ package org.flowplayer.controls {
             var result:Object = super.css(styleProps);
 
 			if ( _controlBarMover )
-				_controlBarMover.updatePosition(true);
+				_controlBarMover.showAndUpdate();
 	
             var newStyleProps:Object = _config.style.addStyleProps(result);
             if (! styleProps) return newStyleProps;
