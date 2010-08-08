@@ -8,7 +8,8 @@ Version history:
 - Added possibility to specify display properties for the icons (share, embed, email buttons)
 Fixes:
 - Now the embed functionality works properly when the contols plugin is built into the player. Was causing an error
-  when the the user selected colors for the controlbar background and buttons. 
+  when the the user selected colors for the controlbar background and buttons.
+- fixed issue #130: Viral videos icons shrink down in fullscreen
 
 3.2.1
 -----
