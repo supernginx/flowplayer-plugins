@@ -1,5 +1,9 @@
 Version history:
 
+3.2.2
+-----
+Fixes: was throwing an async NetConnection error with the onMetadata event
+
 3.2.1
 -----
 - now uses the durationFunc of the RTMP plugin
