@@ -1,5 +1,11 @@
 Version history:
 
+3.2.1
+-----
+- improved error handling
+Fixes:
+- fixed problem with playlists http://flowplayer.org/forum/8/42864#post-47165
+
 3.2.0
 -----
 Fixes:

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of Flowplayer, http://flowplayer.org
  *
  * By: Richard Mueller  richard@3232design.com
@@ -18,6 +18,8 @@ and plugins compiled in (except for clip URL, which is passed in separately).
 package org.flowplayer.analytics {
 
     import com.google.analytics.GATracker;
+    import com.google.analytics.AnalyticsTracker;
+    import com.google.analytics.debug.DebugConfiguration;
 
 	import flash.external.ExternalInterface;		
 
@@ -30,7 +32,7 @@ package org.flowplayer.analytics {
 
 		private var _model:PluginModel;				// need this to interact with flowplayer
 		private var _player:Flowplayer;				// this is the actual player object
-		private var _tracker:GATracker;				// the actual tracker object
+		private var _tracker:AnalyticsTracker;			// the actual tracker object
 		private var _trackingMode:String;			// Your Bridge or AS3 -- if you have ga.js on the page and a tracking object already, use 'Bridge', else 'AS3' and your google_id.
 		private var _bridgeTrackerObject:String;	// Your ga.js tracking object
 		private var _googleId:String;				// Your Google id -- not necessary if using bridge mode
@@ -105,8 +107,6 @@ package org.flowplayer.analytics {
 			
 			_embeddedURL = getEmbeddedUrl();
 
-			instantiateTracker();
-
 			var createClipTracker:Function = function(eventName:String):Function {
 				return function(event:ClipEvent):void {
 					if (_labels[eventName] != false) doTrackEvent(_labels[eventName], event.target as Clip);
@@ -152,6 +152,9 @@ package org.flowplayer.analytics {
 		private function instantiateTracker():void {
 			
 			try {
+				var _confdebug: DebugConfiguration = new DebugConfiguration();
+				_confdebug.minimizedOnStart = true;
+
 				if (_trackingMode == "Bridge") {
 					if ( ! ExternalInterface.available ) {
 						_model.dispatchError(PluginError.ERROR, "Unable to create tracked in Bridge mode because ExternalInterface is not available");
@@ -165,9 +168,11 @@ package org.flowplayer.analytics {
 					
 					log.debug("Creating tracker in AS3 mode using "+ _googleId + ", debug ? "+ (_mydebug?"true":"false"));
 					_tracker = new GATracker( this, _googleId, "AS3", _mydebug);
+					_tracker.debug.showHideKey = 123; // use the F12 key to toggle visual debug display
 				}
 			} catch(e:Error) {
-				log.error("Unable to create tracker", e);
+				log.error("Unable to create tracker:", e.toString());
+				log.error("Stack:", e.getStackTrace());
 			}
 		}
 
@@ -175,12 +180,17 @@ package org.flowplayer.analytics {
 		// 			if the local server URL is unavailable, change the null to a prettier 'Unknown'
 		//			Finally, send the time each event happened.
 		private function doTrackEvent(eventName:String, clip:Clip = null):void {			
+			if (_tracker == null) {
+			    instantiateTracker();
+			}
 			if ( clip == null )
 				clip = _player.currentClip;
 			
 			try {
 				log.debug("Tracking "+eventName + "["+(clip.completeUrl + (clip.isInStream ? ": instream" : ""))+"] : "+(_player.status ? _player.status.time : 0)+" on page "+ _embeddedURL);
-            	_tracker.trackEvent(_embeddedURL, eventName, clip.completeUrl + (clip.isInStream ? ": instream" : ""), int(_player.status ? _player.status.time : 0) ); 
+		if (_tracker.isReady()) {
+            	_tracker.trackEvent(_embeddedURL, eventName, clip.completeUrl + (clip.isInStream ? ": instream" : ""), int(_player.status ? _player.status.time : 0) );
+		}
 			} catch (e:Error) {
 				log.error("Got error while tracking event "+ eventName);
 			}
