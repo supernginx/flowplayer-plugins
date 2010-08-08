@@ -21,7 +21,9 @@ package org.flowplayer.analytics {
     import com.google.analytics.AnalyticsTracker;
     import com.google.analytics.debug.DebugConfiguration;
 
-	import flash.external.ExternalInterface;		
+	import flash.external.ExternalInterface;
+
+    import flash.ui.Keyboard;
 
     import org.flowplayer.model.*;
 
@@ -85,7 +87,8 @@ package org.flowplayer.analytics {
 				}
 			}
 			
-			if ( _trackingMode == "Bridge" ) {
+			if ( _model.config.trackingMode == "Bridge" ) {
+                _trackingMode = "Bridge";
 				if ( _model.config.bridgeObject ) {
 					_bridgeTrackerObject = _model.config.bridgeObject;
 				} else if ( _model.config.googleId ) {
@@ -112,7 +115,6 @@ package org.flowplayer.analytics {
 					if (_labels[eventName] != false) doTrackEvent(_labels[eventName], event.target as Clip);
 				}
 			}
-
 
 			_player.playlist.onStart(createClipTracker("start"));
 			_player.playlist.onBegin(createClipTracker("begin"));
@@ -168,7 +170,7 @@ package org.flowplayer.analytics {
 					
 					log.debug("Creating tracker in AS3 mode using "+ _googleId + ", debug ? "+ (_mydebug?"true":"false"));
 					_tracker = new GATracker( this, _googleId, "AS3", _mydebug);
-					_tracker.debug.showHideKey = 123; // use the F12 key to toggle visual debug display
+					_tracker.debug.showHideKey = Keyboard.F6; // use the F6 key to toggle visual debug display
 				}
 			} catch(e:Error) {
 				log.error("Unable to create tracker:", e.toString());
