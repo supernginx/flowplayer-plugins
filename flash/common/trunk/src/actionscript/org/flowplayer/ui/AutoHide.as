@@ -60,8 +60,7 @@ package org.flowplayer.ui {
             _player = player;
             _stage = stage;
             _disp = displayObject;
-
-            updatePosition();
+            _originalPos = getDisplayProperties();
 
             if (_config.state != "fullscreen") {
                 startTimerAndInitializeListeners();
@@ -70,7 +69,7 @@ package org.flowplayer.ui {
         }
 
         /**
-         * Adds a hide lisenerer function.
+         * Adds a hide listener function.
          * @param hideListener the listener callback function. If this returns false the hiding is prevented.
          */
         public function onHide(hideListener:Function):void {
@@ -122,25 +121,24 @@ package org.flowplayer.ui {
             _player.animationEngine.cancel(_disp);
         }
 
-        public function updatePosition(showControls:Boolean = false):void
+        public function showAndUpdate():void
         {
-            var pos:Object = getDisplayProperties();
+//            var pos:Object = getDisplayProperties();
+//
+//            if (! _originalPos) {
+//                _originalPos = pos;
+//            }
+//
+//            // don't update position when hidden. Sometimes happens when changing height while hiding (bug #63)
+//            if (pos.hasOwnProperty("position") && (! pos.position.top.hasValue() || pos.position.top.hasValue() && pos.position.top.px != getHiddenPosition())
+//											   && pos.alpha != 0 ) {
+//                _originalPos = pos;
+//            }
 
-            if (! _originalPos) {
-                _originalPos = pos;
-            }
-
-            // don't update position when hidden. Sometimes happens when changing height while hiding (bug #63)
-            if (pos.hasOwnProperty("position") && (! pos.position.top.hasValue() || pos.position.top.hasValue() && pos.position.top.px != getHiddenPosition())
-											   && pos.alpha != 0 ) {
-                _originalPos = pos;
-            }
-
-
-            if (showControls) {
-                cancelAnimation();
-                show();
-            }
+            cancelAnimation();
+            show(function():void {
+                _originalPos = getDisplayProperties();
+            });
         }
 
         private function getDisplayProperties():Object {
@@ -178,14 +176,14 @@ package org.flowplayer.ui {
         private function onFullScreen(event:FullScreenEvent):void {
             if (event.fullScreen) {
                 startTimerAndInitializeListeners();
-                show();
+                showAndUpdate();
             } else {
                 if (_config.state != 'always') {
                     stop();
                 }
                 _disp.alpha = 0;
                 cancelAnimation();
-                show();
+                showAndUpdate();
             }
         }
 
@@ -348,7 +346,7 @@ package org.flowplayer.ui {
             dispatchEvent("onHidden");
         }
 
-        public function show():void {
+        public function show(callback:Function = null):void {
             // fetch the current props, they might have changed because of some
             var currentProps:Object = getDisplayProperties();
 
@@ -381,7 +379,14 @@ package org.flowplayer.ui {
                 return;
             }
 
-            _player.animationEngine.animate(_disp, currentProps, 400, onShowed);
+            var onShowCallback:Function = onShowed;
+            if (callback != null) {
+                onShowCallback = function():void {
+                    onShowed();
+                    callback();
+                }
+            }
+            _player.animationEngine.animate(_disp, currentProps, 400, onShowCallback);
         }
 
         private function dispatchEvent(string:String):void {
