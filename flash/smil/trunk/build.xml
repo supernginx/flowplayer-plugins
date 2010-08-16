@@ -6,7 +6,7 @@
 	<import file="${devkit-dir}/plugin-build.xml"/>
 	<property name="flowplayer_lib" value="${devkit-dir}/flowplayer.swc" />
 	
-	<property name="version" value="3.2.1-dev" />
+	<property name="version" value="3.2.1" />
 	<property name="basename" value="flowplayer.smil" />
     <property name="releasedir" value="${basename}" />
 	<property name="plugin-binary" value="${basename}.swf" />

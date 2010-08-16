@@ -2,7 +2,7 @@ Version history:
 
 3.2.1
 -----
- - Added bandwidth management
+ - Added bandwidth management: http://code.google.com/p/flowplayer-core/issues/detail?id=117&can=1&q=smil
 
 3.1.3
 -----

@@ -2,9 +2,12 @@ Version history:
 
 3.2.1
 -----
+Changes:
+- Supports cover images via a 'coverImage' configuration option
+- now works with securestreaming plugin
+Fixes:
 - fix to work properly if accessing the ID3 tag fails because Flash security prevents it
 - works better if the file does not have the ID3 tag
-- now works with securestreaming plugin
 
 3.2.0
 -----
