@@ -1,5 +1,9 @@
 Version history:
 
+3.2.2
+-----
+- Added support for MP4 embedded captions, issue #122. Demo: http://ec2-75-101-198-99.compute-1.amazonaws.com:8080/plugins/flash/captions.html
+
 3.2.1
 -----
 - Added ability to have line breaks with timed text caption files:
