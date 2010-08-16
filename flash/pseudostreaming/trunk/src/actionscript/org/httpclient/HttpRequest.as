@@ -3,16 +3,15 @@
  * See LICENSE.txt for full license information.
  */
 package org.httpclient {
-  
-  import com.adobe.net.URI;
-  import com.adobe.net.URIEncodingBitmap;
-  import com.hurlant.util.Base64;
-  import flash.errors.IllegalOperationError;
+    import com.adobe.net.URI;
+    import com.adobe.net.URIEncodingBitmap;
 
-  import flash.utils.ByteArray;
-  import org.httpclient.http.multipart.Multipart;
+    import flash.errors.IllegalOperationError;
+    import flash.utils.ByteArray;
 
-  public class HttpRequest {
+    import org.httpclient.http.multipart.Multipart;
+
+    public class HttpRequest {
     
     public static const kUriPathEscapeBitmap:URIEncodingBitmap = new URIEncodingBitmap(" %?#");
     public static const kUriQueryEscapeBitmap:URIEncodingBitmap = new URIEncodingBitmap(" %=|:?#/@+\\"); // Probably don't need to escape all these
