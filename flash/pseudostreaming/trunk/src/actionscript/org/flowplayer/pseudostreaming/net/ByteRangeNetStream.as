@@ -1,40 +1,31 @@
 package org.flowplayer.pseudostreaming.net
 {
-	import com.adobe.net.URI;
-	
-	import flash.events.Event;
-	import flash.events.IOErrorEvent;
-	import flash.events.NetStatusEvent;
-	import flash.events.ProgressEvent;
-	import flash.events.SecurityErrorEvent;
-	import flash.net.NetConnection;
-	import flash.net.NetStream;
-	import flash.net.NetStreamAppendBytesAction;
-	import flash.net.URLRequest;
-	import flash.net.URLRequestHeader;
-	import flash.net.URLStream;
-	import flash.utils.ByteArray;
-	import flash.system.Security;
-	import flash.utils.setTimeout;
-	
-	import org.flowplayer.util.Log;
-	
-	import org.httpclient.HttpClient;
-	import org.httpclient.HttpHeader;
-	import org.httpclient.HttpRequest;
-	import org.httpclient.events.HttpDataEvent;
-	import org.httpclient.events.HttpErrorEvent;
-	import org.httpclient.events.HttpListener;
-	import org.httpclient.events.HttpRequestEvent;
-	import org.httpclient.events.HttpResponseEvent;
-	import org.httpclient.events.HttpStatusEvent;
-	import org.httpclient.http.Get;
-	
-	import org.flowplayer.pseudostreaming.DefaultSeekDataStore;
+    import com.adobe.net.URI;
 
-	
-	
-	public class ByteRangeNetStream extends NetStream
+    import flash.events.Event;
+    import flash.events.IOErrorEvent;
+    import flash.events.NetStatusEvent;
+    import flash.events.SecurityErrorEvent;
+    import flash.net.NetConnection;
+    import flash.net.NetStream;
+    import flash.net.URLStream;
+    import flash.system.Security;
+    import flash.utils.ByteArray;
+    import flash.utils.setTimeout;
+
+    import org.flowplayer.pseudostreaming.DefaultSeekDataStore;
+    import org.flowplayer.util.Log;
+    import org.httpclient.HttpClient;
+    import org.httpclient.HttpHeader;
+    import org.httpclient.HttpRequest;
+    import org.httpclient.events.HttpDataEvent;
+    import org.httpclient.events.HttpErrorEvent;
+    import org.httpclient.events.HttpListener;
+    import org.httpclient.events.HttpRequestEvent;
+    import org.httpclient.events.HttpStatusEvent;
+    import org.httpclient.http.Get;
+
+    public class ByteRangeNetStream extends NetStream
 	{
 		private var _dataStream:URLStream;
 		private var _client:HttpClient;
