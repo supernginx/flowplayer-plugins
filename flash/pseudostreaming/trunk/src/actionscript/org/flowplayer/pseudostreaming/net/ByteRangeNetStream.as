@@ -9,6 +9,7 @@ package org.flowplayer.pseudostreaming.net
     import flash.net.NetConnection;
     import flash.net.NetStream;
     import flash.net.URLStream;
+    import flash.net.NetStreamAppendBytesAction;
     import flash.system.Security;
     import flash.utils.ByteArray;
     import flash.utils.setTimeout;
