@@ -1,5 +1,10 @@
 Version history:
 
+3.2.3
+-----
+Fixes:
+- Unnecessarily displays the "play again" button with live streams: http://flowplayer.org/forum/8/46963
+
 3.2.2
 -----
 Fixes:
