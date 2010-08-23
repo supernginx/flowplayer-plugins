@@ -1,4 +1,4 @@
-package org.osmf.net.rtmpStreaming
+package org.osmf.net.rtmpstreaming
 {
 
 	import org.osmf.net.SwitchingRuleBase;
