@@ -9,34 +9,32 @@
  */
  
 package org.flowplayer.bwcheck.strategy {
-
-
+    import org.flowplayer.bwcheck.Config;
+    import org.flowplayer.bwcheck.model.BitrateItem;
     import org.flowplayer.util.Log;
     import org.flowplayer.view.Flowplayer;
-	import org.flowplayer.bwcheck.model.BitrateItem;
-	import org.flowplayer.bwcheck.Config;
-	
-	import __AS3__.vec.Vector;
-	import org.osmf.net.DynamicStreamingItem;
-	
-	/**
+    import org.osmf.net.DynamicStreamingItem;
+
+    /**
 	 * @author danielr
 	 */
-	public class StreamSelectionDefault implements StreamSelection {
+	public class StreamSelectionDefault extends AbstractStreamSelection implements StreamSelection {
 		
         private var log:Log = new Log(this);
-		
-		public function StreamSelectionDefault(config:Config) {
-		}
-		
-		public function getStreamIndex(bandwidth:Number, bitrateProperties:Vector.<DynamicStreamingItem>, player:Flowplayer):Number {
+
+        public function StreamSelectionDefault(config:Config, bitrates:Vector.<DynamicStreamingItem>) {
+            super(bitrates);
+        }
+
+
+        public function getStreamIndex(bandwidth:Number, player:Flowplayer):Number {
 			var screenWidth:Number = player.screen.getDisplayObject().width;
 			log.debug("screen width is " + screenWidth + ", bandwidth is " + bandwidth);
 
-			for (var i:Number=0; i < bitrateProperties.length; i++) {
-                var item:DynamicStreamingItem = bitrateProperties[i];
+			for (var i:Number=0; i < _bitrates.length; i++) {
+                var item:DynamicStreamingItem = _bitrates[i];
 
-				log.debug("candidate stream has width " + item.width + ", bitrate " + item.bitrate);
+				log.debug("candidate '" + item.streamName +  "' has width " + item.width + ", bitrate " + item.bitrate);
                 var fitsScreen:Boolean = ! item.width || screenWidth >= item.width;
                 var enoughBw:Boolean = bandwidth >= item.bitrate;
                 var bitrateSpecified:Boolean = item.bitrate > 0;
@@ -51,29 +49,30 @@ package org.flowplayer.bwcheck.strategy {
 			return -1;
 		}
 		
-		public function getStream(bandwidth:Number, bitrateProperties:Vector.<DynamicStreamingItem>, player:Flowplayer):DynamicStreamingItem {
-            var index:Number = getStreamIndex(bandwidth, bitrateProperties, player);
-            if (index == -1) return getDefaultStream(bitrateProperties, player);
-            return bitrateProperties[index] as BitrateItem;
+		public function getStream(bandwidth:Number, player:Flowplayer):DynamicStreamingItem {
+            var index:Number = getStreamIndex(bandwidth, player);
+            if (index == -1) return getDefaultStream(player);
+            return _bitrates[index] as BitrateItem;
 		}
 
 
-        public function getDefaultStream(bitrateProperties:Vector.<DynamicStreamingItem>, player:Flowplayer):DynamicStreamingItem {
+        public function getDefaultStream(player:Flowplayer):DynamicStreamingItem {
             log.debug("getDefaultStream()");
             var item:DynamicStreamingItem;           
-            for (var i:Number=0; i < bitrateProperties.length; i++) {
-                if (bitrateProperties[i]["isDefault"]) {
-                    item = bitrateProperties[i];
+            for (var i:Number=0; i < _bitrates.length; i++) {
+                if (_bitrates[i]["isDefault"]) {
+                    item = _bitrates[i];
                     break;
                 }
             }
             if (! item) {
-                item = bitrateProperties[bitrateProperties.length - 1];
+                item = _bitrates[_bitrates.length - 1];
                 log.debug("getDefaultStream(), did not find a default stream -> using the one with lowest bitrate " + item);
             } else {
                 log.debug("getDefaultStream(), found default item " + item);
             }
             return item;
         }
+
     }
 }

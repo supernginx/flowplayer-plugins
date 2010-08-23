@@ -20,11 +20,13 @@ package org.flowplayer.bwcheck.strategy {
 	 */
 	public interface StreamSelection {
 		
-		function getStreamIndex(bandwidth:Number, bitrateProperties:Vector.<DynamicStreamingItem>, player:Flowplayer):Number
+		function getStreamIndex(bandwidth:Number, player:Flowplayer):Number;
 
-        function getStream(bandwidth:Number, bitrateProperties:Vector.<DynamicStreamingItem>, player:Flowplayer):DynamicStreamingItem
+        function getStream(bandwidth:Number, player:Flowplayer):DynamicStreamingItem;
         
-        function getDefaultStream(bitrateProperties:Vector.<DynamicStreamingItem>, player:Flowplayer):DynamicStreamingItem
+        function getDefaultStream(player:Flowplayer):DynamicStreamingItem;
+
+        function get bitrates():Vector.<DynamicStreamingItem>;
 
 	}
 }

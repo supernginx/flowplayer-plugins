@@ -9,8 +9,8 @@
  */
  
 package org.flowplayer.bwcheck.strategy {
-
-	import org.flowplayer.util.Log;
+    import org.flowplayer.bwcheck.strategy.AbstractStreamSelection;
+    import org.flowplayer.util.Log;
     import org.flowplayer.view.Flowplayer;
 	import org.flowplayer.bwcheck.model.BitrateItem;
 	import org.flowplayer.bwcheck.Config;
@@ -21,33 +21,34 @@ package org.flowplayer.bwcheck.strategy {
 	/**
 	 * @author danielr
 	 */
-	public class StreamSelectionResizable implements StreamSelection {
+	public class StreamSelectionResizable extends AbstractStreamSelection implements StreamSelection {
 		
 		private var _config:Config;
 		private var log:Log = new Log(this);
 		
-		public function StreamSelectionResizable(config:Config) {
+		public function StreamSelectionResizable(config:Config, bitrates:Vector.<DynamicStreamingItem>) {
+            super(bitrates);
 			_config = config;
 		}
 		
-		public function getStreamIndex(bandwidth:Number, bitrateProperties:Vector.<DynamicStreamingItem>, player:Flowplayer):Number {
+		public function getStreamIndex(bandwidth:Number, player:Flowplayer):Number {
 			
 			var screenWidth:Number = player.screen.getDisplayObject().width;
 			
 			
-			var index:Number = bitrateProperties.length - 1;
+			var index:Number = bitrates.length - 1;
 			
-			for (var i:Number=0; i < bitrateProperties.length; i++) {
+			for (var i:Number=0; i < bitrates.length; i++) {
 				
 				if (!player.isFullscreen()) {
-					if (bitrateProperties[i].width <= _config.maxContainerWidth && 
-					    bandwidth >= bitrateProperties[i].bitrate && bitrateProperties[i].bitrate) {
+					if (bitrates[i].width <= _config.maxContainerWidth &&
+					    bandwidth >= bitrates[i].bitrate && bitrates[i].bitrate) {
 					    return i;
 					    break;
 				    }
 				} else {
-					if (screenWidth >= bitrateProperties[i].width && 
-						 bandwidth >= bitrateProperties[i].bitrate && bitrateProperties[i].bitrate) {
+					if (screenWidth >= bitrates[i].width &&
+						 bandwidth >= bitrates[i].bitrate && bitrates[i].bitrate) {
 						return i;	 	
 						break;
 					}
@@ -56,21 +57,21 @@ package org.flowplayer.bwcheck.strategy {
 			return index;
 		}
 		
-		public function getStream(bandwidth:Number, bitrateProperties:Vector.<DynamicStreamingItem>, player:Flowplayer):DynamicStreamingItem {
-			return bitrateProperties[getStreamIndex(bandwidth, bitrateProperties, player)] as BitrateItem;
+		public function getStream(bandwidth:Number, player:Flowplayer):DynamicStreamingItem {
+			return bitrates[getStreamIndex(bandwidth, player)] as BitrateItem;
 		}
 		
 	
-		public function getDefaultStream(bitrateProperties:Vector.<DynamicStreamingItem>, player:Flowplayer):DynamicStreamingItem {
+		public function getDefaultStream(player:Flowplayer):DynamicStreamingItem {
             log.debug("getDefaultStream()");
-            for (var i:Number=0; i < bitrateProperties.length; i++) {
-                if (bitrateProperties[i]["isDefault"]) {
-                    return bitrateProperties[i];
+            for (var i:Number=0; i < bitrates.length; i++) {
+                if (bitrates[i]["isDefault"]) {
+                    return bitrates[i];
                     break;
                 }
             }
             log.debug("getDefaultStream(), did not find a default stream");
-            return bitrateProperties[0];
+            return bitrates[0];
         }
 		
 	}
