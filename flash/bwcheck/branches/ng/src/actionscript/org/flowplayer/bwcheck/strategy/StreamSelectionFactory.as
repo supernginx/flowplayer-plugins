@@ -15,6 +15,8 @@ package org.flowplayer.bwcheck.strategy {
     import org.flowplayer.bwcheck.util.FactoryMethodUtil;
     import org.flowplayer.view.Flowplayer;
 	
+	import __AS3__.vec.Vector;
+	import org.osmf.net.DynamicStreamingItem;
 	import org.osmf.net.SwitchingRuleBase;
 
     /**
@@ -35,15 +37,15 @@ package org.flowplayer.bwcheck.strategy {
 			if (_strategy == null) _strategy = new StreamSelectionDefault(config);
 		}
 		
-		public function getStreamIndex(bandwidth:Number, bitrateProperties:Array, player:Flowplayer):Number {
+		public function getStreamIndex(bandwidth:Number, bitrateProperties:Vector.<DynamicStreamingItem>, player:Flowplayer):Number {
 			return _strategy.getStreamIndex(bandwidth, bitrateProperties, player);
 		}
 		
-		public function getStream(bandwidth:Number, bitrateProperties:Array, player:Flowplayer):BitrateItem {
+		public function getStream(bandwidth:Number, bitrateProperties:Vector.<DynamicStreamingItem>, player:Flowplayer):DynamicStreamingItem {
 			return _strategy.getStream(bandwidth, bitrateProperties, player);
 		}
 
-        public function getDefaultStream(bitrateProperties:Array, player:Flowplayer):BitrateItem {
+        public function getDefaultStream(bitrateProperties:Vector.<DynamicStreamingItem>, player:Flowplayer):DynamicStreamingItem {
             return _strategy.getDefaultStream(bitrateProperties, player);
         }
 		
