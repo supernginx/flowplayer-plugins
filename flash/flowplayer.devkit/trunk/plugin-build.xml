@@ -70,16 +70,20 @@
             <condition property="mxmlc-define" value="-define=${compiler-define}" else="">
                 <isset property="compiler-define" />
             </condition>
+			<condition property="mxmlc-defines" value="${compiler-defines}" else="">
+                <isset property="compiler-defines" />
+            </condition>
             <condition property="mxmlc-sources" value="${extra-sources}" else="">
                 <isset property="extra-sources" />
             </condition>
 
             <echo message="compiling with  ${mxmlc-library-path}" />
-            <echo message="compiling with  ${mxmlc-define}" />
+            <echo message="compiling with  ${mxmlc-define} ${mxmlc-defines}" />
 
 			<exec executable="${mxmlc_bin}" failonerror="true">
 				<arg line="-source-path @{src} ${mxmlc-library-path} ${mxmlc-sources}" />
                 <arg line="${mxmlc-define}" />
+				<arg line="${mxmlc-defines}" />
 				<arg line="${libs}" />
 				<arg line="-library-path ${flex-libs-path} ${mxmlc-library-path}" />
 				<arg line="-runtime-shared-library-path=${flowplayer_lib},library.swf" />
