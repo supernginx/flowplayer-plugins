@@ -12,17 +12,19 @@ package org.flowplayer.bwcheck.strategy {
 
 	import org.flowplayer.view.Flowplayer;
 	import org.flowplayer.bwcheck.model.BitrateItem;
+	import org.osmf.net.DynamicStreamingItem;
+	import __AS3__.vec.Vector;
 
 	/**
 	 * @author danielr
 	 */
-	internal interface StreamSelection {
+	public interface StreamSelection {
 		
-		function getStreamIndex(bandwidth:Number, bitrateProperties:Array, player:Flowplayer):Number
+		function getStreamIndex(bandwidth:Number, bitrateProperties:Vector.<DynamicStreamingItem>, player:Flowplayer):Number
 
-        function getStream(bandwidth:Number, bitrateProperties:Array, player:Flowplayer):BitrateItem
+        function getStream(bandwidth:Number, bitrateProperties:Vector.<DynamicStreamingItem>, player:Flowplayer):DynamicStreamingItem
         
-        function getDefaultStream(bitrateProperties:Array, player:Flowplayer):BitrateItem
+        function getDefaultStream(bitrateProperties:Vector.<DynamicStreamingItem>, player:Flowplayer):DynamicStreamingItem
 
 	}
 }

@@ -1,8 +1,10 @@
-package org.flowplayer.bwcheck.strategy
+package org.osmf.net.rtmpStreaming
 {
 
 	import org.osmf.net.SwitchingRuleBase;
 	import org.flowplayer.view.Flowplayer;
+	import org.flowplayer.bwcheck.strategy.StreamSelection;
+	import org.osmf.net.rtmpstreaming.RTMPNetStreamMetrics;
 	
 	public class StreamSelectionRule extends SwitchingRuleBase
 	{
@@ -21,8 +23,8 @@ package org.flowplayer.bwcheck.strategy
 		 *  @productversion OSMF 1.0
 		 */
 		
-		private _factory:StreamSelection;
-		private _player:Flowplayer;
+		private var _factory:StreamSelection;
+		private var _player:Flowplayer;
 		
 		public function StreamSelectionRule(metrics:RTMPNetStreamMetrics, factory:StreamSelection, player:Flowplayer)
 		{

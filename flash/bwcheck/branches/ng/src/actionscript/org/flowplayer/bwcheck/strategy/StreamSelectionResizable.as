@@ -15,6 +15,9 @@ package org.flowplayer.bwcheck.strategy {
 	import org.flowplayer.bwcheck.model.BitrateItem;
 	import org.flowplayer.bwcheck.Config;
 	
+	import __AS3__.vec.Vector;
+	import org.osmf.net.DynamicStreamingItem;
+	
 	/**
 	 * @author danielr
 	 */
@@ -27,7 +30,7 @@ package org.flowplayer.bwcheck.strategy {
 			_config = config;
 		}
 		
-		public function getStreamIndex(bandwidth:Number, bitrateProperties:Array, player:Flowplayer):Number {
+		public function getStreamIndex(bandwidth:Number, bitrateProperties:Vector.<DynamicStreamingItem>, player:Flowplayer):Number {
 			
 			var screenWidth:Number = player.screen.getDisplayObject().width;
 			
@@ -53,12 +56,12 @@ package org.flowplayer.bwcheck.strategy {
 			return index;
 		}
 		
-		public function getStream(bandwidth:Number, bitrateProperties:Array, player:Flowplayer):BitrateItem {
+		public function getStream(bandwidth:Number, bitrateProperties:Vector.<DynamicStreamingItem>, player:Flowplayer):DynamicStreamingItem {
 			return bitrateProperties[getStreamIndex(bandwidth, bitrateProperties, player)] as BitrateItem;
 		}
 		
 	
-		public function getDefaultStream(bitrateProperties:Array, player:Flowplayer):BitrateItem {
+		public function getDefaultStream(bitrateProperties:Vector.<DynamicStreamingItem>, player:Flowplayer):DynamicStreamingItem {
             log.debug("getDefaultStream()");
             for (var i:Number=0; i < bitrateProperties.length; i++) {
                 if (bitrateProperties[i]["isDefault"]) {
