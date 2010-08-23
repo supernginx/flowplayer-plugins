@@ -34,6 +34,11 @@
 			<locationURI>FP_COMMON</locationURI>
 		</link>
 		<link>
+			<name>OSMF</name>
+			<type>2</type>
+			<locationURI>OSMF</locationURI>
+		</link>
+		<link>
 			<name>flex.swc</name>
 			<type>1</type>
 			<locationURI>Flex_4/frameworks/libs/flex.swc</locationURI>
