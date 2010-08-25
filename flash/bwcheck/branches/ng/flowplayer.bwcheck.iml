@@ -43,9 +43,9 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="core" />
     <orderEntry type="module" module-name="cluster" />
-    <orderEntry type="module" module-name="osmf" />
     <orderEntry type="library" name="flex4" level="application" />
     <orderEntry type="module" module-name="common" />
+    <orderEntry type="module" module-name="osmf" />
   </component>
 </module>
 

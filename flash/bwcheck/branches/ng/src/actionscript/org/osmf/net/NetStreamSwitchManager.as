@@ -33,15 +33,11 @@ package org.osmf.net
 	import flash.utils.Dictionary;
 	import flash.utils.Timer;
 	import flash.utils.getTimer;
+
+    import org.flowplayer.util.Log;
+    import org.osmf.utils.OSMFStrings;
 	
-	import org.osmf.utils.OSMFStrings;
-	
-	CONFIG::LOGGING
-	{
-	import org.osmf.logging.Logger;
-	import org.osmf.logging.Log;
-	}
-	
+
 	/**
 	 * NetStreamSwitchManager is a default implementation of
 	 * NetStreamSwitchManagerBase.   It manages transitions between
@@ -118,6 +114,7 @@ package org.osmf.net
 				{
 					debug("autoSwitch() - starting check rules timer.");
 				}
+                prepareForSwitching();
 				checkRulesTimer.start();
 			}
 			else
@@ -265,6 +262,7 @@ package org.osmf.net
 		 */
 		private function executeSwitch(targetIndex:int):void 
 		{
+            trace("executing switch");
 			var nso:NetStreamPlayOptions = new NetStreamPlayOptions();
 
 			var playArgs:Object = NetStreamUtils.getPlayArgsForResource(dsResource);
@@ -311,6 +309,7 @@ package org.osmf.net
 		 */
 		private function checkRules(event:TimerEvent):void 
 		{
+            log.debug("checkRules()");
 			if (switchingRules == null || switching)
 			{
 				return;
@@ -509,7 +508,8 @@ package org.osmf.net
 		{
 		private function debug(...args):void
 		{
-			logger.debug(new Date().toTimeString() + ">>> NetStreamSwitchManager." + args);
+            log.debug(new Date().toTimeString() + ">>> NetStreamSwitchManager." + args);
+//            logger.debug(new Date().toTimeString() + ">>> NetStreamSwitchManager." + args);
 		}
 		}
 				
@@ -535,9 +535,6 @@ package org.osmf.net
 		private static const DEFAULT_WAIT_DURATION_AFTER_DOWN_SWITCH:int = 3000;
 		private static const DEFAULT_CLEAR_FAILED_COUNTS_INTERVAL:Number = 3000;	// default of 5 minutes for clearing failed counts on stream items
 		
-		CONFIG::LOGGING
-		{
-			private static const logger:Logger = Log.getLogger("org.osmf.net.NetStreamSwitchManager");
-		}
+        private var log:Log = new Log(this);
 	}
 }

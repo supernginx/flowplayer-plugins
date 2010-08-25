@@ -31,7 +31,7 @@ package org.flowplayer.bwcheck.strategy {
 			var screenWidth:Number = player.screen.getDisplayObject().width;
 			log.debug("screen width is " + screenWidth + ", bandwidth is " + bandwidth);
 
-			for (var i:Number=0; i < _bitrates.length; i++) {
+			for (var i:Number = _bitrates.length  - 1; i >= 0; i--) {
                 var item:DynamicStreamingItem = _bitrates[i];
 
 				log.debug("candidate '" + item.streamName +  "' has width " + item.width + ", bitrate " + item.bitrate);

@@ -22,7 +22,7 @@ package org.flowplayer.bwcheck.strategy {
             var sorter:Function = function (a:DynamicStreamingItem, b:DynamicStreamingItem):Number {
                 if (a.bitrate == b.bitrate) {
                     return 0;
-                } else if (a.bitrate < b.bitrate) {
+                } else if (a.bitrate > b.bitrate) {
                     return 1;
                 }
                 return -1;

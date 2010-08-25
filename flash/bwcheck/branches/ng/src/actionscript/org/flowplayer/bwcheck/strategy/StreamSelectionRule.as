@@ -1,4 +1,4 @@
-package org.flowplayer.bwcheck
+package org.flowplayer.bwcheck.strategy
 {
     import org.flowplayer.util.Log;
     import org.osmf.net.SwitchingRuleBase;
@@ -20,18 +20,18 @@ package org.flowplayer.bwcheck
 			_player = player;
 		}
 
-		/**
-		 * @private
-		 */
 		override public function getNewIndex():int
 		{
-            log.debug("metrics", metrics);
-            var bps:Number = RTMPNetStreamMetrics(metrics).averageMaxBytesPerSecond;
-
-            return bps > 0 ? _factory.getStreamIndex(bps, _player) : _factory.getStreamIndex(metrics.resource.streamItems[metrics.currentIndex].bitrate, _player);
+            log.debug("metrics, average max bytes per second: ", RTMPNetStreamMetrics(metrics).averageMaxBytesPerSecond);
+            var bw:Number = RTMPNetStreamMetrics(metrics).averageMaxBytesPerSecond*8/1024;
+            if (bw > 0) {
+                var index:int = _factory.getStreamIndex(bw, _player);
+                log.debug("new index is " + index);
+                return index;
+            }
+            log.debug("returning current index " + metrics.currentIndex);
+            return metrics.currentIndex;
 		}
-
-
 
 		private function get rtmpMetrics():RTMPNetStreamMetrics
 		{
