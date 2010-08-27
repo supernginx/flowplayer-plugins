@@ -1,5 +1,10 @@
 Version history:
 
+3.2.4
+-----
+Fixes:
+- does not append the query strin into the initial request when start=0
+
 3.2.3
 -----
 - seeking using HTTP byte range requests
