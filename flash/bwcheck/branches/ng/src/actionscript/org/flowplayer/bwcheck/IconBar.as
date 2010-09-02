@@ -22,22 +22,22 @@ package org.flowplayer.bwcheck {
         }
 
         private function resizeIcon(dim:Number):void {
-			if ( _hdIcon )
-            	_hdIcon.height = _hdIcon.width = dim;
+            if (_hdIcon)
+                _hdIcon.height = _hdIcon.width = dim;
         }
 
         override protected function onResize():void {
             log.debug("onResize() " + width + " x " + height);
-           
+
             resizeIcon(width);
-			var nextY:int = 0;
-			
-			if ( _hdIcon ) {
-				_hdIcon.x = 0;
-				_hdIcon.y = 0;
-				
-				nextY = nextY + _hdIcon.height + 5;
-			}
+            var nextY:int = 0;
+
+            if (_hdIcon) {
+                _hdIcon.x = 0;
+                _hdIcon.y = 0;
+
+                nextY = nextY + _hdIcon.height + 5;
+            }
         }
 
         private function createIcons():void {
@@ -47,8 +47,8 @@ package org.flowplayer.bwcheck {
 
             var props:DisplayProperties = _config.iconDisplayProperties;
             props.setDisplayObject(this);
-			
-			onResize();
+
+            onResize();
 
             log.debug("icon bar props " + props.dimensions);
             _player.addToPanel(this, props);
@@ -61,9 +61,9 @@ package org.flowplayer.bwcheck {
         }
 
         public function onHd(listener:Function):void {
-        	log.error("FUCK" + _hdIcon.toggle.toString());
-			if ( _hdIcon )
-            	addIconClickListener(_hdIcon, listener, _hdIcon.toggle);
+            log.error("FUCK" + _hdIcon.toggle.toString());
+            if (_hdIcon)
+                addIconClickListener(_hdIcon, listener, _hdIcon.toggle);
         }
 
     }

@@ -19,34 +19,34 @@ package org.flowplayer.bwcheck {
             super(category);
 
             var pos:int = category.lastIndexOf(".");
-            var name:String = category.substr(0, pos) + "::" + category.substr(pos+1);
+            var name:String = category.substr(0, pos) + "::" + category.substr(pos + 1);
 
             _log = new Log(name);
         }
 
-		override public function debug(message:String, ... rest):void {
+        override public function debug(message:String, ... rest):void {
             _log.debug.apply(_log, [message]);
-//            _log.debug.apply(_log, [message].concat(rest));
-		}
+            //            _log.debug.apply(_log, [message].concat(rest));
+        }
 
-		override public function info(message:String, ... rest):void	{
+        override public function info(message:String, ... rest):void {
             _log.info.apply(_log, [message]);
-//            _log.info.apply(_log, [message].concat(rest));
-		}
+            //            _log.info.apply(_log, [message].concat(rest));
+        }
 
-		override public function warn(message:String, ... rest):void {
+        override public function warn(message:String, ... rest):void {
             _log.warn.apply(_log, [message]);
-//            _log.warn.apply(_log, [message].concat(rest));
-		}
+            //            _log.warn.apply(_log, [message].concat(rest));
+        }
 
-		override public function error(message:String, ... rest):void {
+        override public function error(message:String, ... rest):void {
             _log.error.apply(_log, [message]);
-//            _log.error.apply(_log, [message].concat(rest));
-		}
+            //            _log.error.apply(_log, [message].concat(rest));
+        }
 
-		override public function fatal(message:String, ... rest):void {
+        override public function fatal(message:String, ... rest):void {
             _log.error.apply(_log, [message]);
-//            _log.error.apply(_log, [message].concat(rest));
-		}
+            //            _log.error.apply(_log, [message].concat(rest));
+        }
     }
 }
