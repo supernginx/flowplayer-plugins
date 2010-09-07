@@ -33,9 +33,13 @@ package org.osmf.net {
     import flash.utils.Timer;
     import flash.utils.getTimer;
 
-    import org.flowplayer.util.Log;
     import org.osmf.utils.OSMFStrings;
 
+	CONFIG::LOGGING
+	{
+	import org.osmf.logging.Logger;
+	import org.osmf.logging.Log;
+	}
 
     /**
      * NetStreamSwitchManager is a default implementation of
@@ -109,7 +113,7 @@ package org.osmf.net {
                 {
                     debug("autoSwitch() - starting check rules timer.");
                 }
-                prepareForSwitching();
+                prepareForSwitching();  // flowplayer addition
                 checkRulesTimer.start();
             }
             else {
@@ -202,7 +206,7 @@ package org.osmf.net {
                 if (current - failedDSI[newIndex] < DEFAULT_WAIT_DURATION_AFTER_DOWN_SWITCH) {
                     CONFIG::LOGGING
                     {
-                        debug("canAutoSwitchNow() - ignoring switch request because index " + newIndex + "  has " + dsiFailedCounts[newIndex] + " failure(s) and only " + (current - failedDSI[newIndex]) / 1000 + " seconds have passed since the last failure.");
+						debug("canAutoSwitchNow() - ignoring switch request because index has " + dsiFailedCounts[newIndex]+" failure(s) and only "+ (current - failedDSI[newIndex])/1000 + " seconds have passed since the last failure.");
                     }
                     return false;
                 }
@@ -239,16 +243,30 @@ package org.osmf.net {
          *  @playerversion AIR 1.5
          *  @productversion OSMF 1.0
          */
-        private function executeSwitch(targetIndex:int):void {
-            trace("executing switch");
+		private function executeSwitch(targetIndex:int):void
+		{
             var nso:NetStreamPlayOptions = new NetStreamPlayOptions();
 
             var playArgs:Object = NetStreamUtils.getPlayArgsForResource(dsResource);
 
             nso.start = playArgs.start;
             nso.len = playArgs.len;
+
             nso.streamName = dsResource.streamItems[targetIndex].streamName;
+			//
+			// FM-925, it seems that the oldStreamName cannot contain parameters,
+			// therefore we must remove them
+			//
+			var sn:String = oldStreamName;
+			if (sn != null && sn.indexOf("?") >= 0)
+			{
+				nso.oldStreamName = sn.substr(0, sn.indexOf("?"));
+			}
+			else
+			{
             nso.oldStreamName = oldStreamName;
+			}
+
             nso.transition = NetStreamPlayTransitions.SWITCH;
 
             CONFIG::LOGGING
@@ -284,8 +302,8 @@ package org.osmf.net {
          *  @playerversion AIR 1.5
          *  @productversion OSMF 1.0
          */
-        private function checkRules(event:TimerEvent):void {
-            log.debug("checkRules(), maxAllowedIndex " + maxAllowedIndex);
+		private function checkRules(event:TimerEvent):void
+		{
             if (switchingRules == null || switching) {
                 return;
             }
@@ -306,7 +324,7 @@ package org.osmf.net {
                     ) {
                 newIndex = Math.min(newIndex, maxAllowedIndex);
             }
-            log.debug("checkRules(), maxAllowedIndex " + maxAllowedIndex + ", actualIndex " + actualIndex + ", new candidate " + newIndex);
+
             if (newIndex != -1
                     && newIndex != int.MAX_VALUE
                     && newIndex != actualIndex
@@ -330,9 +348,7 @@ package org.osmf.net {
 
             switch (event.info.code) {
                 case NetStreamCodes.NETSTREAM_PLAY_START:
-
-                    //netStream.bufferTime = 30;
-                    if (actualIndex == -1) {
+					if (actualIndex == -1) {
                         prepareForSwitching();
                     }
                     else if (autoSwitch && checkRulesTimer.running == false) {
@@ -364,8 +380,8 @@ package org.osmf.net {
             }
         }
 
-        private function onPlayStatus(...args):void {
-            var info:Object = (args[0] ? args[0] : args[2]);
+		private function onPlayStatus(info:Object):void
+		{
             CONFIG::LOGGING
             {
                 debug("onPlayStatus() - info.code=" + info.code);
@@ -374,8 +390,7 @@ package org.osmf.net {
 
             switch (info.code) {
                 case NetStreamCodes.NETSTREAM_PLAY_TRANSITION_COMPLETE:
-                    trace(info.code);
-                    if (lastTransitionIndex >= 0) {
+					if (lastTransitionIndex >= 0)  {
                         _currentIndex = lastTransitionIndex;
                         lastTransitionIndex = -1;
                     }
@@ -394,12 +409,14 @@ package org.osmf.net {
          * mean a switch is imminent.
          **/
         private function prepareForSwitching():void {
-            debug("prepareForSwitching");
+
+            // --- flowplayer addition
             if (prepared) {
-                log.debug("already prepared, returning");
                 return;
             }
             prepared = true;
+            // ---
+
             initDSIFailedCounts();
 
             metrics.resource = dsResource;
@@ -463,9 +480,9 @@ package org.osmf.net {
 
         CONFIG::LOGGING
         {
-            private function debug(...args):void {
-                log.debug(new Date().toTimeString() + ">>> NetStreamSwitchManager." + args);
-                //            logger.debug(new Date().toTimeString() + ">>> NetStreamSwitchManager." + args);
+		private function debug(...args):void
+		{
+			logger.debug(new Date().toTimeString() + ">>> NetStreamSwitchManager." + args);
             }
         }
 
@@ -489,9 +506,12 @@ package org.osmf.net {
 
         private static const RULE_CHECK_INTERVAL:Number = 500;	// Switching rule check interval in milliseconds
         private static const DEFAULT_MAX_UP_SWITCHES_PER_STREAM_ITEM:int = 3;
-        private static const DEFAULT_WAIT_DURATION_AFTER_DOWN_SWITCH:int = 3000;
-        private static const DEFAULT_CLEAR_FAILED_COUNTS_INTERVAL:Number = 3000;	// default of 5 minutes for clearing failed counts on stream items
+		private static const DEFAULT_WAIT_DURATION_AFTER_DOWN_SWITCH:int = 30000;
+		private static const DEFAULT_CLEAR_FAILED_COUNTS_INTERVAL:Number = 300000;	// default of 5 minutes for clearing failed counts on stream items
 
-        private var log:Log = new Log(this);
+        CONFIG::LOGGING
+        {
+            private static const logger:Logger = Log.getLogger("org.osmf.net.NetStreamSwitchManager");
+        }
     }
 }
