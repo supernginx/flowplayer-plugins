@@ -1,36 +1,37 @@
-package org.flowplayer.bwcheck.strategy {
+package org.flowplayer.bwcheck.detect {
+    import org.flowplayer.bwcheck.Config;
     import org.flowplayer.util.Log;
+    import org.flowplayer.view.Flowplayer;
     import org.osmf.net.DynamicStreamingItem;
     import org.osmf.net.SwitchingRuleBase;
-    import org.flowplayer.view.Flowplayer;
-    import org.flowplayer.bwcheck.strategy.StreamSelection;
-    import org.osmf.net.rtmpstreaming.RTMPNetStreamMetrics;
     import org.osmf.net.rtmpstreaming.RTMPNetStreamMetrics;
 
     public class ScreenSizeRule extends SwitchingRuleBase {
-        private var _factory:StreamSelection;
         private var _player:Flowplayer;
         private var log:Log = new Log(this);
+        private var _bitrates:Vector.<DynamicStreamingItem>;
+        private var _config:Config;
 
-        public function ScreenSizeRule(metrics:RTMPNetStreamMetrics, factory:StreamSelection, player:Flowplayer) {
+        public function ScreenSizeRule(metrics:RTMPNetStreamMetrics, selector:StreamSelector, player:Flowplayer, config:Config) {
             super(metrics);
-            _factory = factory;
+            _bitrates = selector.bitrates;
             _player = player;
+            _config = config;
         }
 
         override public function getNewIndex():int {
             var screenWidth:Number = _player.screen.getDisplayObject().width;
 
-            for (var i:Number = _factory.bitrates.length - 1; i >= 0; i--) {
-                var item:DynamicStreamingItem = _factory.bitrates[i];
+            for (var i:Number = _bitrates.length - 1; i >= 0; i--) {
+                var item:DynamicStreamingItem = _bitrates[i];
 
                 log.debug("candidate '" + item.streamName + "' has width " + item.width);
 
-                var fitsScreen:Boolean = ! item.width || screenWidth >= item.width;
+                var fitsScreen:Boolean = StreamSelector.fitsScreen(item, _player, _config);
                 log.info("fits screen? " + fitsScreen);
 
                 if (fitsScreen) {
-                    log.debug("selecting bitrate with width " + item.width);
+                    log.debug("selecting bitrate with width " + item.width + ", index " + i);
                     return i;
                     break;
                 }

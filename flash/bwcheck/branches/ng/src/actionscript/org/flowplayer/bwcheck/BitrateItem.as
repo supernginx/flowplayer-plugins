@@ -8,7 +8,7 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
-package org.flowplayer.bwcheck.model {
+package org.flowplayer.bwcheck {
     import org.osmf.net.DynamicStreamingItem;
 
     /**
