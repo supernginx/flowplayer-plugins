@@ -30,8 +30,8 @@ package org.osmf.net {
 
     CONFIG::LOGGING
     {
-        import org.osmf.logging.Logger;
         import org.osmf.logging.Log;
+        import org.osmf.logging.Logger;
     }
 
     /**
@@ -76,6 +76,7 @@ package org.osmf.net {
             netStream.addEventListener(NetStatusEvent.NET_STATUS, onNetStatusEvent);
         }
 
+        // flowplayer addition
         public function startMeasurements():void {
             logger.debug("startMeasurements()");
             _timer.start();
