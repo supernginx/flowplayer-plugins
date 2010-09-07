@@ -180,9 +180,9 @@ package org.flowplayer.viralvideos {
         }
         
         private function getPageUrl():String {
-        	return (String(player.currentClip.getCustomProperty("pageUrl")) 
+        	return player.currentClip.getCustomProperty("pageUrl") 
         	? String(player.currentClip.getCustomProperty("pageUrl"))
-        	: URLUtil.pageUrl);
+        	: URLUtil.pageUrl;
         }
 
         private function getEmailToken():void {
@@ -222,6 +222,7 @@ package org.flowplayer.viralvideos {
         }
 
         private function sendLocalEmail():void {
+            log.debug("sendLocalEmail(), videoURL " + _videoURL);
             var request:URLRequest = new URLRequest(formatString("mailto:{0}?subject={1}&body={2}", _emailToInput.text, escape(_config.email.texts.subject), escape(formatString(_config.email.texts.template, _messageInput.text, _videoURL, _videoURL))));
             navigateToURL(request, "_self");
             createCloseTimer();
