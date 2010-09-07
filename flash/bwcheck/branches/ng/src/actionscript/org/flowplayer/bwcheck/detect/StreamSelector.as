@@ -9,14 +9,20 @@
  *    Additional Term, see http://flowplayer.org/license_gpl.html
  */
 package org.flowplayer.bwcheck.detect {
+    import flash.display.Stage;
+
+    import flash.display.StageDisplayState;
+
     import org.flowplayer.bwcheck.Config;
     import org.flowplayer.bwcheck.BitrateItem;
+    import org.flowplayer.model.DisplayProperties;
+    import org.flowplayer.util.Arrange;
     import org.flowplayer.util.Log;
     import org.flowplayer.view.Flowplayer;
     import org.osmf.net.DynamicStreamingItem;
 
     public class StreamSelector {
-        private var log:Log = new Log(this);
+        private static var log:Log = new Log("org.flowplayer.bwcheck.detect::StreamSelector");
         private var _streamItems:Vector.<DynamicStreamingItem>;
         private var _player:Flowplayer;
         private var _config:Config;
@@ -76,7 +82,12 @@ package org.flowplayer.bwcheck.detect {
         internal static function fitsScreen(item:DynamicStreamingItem, player:Flowplayer, config:Config):Boolean {
             if (! item.width) return true;
 
-            var screenWidth:Number = player.screen.getDisplayObject().width;
+            var screen:DisplayProperties = player.screen;
+            var stage:Stage = screen.getDisplayObject().stage;
+            // take the size from screen when the screen width is 100% --> by default works on HW scaled mode also
+            var screenWidth:Number = stage.displayState == StageDisplayState.FULL_SCREEN && screen.widthPct == 100 ? stage.fullScreenWidth : screen.getDisplayObject().width;
+
+            log.debug("screen width is " + screenWidth);
 
             // max container width specified --> allows for resizing the player or for going above the current screen width
             if (config.maxWidth > 0 && ! player.isFullscreen()) {
