@@ -13,6 +13,7 @@ package org.flowplayer.bwcheck {
     import org.flowplayer.controller.NetStreamClient;
     import org.flowplayer.util.Log;
     import org.osmf.net.NetClient;
+    import org.osmf.net.NetStreamCodes;
 
     /**
      * A OSMF and Flowplayer compatible NetStream client.
@@ -20,9 +21,11 @@ package org.flowplayer.bwcheck {
     public class OsmfNetStreamClient extends NetClient implements NetStreamCallbacks {
         protected var log:Log = new Log(this);
         private var _fpClient:NetStreamClient;
+        private var _onTransitionComplete:Function;
 
         public function OsmfNetStreamClient(flowplayerNetStreamClient:NetStreamClient) {
             _fpClient = flowplayerNetStreamClient;
+            addHandler(NetStreamCodes.ON_PLAY_STATUS, playStatusHandler);
         }
 
         public function onMetaData(infoObject:Object):void {
@@ -52,6 +55,18 @@ package org.flowplayer.bwcheck {
 
         public function onTextData(obj:Object):void {
             _fpClient.onTextData(obj);
+        }
+
+        public function set onTransitionComplete(onTransitionComplete:Function):void {
+            _onTransitionComplete = onTransitionComplete;
+        }
+
+        public function playStatusHandler(info:Object):void {
+            log.debug("playStatusHandler() -- " + info.code, info);
+            if (info.code == "NetStream.Play.TransitionComplete" && _onTransitionComplete != null) {
+                _onTransitionComplete();
+                return;
+            }
         }
     }
 }

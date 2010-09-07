@@ -2,6 +2,11 @@ Version history:
 
 3.2.2
 -----
+- new config
+- new event onStreamSwitchBegin
+
+3.2.2
+-----
 Fixes:
 - fixing bwcheck with FMS, was unable to re-detect during playback
 

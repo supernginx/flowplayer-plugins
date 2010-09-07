@@ -285,7 +285,7 @@ package org.osmf.net {
          *  @productversion OSMF 1.0
          */
         private function checkRules(event:TimerEvent):void {
-            log.debug("checkRules()");
+            log.debug("checkRules(), maxAllowedIndex " + maxAllowedIndex);
             if (switchingRules == null || switching) {
                 return;
             }
@@ -306,7 +306,7 @@ package org.osmf.net {
                     ) {
                 newIndex = Math.min(newIndex, maxAllowedIndex);
             }
-
+            log.debug("checkRules(), maxAllowedIndex " + maxAllowedIndex + ", actualIndex " + actualIndex + ", new candidate " + newIndex);
             if (newIndex != -1
                     && newIndex != int.MAX_VALUE
                     && newIndex != actualIndex
@@ -394,6 +394,12 @@ package org.osmf.net {
          * mean a switch is imminent.
          **/
         private function prepareForSwitching():void {
+            debug("prepareForSwitching");
+            if (prepared) {
+                log.debug("already prepared, returning");
+                return;
+            }
+            prepared = true;
             initDSIFailedCounts();
 
             metrics.resource = dsResource;
@@ -479,7 +485,7 @@ package org.osmf.net {
         // for each DynamicStreamingItem in the DynamicStreamingResource
         private var failedDSI:Dictionary;
         private var _bandwidthLimit:Number = 0;
-        ;
+        private var prepared:Boolean;
 
         private static const RULE_CHECK_INTERVAL:Number = 500;	// Switching rule check interval in milliseconds
         private static const DEFAULT_MAX_UP_SWITCHES_PER_STREAM_ITEM:int = 3;

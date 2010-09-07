@@ -77,6 +77,7 @@ package org.osmf.net {
         }
 
         public function startMeasurements():void {
+            logger.debug("startMeasurements()");
             _timer.start();
         }
 
