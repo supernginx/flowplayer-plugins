@@ -71,7 +71,7 @@ package org.flowplayer.bwcheck.detect {
             _connection.client = new NullNetConnectionClient();
             _strategy.connection = _connection;
 
-            log.debug("_doBwConnect(), connecting to " + _host);
+            log.debug("detect(), connecting to " + _host + ", using strategy " + _strategy);
             _strategy.connect(_host);
         }
 

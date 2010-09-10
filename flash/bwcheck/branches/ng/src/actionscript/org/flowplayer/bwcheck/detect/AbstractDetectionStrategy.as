@@ -23,7 +23,6 @@ package org.flowplayer.bwcheck.detect {
         protected var log:Log = new Log(this);
         private var _connection:NetConnection;
         protected var _service:String = "checkBandwidth";
-        protected var _url:String;
         private var _responder:Responder;
 
         public function AbstractDetectionStrategy() {
@@ -59,10 +58,6 @@ package org.flowplayer.bwcheck.detect {
 
         public function set connection(connect:NetConnection):void {
             _connection = connect;
-        }
-
-        public function set url(url:String):void {
-            _url = url;
         }
 
         public function detect():void {
