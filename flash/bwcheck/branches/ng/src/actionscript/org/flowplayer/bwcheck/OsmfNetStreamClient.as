@@ -23,9 +23,9 @@ package org.flowplayer.bwcheck {
         private var _fpClient:NetStreamClient;
         private var _onTransitionComplete:Function;
 
-        public function OsmfNetStreamClient(flowplayerNetStreamClient:NetStreamClient) {
+        public function OsmfNetStreamClient(flowplayerNetStreamClient:NetStreamClient, serverType:String) {
             _fpClient = flowplayerNetStreamClient;
-            addHandler(NetStreamCodes.ON_PLAY_STATUS, playStatusHandler);
+            addHandler(NetStreamCodes.ON_PLAY_STATUS, serverType == "wowza" ? playStatusHandlerWowza : playStatusHandler);
         }
 
         public function onMetaData(infoObject:Object):void {
@@ -67,6 +67,14 @@ package org.flowplayer.bwcheck {
                 _onTransitionComplete();
                 return;
             }
+        }
+
+        public function playStatusHandlerWowza(info:Object, info2:Object, info3:Object):void {
+            log.debug("onPlayStatus() - " + info + ", " + info2 + ", " + info3);
+//            if (info.code == "NetStream.Play.TransitionComplete" && _onTransitionComplete != null) {
+//                _onTransitionComplete();
+//                return;
+//            }
         }
     }
 }
