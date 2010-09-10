@@ -30,6 +30,7 @@ package org.flowplayer.bwcheck.detect {
         private var _downloadTime:Number;
         public var maximumBytes:uint;
         private var _nocache:URLRequestHeader;
+        private var _referenceFileUrl:String;
 
         public function BandwidthDetectorHttp() {
             loader = new URLLoader();
@@ -95,13 +96,15 @@ package org.flowplayer.bwcheck.detect {
         }
 
         override public function connect(host:String = null):void {
-            connection.connect(host);
+            log.debug("connect()");
+            _referenceFileUrl = host;
+            connection.connect(null);
         }
 
         override public function detect():void {
-            log.debug("requesting reference file " + _url);
+            log.debug("requesting reference file " + _referenceFileUrl);
 
-            var request:URLRequest = new URLRequest(_url + "?" + Math.random());
+            var request:URLRequest = new URLRequest(_referenceFileUrl + "?" + Math.random());
             _nocache = new URLRequestHeader("Cache-Control", "no-store, no-cache, must-revalidate");
             var headers:Array = new Array(_nocache);
             request.requestHeaders = headers;
