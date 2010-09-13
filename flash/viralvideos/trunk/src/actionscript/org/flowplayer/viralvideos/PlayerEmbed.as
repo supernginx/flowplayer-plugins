@@ -180,6 +180,11 @@ package org.flowplayer.viralvideos {
 			if ( playlist.length == 0 )
 				playlist.push(clip);
 				
+		    if (_viralConfig.shareCurrentPlaylistItem) {
+                playlist.splice(_player.currentClip.index - 1, 1);
+                playlist.unshift(_player.currentClip);
+            }
+				
 			if ( _viralConfig.embed.isAutoPlayOverriden )
 				playlist[0].autoPlay = _viralConfig.embed.autoPlay;
 				

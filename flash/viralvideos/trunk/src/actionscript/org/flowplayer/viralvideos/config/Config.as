@@ -27,6 +27,7 @@ package org.flowplayer.viralvideos.config
         private var _buttonConfig:ButtonConfig;
         private var _closeButton:ButtonConfig;
         private var _icons:IconConfig = new IconConfig();
+        private var _shareCurrentPlaylistItem:Boolean;
 
         public function Config() {						
             _autoHide = new AutoHideConfig();
@@ -34,6 +35,14 @@ package org.flowplayer.viralvideos.config
             _autoHide.hideStyle = "fade";
             _autoHide.delay = 2000;
             _autoHide.duration = 1000;
+        }
+        
+        public function get shareCurrentPlaylistItem():Boolean {
+            return _shareCurrentPlaylistItem;
+        }
+        
+        public function set shareCurrentPlaylistItem(value:Boolean):void {
+            _shareCurrentPlaylistItem = value;
         }
 
         public function get email():EmailConfig {
