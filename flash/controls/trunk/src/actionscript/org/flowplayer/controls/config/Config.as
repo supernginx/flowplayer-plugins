@@ -9,6 +9,8 @@
  */
 
 package org.flowplayer.controls.config {
+    import flash.display.DisplayObject;
+
     import org.flowplayer.controls.*;
     import org.flowplayer.ui.AutoHide;
     import org.flowplayer.ui.AutoHideConfig;
@@ -28,7 +30,7 @@ package org.flowplayer.controls.config {
         private var _visible:WidgetBooleanStates = new WidgetBooleanStates();
 		private var _enabled:WidgetBooleanStates = new WidgetEnabledStates();
 		private var _tooltips:ToolTips = new ToolTips();
-
+        private var _spacing:WidgetSpacing = new WidgetSpacing();
 
 		public function get style():Style {
 			return _style || new Style();
@@ -108,5 +110,13 @@ package org.flowplayer.controls.config {
 			return _autoHide.hideDelay;
 		}
 
+        [Value]
+        public function get spacing():WidgetSpacing {
+            return _spacing;
+        }
+
+        public function set spacing(value:WidgetSpacing):void {
+            _spacing = value;
+        }
     }
 }

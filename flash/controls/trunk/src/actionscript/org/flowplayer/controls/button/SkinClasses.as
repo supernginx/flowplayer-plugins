@@ -76,15 +76,6 @@ import flash.utils.getDefinitionByName;
             return null;
         }
 
-        public static function getSpaceBeforeFirstWidget():Number {
-            try {
-                var clazz:Class = getClass("SkinDefaults");
-                return clazz["getSpaceBeforeFirstWidget"]();
-            } catch (e:Error) {
-            }
-            return 0;
-        }
-
 		public static function get margins():Array {
             try {
                 var clazz:Class = getClass("SkinDefaults");

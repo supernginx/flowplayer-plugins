@@ -1,5 +1,9 @@
 Version history:
 
+3.2.3
+-----
+- Added possibility to configure margins and widget spacing. For example { margins: [0,2,0,2], spacing: { all: 0, play: 10 } }
+
 3.2.2
 -----
 Fixes
