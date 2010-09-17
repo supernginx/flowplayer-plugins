@@ -67,7 +67,6 @@ package org.flowplayer.controls {
         private var _fullScreenButton:AbstractToggleButton;
         private var _muteVolumeButton:AbstractToggleButton;
         private var _volumeSlider:VolumeScrubber;
-        private var _progressTracker:DisplayObject;
         private var _prevButton:DisplayObject;
         private var _nextButton:DisplayObject;
 		private var _slowMotionFwdButton:DisplayObject;
@@ -398,6 +397,7 @@ package org.flowplayer.controls {
             new PropertyBinder(result.autoHide).copyProperties(config.autoHide);
             new PropertyBinder(result.visible).copyProperties(config);
             new PropertyBinder(result.enabled).copyProperties(config.enabled);
+            new PropertyBinder(result.spacing).copyProperties(config.spacing);
             result.addStyleProps(config);
             initTooltipConfig(result, config["tooltips"]);
             return result;
@@ -764,7 +764,7 @@ package org.flowplayer.controls {
         }
 
         private function arrangeLeftEdgeControls():Number {
-            var leftEdge:Number = getSpaceBeforeFirstWidget();
+            var leftEdge:Number = _config.style.margins[3];
             var leftControls:Array = [_stopButton];
 			
 			if ( hasSlowMotion() && _slowMotionFBwdButton )
@@ -830,7 +830,7 @@ package org.flowplayer.controls {
         }
 
         private function get margins():Array {
-            return SkinClasses.margins;
+            return _config.style.margins;
         }
 
         private function arrangeVolumeControl():void {
@@ -896,12 +896,9 @@ package org.flowplayer.controls {
             Arrange.center(clip, 0, height);
         }
 
-		private function getSpaceBeforeFirstWidget():int {
-            return SkinClasses.getSpaceBeforeFirstWidget();
-        }
-
         private function getSpaceAfterWidget(widget:DisplayObject):int {
-            return SkinClasses.getSpaceAfterWidget(widget, widget == lastOnRight);
+            if (widget == lastOnRight) return _config.style.margins[1];
+            return _config.spacing.getSpaceAfterWidget(widget);
         }
 
         private function getScrubberRightEdgeWidth(nextWidgetToRight:DisplayObject):int {
