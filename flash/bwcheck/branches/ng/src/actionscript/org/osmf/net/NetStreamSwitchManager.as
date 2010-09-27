@@ -391,10 +391,7 @@ package org.osmf.net {
 
             switch (info.code) {
                 case NetStreamCodes.NETSTREAM_PLAY_TRANSITION_COMPLETE:
-					if (lastTransitionIndex >= 0)  {
-                        _currentIndex = lastTransitionIndex;
-                        lastTransitionIndex = -1;
-                    }
+                    transitionComplete();
 
                 CONFIG::LOGGING
                 {
@@ -402,6 +399,13 @@ package org.osmf.net {
                 }
 
                     break;
+            }
+        }
+
+        protected function transitionComplete():void {
+            if (lastTransitionIndex >= 0) {
+                _currentIndex = lastTransitionIndex;
+                lastTransitionIndex = -1;
             }
         }
 
