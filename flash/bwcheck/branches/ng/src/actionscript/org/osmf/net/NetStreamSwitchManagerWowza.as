@@ -26,6 +26,12 @@ package org.osmf.net {
             CONFIG::LOGGING
             {
                 debug("onPlayStatus() - " + info + ", " + info2 + ", " + info3);
+                for (var prop:String in info3) {
+                    debug(prop + ": " + info3[prop]);
+                }
+            }
+            if (info3 && info3.code == "NetStream.Play.TransitionComplete") {
+                transitionComplete();
             }
         }
 

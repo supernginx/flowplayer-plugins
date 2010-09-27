@@ -71,10 +71,10 @@ package org.flowplayer.bwcheck {
 
         public function playStatusHandlerWowza(info:Object, info2:Object, info3:Object):void {
             log.debug("onPlayStatus() - " + info + ", " + info2 + ", " + info3);
-//            if (info.code == "NetStream.Play.TransitionComplete" && _onTransitionComplete != null) {
-//                _onTransitionComplete();
-//                return;
-//            }
+            if (info3 && info3.code == "NetStream.Play.TransitionComplete" && _onTransitionComplete != null) {
+                _onTransitionComplete();
+                return;
+            }
         }
     }
 }
