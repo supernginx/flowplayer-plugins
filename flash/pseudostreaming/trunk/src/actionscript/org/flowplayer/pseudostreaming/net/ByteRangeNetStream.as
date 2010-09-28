@@ -135,7 +135,7 @@ package org.flowplayer.pseudostreaming.net
 			
 			Security.allowInsecureDomain("*");
 			Security.allowDomain("*");
-			
+            Security.loadPolicyFile("http://vod01.netdna.com/vod/demo.flowplayer/policy.xml")
 			
 			_client = new HttpClient();
 			var httplistener:HttpListener = new HttpListener();
