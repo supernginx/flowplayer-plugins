@@ -34,9 +34,6 @@ package org.flowplayer.bwcheck.detect {
 
         public function BandwidthDetectorHttp() {
             loader = new URLLoader();
-            loader.addEventListener(ProgressEvent.PROGRESS, onProgress);
-            loader.addEventListener(Event.COMPLETE, onComplete);
-            loader.addEventListener(IOErrorEvent.IO_ERROR, onError);
         }
 
         public function onComplete(event:Event):void {
@@ -103,6 +100,9 @@ package org.flowplayer.bwcheck.detect {
 
         override public function detect():void {
             log.debug("requesting reference file " + _referenceFileUrl);
+            loader.addEventListener(ProgressEvent.PROGRESS, onProgress);
+            loader.addEventListener(Event.COMPLETE, onComplete);
+            loader.addEventListener(IOErrorEvent.IO_ERROR, onError);
 
             var request:URLRequest = new URLRequest(_referenceFileUrl + "?" + Math.random());
             _nocache = new URLRequestHeader("Cache-Control", "no-store, no-cache, must-revalidate");
@@ -112,7 +112,7 @@ package org.flowplayer.bwcheck.detect {
             loader.load(request);
 
             this._startTime = getTimer();
-            log.debug("detect: " + _startTime.toString());
+            log.debug("reference file download started at time: " + _startTime.toString());
 
         }
 
