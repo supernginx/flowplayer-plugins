@@ -1,9 +1,14 @@
 Version history:
 
+3.2.5
+-----
+Fixes:
+- fixed to work properly when switching bitrate using the bwcheck plugin
+
 3.2.4
 -----
 Fixes:
-- does not append the query strin into the initial request when start=0
+- does not append the query string into the initial request when start=0
 
 3.2.3
 -----
