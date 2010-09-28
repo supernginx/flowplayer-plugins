@@ -132,5 +132,15 @@ package org.flowplayer.bwcheck.detect {
         public function get streamItems():Vector.<DynamicStreamingItem> {
             return _streamItems;
         }
+
+        public function fromName(name:String):DynamicStreamingItem {
+            for (var i:Number = 0; i < _streamItems.length; i++) {
+                if (_streamItems[i].streamName.indexOf(name) == 0 ||
+                    _streamItems[i].streamName.indexOf("mp4:" + name) == 0) {  
+                    return _streamItems[i];
+                }
+            }
+            return null;
+        }
     }
 }
