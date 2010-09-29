@@ -1,5 +1,11 @@
 Version history:
 
+3.2.3
+-----
+Fixes:
+- The videoLink was not passed on to the email template. http://flowplayer.org/forum/5/48840
+- The stumbleupon config variable was misspelled
+
 3.2.2
 -----
 - Added 'shareUrl' config option that can be used to override the URL to be used when sharing to social sites

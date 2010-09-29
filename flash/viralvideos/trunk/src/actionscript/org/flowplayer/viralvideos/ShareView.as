@@ -109,7 +109,7 @@ package org.flowplayer.viralvideos {
             _beboIcon = initIcon(_config.bebo, new BeboIcon(_config.icons, player.animationEngine), shareBebo);
             _diggIcon = initIcon(_config.digg, new DiggIcon(_config.icons, player.animationEngine), shareDigg);
             _orkutIcon = initIcon(_config.orkut, new OrkutIcon(_config.icons, player.animationEngine), shareOrkut);
-            _stumbleUponIcon = initIcon(_config.stubmbleupon, new StumbleuponIcon(_config.icons, player.animationEngine), shareStumbleUpon);
+            _stumbleUponIcon = initIcon(_config.stumbleupon, new StumbleuponIcon(_config.icons, player.animationEngine), shareStumbleUpon);
         }
 
         private function shareFacebook(event:MouseEvent):void {

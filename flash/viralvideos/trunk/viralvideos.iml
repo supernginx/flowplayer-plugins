@@ -2,9 +2,18 @@
 <module type="Flex" version="4">
   <component name="Flex.Build.Configuration">
     <option name="DO_BUILD" value="true" />
+    <option name="OUTPUT_TYPE" value="Library" />
     <option name="MAIN_CLASS" value="org.flowplayer.viralvideos.ViralVideos" />
-    <option name="OUTPUT_FILE_NAME" value="viralvideos.swf" />
+    <option name="OUTPUT_FILE_NAME" value="viralvideos.swc" />
     <option name="TARGET_PLAYER_VERSION" value="9" />
+    <option name="CONDITIONAL_COMPILATION_DEFINITION_LIST">
+      <list>
+        <ConditionalCompilationDefinition>
+          <option name="NAME" value="CONFIG::LOGGING" />
+          <option name="VALUE" value="true" />
+        </ConditionalCompilationDefinition>
+      </list>
+    </option>
     <option name="VERSION" value="3" />
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
