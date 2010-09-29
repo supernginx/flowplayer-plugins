@@ -5,6 +5,7 @@ Version history:
 Fixes:
 - The videoLink was not passed on to the email template. http://flowplayer.org/forum/5/48840
 - The stumbleupon config variable was misspelled
+- the email/share/embed buttons were sized incorrectly after fullscreen: fixed viral videos icons resizing problem: http://flowplayer.org/forum/5/49309
 
 3.2.2
 -----
