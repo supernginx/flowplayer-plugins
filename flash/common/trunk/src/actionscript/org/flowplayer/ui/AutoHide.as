@@ -83,6 +83,10 @@ package org.flowplayer.ui {
             _showListener = showListener;
         }
 
+        /**
+         * Stops the timed autohiding leaving the display object either visible or hidden.
+         * @param leaveVisible
+         */
         public function stop(leaveVisible:Boolean = true):void {
             log.debug("stop(), leaveVisible? " + leaveVisible);
             if (! isShowing() && leaveVisible) {
@@ -101,6 +105,9 @@ package org.flowplayer.ui {
             _disp.removeEventListener(MouseEvent.ROLL_OUT, onMouseOut);
         }
 
+        /**
+         * Brings the display object visible and starts the autohiding timer.
+         */
         public function start():void {
             doShow();
             log.debug("start(), autoHide is " + _config.state);
@@ -115,16 +122,27 @@ package org.flowplayer.ui {
             }
         }
 
+        /**
+         * Cancel the current animation that has been started by this autohide (if any).
+         */
         public function cancelAnimation():void {
             log.debug("cancelAnimation");
             _player.animationEngine.cancel(_disp);
         }
 
+        /**
+         * Brings the display object visible. If an animation is in progress, it's canceled.
+         */
         public function show():void {
             cancelAnimation();
             doShow();
         }
 
+        /**
+         * Hides the display object.
+         * @param event
+         * @param ignoreMouseOver
+         */
         public function hide(event:TimerEvent = null, ignoreMouseOver:Boolean = false):void {
             if (! isShowing())
             {
