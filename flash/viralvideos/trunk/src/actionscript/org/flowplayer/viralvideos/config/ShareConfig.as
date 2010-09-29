@@ -26,7 +26,7 @@ package org.flowplayer.viralvideos.config {
         private var _livespaces:Boolean = true;
         private var _digg:Boolean = true;
         private var _orkut:Boolean = true;
-        private var _stubmbleupon:Boolean = true;
+        private var _stumbleupon:Boolean = true;
         private var _bebo:Boolean = true;
         private var _icons:ButtonConfig;
 
@@ -142,12 +142,12 @@ package org.flowplayer.viralvideos.config {
             _orkut = value;
         }
 
-        public function get stubmbleupon():Boolean {
-            return _stubmbleupon;
+        public function get stumbleupon():Boolean {
+            return _stumbleupon;
         }
 
-        public function set stubmbleupon(value:Boolean):void {
-            _stubmbleupon = value;
+        public function set stumbleupon(value:Boolean):void {
+            _stumbleupon = value;
         }
 
         public function get bebo():Boolean {
