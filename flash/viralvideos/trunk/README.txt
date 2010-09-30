@@ -2,6 +2,7 @@ Version history:
 
 3.2.3
 -----
+- Added support for HTML5 fallback in the supplied embed code, thanks Claus Pedersen. http://flowplayer.org/forum/5/48905
 Fixes:
 - The videoLink was not passed on to the email template. http://flowplayer.org/forum/5/48840
 - The stumbleupon config variable was misspelled
