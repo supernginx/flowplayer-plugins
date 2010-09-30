@@ -122,7 +122,7 @@ package org.flowplayer.controls.slider {
 		protected override function onResize():void {
 			super.onResize();
 			
-			drawBufferBar(0, 0);
+			doDrawBufferBar(0, 0);
 			drawProgressBar(0, 0);
 			
 			if ( _currentClip )
@@ -148,8 +148,7 @@ package org.flowplayer.controls.slider {
             updateDraggerPos(event.info as Number, event.target as Clip);
             stop();
 
-			drawBufferBar(0, 0);
-			drawProgressBar(0, 0);
+			doDrawBufferBar(0, 0);
         }
 
         private function updateDraggerPos(time:Number, clip:Clip):void {
@@ -170,7 +169,6 @@ package org.flowplayer.controls.slider {
             if (_currentClip.duration == 0 && _currentClip.type == ClipType.IMAGE) return;
 			stop();
             doStart(_currentClip);
-//            animationEngine.animateProperty(_dragger, "x", 0, 300, function():void { doStart(event.target as Clip); });
         }
 
         private function resume(event:ClipEvent):void {
@@ -200,9 +198,13 @@ package org.flowplayer.controls.slider {
                             var duration:Number = (clip.duration - time) * 1000;  
                             log.debug("doStart(), starting an animation to x pos " + endPos + ", the duration is " + clip.duration + ", current pos is " + _dragger.x);
                             updateDraggerPos(currentTime, clip);
-                            animationEngine.animateProperty(_dragger, "x", endPos, duration, null, function(t:Number, b:Number, c:Number, d:Number):Number {
-                                return c * t / d + b;
-                            });
+                            animationEngine.animateProperty(_dragger, "x", endPos, duration, null,
+                                    function():void {
+                                        drawProgressBar(_bufferStart * width);
+                                    },
+                                    function(t:Number, b:Number, c:Number, d:Number):Number {
+                                        return c * t / d + b;
+                                    });
                         }
                     });
             _startDetectTimer.start();
@@ -252,7 +254,7 @@ package org.flowplayer.controls.slider {
 			return _config.tooltips && _config.tooltips.scrubber;
 		}
 
-		private function drawBufferBar(leftEdge:Number, rightEdge:Number):void {
+		private function doDrawBufferBar(leftEdge:Number, rightEdge:Number):void {
 			drawBar(_bufferBar, _config.style.bufferColor, _config.style.bufferAlpha, _config.style.bufferGradient, leftEdge, rightEdge);
 		}
 		
@@ -313,7 +315,7 @@ package org.flowplayer.controls.slider {
 		public function setBufferRange(start:Number, end:Number):void {
 			_bufferStart = start;
 			_bufferEnd = Math.min(end, 1);
-			drawBars();
+			drawBufferBar();
 		}
 		
 		override protected function canDragTo(xPos:Number):Boolean {
@@ -322,25 +324,25 @@ package org.flowplayer.controls.slider {
 		}
 
 		override protected function onDispatchDrag():void {
-			drawBars();
+			drawBufferBar();
 			_seekInProgress = true;
 		}
-		
-		private function drawBars():void {
-			if (_seekInProgress)  {
+
+        private function drawBufferBar():void {
+            if (_seekInProgress)  {
                 log.debug("drawBars(): seek in progress");
                 return;
             }
-			if (_dragger.x + _dragger.width / 2 > _bufferStart * width) {
-				drawBufferBar(_bufferStart * width, _bufferEnd * width);
-				drawProgressBar(_bufferStart * width);
-			} else {
-				_bufferBar.graphics.clear();
-				GraphicsUtil.removeGradient(_bufferBar);
-				_progressBar.graphics.clear();
-				GraphicsUtil.removeGradient(_progressBar);
-			}
-		}
+            if (_dragger.x + _dragger.width / 2 > _bufferStart * width) {
+                doDrawBufferBar(_bufferStart * width, _bufferEnd * width);
+//                drawProgressBar(_bufferStart * width);
+            } else {
+                _bufferBar.graphics.clear();
+                GraphicsUtil.removeGradient(_bufferBar);
+//                _progressBar.graphics.clear();
+//                GraphicsUtil.removeGradient(_progressBar);
+            }
+        }
 
         private function setSeekBegin(event:ClipEvent):void {
             log.debug("onBeforeSeek");
