@@ -29,7 +29,7 @@ package org.flowplayer.viralvideos.config {
         private var _linkUrl:String = null;
         private var _configUrl:String = null;
         private var _fallbackUrls:Array = new Array()
-        private var _failbackPoster:String = null
+        private var _fallbackPoster:String = null
         private var _anchorText:String = null;
 
         public function get title():String {
@@ -145,11 +145,11 @@ package org.flowplayer.viralvideos.config {
         }
 
         public function get fallbackPoster():String {
-            return _failbackPoster;
+            return _fallbackPoster;
         }
 
         public function set fallbackPoster(value:String):void {
-            _failbackPoster = value;
+            _fallbackPoster = value;
         }
 
     }
