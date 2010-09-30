@@ -1,4 +1,4 @@
-/*    
+/*
  *    Author: Anssi Piirainen, <api@iki.fi>
  *
  *    Copyright (c) 2009 Flowplayer Oy
@@ -12,11 +12,11 @@ package org.flowplayer.viralvideos.config {
     import org.flowplayer.viralvideos.PlayerEmbed;
 
     public class EmbedConfig {
-		public static const DEFAULT:int = -1;
-		public static const OVERRIDE_FALSE:int	  = 0;
-		public static const OVERRIDE_TRUE:int    = 1;
-		
-	
+        public static const DEFAULT:int = -1;
+        public static const OVERRIDE_FALSE:int = 0;
+        public static const OVERRIDE_TRUE:int = 1;
+
+
         private var _title:String = "Copy and paste this code to your web page";
         private var _options:String = "Customize size and colors";
         private var _backgroundColor:String = "Background color";
@@ -24,10 +24,13 @@ package org.flowplayer.viralvideos.config {
         private var _size:String = "Size (pixels)";
         private var _copy:String = "Copy";
         private var _playerEmbed:PlayerEmbed;
-		private var _autoPlay:int = DEFAULT;
-		private var _autoBuffering:int = DEFAULT;
-		private var _linkUrl:String = null;
-		private var _configUrl:String = null;
+        private var _autoPlay:int = DEFAULT;
+        private var _autoBuffering:int = DEFAULT;
+        private var _linkUrl:String = null;
+        private var _configUrl:String = null;
+        private var _fallbackUrls:Array = new Array()
+        private var _failbackPoster:String = null
+        private var _anchorText:String = null;
 
         public function get title():String {
             return _title;
@@ -85,31 +88,31 @@ package org.flowplayer.viralvideos.config {
             _copy = value;
         }
 
-		public function get autoPlay():Boolean {
-			return _autoPlay == OVERRIDE_TRUE;
-		}
+        public function get autoPlay():Boolean {
+            return _autoPlay == OVERRIDE_TRUE;
+        }
 
-		public function get isAutoPlayOverriden():Boolean {
-			return _autoPlay != DEFAULT;
-		}
+        public function get isAutoPlayOverriden():Boolean {
+            return _autoPlay != DEFAULT;
+        }
 
-		public function set autoPlay(value:Boolean):void {
-			_autoPlay = value ? OVERRIDE_TRUE : OVERRIDE_FALSE;
-		}
+        public function set autoPlay(value:Boolean):void {
+            _autoPlay = value ? OVERRIDE_TRUE : OVERRIDE_FALSE;
+        }
 
-		public function get autoBuffering():Boolean {
-			return _autoBuffering == OVERRIDE_TRUE;
-		}
+        public function get autoBuffering():Boolean {
+            return _autoBuffering == OVERRIDE_TRUE;
+        }
 
-		public function get isAutoBufferingOverriden():Boolean {
-			return _autoBuffering != DEFAULT;
-		}
+        public function get isAutoBufferingOverriden():Boolean {
+            return _autoBuffering != DEFAULT;
+        }
 
-		public function set autoBuffering(value:Boolean):void {
-			_autoBuffering = value ? OVERRIDE_TRUE : OVERRIDE_FALSE;
-		}
+        public function set autoBuffering(value:Boolean):void {
+            _autoBuffering = value ? OVERRIDE_TRUE : OVERRIDE_FALSE;
+        }
 
-		public function get linkUrl():String {
+        public function get linkUrl():String {
             return _linkUrl;
         }
 
@@ -117,12 +120,37 @@ package org.flowplayer.viralvideos.config {
             _linkUrl = value;
         }
 
-		public function get configUrl():String {
+        public function get configUrl():String {
             return _configUrl;
         }
 
         public function set configUrl(value:String):void {
             _configUrl = value;
         }
+
+        public function get fallbackUrls():Array {
+            return _fallbackUrls;
+        }
+
+        public function set fallbackUrls(value:Array):void {
+            _fallbackUrls = value;
+        }
+
+        public function get anchorText():String {
+            return _anchorText;
+        }
+
+        public function set anchorText(value:String):void {
+            _anchorText = value;
+        }
+
+        public function get fallbackPoster():String {
+            return _failbackPoster;
+        }
+
+        public function set fallbackPoster(value:String):void {
+            _failbackPoster = value;
+        }
+
     }
 }
