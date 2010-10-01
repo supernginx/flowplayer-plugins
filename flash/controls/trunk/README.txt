@@ -4,7 +4,7 @@ Version history:
 -----
 - Added possibility to configure margins and widget spacing. For example { margins: [0,2,0,2], spacing: { all: 0, play: 10 } }
 Fixes:
-- the brogress bar now stays in sync with the scrubber handle: http://code.google.com/p/flowplayer-core/issues/detail?id=141
+- the progress bar now stays in sync with the scrubber handle: http://code.google.com/p/flowplayer-core/issues/detail?id=141
 
 3.2.2
 -----
