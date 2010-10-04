@@ -57,6 +57,7 @@ package org.flowplayer.cluster
             _connectCount = config.connectCount;
             _connectTimeout = config.connectTimeout;
             _failureExpiry = config.failureExpiry;
+            _currentHost = _hosts[0];
         }
 
         private function initHosts(hosts:Array, fallback:String):void {
