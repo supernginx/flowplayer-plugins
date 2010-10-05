@@ -9,11 +9,13 @@
  */
 
 package org.flowplayer.securestreaming {
-	
-    import org.flowplayer.controller.ParallelRTMPConnector;
-    import flash.net.Responder;
-	import com.meychi.ascrypt.TEA;
+    import com.meychi.ascrypt.TEA;
+
     import flash.events.NetStatusEvent;
+    import flash.net.NetConnection;
+    import flash.net.Responder;
+
+    import org.flowplayer.controller.ParallelRTMPConnector;
 
     public class SecureParallelRTMPConnector extends ParallelRTMPConnector {
         
@@ -31,20 +33,22 @@ package org.flowplayer.securestreaming {
             if (event.info.code == "NetConnection.Connect.Success") {
 				if (event.info.secureToken != undefined) {
                     log.debug("received secure token");
-                    var secureResult:Object = new Object();
-                    secureResult.onResult = function(isSuccessful:Boolean):void {
-                        log.info("secureTokenResponse: " + isSuccessful);
-                        if (! isSuccessful) {
-                            log.error("secure token not accepted.");
-                            handleError("secure token was not accepted by the server");
-                        }
-                    };
-                    _connection.call("secureTokenResponse", new Responder(secureResult.onResult as Function), TEA.decrypt(event.info.secureToken, _sharedSecret));
+                    handleSecureTokenResponse(event, _connection, handleError, _sharedSecret);
                 } else {
                     log.error("secure token was not received from the server");
                     handleError("secure token not received from server");
                 }
 			}
+        }
+
+        public static function handleSecureTokenResponse(event:NetStatusEvent, connection:NetConnection, failureCallback:Function, sharedSecret:String):void {
+            var secureResult:Object = new Object();
+            secureResult.onResult = function(isSuccessful:Boolean):void {
+                if (! isSuccessful) {
+                    failureCallback("secure token was not accepted by the server");
+                }
+            };
+            connection.call("secureTokenResponse", new Responder(secureResult.onResult as Function), TEA.decrypt(event.info.secureToken, sharedSecret));
         }
 		
 		private function handleError(message:String):void {

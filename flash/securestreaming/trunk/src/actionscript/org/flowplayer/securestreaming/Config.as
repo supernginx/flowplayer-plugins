@@ -13,6 +13,7 @@ package org.flowplayer.securestreaming {
     public class Config {
         private var _timestamp:String;
         private var _timestampUrl:String;
+        private var plugin:String;
         private var _token:String = "sn983pjcnhupclavsnda";
 
         public function get timestampUrl():String {
@@ -41,6 +42,14 @@ package org.flowplayer.securestreaming {
 
         public function set timestamp(val:String):void {
             _timestamp = val;
+        }
+
+        public function get clusterPlugin():String {
+            return plugin;
+        }
+
+        public function set clusterPlugin(value:String):void {
+            plugin = value;
         }
     }
 }

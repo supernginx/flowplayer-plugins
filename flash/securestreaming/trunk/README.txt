@@ -1,5 +1,9 @@
 Version history:
 
+3.2.2
+-----
+- Added support for the cluster plugin
+
 3.2.1
 ---------
 - Added parallel connection mechanism on secure RTMP streams
