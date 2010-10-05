@@ -9,26 +9,22 @@
  */
 
 package org.flowplayer.securestreaming {
-    import com.adobe.crypto.MD5;
-import flash.events.NetStatusEvent;
+    import flash.events.NetStatusEvent;
+
     import org.flowplayer.controller.ClipURLResolver;
     import org.flowplayer.controller.ConnectionProvider;
-import org.flowplayer.controller.ResourceLoader;
     import org.flowplayer.controller.StreamProvider;
-    import org.flowplayer.controller.StreamProvider;
-import org.flowplayer.model.Clip;
     import org.flowplayer.model.Clip;
-import org.flowplayer.model.Plugin;
-    import org.flowplayer.model.PluginError;
+    import org.flowplayer.model.Plugin;
     import org.flowplayer.model.PluginModel;
     import org.flowplayer.util.Log;
     import org.flowplayer.util.PropertyBinder;
-    import org.flowplayer.util.URLUtil;
     import org.flowplayer.view.Flowplayer;
 
     public class SecureStreaming implements ClipURLResolver, ConnectionProvider, Plugin {
+        private const log:Log = new Log(this);
         private var _httpResolver:SecureHttpUrlResolver;
-        private var _connectionProvider:SecureRTMPConnectionProvider;
+        private var _connectionProvider:ConnectionProvider;
         private var _model:PluginModel;
         private var _config:Config;
         private var _player:Flowplayer;
@@ -71,7 +67,10 @@ import org.flowplayer.model.Plugin;
         public function onLoad(player:Flowplayer):void {
             _player = player;
             _httpResolver = new SecureHttpUrlResolver(this, player, _config, _failureListener);
-            _connectionProvider = new SecureRTMPConnectionProvider(_config.token);
+
+            var cluster:ConnectionProvider = lookupClusterPlugin(_config.clusterPlugin || "cluster", player);
+            _connectionProvider = cluster ?  new ClusterDelegatingSecureRTMPConnectionProvider(_config, cluster) : new SecureRTMPConnectionProvider(_config.token);
+
             _connectionProvider.connectionClient = _connectionClient;
             _model.dispatchOnLoad();
         }
@@ -90,6 +89,19 @@ import org.flowplayer.model.Plugin;
             if (_connectionProvider) {
                 _connectionProvider.connectionClient = client;
             }
+        }
+
+        private function lookupClusterPlugin(clusterPluginName:String, player:Flowplayer):ConnectionProvider {
+            log.debug("looking up cluster plugin with name '" + clusterPluginName + "'");
+            var cluster:PluginModel = PluginModel(player.pluginRegistry.getPlugin(clusterPluginName));
+            if (cluster) {
+                var plugin:ConnectionProvider = cluster.pluginObject as ConnectionProvider;
+                log.debug("found cluster plugin " + plugin);
+                return plugin;
+            } else {
+                player.showError("cluster plugin not found in configuration");
+            }
+            return null;
         }
 
     }
