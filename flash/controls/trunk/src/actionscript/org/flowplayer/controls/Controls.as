@@ -581,8 +581,11 @@ package org.flowplayer.controls {
 
         private function addListeners(playlist:Playlist):void {
             playlist.onConnect(onPlayStarted);
+
             playlist.onBeforeBegin(onPlayStarted);
+            playlist.onBegin(onPlayStarted);
             playlist.onBegin(onPlayBegin);
+
             playlist.onMetaData(onPlayStarted);
             playlist.onStart(onPlayStarted); // bug #120
             playlist.onPause(onPlayPaused);
