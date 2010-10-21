@@ -204,15 +204,15 @@ package org.flowplayer.viralvideos {
             }
 
             var code:String =
-                    '<object id="' + _player.id + '" width="' + width + '" height="' + height + '" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"> ' + "\n" +
-                            '    <param value="true" name="allowfullscreen"/>' + "\n" +
-                            '    <param value="always" name="allowscriptaccess"/>' + "\n" +
-                            '    <param value="high" name="quality"/>' + "\n" +
-                            '    <param value="true" name="cachebusting"/>' + "\n" +
-                            '    <param value="#000000" name="bgcolor"/>' + "\n" +
-                            '    <param name="movie" value="' + _player.config.playerSwfUrl + '" />' + "\n" +
-                            '    <param value="config=' + configStr + '" name="flashvars"/>' + "\n" +
-                            '    <embed src="' + _player.config.playerSwfUrl + '" type="application/x-shockwave-flash" width="' + width + '" height="' + height + '" allowfullscreen="true" allowscriptaccess="always" cachebusting="true" flashvars="config=' + configStr + '" bgcolor="#000000" quality="true">' + "\n";
+                    '<object id="' + _player.id + '" width="' + width + '" height="' + height + '" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"> ' +
+                            '    <param value="true" name="allowfullscreen"/>' +
+                            '    <param value="always" name="allowscriptaccess"/>' +
+                            '    <param value="high" name="quality"/>' +
+                            '    <param value="true" name="cachebusting"/>' +
+                            '    <param value="#000000" name="bgcolor"/>' +
+                            '    <param name="movie" value="' + _player.config.playerSwfUrl + '" />' +
+                            '    <param value="config=' + configStr + '" name="flashvars"/>' +
+                            '    <embed src="' + _player.config.playerSwfUrl + '" type="application/x-shockwave-flash" width="' + width + '" height="' + height + '" allowfullscreen="true" allowscriptaccess="always" cachebusting="true" flashvars="config=' + configStr + '" bgcolor="#000000" quality="true">';
 
             if (_viralConfig.embed.fallbackUrls.length > 0) {
                 code += '     <video controls width="' + width + '" height="' + height + '"';
