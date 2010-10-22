@@ -1,5 +1,9 @@
 Version history:
 
+3.2.4
+-----
+- Removed line breaks from the embed code
+
 3.2.3
 -----
 - Added support for HTML5 fallback in the supplied embed code, thanks Claus Pedersen. http://flowplayer.org/forum/5/48905
