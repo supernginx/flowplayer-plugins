@@ -31,7 +31,6 @@ package org.flowplayer.viralvideos {
     public class ViralVideos extends AbstractSprite implements Plugin, Styleable {
 
         private const TAB_HEIGHT:int = 25;
-
         public var _player:Flowplayer;
         private var _model:PluginModel;
         private var _config:Config;

@@ -5,7 +5,7 @@
     <option name="OUTPUT_TYPE" value="Library" />
     <option name="MAIN_CLASS" value="org.flowplayer.viralvideos.ViralVideos" />
     <option name="OUTPUT_FILE_NAME" value="viralvideos.swc" />
-    <option name="TARGET_PLAYER_VERSION" value="9" />
+    <option name="TARGET_PLAYER_VERSION" value="10.0.0" />
     <option name="CONDITIONAL_COMPILATION_DEFINITION_LIST">
       <list>
         <ConditionalCompilationDefinition>
@@ -21,10 +21,10 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src/actionscript" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="flex_sdk_3" jdkType="Flex SDK Type" />
+    <orderEntry type="jdk" jdkName="flex_sdk_4 (player 10)" jdkType="Flex SDK Type" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="common" />
     <orderEntry type="module" module-name="core" />
+    <orderEntry type="module" module-name="common" />
   </component>
 </module>
 
