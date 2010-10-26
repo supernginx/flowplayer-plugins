@@ -165,7 +165,7 @@ package org.flowplayer.controls {
 			
 			this._tf = this.createField( titleIsDevice ); 
 			this._tf.defaultTextFormat = this._titleFormat;
-			this._tf.htmlText = title;
+			this._tf.text = title;
 			this._tf.alpha = _config.style.tooltipTextAlpha;
 			if( this._autoSize ){
 				setDefaultWidth();
