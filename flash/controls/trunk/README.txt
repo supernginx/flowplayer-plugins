@@ -4,6 +4,7 @@ Version history:
 -----
 Fixes:
 - Play/pause button was left in wrong state when started playing after a stop() call or a stop button click
+- The tooltip texts are not treated as HTML any more. This way you can have labels like '<play>'
 
 3.2.3
 -----
