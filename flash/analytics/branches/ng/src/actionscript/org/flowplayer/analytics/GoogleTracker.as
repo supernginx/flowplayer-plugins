@@ -20,160 +20,109 @@ package org.flowplayer.analytics {
     import com.google.analytics.AnalyticsTracker;
     import com.google.analytics.debug.DebugConfiguration;
 
+    import flash.display.Sprite;
     import flash.external.ExternalInterface;
 
     import flash.ui.Keyboard;
 
     import org.flowplayer.model.*;
 
+    import org.flowplayer.util.Log;
+    import org.flowplayer.util.PropertyBinder;
+    import org.flowplayer.util.URLUtil;
     import org.flowplayer.view.Flowplayer;
     import org.flowplayer.view.StyleableSprite;
 
-    public class GoogleTracker extends StyleableSprite implements Plugin {
-
+    public class GoogleTracker extends Sprite implements Plugin {
+        private var log:Log = new Log(this);
         private var _model:PluginModel;
         private var _player:Flowplayer;
+        private var _config:Config;
         private var _tracker:AnalyticsTracker;
-        private var _trackingMode:String;			// Bridge or AS3 -- if you have ga.js on the page and a tracking object already, use 'Bridge', else 'AS3' and your google_id.
-        private var _bridgeTrackerObject:String;
-        private var _googleId:String;
-        private var _mydebug:Boolean;
-        private var _labels:Object;
-        private var _embeddedURL:String;
-
-        public function GoogleTracker() {             // constructor
-        }
-
-        public function getDefaultConfig():Object {
-            return {
-                "opacity": 0.0,
-                "url": "flowplayer.GoogleTracker.swf",
-                "trackingMode": "AS3",
-                "bridgeObject": "",
-                "googleId": "",
-                "debug": false,
-                "labels": {
-                    "start": "start",
-                    "begin": "play",
-                    "pause": "pause",
-                    "resume": "resume",
-                    "seek": "seek",
-                    "stop": "stop",
-                    "finish": "finish",
-                    "mute": "mute",
-                    "unmute": "unmute",
-                    "fullscreen": "Full Screen",
-                    "fullscreenexit": "Full Screen Exit"
-                }
-            };
-        }
 
         public function onConfig(model:PluginModel):void {
-            rootStyle = model.config;				// get outside variables from config
             _model = model;
+            _config = Config(new PropertyBinder(new Config()).copyProperties(model.config));
         }
 
         public function onLoad(player:Flowplayer):void {
-            _model.dispatchOnLoad();				// dispatch onLoad so that the player knows this plugin is initialized
+            _player = player;
+            var events:Events = _config.events;
+            createClipEventTracker(_player.playlist.onStart, events.start, true);
+            createClipEventTracker(_player.playlist.onStop, events.stop, true);
+            createClipEventTracker(_player.playlist.onFinish, events.finish, true);
+            createClipEventTracker(_player.playlist.onPause, events.pause, events.trackPause);
+            createClipEventTracker(_player.playlist.onResume, events.resume, events.trackResume);
+            createClipEventTracker(_player.playlist.onSeek, events.seek, events.trackSeek);
 
-            if (! _model.config.trackingMode) {
-                if (_model.config.googleId && _model.config.bridgeObject) {
-                    _trackingMode = "Bridge";	// preference to bridge
-                } else if (! _model.config.googleId && _model.config.bridgeObject) {
-                    _trackingMode = "Bridge";
-                } else {
-                    _trackingMode = "AS3";
-                }
-            }
+            createPlayerEventTracker(_player.onMute, events.mute, events.trackMute);
+            createPlayerEventTracker(_player.onUnmute, events.unmute, events.trackUnmute);
+            createPlayerEventTracker(_player.onFullscreen, events.fullscreen, events.trackFullscreen);
+            createPlayerEventTracker(_player.onFullscreenExit, events.fullscreenExit, events.trackFullscreenExit);
 
-            if (_model.config.trackingMode == "Bridge") {
-                _trackingMode = "Bridge";
-                if (_model.config.bridgeObject) {
-                    _bridgeTrackerObject = _model.config.bridgeObject;
-                } else if (_model.config.googleId) {
-                    _bridgeTrackerObject = _model.config.googleId;
-                } else {
-                    _bridgeTrackerObject = "window.pageTracker";
-                }
-            }
+            // track unload if the clip is playing or paused. If it's stopped or finished, the Stop event has already
+            // been tracked or the playback has not started at all.
+            createPlayerEventTracker(_player.onUnload, events.unload, true, function():Boolean { return _player.isPlaying() ||  _player.isPaused() });
 
-            _googleId = _model.config.googleId;
-            _mydebug = _model.config.debug
-            _player = player;						// get our local reference to the player
-
-            // allow configuration of event labels
-            _labels = new Object();
-            for (var i:String in _model.config.labels) {
-                _labels[i] = _model.config.labels[i];
-            }
-
-            _embeddedURL = getEmbeddedUrl();
-
-            var createClipTracker:Function = function(eventName:String):Function {
-                return function(event:ClipEvent):void {
-                    if (_labels[eventName] != false) doTrackEvent(_labels[eventName], event.target as Clip);
-                }
-            }
-
-            _player.playlist.onStart(createClipTracker("start"));
-            _player.playlist.onBegin(createClipTracker("begin"));
-            _player.playlist.onPause(createClipTracker("pause"));
-            _player.playlist.onResume(createClipTracker("resume"));
-            _player.playlist.onSeek(createClipTracker("seek"));
-            _player.playlist.onStop(createClipTracker("stop"));
-            _player.playlist.onFinish(createClipTracker("finish"));
-
-            // now the player-level events
-
-            var createPlayerTracker:Function = function(eventName:String):Function {
-                return function(event:PlayerEvent):void {
-                    if (_labels[eventName] != false) doTrackEvent(_labels[eventName]);
-                }
-            }
-
-            _player.onMute(createPlayerTracker("mute"));
-            _player.onUnmute(createPlayerTracker("unmute"));
-            _player.onFullscreen(createPlayerTracker("fullscreen"));
-            _player.onFullscreenExit(createPlayerTracker("fullscreenexit"));
-
+            _model.dispatchOnLoad();
         }
 
-        public function getEmbeddedUrl():String {
-            if (!ExternalInterface.available) return "Unknown";
-            try {
-                var href:String = ExternalInterface.call("self.location.href.toString");
-                return "host: " + href;
-            } catch (e:Error) {
-                log.error("error in getEmbeddedUrl(): " + e);
-            }
+        private function createClipEventTracker(eventBinder:Function, eventName:String, doTrack:Boolean):void {
+            if (! doTrack) return;
+            eventBinder(function(event:ClipEvent):void {
+                doTrackEvent(eventName, event.target as Clip);
+            });
+        }
+
+        private function createPlayerEventTracker(eventBinder:Function, eventName:String, doTrack:Boolean, extraCheck:Function = null):void {
+            if (!doTrack) return;
+            eventBinder(function(event:PlayerEvent):void {
+                if (extraCheck != null) {
+                    if (! extraCheck()) {
+                        // extra check returns false --> don't track
+                        return;
+                    }
+                }
+                doTrackEvent(eventName);
+            });
+        }
+
+        public function getCategory():String {
+            if (_config.category) return _config.category;
+
+            var pageUrl:String = URLUtil.pageUrl;
+            if (pageUrl) return pageUrl;
+
+            _model.dispatchError(PluginError.ERROR, "Unable to get page URL to be used as google analytics event gategory. Specify this in the analytics plugin config.");
             return "Unknown";
         }
 
-        // tracker instantiation.
         private function instantiateTracker():void {
-
             try {
                 var _confdebug:DebugConfiguration = new DebugConfiguration();
                 _confdebug.minimizedOnStart = true;
 
-                if (_trackingMode == "Bridge") {
+                if (_config.mode == "Bridge") {
                     if (! ExternalInterface.available) {
-                        _model.dispatchError(PluginError.ERROR, "Unable to create tracked in Bridge mode because ExternalInterface is not available");
+                        _model.dispatchError(PluginError.ERROR, "Unable to create tracker in Bridge mode because ExternalInterface is not available");
+                        return;
                     }
-                    log.debug("Creating tracker in Bridge mode using " + _bridgeTrackerObject + ", debug ? " + (_mydebug ? "true" : "false"));
-                    _tracker = new GATracker(this, _bridgeTrackerObject, "Bridge", _mydebug);
-                } else {
-                    if (! _googleId) {
-                        _model.dispatchError(PluginError.ERROR, "Google ID not specified");
-                    }
-
-                    log.debug("Creating tracker in AS3 mode using " + _googleId + ", debug ? " + (_mydebug ? "true" : "false"));
-                    _tracker = new GATracker(this, _googleId, "AS3", _mydebug);
-                    _tracker.debug.showHideKey = Keyboard.F6; // use the F6 key to toggle visual debug display
+                    log.debug("Creating tracker in Bridge mode using " + _config.bridgeTrackerObject + ", debug ? " + _config.debug);
+                    _tracker = new GATracker(this, _config.bridgeTrackerObject, "Bridge", _config.debug);
+                    return;
                 }
+
+                if (! _config.accountId) {
+                    _model.dispatchError(PluginError.ERROR, "Google Analytics account ID not specified. Look it up in your Analytics account, the format is 'UA-XXXXXX-N'");
+                    return;
+                }
+
+                log.debug("Creating tracker in AS3 mode using " + _config.accountId + ", debug ? " + _config.debug);
+                _tracker = new GATracker(this, _config.accountId, "AS3", _config.debug);
+                _tracker.debug.showHideKey = Keyboard.F6; // use the F6 key to toggle visual debug display
+
             } catch(e:Error) {
-                log.error("Unable to create tracker:", e.toString());
-                log.error("Stack:", e.getStackTrace());
+                _model.dispatchError(PluginError.ERROR, "Unable to create tracker: " + e);
             }
         }
 
@@ -188,9 +137,9 @@ package org.flowplayer.analytics {
                 clip = _player.currentClip;
 
             try {
-                log.debug("Tracking " + eventName + "[" + (clip.completeUrl + (clip.isInStream ? ": instream" : "")) + "] : " + (_player.status ? _player.status.time : 0) + " on page " + _embeddedURL);
+                log.debug("Tracking " + eventName + "[" + (clip.completeUrl + (clip.isInStream ? ": instream" : "")) + "] : " + (_player.status ? _player.status.time : 0) + " on page " + getCategory());
                 if (_tracker.isReady()) {
-                    _tracker.trackEvent(_embeddedURL, eventName, clip.completeUrl + (clip.isInStream ? ": instream" : ""), int(_player.status ? _player.status.time : 0));
+                    _tracker.trackEvent(getCategory(), eventName, clip.completeUrl + (clip.isInStream ? ": instream" : ""), int(_player.status ? _player.status.time : 0));
                 }
             } catch (e:Error) {
                 log.error("Got error while tracking event " + eventName);
@@ -203,10 +152,13 @@ package org.flowplayer.analytics {
         }
 
         [External]
-        public function setLabelName(sLabel:String, newName:String):void {
-            _labels[sLabel] = newName == "false" ? false : newName;
+        public function setEventName(oldName:String, newName:String):void {
+            _config.events[oldName] = newName == "false" ? false : newName;
         }
 
+        public function getDefaultConfig():Object {
+            return null;
+        }
 
     }
 }
