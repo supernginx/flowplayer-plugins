@@ -233,8 +233,9 @@ package org.flowplayer.controls.slider {
 
         private function stopAndRewind(event:ClipEvent = null):void {
             log.debug("stopAndRewind()");
-            animationEngine.cancel(_dragger);
+            stop();
             animationEngine.animateProperty(_dragger, "x", 0, 300);
+            clearBar(_progressBar);
         }
 
 		override protected function get dispatchOnDrag():Boolean {
@@ -337,11 +338,15 @@ package org.flowplayer.controls.slider {
                 doDrawBufferBar(_bufferStart * width, _bufferEnd * width);
 //                drawProgressBar(_bufferStart * width);
             } else {
-                _bufferBar.graphics.clear();
-                GraphicsUtil.removeGradient(_bufferBar);
+                clearBar(_bufferBar);
 //                _progressBar.graphics.clear();
 //                GraphicsUtil.removeGradient(_progressBar);
             }
+        }
+
+        private function clearBar(bar:Sprite):void {
+            bar.graphics.clear();
+            GraphicsUtil.removeGradient(bar);
         }
 
         private function setSeekBegin(event:ClipEvent):void {
@@ -381,10 +386,10 @@ package org.flowplayer.controls.slider {
             if (isNaN(_config.style.scrubberBorderRadius)) return super.barCornerRadius;
             return _config.style.scrubberBorderRadius;
         }
-
-		override protected function onMouseDown(event:MouseEvent):void {
-			stop();
-			super.onMouseDown(event);
-		}
+//
+        override protected function onDragging():void {
+            stop();
+            drawProgressBar(_bufferStart * width);
+        }
 	}
 }
