@@ -120,9 +120,9 @@ package org.flowplayer.controls.slider {
             _dragTimer.addEventListener(TimerEvent.TIMER, dragging);
 			var func:String = value ? "addEventListener" : "removeEventListener";
 
-			this[func](MouseEvent.MOUSE_UP, onMouseUp);
-			_dragger[func](MouseEvent.MOUSE_DOWN, onMouseDown);
-			_dragger[func](MouseEvent.MOUSE_UP, onMouseUp);
+			this[func](MouseEvent.MOUSE_UP, _onMouseUp);
+			_dragger[func](MouseEvent.MOUSE_DOWN, _onMouseDown);
+			_dragger[func](MouseEvent.MOUSE_UP, _onMouseUp);
 			stage[func](MouseEvent.MOUSE_UP, onMouseUpStage);
 			stage[func](Event.MOUSE_LEAVE, onMouseLeaveStage);
 			
@@ -145,9 +145,9 @@ package org.flowplayer.controls.slider {
 			log.debug("click targets", targets);
 			for (var i:Number = 0; i < targets.length; i++) {
 				if (add) {
-					EventDispatcher(targets[i]).addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+					EventDispatcher(targets[i]).addEventListener(MouseEvent.MOUSE_DOWN, _onMouseDown);
 				} else {
-					EventDispatcher(targets[i]).removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+					EventDispatcher(targets[i]).removeEventListener(MouseEvent.MOUSE_DOWN, _onMouseDown);
 				}
 				if (targets[i].hasOwnProperty("buttonMode")) {
 					targets[i]["buttonMode"] = add;
@@ -167,7 +167,7 @@ package org.flowplayer.controls.slider {
 		
 		private function onMouseUpStage(event:MouseEvent):void {
 			if (_dragTimer.running) {
-				onMouseUp();
+				_onMouseUp();
 			}
             _dragTimer.stop();
 		}
@@ -176,12 +176,13 @@ package org.flowplayer.controls.slider {
 			_tooltip.hide();
 			
 			if (_dragTimer.running) {
-				onMouseUp();
+				_onMouseUp();
 			}
             _dragTimer.stop();
 		}
 		
-		protected function onMouseUp(event:MouseEvent = null):void {
+		private function _onMouseUp(event:MouseEvent = null):void {
+            onMouseUp(event);
 			log.debug("onMouseUp");
 //			_tooltip.hide();
 			if (event && event.target != this) return;
@@ -195,6 +196,10 @@ package org.flowplayer.controls.slider {
 				dispatchDragEvent();
 			}
 		}
+
+        protected function onMouseUp(event:MouseEvent):void {
+        }
+        
 		protected function canDragTo(xPos:Number):Boolean {
 			return true;
 		}
@@ -207,10 +212,14 @@ package org.flowplayer.controls.slider {
 			return _dragTimer.running;
 		}
 
-		protected function onMouseDown(event:MouseEvent):void {
+		private function _onMouseDown(event:MouseEvent):void {
 			if (! event.target == this) return;
+            onMouseDown(event);
 			_dragTimer.start();
 		}
+
+        protected function onMouseDown(event:MouseEvent):void {
+        }
 
 		private function dragging(event:TimerEvent = null):void {
 			var pos:Number = mouseX - _dragger.width / 2;
@@ -231,7 +240,11 @@ package org.flowplayer.controls.slider {
 				updateCurrentPosFromDragger();
 				dispatchDragEvent();
 			}
+            onDragging();
 		}
+
+        protected function onDragging():void {
+        }
 
 		private function dispatchDragEvent():void {
 			log.debug("dispatching drag event");
