@@ -1,12 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <AS3Classpath>
-<AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">flex.swc</AS3Classpath>
-<AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">framework.swc</AS3Classpath>
-<AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">rpc.swc</AS3Classpath>
-<AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">utilities.swc</AS3Classpath>
-<AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">airglobal.swc</AS3Classpath>
-<AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">airframework.swc</AS3Classpath>
-<AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">servicemonitor.swc</AS3Classpath>
-<AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">src/actionscript</AS3Classpath>
-<AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">FLOWPLAYER_3_0_3.swc</AS3Classpath>
+    <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">src/actionscript</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="source" useAsSharedCode="false">FL_LIB</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">FL_LIB/flowplayer.swc</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">lib/as3crypto-1_3_patched.swc</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="source" useAsSharedCode="false">FP_LIBS</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">playerglobal.swc</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">flex.swc</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">framework.swc</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">rpc.swc</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">utilities.swc</AS3Classpath>
 </AS3Classpath>
