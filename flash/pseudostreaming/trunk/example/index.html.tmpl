@@ -152,7 +152,7 @@
 </p>
 
 <script language='javascript'>
-$f("lighty", "http://releases.flowplayer.org/swf/flowplayer-3.2.2.swf", {
+$f("lighty", "@PLAYER_SWF@", {
 
 	// configure clip to use "lighthttpd" plugin for providing video data
 	clip: {
@@ -165,6 +165,10 @@ $f("lighty", "http://releases.flowplayer.org/swf/flowplayer-3.2.2.swf", {
 		lighttpd: {
 			url: 'flowplayer.pseudostreaming-3.2.2.swf'
 		}
+	},
+	log: {
+		level: 'debug',
+		filter: 'org.flowplayer.pseudostreaming.*, org.flowplayer.controller.*'
 	}
 });
 </script><div class="box code">
@@ -294,20 +298,22 @@ $f("range", "@PLAYER_SWF@", {
 
 	// configure clip to use "lighthttpd" plugin for providing video data
 	clip: {
-		url: 'http://vod01.netdna.com/vod/demo.flowplayer/Extremists.flv',
+		url: 'http://flowplayer.electroteque.org/videos/Extremists.flv',
 		provider: 'lighttpd'
 	},
+	
 
 	// streaming plugins are configured normally under the plugins node
 	plugins: {
 		lighttpd: {
 			url: '@MAIN_PLAYER_SWF@',
-			enableRangeRequests: true
+			rangeRequests: true,
+			policyURL: "http://flowplayer.electroteque.org/xml/crossdomain.xml"
 		}
 	},
 	log: {
 		level: 'debug',
-		filter: 'org.flowplayer.pseudostreaming.*'
+		filter: 'org.flowplayer.pseudostreaming.*, org.flowplayer.controller.*'
 	}
 });
 </script><div class="box code">

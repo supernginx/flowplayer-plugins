@@ -10,7 +10,7 @@ package org.flowplayer.pseudostreaming.net
     import flash.net.NetStream;
     import flash.net.URLStream;
     import flash.net.NetStreamAppendBytesAction;
-    import flash.system.Security;
+    //import flash.system.Security;
     import flash.utils.ByteArray;
     import flash.utils.setTimeout;
 
@@ -133,9 +133,11 @@ package org.flowplayer.pseudostreaming.net
 				
 			}
 			
-			Security.allowInsecureDomain("*");
+			/*Security.allowInsecureDomain("*");
 			Security.allowDomain("*");
-            Security.loadPolicyFile("http://vod01.netdna.com/vod/demo.flowplayer/policy.xml")
+
+            Security.loadPolicyFile("http://flowplayer.electroteque.org/xml/crossdomain.xml")*/
+
 			
 			_client = new HttpClient();
 			var httplistener:HttpListener = new HttpListener();
