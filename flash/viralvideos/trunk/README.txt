@@ -3,6 +3,7 @@ Version history:
 3.2.4
 -----
 - Removed line breaks from the embed code
+- Embed code: The plugin URLs are not touched if they are complete URLs
 
 3.2.3
 -----
