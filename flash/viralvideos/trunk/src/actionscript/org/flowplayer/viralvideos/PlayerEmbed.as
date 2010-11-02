@@ -16,6 +16,7 @@ package org.flowplayer.viralvideos {
     import flash.external.ExternalInterface;
 
     import org.flowplayer.model.DisplayPluginModel;
+    import org.flowplayer.model.PluginModel;
     import org.flowplayer.util.Log;
     import org.flowplayer.util.URLUtil;
     import org.flowplayer.view.Flowplayer;
@@ -118,9 +119,15 @@ package org.flowplayer.viralvideos {
             log.debug("initializeConfig() ", _playerConfig);
         }
 
-        private function fixPluginsURL(config:Object):void {
+        private function fixPluginsURLs(config:Object):void {
             for (var pluginName:String in config.plugins) {
-                var pluginModel:Object = _player.pluginRegistry.getPlugin(pluginName);
+                var pluginModel:PluginModel = PluginModel(_player.pluginRegistry.getPlugin(pluginName));
+                log.debug("fixPluginsURL(), plugin's original URL is " + pluginModel.url);
+                if (pluginModel.url && pluginModel.url.indexOf("file:") == 0
+                        || pluginModel.url.indexOf("http:") == 0
+                        || pluginModel.url.indexOf("https:") == 0) {
+                    return;
+                }
                 var plugin:Object = pluginModel.pluginObject;
                 if (! pluginModel.isBuiltIn && plugin.hasOwnProperty("loaderInfo")) {
                     var pluginUrl:String = plugin ? plugin.loaderInfo.url : "";
@@ -167,7 +174,7 @@ package org.flowplayer.viralvideos {
                 }
             }
 
-            fixPluginsURL(updatedConfig);
+            fixPluginsURLs(updatedConfig);
             fixShareUrl(updatedConfig);
 
             var clip:Object = updatedConfig.clip || {};
