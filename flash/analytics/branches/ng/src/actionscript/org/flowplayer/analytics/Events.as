@@ -26,114 +26,142 @@ package org.flowplayer.analytics {
 
         private var _all:Boolean = false;
 
+        [Value]
         public function get start():String {
             return _start;
         }
 
-        public function set start(value:String):void {
-            _start = value;
+        public function setStart(value:Object):void {
+            _start = decodeValue(value);
         }
 
+        private function decodeValue(value:Object):String {
+            if (value is String && value == "false") {
+                return null;
+            }
+            if (value is Boolean && ! Boolean(value)) {
+                return null;
+            }
+            return value as String;
+        }
+
+        [Value]
         public function get stop():String {
             return _stop;
         }
 
-        public function set stop(value:String):void {
-            _stop = value;
+        public function setStop(value:Object):void {
+            _stop = decodeValue(value);
         }
 
+        [Value]
         public function get finish():String {
             return _finish;
         }
 
-        public function set finish(value:String):void {
-            _finish = value;
+        public function setFinish(value:Object):void {
+            _finish = decodeValue(value);
         }
 
+        [Value]
         public function get pause():String {
             return _pause;
         }
 
+        [Value]
         public function get trackPause():Boolean {
-            return _all && _pause as Boolean;
+            return _all && _pause != null;
         }
 
-        public function set pause(value:String):void {
-            _pause = value;
+        public function setPause(value:Object):void {
+            _pause = decodeValue(value);
         }
 
+        [Value]
         public function get resume():String {
             return _resume;
         }
 
+        [Value]
         public function get trackResume():Boolean {
-            return _all && _resume as Boolean;
+            return _all && _resume != null;
         }
 
-        public function set resume(value:String):void {
-            _resume = value;
+        public function setResume(value:Object):void {
+            _resume = decodeValue(value);
         }
 
+        [Value]
         public function get seek():String {
             return _seek;
         }
 
+        [Value]
         public function get trackSeek():Boolean {
-            return _all && _seek as Boolean;
+            return _all && _seek != null;
         }
 
-        public function set seek(value:String):void {
-            _seek = value;
+        public function setSeek(value:Object):void {
+            _seek = decodeValue(value);
         }
 
+        [Value]
         public function get mute():String {
             return _mute;
         }
 
+        [Value]
         public function get trackMute():Boolean {
-            return _all && _mute as Boolean;
+            return _all && _mute != null;
         }
 
-        public function set mute(value:String):void {
-            _mute = value;
+        public function setMute(value:Object):void {
+            _mute = decodeValue(value);
         }
 
+        [Value]
         public function get unmute():String {
             return _unmute;
         }
 
+        [Value]
         public function get trackUnmute():Boolean {
-            return _all && _unmute as Boolean;
+            return _all && _unmute != null;
         }
 
-        public function set unmute(value:String):void {
-            _unmute = value;
+        public function setUnmute(value:Object):void {
+            _unmute = decodeValue(value);
         }
 
+        [Value]
         public function get fullscreen():String {
             return _fullscreen;
         }
 
+        [Value]
         public function get trackFullscreen():Boolean {
-            return _all && _fullscreen as Boolean;
+            return _all && _fullscreen != null;
         }
 
-        public function set fullscreen(value:String):void {
-            _fullscreen = value;
+        public function setFullscreen(value:Object):void {
+            _fullscreen = decodeValue(value);
         }
 
+        [Value]
         public function get fullscreenExit():String {
             return _fullscreenExit;
         }
 
+        [Value]
         public function get trackFullscreenExit():Boolean {
-            return _all && _fullscreenExit as Boolean;
+            return _all && _fullscreenExit != null;
         }
 
-        public function set fullscreenExit(value:String):void {
-            _fullscreenExit = value;
+        public function setFullscreenExit(value:Object):void {
+            _fullscreenExit = decodeValue(value);
         }
 
+        [Value]
         public function get all():Boolean {
             return _all;
         }

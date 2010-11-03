@@ -88,7 +88,8 @@ package org.flowplayer.analytics {
         }
 
         public function getCategory():String {
-            if (_config.category) return _config.category;
+            var clipCategory:String = String(_player.playlist.current.getCustomProperty("eventCategory"));
+            if (clipCategory) return clipCategory;
 
             var pageUrl:String = URLUtil.pageUrl;
             if (pageUrl) return pageUrl;
@@ -107,8 +108,8 @@ package org.flowplayer.analytics {
                         _model.dispatchError(PluginError.ERROR, "Unable to create tracker in Bridge mode because ExternalInterface is not available");
                         return;
                     }
-                    log.debug("Creating tracker in Bridge mode using " + _config.bridgeTrackerObject + ", debug ? " + _config.debug);
-                    _tracker = new GATracker(this, _config.bridgeTrackerObject, "Bridge", _config.debug);
+                    log.debug("Creating tracker in Bridge mode using " + _config.bridgeObject + ", debug ? " + _config.debug);
+                    _tracker = new GATracker(this, _config.bridgeObject, "Bridge", _config.debug);
                     return;
                 }
 
@@ -152,8 +153,16 @@ package org.flowplayer.analytics {
         }
 
         [External]
-        public function setEventName(oldName:String, newName:String):void {
-            _config.events[oldName] = newName == "false" ? false : newName;
+        public function setEventName(oldName:String, newName:Object):void {
+            var newProp:Object = {};
+            newProp[oldName] = newName == "false" ? null : newName;
+            log.debug("setEventName()", newProp);
+            new PropertyBinder(_config.events).copyProperties(newProp, true);
+        }
+
+        [External(convert="true")]
+        public function get config():Config {
+            return _config;
         }
 
         public function getDefaultConfig():Object {
