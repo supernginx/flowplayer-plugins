@@ -14,11 +14,11 @@ package org.flowplayer.analytics {
     public class Config {
         private var _debug:Boolean = false;
         private var _mode:String = "AS3";
-        private var _bridgeTrackerObject:String = "window.pageTracker";
+        private var _bridgeObject:String = "window.pageTracker";
         private var _accountId:String; // required
         private var _events:Events = new Events();
-        private var _category:String;
 
+        [Value]
         public function get mode():String {
             return _mode;
         }
@@ -27,14 +27,16 @@ package org.flowplayer.analytics {
             _mode = value;
         }
 
-        public function get bridgeTrackerObject():String {
-            return _bridgeTrackerObject;
+        [Value]
+        public function get bridgeObject():String {
+            return _bridgeObject;
         }
 
-        public function set bridgeTrackerObject(value:String):void {
-            _bridgeTrackerObject = value;
+        public function set bridgeObject(value:String):void {
+            _bridgeObject = value;
         }
 
+        [Value]
         public function get accountId():String {
             return _accountId;
         }
@@ -43,14 +45,7 @@ package org.flowplayer.analytics {
             _accountId = value;
         }
 
-        public function get category():String {
-            return _category;
-        }
-
-        public function set category(value:String):void {
-            _category = value;
-        }
-
+        [Value]
         public function get events():Events {
             return _events;
         }
@@ -59,6 +54,7 @@ package org.flowplayer.analytics {
             _events = Events(new PropertyBinder(_events).copyProperties(value));
         }
 
+        [Value]
         public function get debug():Boolean {
             return _debug;
         }
