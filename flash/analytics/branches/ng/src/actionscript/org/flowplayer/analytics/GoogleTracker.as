@@ -1,7 +1,7 @@
 /*
  * This file is part of Flowplayer, http://flowplayer.org
  *
- * By: Richard Mueller  richard@3232design.com
+ * By: Richard Mueller  richard@3232design.com, Anssi Piirainen api@iki.fi
  * Copyright (c) 2009 Flowplayer Oy
  *
  * Released under the MIT License:
