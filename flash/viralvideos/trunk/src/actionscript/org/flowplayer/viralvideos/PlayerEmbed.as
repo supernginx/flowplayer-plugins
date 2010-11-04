@@ -123,9 +123,10 @@ package org.flowplayer.viralvideos {
             for (var pluginName:String in config.plugins) {
                 var pluginModel:PluginModel = PluginModel(_player.pluginRegistry.getPlugin(pluginName));
                 log.debug("fixPluginsURL(), plugin's original URL is " + pluginModel.url);
-                if (pluginModel.url && pluginModel.url.indexOf("file:") == 0
+                if (pluginModel && pluginModel.url &&
+                        (pluginModel.url.indexOf("file:") == 0
                         || pluginModel.url.indexOf("http:") == 0
-                        || pluginModel.url.indexOf("https:") == 0) {
+                        || pluginModel.url.indexOf("https:") == 0)) {
                     return;
                 }
                 var plugin:Object = pluginModel.pluginObject;
