@@ -1,0 +1,34 @@
+<project name="Flowplayer youtube" default="deploy">
+
+	<property file="${user.home}/plugin.properties" />
+	<property file="build.properties" />
+	
+	<property name="devkit-dir" value="../flowplayer.devkit" />
+	
+	<property name="flowplayer_lib" value="${devkit-dir}/flowplayer.swc" />
+    <property name="library-path" value="src/flash ../common/src/flash"/>
+    <property name="extra-sources" value="../common/src/actionscript ../core/lib/goasp/src_go/" />
+    <property name="plugin-libs" value="lib/tweener.swc" />
+	
+	<property file="${devkit-dir}/plugin-build.properties" />
+	<import file="${devkit-dir}/plugin-build.xml"/>
+	
+	
+	<property name="basename" value="flowplayer.playlist" />
+    <property name="releasedir" value="${basename}" />
+	<property name="plugin-binary" value="${basename}.swf" />
+	<property name="plugin-binary-versioned" value="${basename}-${version}.swf" />
+
+	<property name="plugin-main-class" value="org/flowplayer/playlist/Playlist.as" />
+
+	<target name="release" description="makes a release" depends="build">
+		<copyrelease targetdir="flowplayer.playlist">
+			<releasefiles>
+				<fileset dir="${build-dir}">
+				    <include name="${plugin-binary-versioned}"/>
+				</fileset>
+			</releasefiles>
+		</copyrelease>
+	</target>
+
+</project>
