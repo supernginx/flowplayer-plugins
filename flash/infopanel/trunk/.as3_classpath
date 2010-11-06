@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">flex.swc</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">framework.swc</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">rpc.swc</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">utilities.swc</AS3Classpath>
+    <AS3Classpath generateProblems="true" type="source" useAsSharedCode="false">src/actionscript</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">src/flash/closebutton.swc</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">playerglobal.swc</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="source" useAsSharedCode="false">FL_LIB</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">FL_LIB/flowplayer.swc</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="source" useAsSharedCode="false">FP_COMMON</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">src/flash/toggleoffbutton.swc</AS3Classpath>
+    <AS3Classpath generateProblems="false" type="lib" useAsSharedCode="false">src/flash/toggleonbutton.swc</AS3Classpath>
+</AS3Classpath>
