@@ -1,0 +1,407 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">  
+
+<!-- 
+	Flowplayer website, forums & jQuery Tools by Tero Piirainen 
+	
+	Prefer web standards over Flash. Video is the only exception.	
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+
+		<title>Flowplayer - Flash Video Player for the Web</title>
+		<meta name="Description" content="Embed video streams to your website. Superior alternative to YouTube. Open Sourced under the GPL license. No other software makes this smoother." />	
+		<meta name="Keywords" content="video player for the web, flash video player,web media player,free video player,free flv player,mp4 flash player,mp4 player,open source video player,flash 9 video,flash video,web video,flv player,flv video" />		
+	
+
+	
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+	<meta name="Distribution" content="Global" />
+	<meta name="Author" content="Tero Piirainen" />
+	<meta name="Robots" content="index,follow" /> 
+ 
+	<link rel="stylesheet" type="text/css" href="http://static.flowplayer.org/css/global-0.25.css" />
+	<link rel="stylesheet" type="text/css" href="bwcheck.css" />
+
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+	<script src="http://static.flowplayer.org/js/flowplayer-3.2.2.min.js"></script>
+	<script src="flowplayer.playlist-3.0.8.js"></script> 
+	<script type="text/javascript" src="flowplayer.bwcheck-3.2.js"></script>
+	
+	<script type="text/javascript" src="http://cdn.jquerytools.org/1.2.3/full/jquery.tools.min.js"></script>
+	<script src="http://static.flowplayer.org/js/jquery.mousewheel.js"></script>
+	<link rel="stylesheet" type="text/css" href="http://amazon.flowplayer.org/css/playlist.css"/>
+	
+	
+	
+	
+	
+	<style type="text/css">
+		div.overlay {
+		width:800px; 
+		height:432px;
+
+		}
+		
+		/* these two settings will remove borders from playlist entries */
+		a:active {  outline:none; }
+	 	:focus   { -moz-outline-style:none; }
+	</style>
+	
+
+	<!--[if lt IE 7]>
+		<style type="text/css">
+			@import "http://static.flowplayer.org/css/ie6.css?v=0.2";
+		</style>
+	<![endif]-->
+	
+	<!--[if lt IE 8]>
+		<style type="text/css">
+			html { overflow-x:hidden; }
+			#content ol, #content ul  {margin-left: 50px; }
+		</style>
+	<![endif]-->	
+
+</head>
+
+<body id="plugins_playlist">
+
+
+	<div id="wrap">			 
+		
+<script type="text/javascript">
+$(function() {		
+		
+	// positions for each overlay
+
+		
+	// setup triggers
+	$("button[rel]").each(function(i) {
+		$(this).overlay({
+
+			// common configuration for each overlay
+			oneInstance: false, 
+			closeOnClick: false, 
+			 
+
+			// use apple effect
+			effect: 'apple'
+			
+		});			
+	});
+	
+});
+// common methods and configs
+
+
+
+
+
+        		
+var manualPlaylist =  [
+
+				   {
+						url: 'http://vod01.netdna.com/vod/demo.flowplayer/Extremists.flv',
+						title: 'FLV Item 1 Playlist Item <br> 5:00',
+						time: '5:00'
+					},
+					{
+                        url: 'api:Q_6qRyYn-68',
+                        provider: 'youtube',
+                        urlResolvers: 'youtube' ,
+                        title: 'Youtube Item 1',
+                        time: '6:20',         
+                    },
+					{
+                        url: 'http://vod01.netdna.com/vod/demo.flowplayer/Extremists.flv',
+                        title: 'FLV Item 2 Playlist Item',
+                        buyUrl: "http://www.google.com" 
+                    },
+                    {
+                        url: 'http://vod01.netdna.com/vod/demo.flowplayer/Extremists.flv',
+                        title: 'FLV Item 3 Playlist Item',
+                        buyUrl: "http://www.google.com"
+                    },
+                    {
+                        url: 'http://vod01.netdna.com/vod/demo.flowplayer/Extremists.flv',
+                        title: 'FLV Item 4 Playlist Item',
+                        buyUrl: "http://www.google.com" 
+                    },
+                    {
+                        url: 'http://vod01.netdna.com/vod/demo.flowplayer/Extremists.flv',
+                        title: 'FLV Item 5 Playlist Item',
+                        buyUrl: "http://www.google.com" 
+                    },
+                    {
+                        url: 'http://vod01.netdna.com/vod/demo.flowplayer/Extremists.flv',
+                        title: 'FLV Item 6 Playlist Item' ,
+                        buyUrl: "http://www.google.com"
+                    },
+                    {
+                        url: 'http://vod01.netdna.com/vod/demo.flowplayer/Extremists.flv',
+                        title: 'FLV Item 7 Playlist Item' ,
+                        buyUrl: "http://www.google.com"
+                    },
+                    {
+                        url: 'http://vod01.netdna.com/vod/demo.flowplayer/Extremists.flv',
+                        title: 'FLV Item 8 Playlist Item' ,
+                        buyUrl: "http://www.google.com"
+                    },
+                    {
+                        url: 'http://vod01.netdna.com/vod/demo.flowplayer/Extremists.flv',
+                        title: 'FLV Item 9 Playlist Item' ,
+                        buyUrl: "http://www.google.com"
+                    },{
+                        url: 'http://vod01.netdna.com/vod/demo.flowplayer/Extremists.flv',
+                        title: 'FLV Item 10 Playlist Item' ,
+                        buyUrl: "http://www.google.com"
+                    },
+                    {
+                        url: 'http://vod01.netdna.com/vod/demo.flowplayer/Extremists.flv',
+                        title: 'FLV Item 11 Playlist Item' ,
+                        buyUrl: "http://www.google.com"
+                    }
+                    
+				  
+        		];
+ 
+
+var loggingConfig = { level: 'debug', filter: 'org.flowplayer.controller.*, org.flowplayer.playlist.*' };
+//var loggingConfig = { level: 'debug', filter: 'org.flowplayer.controls.*, org.flowplayer.youtube.*'};
+
+
+</script>
+		
+		<div id="content"> 
+		
+		
+
+
+
+
+
+
+<h1 style="background-image:url(http://www.flowplayer.org/img/title/streaminge.png)">
+	<strong>Youtube</strong> 
+	<em>Youtube Videos in Flowplayer</em>
+</h1>
+
+
+
+<h2>Introduction</h2>
+
+<p>
+    The Youtube Flowplayer plugin uses the Youtube AS3 API to play Youtube videos directly within Flowplayer.   
+</p>
+<p>
+	The plugin can obtain a list of quality levels to be used for a bitrates config array to be used with the bwcheck plugin. 
+	The plugin can also be used without the bwcheck plugin to display a list of youtube video quality levels to select manually. 
+</p>
+
+<p>
+	The plugin also obtains a list of related videos from the Gdata API feed and configures a related config array to be used with the related videos plugin. The Gdata information can also be obtained from the event onApiData. 
+</p>
+
+<p>
+	The plugin works with manual playlists aswell in combination with the flowplayer playlist javascript api. 
+</p>
+
+<h2>Features</h2>
+
+<ul>
+	<li>
+		 Support for Bandwidth Checking and bitrate selection, Video Quality Selection and Related Videos features.
+	</li>
+	<li>
+		 Provides events for obtaining detailed data for the video to be used for customised features aswell as quality level changes via the javascript API.
+	</li>
+	<li>
+		 Full control of the player controls including fullscreen with some extra api methods exposed for changing / obtaining bitrate quality levels. 
+	</li>
+</ul>
+
+<!-- Paypal Section -->
+
+
+<h2>Examples</h2>
+
+<a name="basic"></a>
+<h2><em>Basic</em> Example</h2>
+
+<p>
+    This example demonstrates a basic setup to play the video. 
+</p>
+
+
+
+<div style="width:900px;">
+   
+
+<!-- player container-->
+
+
+<a 
+	href="http://video.flowplayer.org/skyandice.flv" 
+	style="display:block;width:640px;height:385px;float:left;" 
+	id="basic">
+	
+	<!-- splash image inside the container -->
+	<img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" />
+	
+</a>
+
+
+<!-- Flowplayer installation and configuration -->
+<script language="JavaScript">
+
+$f("basic", "@PLAYER_SWF@", {
+	playlist: manualPlaylist,
+	// configure the required plugin
+	plugins:  {
+		controls: { autoHide: true },
+		playlist: {
+			url:'@MAIN_PLAYER_SWF@',
+			items: {
+			     color: "#000000",
+			     overColor: "#CCCCCC",
+			     toggleOnColor: "#999999"
+			},
+			playlists: {
+			     displayProps: {
+			         height: 30,
+			         alpha: 0.5
+			     }
+			},
+			itemTemplate: "${title}"
+		}
+	},
+	clip: {
+
+	},
+	log: loggingConfig
+	
+});
+</script>	
+
+
+
+
+
+</div>
+
+<br clear="all" />
+
+
+<div class="box code">
+<pre><code class="javascript">
+
+var playlist =  [
+			       {
+						url: 'api:PmGiCFPUSM4'					
+				   }
+        		];
+        		
+$f("basic", "@PLAYER_SWF@", {
+	playlist: playlist,
+	// configure the required plugin
+	plugins:  {
+		controls: { autoHide: true },
+		youtube: {
+			url:'@MAIN_PLAYER_SWF@'
+		}
+	},
+	clip: {
+		provider: 'youtube',
+		urlResolvers: 'youtube'
+	},
+	log: loggingConfig
+	
+});
+</code></pre>
+</div>
+
+
+
+
+<h2>Configuration</h2>
+
+
+<p>
+    Here is a list of the configuration options:
+</p>
+<table class="listing">
+	<thead>
+		<tr>
+			<th nowrap>property / datatype</th>
+			<th>default</th>
+			<th>description</th>
+		</tr>
+	</thead>
+
+    <tr>
+        <td class="code">apiPlayerURL <div class="type">string</div></td>
+        <td class="code default">http://www.youtube.com/apiplayer?version=3</td>
+        <td class="description">
+            The url to the Youtube chromeless API. 
+        </td>
+    </tr>
+    <tr>
+        <td class="code">gdataApiURL <div class="type">string</div></td>
+        <td class="code default">http://gdata.youtube.com/feeds/api/videos/</td>
+        <td class="description">
+            The url to the Youtube video Gdata feed. 
+        </td>
+    </tr>
+    <tr>
+        <td class="code">gdataApiVersion <div class="type">string</div></td>
+        <td class="code default">2</td>
+        <td class="description">
+				The version number for the Gdata feed. 
+        </td>
+    </tr>
+    <tr>
+        <td class="code">gdataApiFormat <div class="type">string</div></td>
+        <td class="code default">5</td>
+        <td class="description">
+        	The format number for the  Gdata feed.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">defaultQuality <div class="type">string</div></td>
+        <td class="code default">default</td>
+        <td class="description">
+            The default quality level (default,medium,large,hd720).
+        </td>
+    </tr>
+    <tr>
+        <td class="code">enableGdata <div class="type">boolean</div></td>
+        <td class="code default">false</td>
+        <td class="description">
+			When enabled the Gdata feed will be collected and video information will be returned via the onApiData event. This will collect information like related videos, category, tags, title, description etc.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">bitratesOnStart <div class="type">boolean</div></td>
+        <td class="code default">false</td>
+        <td class="description">
+			This setting will tell the plugin to obtain the quality levels / bitrates for the video before startup. 
+			This is required when used in combination with the bwcheck plugin to fill the bitrates list dynamically, this is required as the Youtube API does not expose bitrates before playback or via their data API.  
+        </td>
+    </tr>
+    <tr>
+        <td class="code">videoFormats <div class="type">array</div></td>
+        <td class="code default"></td>
+        <td class="description">
+			Obtain the preset youtube video format information. 
+        </td>
+    </tr>
+</table>
+
+
+		
+	</div>
+</body>
+</html>
