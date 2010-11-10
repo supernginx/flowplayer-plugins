@@ -18,6 +18,7 @@ package org.flowplayer.viralvideos {
     import flash.text.TextFormat;
 
     import org.flowplayer.model.DisplayPluginModel;
+    import org.flowplayer.ui.ButtonConfig;
     import org.flowplayer.viralvideos.config.Config;
     import org.flowplayer.ui.DropdownMenu;
     import org.flowplayer.ui.DropdownMenuEvent;
@@ -25,6 +26,8 @@ package org.flowplayer.viralvideos {
     import org.flowplayer.util.Arrange;
     import org.flowplayer.view.AnimationEngine;
     import org.flowplayer.view.Flowplayer;
+    import org.flowplayer.viralvideos.config.EmbedConfig;
+    import org.flowplayer.viralvideos.config.EmbedViewTexts;
 
     /**
      * @author danielr
@@ -40,41 +43,45 @@ package org.flowplayer.viralvideos {
         private var _bgColorLabel:TextField;
         private var _sizeDivLabel:TextField;
         private var _sizeLabel:TextField;
-        private var _config:Config;
         private var _bgColors:DropdownMenu;
         private var _buttonColors:DropdownMenu;
         private var _heightTxt:TextField;
         private var _widthTxt:TextField;
         private var _optionsContainer:Sprite;
+        private var _texts:EmbedViewTexts;
+        private var _config:EmbedConfig;
+        private var _buttonConfig:ButtonConfig;
 
-        public function EmbedView(plugin:DisplayPluginModel, player:Flowplayer, config:Config, style:Object) {
+        public function EmbedView(plugin:DisplayPluginModel, player:Flowplayer, texts:EmbedViewTexts, config:EmbedConfig, buttonConfig:ButtonConfig, style:Object) {
             super("viral-embed", plugin, player, style);
+            _texts = texts;
             _config = config;
+            _buttonConfig = buttonConfig;
 
             createCopyButton();
             createEmbedCode();
             createOptionsContainer();
 
-            _titleLabel = createLabel("<span class=\"title\">" + _config.embed.title + "</span>");
+            _titleLabel = createLabel("<span class=\"title\">" + _texts.title + "</span>");
             _infoLabel = createLabel();
-            _optionsLabel = createLabel("<span class=\"title\">" + _config.embed.options + "</span>", _optionsContainer);
-            _sizeLabel = createLabel("<span class=\"label\">" + _config.embed.size + "</span>", _optionsContainer);
-            _bgColorLabel = createLabel("<span class=\"label\">" + _config.embed.backgroundColor + "</span>", _optionsContainer);
-            _buttonColorLabel = createLabel("<span class=\"label\">" + _config.embed.buttonColor + "</span>", _optionsContainer);
+            _optionsLabel = createLabel("<span class=\"title\">" + _texts.options + "</span>", _optionsContainer);
+            _sizeLabel = createLabel("<span class=\"label\">" + _texts.size + "</span>", _optionsContainer);
+            _bgColorLabel = createLabel("<span class=\"label\">" + _texts.backgroundColor + "</span>", _optionsContainer);
+            _buttonColorLabel = createLabel("<span class=\"label\">" + _texts.buttonColor + "</span>", _optionsContainer);
             _sizeDivLabel = createLabel("<span class=\"label\">x</span>", _optionsContainer);
 
             _widthTxt = createInput(_optionsContainer, 2);
-            log.debug("setting embed size to " + _config.embed.playerEmbed.width + " x " + _config.embed.playerEmbed.height);
-            _widthTxt.text = _config.embed.playerEmbed.width + "";
+            log.debug("setting embed size to " + _config.playerEmbed.width + " x " + _config.playerEmbed.height);
+            _widthTxt.text = _config.playerEmbed.width + "";
             _widthTxt.addEventListener(FocusEvent.FOCUS_OUT, function(event:FocusEvent):void {
-                config.embed.playerEmbed.width = value(_widthTxt);
+                config.playerEmbed.width = value(_widthTxt);
                 changeCode();
             });
 
             _heightTxt = createInput(_optionsContainer, 3);
-            _heightTxt.text = _config.embed.playerEmbed.height + "";
+            _heightTxt.text = _config.playerEmbed.height + "";
             _heightTxt.addEventListener(FocusEvent.FOCUS_OUT, function(event:FocusEvent):void {
-                config.embed.playerEmbed.height = value(_heightTxt);
+                config.playerEmbed.height = value(_heightTxt);
                 changeCode();
             });
 
@@ -85,7 +92,7 @@ package org.flowplayer.viralvideos {
 
         override public function set visible(value:Boolean):void {
             super.visible = value;
-            _config.embed.playerEmbed.applyControlsOptions(value);
+            _config.playerEmbed.applyControlsOptions(value);
         }
 
         private function value(field:TextField):int {
@@ -112,7 +119,7 @@ package org.flowplayer.viralvideos {
             _buttonColors.addItem("Yellow", "#ffff00");
             _buttonColors.addItem("Green", "#0C9607");
             _buttonColors.addEventListener(DropdownMenuEvent.CHANGE, function(event:DropdownMenuEvent):void {
-                _config.embed.playerEmbed.buttonColor = event.value;
+                _config.playerEmbed.buttonColor = event.value;
                 changeCode();
             });
             _optionsContainer.addChild(_buttonColors);
@@ -129,7 +136,7 @@ package org.flowplayer.viralvideos {
             _bgColors.addItem("Green", "#0C9607");
             _bgColors.addItem("Green transparent", "rgba(12, 150, 07, 0.6)");
             _bgColors.addEventListener(DropdownMenuEvent.CHANGE, function(event:DropdownMenuEvent):void {
-                _config.embed.playerEmbed.backgroundColor = event.value;
+                _config.playerEmbed.backgroundColor = event.value;
                 changeCode();
             });
             _optionsContainer.addChild(_bgColors);
@@ -160,12 +167,12 @@ package org.flowplayer.viralvideos {
 
         private function changeCode():void {
             log.debug("changeCode");
-            _embedCode.htmlText = '<span class="embed">' + _config.embed.playerEmbed.getEmbedCode(true).replace(/\</g, "&lt;").replace(/\>/g, "&gt;") + '</span>';
+            _embedCode.htmlText = '<span class="embed">' + _config.playerEmbed.getEmbedCode(true).replace(/\</g, "&lt;").replace(/\>/g, "&gt;") + '</span>';
         }
 
         private function initEmbedCodeSettings():void {
-            _config.embed.playerEmbed.width = value(_widthTxt);
-            _config.embed.playerEmbed.height = value(_heightTxt);
+            _config.playerEmbed.width = value(_widthTxt);
+            _config.playerEmbed.height = value(_heightTxt);
             changeCode();
         }
 
@@ -239,7 +246,7 @@ package org.flowplayer.viralvideos {
         }
 
         private function createCopyButton():void {
-            _copyBtn = new LabelButton(_config.embed.copy, _config.buttons, player.animationEngine);
+            _copyBtn = new LabelButton(_texts.copy, _buttonConfig, player.animationEngine);
             _copyBtn.tabEnabled = true;
             _copyBtn.tabIndex = 1;
             _copyBtn.addEventListener(MouseEvent.CLICK, onCopyToClipboard);
@@ -248,7 +255,7 @@ package org.flowplayer.viralvideos {
 
         private function onCopyToClipboard(event:MouseEvent):void {
             initEmbedCodeSettings();
-            System.setClipboard(_config.embed.playerEmbed.getEmbedCode(true));
+            System.setClipboard(_config.playerEmbed.getEmbedCode(true));
             stage.focus = _embedCode;
             setSelection();
             _infoLabel.htmlText = '<span class="info">Copied to clipboard</span>';

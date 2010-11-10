@@ -22,28 +22,11 @@ package org.flowplayer.viralvideos.config
         private var _email:EmailConfig = new EmailConfig();
         private var _share:ShareConfig = new ShareConfig();
         private var _embed:EmbedConfig = new EmbedConfig();
-        private var _autoHide:AutoHideConfig;
+        private var _embedViewTexts:EmbedViewTexts = new EmbedViewTexts(); 
         private var _canvas:Object;
         private var _buttonConfig:ButtonConfig;
         private var _closeButton:ButtonConfig;
         private var _icons:IconConfig = new IconConfig();
-        private var _shareCurrentPlaylistItem:Boolean;
-
-        public function Config() {						
-            _autoHide = new AutoHideConfig();
-            _autoHide.fullscreenOnly = false;
-            _autoHide.hideStyle = "fade";
-            _autoHide.delay = 2000;
-            _autoHide.duration = 1000;
-        }
-        
-        public function get shareCurrentPlaylistItem():Boolean {
-            return _shareCurrentPlaylistItem;
-        }
-        
-        public function set shareCurrentPlaylistItem(value:Boolean):void {
-            _shareCurrentPlaylistItem = value;
-        }
 
         public function get email():EmailConfig {
             return _email;
@@ -97,6 +80,7 @@ package org.flowplayer.viralvideos.config
                 return;
             }
             new PropertyBinder(_embed).copyProperties(value);
+            new PropertyBinder(_embedViewTexts).copyProperties(value);
         }
 
         public function get canvas():Object {
@@ -184,23 +168,7 @@ package org.flowplayer.viralvideos.config
             return _icons.buttons;
         }
 
-        public function get iconDisplayProperties():DisplayProperties {
-            return _icons.displayProps;
-        }
-//
-//        public function set iconProperties(config:Object):void {
-//
-//        	var props:DisplayProperties = iconDisplayProperties;
-//        	if (config.top) props.top = config.top;
-//            if (config.right) props.right = config.right;
-//            if (config.left) props.left = config.left;
-//            if (config.width) props.width = config.width;
-//            if (config.height) props.height = config.height;
-//            _iconDisplayProperties = props;
-//        }
-
         public function set icons(config:Object):void {
-            new PropertyBinder(_icons.displayProps).copyProperties(config);
             new PropertyBinder(_icons.buttons).copyProperties(config);
         }
 
@@ -209,21 +177,8 @@ package org.flowplayer.viralvideos.config
             _embed.playerEmbed = embed;
         }
 
-        public function get autoHide():AutoHideConfig {
-            return _autoHide;
-        }
-
-        public function setAutoHide(value:Object):void {
-            if (value is String) {
-                _autoHide.state = value as String;
-                return;
-            }
-            if (value is Boolean) {
-                _autoHide.enabled = value as Boolean;
-                _autoHide.fullscreenOnly = Boolean(! value);
-                return;
-            }
-            new PropertyBinder(_autoHide).copyProperties(value);
+        public function get embedViewTexts():EmbedViewTexts {
+            return _embedViewTexts;
         }
     }
 }

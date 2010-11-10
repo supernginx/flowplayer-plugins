@@ -41,13 +41,15 @@ package org.flowplayer.viralvideos {
         private var _controlsModel:DisplayPluginModel;
         private var _controlsOptions:Object;
         private var _autoHide:Boolean;
-        private var _viralConfig:Config;
+        private var _embedConfig:EmbedConfig;
+        private var _shareEnabled:Boolean;
 
-        public function PlayerEmbed(player:Flowplayer, viralPluginConfiguredName:String, stage:Stage, viralConfig:Config) {
+        public function PlayerEmbed(player:Flowplayer, viralPluginConfiguredName:String, stage:Stage, embedConfig:EmbedConfig, shareEnabled:Boolean) {
             _player = player;
             _viralPluginConfiguredName = viralPluginConfiguredName;
             _stage = stage;
-            _viralConfig = viralConfig;
+            _embedConfig = embedConfig;
+            _shareEnabled = shareEnabled;
             initializeConfig(stage);
             lookupControls();
         }
@@ -121,29 +123,32 @@ package org.flowplayer.viralvideos {
 
         private function fixPluginsURLs(config:Object):void {
             for (var pluginName:String in config.plugins) {
-                var pluginModel:PluginModel = PluginModel(_player.pluginRegistry.getPlugin(pluginName));
-                log.debug("fixPluginsURL(), plugin's original URL is " + pluginModel.url);
-                if (pluginModel && pluginModel.url &&
-                        (pluginModel.url.indexOf("file:") == 0
-                        || pluginModel.url.indexOf("http:") == 0
-                        || pluginModel.url.indexOf("https:") == 0)) {
-                    return;
-                }
-                var plugin:Object = pluginModel.pluginObject;
-                if (! pluginModel.isBuiltIn && plugin.hasOwnProperty("loaderInfo")) {
-                    var pluginUrl:String = plugin ? plugin.loaderInfo.url : "";
-                    if (pluginUrl) {
-                        config.plugins[pluginName]["url"] = pluginUrl;
+                var pluginObj:Object = _player.pluginRegistry.getPlugin(pluginName);
+                if (pluginObj && pluginObj is PluginModel) {
+                    var pluginModel:PluginModel = PluginModel(pluginObj);
+                    log.debug("fixPluginsURL(), plugin's original URL is " + pluginModel.url);
+                    if (pluginModel && pluginModel.url &&
+                            (pluginModel.url.indexOf("file:") == 0
+                                    || pluginModel.url.indexOf("http:") == 0
+                                    || pluginModel.url.indexOf("https:") == 0)) {
+                        return;
                     }
-                } else if (pluginModel.isBuiltIn) {
-                    delete config.plugins[pluginName]["url"];
+                    var plugin:Object = pluginModel.pluginObject;
+                    if (! pluginModel.isBuiltIn && plugin.hasOwnProperty("loaderInfo")) {
+                        var pluginUrl:String = plugin ? plugin.loaderInfo.url : "";
+                        if (pluginUrl) {
+                            config.plugins[pluginName]["url"] = pluginUrl;
+                        }
+                    } else if (pluginModel.isBuiltIn) {
+                        delete config.plugins[pluginName]["url"];
+                    }
                 }
             }
         }
 
         private function fixShareUrl(updatedConfig:Object):void {
-            log.debug("fixShareUrl(), viral enabled? " + Boolean(_viralConfig.share));
-            if (! _viralConfig.share) return;
+            log.debug("fixShareUrl(), share enabled? " + _shareEnabled);
+            if (! _shareEnabled) return;
 
             var viralConfig:Object = updatedConfig.plugins[_viralPluginConfiguredName];
             if (! viralConfig.hasOwnProperty("share")) {
@@ -179,25 +184,25 @@ package org.flowplayer.viralvideos {
             fixShareUrl(updatedConfig);
 
             var clip:Object = updatedConfig.clip || {};
-            clip.autoPlay = _viralConfig.embed.isAutoPlayOverriden ? _viralConfig.embed.autoPlay : clip.autoPlay;
-            clip.autoBuffering = _viralConfig.embed.isAutoBufferingOverriden ? _viralConfig.embed.autoBuffering : clip.autoBuffering;
-            clip.linkUrl = _viralConfig.embed.linkUrl ? _viralConfig.embed.linkUrl : clip.linkUrl;
+            clip.autoPlay = _embedConfig.isAutoPlayOverriden ? _embedConfig.autoPlay : clip.autoPlay;
+            clip.autoBuffering = _embedConfig.isAutoBufferingOverriden ? _embedConfig.autoBuffering : clip.autoBuffering;
+            clip.linkUrl = _embedConfig.linkUrl ? _embedConfig.linkUrl : clip.linkUrl;
             updatedConfig.clip = clip;
 
             var playlist:Array = updatedConfig.playlist || [];
             if (playlist.length == 0)
                 playlist.push(clip);
 
-            if (_viralConfig.shareCurrentPlaylistItem) {
+            if (_embedConfig.shareCurrentPlaylistItem) {
                 playlist.splice(_player.currentClip.index - 1, 1);
                 playlist.unshift(_player.currentClip);
             }
 
-            if (_viralConfig.embed.isAutoPlayOverriden)
-                playlist[0].autoPlay = _viralConfig.embed.autoPlay;
+            if (_embedConfig.isAutoPlayOverriden)
+                playlist[0].autoPlay = _embedConfig.autoPlay;
 
-            if (_viralConfig.embed.isAutoBufferingOverriden)
-                playlist[0].autoBuffering = _viralConfig.embed.autoBuffering;
+            if (_embedConfig.isAutoBufferingOverriden)
+                playlist[0].autoBuffering = _embedConfig.autoBuffering;
 
             updatedConfig.playlist = playlist;
 
@@ -205,7 +210,7 @@ package org.flowplayer.viralvideos {
         }
 
         public function getEmbedCode(escaped:Boolean = false):String {
-            var configStr:String = _viralConfig.embed.configUrl;
+            var configStr:String = _embedConfig.configUrl;
             if (! configStr) {
                 var conf:Object = updateConfig(_playerConfig);
                 configStr = escaped ? escape(JSON.encode(conf)) : JSON.encode(conf);
@@ -222,20 +227,20 @@ package org.flowplayer.viralvideos {
                             '    <param value="config=' + configStr + '" name="flashvars"/>' +
                             '    <embed src="' + _player.config.playerSwfUrl + '" type="application/x-shockwave-flash" width="' + width + '" height="' + height + '" allowfullscreen="true" allowscriptaccess="always" cachebusting="true" flashvars="config=' + configStr + '" bgcolor="#000000" quality="true">';
 
-            if (_viralConfig.embed.fallbackUrls.length > 0) {
+            if (_embedConfig.fallbackUrls.length > 0) {
                 code += '     <video controls width="' + width + '" height="' + height + '"';
-                if (_viralConfig.embed.fallbackPoster != null) {
-                    code += ' poster="' + _viralConfig.embed.fallbackPoster + '" ';
+                if (_embedConfig.fallbackPoster != null) {
+                    code += ' poster="' + _embedConfig.fallbackPoster + '" ';
                 }
                 code += '>' + "\n";
-                for (var i:uint = 0; i < _viralConfig.embed.fallbackUrls.length; i++) {
-                    code += '<source src="' + _viralConfig.embed.fallbackUrls[i] + '" />';
+                for (var i:uint = 0; i < _embedConfig.fallbackUrls.length; i++) {
+                    code += '<source src="' + _embedConfig.fallbackUrls[i] + '" />';
                 }
             }
 
-            code += '      <a href="' + _viralConfig.embed.linkUrl + '" target="_blank">' + _viralConfig.embed.anchorText + '</a>' + "\n";
+            code += '      <a href="' + _embedConfig.linkUrl + '" target="_blank">' + _embedConfig.anchorText + '</a>' + "\n";
 
-            if (_viralConfig.embed.fallbackUrls.length > 0) {
+            if (_embedConfig.fallbackUrls.length > 0) {
                 code += '     </video>' + "\n";
             }
 
