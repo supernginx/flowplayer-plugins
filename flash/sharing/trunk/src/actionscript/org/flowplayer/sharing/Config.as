@@ -9,6 +9,8 @@
  *    Additional Term, see http://flowplayer.org/license_gpl.html
  */
 package org.flowplayer.sharing {
+    import flash.display.Stage;
+
     import org.flowplayer.ui.ButtonConfig;
     import org.flowplayer.util.PropertyBinder;
     import org.flowplayer.view.Flowplayer;
@@ -16,13 +18,15 @@ package org.flowplayer.sharing {
     public class Config {
         private var _buttons:ButtonConfig;
         private var _email:Email;
+        private var _embed:Embed;
 
-        public function Config(player:Flowplayer) {
+        public function Config(player:Flowplayer, pluginConfiguredName:String, stage:Stage) {
             _buttons = new ButtonConfig();
             _buttons.setColor("rgba(20,20,20,0.5)");
             _buttons.setOverColor("rgba(0,0,0,1)");
 
             _email = new Email(player);
+            _embed = new Embed(player, pluginConfiguredName, stage);
         }
 
         public function get buttons():ButtonConfig {
@@ -39,6 +43,14 @@ package org.flowplayer.sharing {
 
         public function get email():Email {
             return _email;
+        }
+
+        public function setEmbed(config:Object):void {
+            new PropertyBinder(_embed.config).copyProperties(config);            
+        }
+
+        public function get embed():Embed {
+            return _embed;
         }
     }
 }
