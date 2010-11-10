@@ -67,8 +67,8 @@ package org.flowplayer.sharing {
 
             addIcon(new EmailIcon(_config.buttons, player.animationEngine), function():void { _config.email.execute(); });
             addIcon(new EmbedIcon(_config.buttons, player.animationEngine), function():void { _config.embed.execute(); });
-            addIcon(new TwitterIcon(_config.buttons, player.animationEngine), function():void { onTwitter(); });
-            addIcon(new FacebookIcon(_config.buttons, player.animationEngine), function():void { onFacebook(); });
+            addIcon(new TwitterIcon(_config.buttons, player.animationEngine), function():void { _config.twitter.execute(); });
+            addIcon(new FacebookIcon(_config.buttons, player.animationEngine), function():void { _config.facebook.execute(); });
 
             _dock.addToPanel();
         }
@@ -77,10 +77,6 @@ package org.flowplayer.sharing {
         }
 
         private function onTwitter():void {
-        }
-
-        private function onEmbed():void {
-            new Notification(_player, "Embed code copied to clipboard! You can now paste it to your site or blog.").show().autoHide();
         }
 
         public function getDefaultConfig():Object {
