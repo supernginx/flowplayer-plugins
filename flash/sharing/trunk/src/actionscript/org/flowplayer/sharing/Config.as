@@ -18,7 +18,9 @@ package org.flowplayer.sharing {
     public class Config {
         private var _buttons:ButtonConfig;
         private var _email:Email;
-        private var _embed:Embed;
+        private var _embed:EmbedCode;
+        private var _twitter:Twitter;
+        private var _facebook:Facebook;
 
         public function Config(player:Flowplayer, pluginConfiguredName:String, stage:Stage) {
             _buttons = new ButtonConfig();
@@ -26,7 +28,9 @@ package org.flowplayer.sharing {
             _buttons.setOverColor("rgba(0,0,0,1)");
 
             _email = new Email(player);
-            _embed = new Embed(player, pluginConfiguredName, stage);
+            _embed = new EmbedCode(player, pluginConfiguredName, stage);
+            _twitter = new Twitter(player);
+            _facebook = new Facebook(player);
         }
 
         public function get buttons():ButtonConfig {
@@ -49,8 +53,24 @@ package org.flowplayer.sharing {
             new PropertyBinder(_embed.config).copyProperties(config);            
         }
 
-        public function get embed():Embed {
+        public function get embed():EmbedCode {
             return _embed;
+        }
+
+        public function get twitter():Twitter {
+            return _twitter;
+        }
+
+        public function setTwitter(config:Object):void {
+            new PropertyBinder(_twitter).copyProperties(config);
+        }
+
+        public function get facebook():Facebook {
+            return _facebook;
+        }
+
+        public function setFacebook(config:Object):void {
+            new PropertyBinder(_facebook).copyProperties(config);
         }
     }
 }
