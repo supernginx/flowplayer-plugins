@@ -19,6 +19,7 @@ package org.flowplayer.sharing {
     import org.flowplayer.model.ClipEvent;
     import org.flowplayer.model.Plugin;
     import org.flowplayer.model.PluginModel;
+    import org.flowplayer.sharing.Config;
     import org.flowplayer.ui.Dock;
     import org.flowplayer.ui.Notification;
     import org.flowplayer.util.PropertyBinder;
@@ -37,10 +38,10 @@ package org.flowplayer.sharing {
 
         public function onConfig(model:PluginModel):void {
             _model = model;
-            _config = new PropertyBinder(new Config()).copyProperties(model.config) as Config;
         }
 
         public function onLoad(player:Flowplayer):void {
+            _config = new PropertyBinder(new Config(player)).copyProperties(_model.config) as Config;
             _player = player;
             createDock(player);
             _model.dispatchOnLoad();
@@ -56,7 +57,7 @@ package org.flowplayer.sharing {
                 });
             };
 
-            addIcon(new EmailIcon(_config.buttons, player.animationEngine), function():void { onEmail(); });
+            addIcon(new EmailIcon(_config.buttons, player.animationEngine), function():void { _config.email.execute(); });
             addIcon(new EmbedIcon(_config.buttons, player.animationEngine), function():void { onEmbed(); });
             addIcon(new TwitterIcon(_config.buttons, player.animationEngine), function():void { onTwitter(); });
             addIcon(new FacebookIcon(_config.buttons, player.animationEngine), function():void { onFacebook(); });
@@ -74,42 +75,8 @@ package org.flowplayer.sharing {
             new Notification(_player, "Embed code copied to clipboard! You can now paste it to your site or blog.").show().autoHide();
         }
 
-        private function onEmail():void {
-            log.debug("onEmail()");
-//            var request:URLRequest = new URLRequest(formatString("mailto:{0}?subject={1}&body={2}", _emailToInput.text, escape(_config.email.texts.subject), escape(formatString(_config.email.texts.template, _messageInput.text, _videoURL, _videoURL))));
-            var request:URLRequest = new URLRequest(formatString("mailto:{0}?subject={1}&body={2}", "", "Video you might be interested in", "Here is a video you might be interested in"));
-            navigateToURL(request, "_self");
-        }
-
         public function getDefaultConfig():Object {
             return null;
-        }
-
-        private function formatString(original:String, ...args):String {
-            var replaceRegex:RegExp = /\{([0-9]+)\}/g;
-            return original.replace(replaceRegex, function():String {
-                if (args == null)
-                {
-                    return arguments[0];
-                }
-                else
-                {
-                    var resultIndex:uint = uint(between(arguments[0], '{', '}'));
-                    return (resultIndex < args.length) ? args[resultIndex] : arguments[0];
-                }
-            });
-        }
-
-        private function between(p_string:String, p_start:String, p_end:String):String {
-            var str:String = '';
-            if (p_string == null) { return str; }
-            var startIdx:int = p_string.indexOf(p_start);
-            if (startIdx != -1) {
-                startIdx += p_start.length; // RM: should we support multiple chars? (or ++startIdx);
-                var endIdx:int = p_string.indexOf(p_end, startIdx);
-                if (endIdx != -1) { str = p_string.substr(startIdx, endIdx-startIdx); }
-            }
-            return str;
         }
     }
 }
