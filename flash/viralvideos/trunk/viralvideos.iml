@@ -23,8 +23,9 @@
     </content>
     <orderEntry type="jdk" jdkName="flex_sdk_4 (player 10)" jdkType="Flex SDK Type" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="core" />
-    <orderEntry type="module" module-name="common" />
+    <orderEntry type="module" module-name="core" exported="" />
+    <orderEntry type="module" module-name="common" exported="" />
+    <orderEntry type="library" name="flex4" level="application" />
   </component>
 </module>
 

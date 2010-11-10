@@ -18,6 +18,8 @@ package org.flowplayer.viralvideos {
     import org.flowplayer.model.Plugin;
     import org.flowplayer.model.PluginModel;
     import org.flowplayer.model.PluginEventType;
+    import org.flowplayer.ui.Dock;
+    import org.flowplayer.ui.DockConfig;
     import org.flowplayer.viralvideos.config.Config;
     import org.flowplayer.ui.AutoHide;
     import org.flowplayer.ui.CloseButton;
@@ -27,6 +29,9 @@ package org.flowplayer.viralvideos {
     import org.flowplayer.view.Flowplayer;
     import org.flowplayer.view.Styleable;
     import org.flowplayer.view.StyleableSprite;
+    import org.flowplayer.viralvideos.icons.EmailIcon;
+    import org.flowplayer.viralvideos.icons.EmbedIcon;
+    import org.flowplayer.viralvideos.icons.ShareIcon;
 
     public class ViralVideos extends AbstractSprite implements Plugin, Styleable {
 
@@ -35,7 +40,7 @@ package org.flowplayer.viralvideos {
         private var _model:PluginModel;
         private var _config:Config;
         private var _playerEmbed:PlayerEmbed;
-        private var _iconBar:IconBar;
+        private var _iconDock:Dock;
 
         private var _tabContainer:Sprite;
         private var _panelContainer:Sprite;
@@ -53,7 +58,6 @@ package org.flowplayer.viralvideos {
 
         private var _closeButton:CloseButton;
         private var _tabCSSProperties:Object;
-        private var _autoHide:AutoHide;
 
         public function onConfig(plugin:PluginModel):void {
             log.debug("onConfig()", plugin.config);
@@ -90,23 +94,27 @@ package org.flowplayer.viralvideos {
         }
 
         private function createCloseButton(icon:DisplayObject = null):void {
+            if (_closeButton) return;
             _closeButton = new CloseButton(_config.closeButton, _player.animationEngine);
             addChild(_closeButton);
             _closeButton.addEventListener(MouseEvent.CLICK, close);
         }
 
-        private function createIconBar():void {
-            _iconBar = new IconBar(_config, _player);
+        private function createIconDock():void {
+            if (_iconDock) return;
+            var dockConfig:DockConfig = new DockConfig();
+            _iconDock = Dock.getInstance(_player, dockConfig);
 
-            _iconBar.onEmail(function():void {
-                fadeIn("Email");
-            });
-            _iconBar.onEmbed(function():void {
-                fadeIn("Embed");
-            });
-            _iconBar.onShare(function():void {
-                fadeIn("Share");
-            });
+            var addIcon:Function = function(icon:DisplayObject, clickCallback:Function):void {
+                _iconDock.addIcon(icon);
+                icon.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void {
+                    clickCallback();
+                });
+            };
+
+            addIcon(new EmailIcon(_config.iconButtons, _player.animationEngine), function():void { fadeIn("Email"); });
+            addIcon(new EmbedIcon(_config.iconButtons, _player.animationEngine), function():void { fadeIn("Embed"); });
+            addIcon(new ShareIcon(_config.iconButtons, _player.animationEngine), function():void { fadeIn("Share"); });
         }
 
         public function onLoad(player:Flowplayer):void {
@@ -116,7 +124,7 @@ package org.flowplayer.viralvideos {
             _player = player;
 
             createPanelContainer();
-            createIconBar();
+            createIconDock();
             createCloseButton();
 
             _player.onLoad(onPlayerLoad);
@@ -139,18 +147,19 @@ package org.flowplayer.viralvideos {
 
         private function onPlayerLoad(event:PlayerEvent):void {
             log.debug("onPlayerLoad() ");
-            _playerEmbed = new PlayerEmbed(_player, _model.name, stage, _config);
+            _playerEmbed = new PlayerEmbed(_player, _model.name, stage, _config.embed, _config.share != null);
             _config.playerEmbed = _playerEmbed;
 
             createViews();
             initializeTabProperties();
             createTabs();
 
-            _autoHide = new AutoHide(null, _config.autoHide, _player, stage, _iconBar);
-//            if (_config.autoHide)
-//            _autoHide.hide();
-            _autoHide.onShow(onButtonsShow);
-            _autoHide.start();
+//            _autoHide = new AutoHide(null, _config.autoHide, _player, stage, _iconBar);
+////            if (_config.autoHide)
+////            _autoHide.hide();
+//            _autoHide.onShow(onButtonsShow);
+//            _autoHide.start();
+            _iconDock.addToPanel();
 
             hideViews();
 
@@ -229,7 +238,7 @@ package org.flowplayer.viralvideos {
         }
 
         private function createEmbedView():void {
-            _embedView = new EmbedView(_model as DisplayPluginModel, _player, _config, _config.canvas);
+            _embedView = new EmbedView(_model as DisplayPluginModel, _player, _config.embedViewTexts, _config.embed, _config.buttons, _config.canvas);
             //_embedView.setSize(stage.width, stage.height);
             _panelContainer.addChild(_embedView);
             //get the embed code and return it to the embed code textfield
@@ -250,16 +259,6 @@ package org.flowplayer.viralvideos {
         [External]
         public function share():void {
             showViews('Share');
-        }
-
-        [External]
-        public function setAutoHide(props:Object = null):void {
-            log.debug("setAutoHide()");
-            if (props) {
-                new PropertyBinder(_config.autoHide).copyProperties(props);
-            }
-
-           // _autoHide.reset();
         }
 
         [External]
@@ -403,10 +402,10 @@ package org.flowplayer.viralvideos {
 
         public function displayButtons(display:Boolean):void {
             if (display) {
-                _autoHide.start();
+                _iconDock.startAutoHide();
             } else {
                 log.debug("stopping auto hide and hiding buttons");
-                _autoHide.stop(false);
+                _iconDock.stopAutoHide(false);
             }
         }
 
@@ -419,11 +418,11 @@ package org.flowplayer.viralvideos {
         }
 
         public function onBeforeCss(styleProps:Object = null):void {
-            _autoHide.cancelAnimation();
+            _iconDock.cancelAnimation();
         }
 
         public function onBeforeAnimate(styleProps:Object):void {
-            _autoHide.cancelAnimation();
+            _iconDock.cancelAnimation();
         }
     }
 }

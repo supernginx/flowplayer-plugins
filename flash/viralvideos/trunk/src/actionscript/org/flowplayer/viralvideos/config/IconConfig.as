@@ -9,23 +9,12 @@
  *    Additional Term, see http://flowplayer.org/license_gpl.html
  */
 package org.flowplayer.viralvideos.config {
-    import org.flowplayer.model.DisplayProperties;
-    import org.flowplayer.model.DisplayPropertiesImpl;
     import org.flowplayer.ui.ButtonConfig;
 
     public class IconConfig {
         private var _buttons:ButtonConfig;
-        private var _displayProps:DisplayProperties;
 
         public function IconConfig() {
-            _displayProps = new DisplayPropertiesImpl()
-            _displayProps = new DisplayPropertiesImpl(null, "viral-icons", false);
-            _displayProps.top = "20%";
-            _displayProps.right = "7%";
-            _displayProps.width = "10%";
-            _displayProps.height = "30%";
-
-
             _buttons = new ButtonConfig();
             _buttons.setColor("rgba(20,20,20,0.5)");
             _buttons.setOverColor("rgba(0,0,0,1)");        }
@@ -36,14 +25,6 @@ package org.flowplayer.viralvideos.config {
 
         public function set buttons(value:ButtonConfig):void {
             _buttons = value;
-        }
-
-        public function get displayProps():DisplayProperties {
-            return _displayProps;
-        }
-
-        public function set displayProps(value:DisplayProperties):void {
-            _displayProps = value;
         }
     }
 }
