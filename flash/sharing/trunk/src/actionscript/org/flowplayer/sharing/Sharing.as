@@ -11,6 +11,7 @@
 package org.flowplayer.sharing {
     import flash.display.DisplayObject;
 
+    import flash.events.Event;
     import flash.events.MouseEvent;
 
     import flash.net.URLRequest;
@@ -36,14 +37,21 @@ package org.flowplayer.sharing {
         private var _config:Config;
         private var _player:Flowplayer;
 
+        public function Sharing() {
+            addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+        }
+
+        private function onAddedToStage(event:Event):void {
+            _config = new PropertyBinder(new Config(_player, _model.name, stage)).copyProperties(_model.config) as Config;
+            createDock(_player);
+        }
+
         public function onConfig(model:PluginModel):void {
             _model = model;
         }
 
         public function onLoad(player:Flowplayer):void {
-            _config = new PropertyBinder(new Config(player)).copyProperties(_model.config) as Config;
             _player = player;
-            createDock(player);
             _model.dispatchOnLoad();
         }
 
@@ -58,7 +66,7 @@ package org.flowplayer.sharing {
             };
 
             addIcon(new EmailIcon(_config.buttons, player.animationEngine), function():void { _config.email.execute(); });
-            addIcon(new EmbedIcon(_config.buttons, player.animationEngine), function():void { onEmbed(); });
+            addIcon(new EmbedIcon(_config.buttons, player.animationEngine), function():void { _config.embed.execute(); });
             addIcon(new TwitterIcon(_config.buttons, player.animationEngine), function():void { onTwitter(); });
             addIcon(new FacebookIcon(_config.buttons, player.animationEngine), function():void { onFacebook(); });
 
