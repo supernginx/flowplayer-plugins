@@ -61,7 +61,7 @@ package org.flowplayer.ui {
             _disp = displayObject;
             _originalPos = getDisplayProperties();
 
-            if (_config.state != "fullscreen") {
+            if (_config.state != "fullscreen" && config.enabled) {
                 startTimerAndInitializeListeners();
             }
             _stage.addEventListener(FullScreenEvent.FULL_SCREEN, onFullScreen);
