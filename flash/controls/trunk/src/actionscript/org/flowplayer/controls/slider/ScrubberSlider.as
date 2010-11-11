@@ -66,17 +66,25 @@ package org.flowplayer.controls.slider {
             playlist.onBeforeSeek(setSeekBegin);
             playlist.onSeek(setSeekDone);
 			
-			playlist.onBegin(function(event:ClipEvent):void {
-				_currentClip = event.target as Clip;
-			});
+            playlist.onBegin(function(event:ClipEvent):void {
+                _currentClip = event.target as Clip;
+            });
+            playlist.onResume(function(event:ClipEvent):void {
+                _currentClip = event.target as Clip;
+            });
 			
             playlist.onStart(start);
+
             playlist.onResume(resume);
+
             playlist.onPause(stop);
-            playlist.onBufferEmpty(stop);
-            playlist.onBufferFull(start);
+
+            // cannot have this, causes trouble!
+//            playlist.onBufferEmpty(stop);
+
             playlist.onStop(stopAndRewind);
             playlist.onFinish(stopAndRewind);
+            
             playlist.onBeforeSeek(beforeSeek);
             playlist.onSeek(seek);
         }
@@ -84,7 +92,7 @@ package org.flowplayer.controls.slider {
         private function onSlowMotionEvent(event:PluginEvent):void {
             log.debug("onSlowMotionEvent()");
             _slowMotionInfo = event.info2;
-            stop();
+            stop(null);
 
             if (! isTrickPlay) {
                 stopTrickPlayTracking();
@@ -97,7 +105,7 @@ package org.flowplayer.controls.slider {
 
         private function onAudioEvent(event:PluginEvent):void {
             log.debug("onAudioEvent()");
-            stop();
+            stop(null);
             doStart(_config.player.playlist.current);
 
         }
@@ -127,7 +135,7 @@ package org.flowplayer.controls.slider {
 			
 			if ( _currentClip )
 			{
-				stop();
+				stop(null);
 				updateDraggerPos(_config.player.status.time, _currentClip);
 				doStart(_currentClip, _config.player.status.time);
 			}
@@ -138,7 +146,7 @@ package org.flowplayer.controls.slider {
             log.debug("beforeSeek()");
             if (event.isDefaultPrevented() ) {
 				log.debug("Default prevented ")
-				stop();
+				stop(null);
 				updateDraggerPos(_config.player.status.time, event.target as Clip);
 				doStart(event.target as Clip, _config.player.status.time);
 				return;
@@ -146,7 +154,7 @@ package org.flowplayer.controls.slider {
 
 			
             updateDraggerPos(event.info as Number, event.target as Clip);
-            stop();
+            stop(null);
 
 			doDrawBufferBar(0, 0);
         }
@@ -167,30 +175,44 @@ package org.flowplayer.controls.slider {
 			_currentClip = (event.target as Clip);
             log.debug("start() " + _currentClip);
             if (_currentClip.duration == 0 && _currentClip.type == ClipType.IMAGE) return;
-			stop();
+			stop(null);
             doStart(_currentClip);
         }
 
         private function resume(event:ClipEvent):void {
+            log.debug("resume() " + event.target);
 			_currentClip = (event.target as Clip);
-			stop();
+			stop(null);
             doStart(_currentClip);
         }
 
         private function doStart(clip:Clip, startTime:Number = 0):void {
-            log.debug("doStart()");
-            if (isTrickPlay) return;
+            log.debug("doStart() " + clip);
+            if (isTrickPlay) {
+                log.debug("doStart(), trickplay in progress, returning");
+                return;
+            }
 
             var status:Status = _config.player.status;
             var time:Number = startTime > 0 ? startTime : status.time;
 
-            if (! _config.player.isPlaying()) return;
-            if (_startDetectTimer && _startDetectTimer.running) return;
-            if (animationEngine.hasAnimationRunning(_dragger)) return;
+            if (! _config.player.isPlaying()) {
+                log.debug("doStart(), not playing, returning");
+                return;
+            }
+            if (_startDetectTimer && _startDetectTimer.running) {
+                log.debug("doStart(), not playing, returning");
+                return;
+            }
+            if (animationEngine.hasAnimationRunning(_dragger)) {
+                log.debug("doStart(), animation already running, returning");
+                return;
+            }
 
             _startDetectTimer = new Timer(200);
             _startDetectTimer.addEventListener(TimerEvent.TIMER,
                     function(event:TimerEvent):void {
+                        log.debug("on startDetectTimer()");
                         var currentTime:Number = _config.player.status.time;
                         if (Math.abs(currentTime - time) > 0.2) {
                             _startDetectTimer.stop();
@@ -198,6 +220,7 @@ package org.flowplayer.controls.slider {
                             var duration:Number = (clip.duration - time) * 1000;  
                             log.debug("doStart(), starting an animation to x pos " + endPos + ", the duration is " + clip.duration + ", current pos is " + _dragger.x);
                             updateDraggerPos(currentTime, clip);
+//                            animationEngine.cancel(_dragger);
                             animationEngine.animateProperty(_dragger, "x", endPos, duration, null,
                                     function():void {
                                         drawProgressBar(_bufferStart * width);
@@ -205,8 +228,11 @@ package org.flowplayer.controls.slider {
                                     function(t:Number, b:Number, c:Number, d:Number):Number {
                                         return c * t / d + b;
                                     });
+                        } else {
+                            log.debug("not started yet, currentTime " + currentTime + ", time " + time);
                         }
                     });
+            log.debug("doStart(), starting timer");
             _startDetectTimer.start();
         }
 
@@ -223,7 +249,7 @@ package org.flowplayer.controls.slider {
             return _slowMotionInfo && _slowMotionInfo["isTrickPlay"]; 
         }
 
-        private function stop(event:ClipEvent = null):void {
+        private function stop(event:ClipEvent):void {
             log.debug("stop()");
             if (_startDetectTimer) {
                 _startDetectTimer.stop();
@@ -231,10 +257,18 @@ package org.flowplayer.controls.slider {
             animationEngine.cancel(_dragger);
         }
 
-        private function stopAndRewind(event:ClipEvent = null):void {
-            log.debug("stopAndRewind()");
-            stop();
-            animationEngine.animateProperty(_dragger, "x", 0, 300);
+        private function stopAndRewind(event:ClipEvent):void {
+            var clip:Clip = event.target as Clip;
+            log.debug("stopAndRewind() " + clip);
+
+            stop(event);
+            if (clip.isMidroll) {
+                log.debug("midroll stopped, not rewinding to beginning");
+                return;
+            }
+
+            _dragger.x = 0;
+
             clearBar(_progressBar);
         }
 
@@ -388,7 +422,7 @@ package org.flowplayer.controls.slider {
         }
 //
         override protected function onDragging():void {
-            stop();
+            stop(null);
             drawProgressBar(_bufferStart * width);
         }
 	}
