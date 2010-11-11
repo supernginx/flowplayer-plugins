@@ -142,7 +142,6 @@ package org.flowplayer.controls.slider {
 
 		private function toggleClickListeners(add:Boolean):void {
 			var targets:Array = getClickTargets(add);
-			log.debug("click targets", targets);
 			for (var i:Number = 0; i < targets.length; i++) {
 				if (add) {
 					EventDispatcher(targets[i]).addEventListener(MouseEvent.MOUSE_DOWN, _onMouseDown);
