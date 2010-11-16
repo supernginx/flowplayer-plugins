@@ -8,9 +8,13 @@
  *    Flowplayer is licensed under the GPL v3 license with an
  *    Additional Term, see http://flowplayer.org/license_gpl.html
  */
-package org.flowplayer.bwcheck {
+package org.flowplayer.net {
+    import flash.utils.flash_proxy;
+
+    import org.flowplayer.config.Config;
     import org.flowplayer.controller.NetStreamCallbacks;
     import org.flowplayer.controller.NetStreamClient;
+    import org.flowplayer.model.Clip;
     import org.flowplayer.util.Log;
     import org.osmf.net.NetClient;
     import org.osmf.net.NetStreamCodes;
@@ -18,15 +22,24 @@ package org.flowplayer.bwcheck {
     /**
      * A OSMF and Flowplayer compatible NetStream client.
      */
-    public class OsmfNetStreamClient extends NetClient implements NetStreamCallbacks {
+    public class OsmfNetStreamAdapter extends NetClient implements NetStreamCallbacks {
         protected var log:Log = new Log(this);
         private var _fpClient:NetStreamClient;
         private var _onTransitionComplete:Function;
+        private var _osmfClient:NetClient;
 
-        public function OsmfNetStreamClient(flowplayerNetStreamClient:NetStreamClient, serverType:String) {
+        public function OsmfNetStreamAdapter(flowplayerNetStreamClient:NetStreamClient, serverType:String = "fms", osmfClient:NetClient = null) {
+            log.debug("OsmfNetStreamAdapter()");
             _fpClient = flowplayerNetStreamClient;
+            _osmfClient = osmfClient;
             addHandler(NetStreamCodes.ON_PLAY_STATUS, serverType == "wowza" ? playStatusHandlerWowza : playStatusHandler);
         }
+
+        public static function fromOsmfClient(osmfClient:NetClient, clip:Clip, config:Config):OsmfNetStreamAdapter {
+            return new OsmfNetStreamAdapter(new NetStreamClient(clip, config, null), null, osmfClient);
+        }
+
+        // **** NetStreamCallbacks ****/
 
         public function onMetaData(infoObject:Object):void {
             log.debug("onMetaData", infoObject);
@@ -75,6 +88,29 @@ package org.flowplayer.bwcheck {
                 _onTransitionComplete();
                 return;
             }
+        }
+
+
+        // *** OSMF NetClient's methods ****/
+
+        override public function addHandler(name:String, handler:Function, priority:int=0):void {
+            osmfClient.addHandler(name, handler, priority);
+        }
+
+        override public function removeHandler(name:String,handler:Function):void {
+            osmfClient.removeHandler(name, handler);
+        }
+
+        override flash_proxy function callProperty(methodName:*, ... args):* {
+            return osmfClient.callProperty.apply(methodName, args);
+        }
+
+        override flash_proxy function hasProperty(name:*):Boolean {
+            return osmfClient.hasProperty(name);
+        }
+
+        private function get osmfClient():NetClient {
+            return _osmfClient || this;
         }
     }
 }
