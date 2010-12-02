@@ -1,6 +1,11 @@
 Version history:
 
-3.2.2
+3.2.4
+-----
+- Now works without configuring netConnectionUrl for the plugin, in this case the netConnectionUrl value is taken from the
+  clip. Also works when it's resolved by the SMIL plugin etc.
+
+3.2.3
 -----
 - new config
 - new event onStreamSwitchBegin
