@@ -30,6 +30,7 @@
 	<script type="text/javascript" src="http://static.flowplayer.org/js/flowplayer-3.2.2.min.js"></script>	
 	<link rel="stylesheet" type="text/css" href="http://static.flowplayer.org/tools/css/overlay-apple.css"/>
 	<script type="text/javascript"  src="http://amazon.flowplayer.org/js/tools/tools.overlay.apple-1.0.1.min.js"></script>	
+	<script type="text/javascript"  src="flowplayer.viralvideos.js"></script> 
 
 <style type="text/css">
 		div.overlay {
@@ -113,6 +114,10 @@ $f("player", "@PLAYER_SWF@", {
 			// load the viral videos plugin
 			url: '@MAIN_PLAYER_SWF@',
 			
+			dock: {
+			 left: 10
+			},
+			
 			// define a video title used in sharing
 			share: {
 				description: 'Extreme surfers riding big waves' 
@@ -155,7 +160,7 @@ $f("player", "@PLAYER_SWF@", {
 			}
 		}
 	}
-});
+}).viralvideos();
 </script>
 
 <div class="overlay" id="overlay"> 

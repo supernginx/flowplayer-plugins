@@ -14,7 +14,8 @@ package org.flowplayer.viralvideos.config
     import org.flowplayer.model.DisplayPropertiesImpl;
     import org.flowplayer.ui.AutoHideConfig;
     import org.flowplayer.ui.ButtonConfig;
-    import org.flowplayer.util.PropertyBinder;
+	import org.flowplayer.ui.DockConfig;
+	import org.flowplayer.util.PropertyBinder;
     import org.flowplayer.util.URLUtil;
     import org.flowplayer.viralvideos.PlayerEmbed;
 
@@ -27,6 +28,7 @@ package org.flowplayer.viralvideos.config
         private var _buttonConfig:ButtonConfig;
         private var _closeButton:ButtonConfig;
         private var _icons:IconConfig = new IconConfig();
+        private var _dock:DockConfig = new DockConfig();
 
         public function get email():EmailConfig {
             return _email;
@@ -167,9 +169,17 @@ package org.flowplayer.viralvideos.config
         public function get iconButtons():ButtonConfig {
             return _icons.buttons;
         }
+        
+        public function get dockConfig():DockConfig {
+            return _dock;
+        }
 
         public function set icons(config:Object):void {
             new PropertyBinder(_icons.buttons).copyProperties(config);
+        }
+        
+        public function set dock(config:Object):void {
+            new PropertyBinder(_dock.displayProperties).copyProperties(config);
         }
 
         public function set playerEmbed(embed:PlayerEmbed):void {
