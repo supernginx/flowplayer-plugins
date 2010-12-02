@@ -14,7 +14,7 @@ package org.flowplayer.bwcheck.detect {
     import org.flowplayer.bwcheck.detect.AbstractDetectionStrategy;
 
     /**
-     * @author danielr
+     * @author danielr 
      */
     public class BandwidthDetectorWowza extends AbstractDetectionStrategy {
         private var info:Object = new Object();
