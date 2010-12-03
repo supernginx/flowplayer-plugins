@@ -43,7 +43,7 @@ package org.flowplayer.bwcheck.detect {
         private var _model:PluginModel;
         private var _host:String;
         private var _playlist:Playlist;
-
+        
         public function BandwidthDetector(model:PluginModel, config:Config, playlist:Playlist) {
             _model = model;
             _config = config;
@@ -54,10 +54,17 @@ package org.flowplayer.bwcheck.detect {
 
             if (_strategy == null) _strategy = new BandwidthDetectorHttp();
 
-            if (_config.hosts || config.netConnectionUrl) {
-                _rtmpCluster = new RTMPCluster(_config);
-                _rtmpCluster.onFailed(onClusterFailed);
+            if (_config.hosts.length > 0 || config.netConnectionUrl) {
+                log.debug("Using netConnectionUrls configured for the plugin");
+                createCluster();
+            } else {
+                log.debug("detect(), using clip's netConnectionUrl: " + _host);                
             }
+        }
+
+        private function createCluster():void {
+            _rtmpCluster = new RTMPCluster(_config);
+            _rtmpCluster.onFailed(onClusterFailed);
         }
 
         override public function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void {
@@ -69,16 +76,23 @@ package org.flowplayer.bwcheck.detect {
         }
 
         public function detect(host:String = null):void {
-            _host = _rtmpCluster ? _rtmpCluster.nextHost : _playlist.current.getCustomProperty("netConnectionUrl") as String;
+            log.debug("detect()");
+            if (_rtmpCluster) {
+                _host = _rtmpCluster.nextHost;
+            } else {
+                _host = _playlist.current.getCustomProperty("netConnectionUrl") as String;
+                log.debug("detect(), using clip's netConnectionUrl: " + _host);
+                _config.hosts = [_host];
+                createCluster();
+            }
+
             if (! _host) {
                 log.error("no live hosts to connect to");
                 dispatchClusterFailed();
                 return;
             }
-            if (_rtmpCluster) {
-                _rtmpCluster.onReconnected(onRTMPReconnect);
-                _rtmpCluster.start();
-            }
+            _rtmpCluster.onReconnected(onRTMPReconnect);
+            _rtmpCluster.start();
 
             _connection = new NetConnection();
             _connection.addEventListener(NetStatusEvent.NET_STATUS, onConnectionStatus);
@@ -93,18 +107,14 @@ package org.flowplayer.bwcheck.detect {
             switch (event.info.code) {
                 case "NetConnection.Connect.Success":
                     log.info("successfully connected to " + _connection.uri);
-                    if (_rtmpCluster) {
-                        _rtmpCluster.stop();
-                        _strategy.detect();
-                    }
+                    _rtmpCluster.stop();
+                    _strategy.detect();
                     break;
 
                 case "NetConnection.Connect.Failed":
                     log.info("Couldn't connect to " + _connection.uri);
-                    if (_rtmpCluster) {
-                        _rtmpCluster.setFailedServer(_connection.uri);
-                        _rtmpCluster.stop();
-                    }
+                    _rtmpCluster.setFailedServer(_connection.uri);
+                    _rtmpCluster.stop();
 
                     detect();
                     break;
@@ -115,29 +125,19 @@ package org.flowplayer.bwcheck.detect {
 
         private function onClusterFailed(event:ClipEvent = null):void {
             log.info("Connections failed");
-            _model.dispatch(PluginEventType.PLUGIN_EVENT, event, currentHost, currentHostIndex);
-        }
-
-        private function get currentHostIndex():int {
-            return _rtmpCluster ? _rtmpCluster.currentHostIndex : 0;
-        }
-
-        private function get currentHost():String {
-            return _rtmpCluster ? _rtmpCluster.currentHost : _playlist.current.getCustomProperty("netConnectionUrl") as String;
+            _model.dispatch(PluginEventType.PLUGIN_EVENT, event, _rtmpCluster.currentHost, _rtmpCluster.currentHostIndex);
         }
 
         private function onRTMPReconnect():void {
             dispatch("onRTMPReconnect()");
-            if (_rtmpCluster) {
-                _rtmpCluster.setFailedServer(_host);
-            }
+            _rtmpCluster.setFailedServer(_host);
             _connection.close();
             log.info("onRTMPReconnect(), Attempting reconnection");
             detect();
         }
 
         private function dispatch(event:String):void {
-            _model.dispatch(PluginEventType.PLUGIN_EVENT, event, currentHost, currentHostIndex);
+            _model.dispatch(PluginEventType.PLUGIN_EVENT, event, _rtmpCluster.currentHost, _rtmpCluster.currentHostIndex);
 
         }
 
@@ -147,10 +147,9 @@ package org.flowplayer.bwcheck.detect {
         }
 
         public function get host():String {
-            if (!_host) {
-                return currentHost;
-            }
-            return _host;
+            if (_host) return _host;
+            if (_rtmpCluster) return _rtmpCluster.currentHost;
+            return _playlist.current.getCustomProperty("netConnectionUrl") as String;
         }
     }
 }
