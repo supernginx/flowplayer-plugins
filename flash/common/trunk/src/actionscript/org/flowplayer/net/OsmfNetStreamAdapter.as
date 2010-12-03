@@ -101,13 +101,13 @@ package org.flowplayer.net {
             osmfClient.removeHandler(name, handler);
         }
 
-        override flash_proxy function callProperty(methodName:*, ... args):* {
-            return osmfClient.callProperty.apply(methodName, args);
-        }
-
-        override flash_proxy function hasProperty(name:*):Boolean {
-            return osmfClient.hasProperty(name);
-        }
+//        override flash_proxy function callProperty(methodName:*, ... args):* {
+//            return osmfClient.callProperty.apply(methodName, args);
+//        }
+//
+//        override flash_proxy function hasProperty(name:*):Boolean {
+//            return osmfClient.hasProperty(name);
+//        }
 
         private function get osmfClient():NetClient {
             return _osmfClient || this;
