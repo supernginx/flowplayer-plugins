@@ -123,6 +123,7 @@ package org.flowplayer.captions {
                 }
             }
             return false;
+
         }
 
         /**
@@ -300,14 +301,14 @@ package org.flowplayer.captions {
          * 'xml', 'srt', 'tx3g', 'qtxt'
          */
         [External]
-        public function loadCaptionsFromFile(clipIndex:int, captionsUrl:String = null):void {
+        public function loadCaptions(clipIndex:int, captionsUrl:String = null):void {
             if (! captionsUrl) return;
             log.info("loading captions from " + captionsUrl);
             loadCaptionFile(_player.playlist.clips[clipIndex], captionsUrl);
         }
         
         [External]
-        public function loadCaptions(clipIndex:int, captions:Array):void {
+        public function addCaptions(clipIndex:int, captions:Array):void {
             if (! captions) return;
             log.info("loading captions from " + captions);
             loadCaption(_player.playlist.clips[clipIndex], captions);
