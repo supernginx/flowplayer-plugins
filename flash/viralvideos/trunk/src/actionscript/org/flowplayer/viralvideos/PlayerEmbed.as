@@ -183,31 +183,42 @@ package org.flowplayer.viralvideos {
             fixPluginsURLs(updatedConfig);
             fixShareUrl(updatedConfig);
 
-            var clip:Object = updatedConfig.clip || {};
-            clip.autoPlay = _embedConfig.isAutoPlayOverriden ? _embedConfig.autoPlay : clip.autoPlay;
-            clip.autoBuffering = _embedConfig.isAutoBufferingOverriden ? _embedConfig.autoBuffering : clip.autoBuffering;
-            clip.linkUrl = _embedConfig.linkUrl ? _embedConfig.linkUrl : clip.linkUrl;
-            updatedConfig.clip = clip;
-
-            var playlist:Array = updatedConfig.playlist || [];
-            if (playlist.length == 0)
-                playlist.push(clip);
+            var clip:Object;
 
             if (_embedConfig.shareCurrentPlaylistItem) {
-                playlist.splice(_player.currentClip.index - 1, 1);
-                playlist.unshift(_player.currentClip);
+                log.debug("Sharing just current playlist item");
+                delete updatedConfig.playlist;
+
+                if (! updatedConfig.clip) {
+                    updatedConfig.clip = {};
+                }
+                clip = updatedConfig.clip;
+                clip.url = _player.currentClip.url;
+            }
+            
+            if (! updatedConfig.playlist && ! updatedConfig.clip) {
+                updatedConfig.clip = { url: _player.currentClip.url };
+                clip = updatedConfig.clip;
             }
 
-            if (_embedConfig.isAutoPlayOverriden)
-                playlist[0].autoPlay = _embedConfig.autoPlay;
+            if (updatedConfig.playlist) {
+                clip = updatedConfig.playlist[0];
+            }
 
-            if (_embedConfig.isAutoBufferingOverriden)
-                playlist[0].autoBuffering = _embedConfig.autoBuffering;
-
-            updatedConfig.playlist = playlist;
+            if (_embedConfig.isAutoPlayOverriden) {
+                clip.autoPlay = _embedConfig.autoPlay;
+            }
+            if (_embedConfig.isAutoBufferingOverriden) {
+                clip.autoBuffering = _embedConfig.autoBuffering;
+            }
+            if (_embedConfig.linkUrl) {
+                clip.linkUrl = _embedConfig.linkUrl;
+            }
 
             return updatedConfig;
         }
+
+
 
         public function getEmbedCode(escaped:Boolean = false):String {
             var configStr:String = _embedConfig.configUrl;
