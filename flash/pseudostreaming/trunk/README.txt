@@ -1,5 +1,10 @@
 Version history:
 
+3.2.6
+-----
+Fixes:
+- Pseudostreaming was causing cuepoints to be missed.
+
 3.2.5
 -----
 Fixes:
