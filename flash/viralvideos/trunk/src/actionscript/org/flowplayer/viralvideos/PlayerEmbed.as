@@ -249,8 +249,6 @@ package org.flowplayer.viralvideos {
                 }
             }
 
-            code += '      <a href="' + _embedConfig.linkUrl + '" target="_blank">' + _embedConfig.anchorText + '</a>' + "\n";
-
             if (_embedConfig.fallbackUrls.length > 0) {
                 code += '     </video>' + "\n";
             }
