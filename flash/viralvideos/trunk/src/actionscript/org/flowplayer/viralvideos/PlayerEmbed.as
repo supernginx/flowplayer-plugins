@@ -247,9 +247,6 @@ package org.flowplayer.viralvideos {
                 for (var i:uint = 0; i < _embedConfig.fallbackUrls.length; i++) {
                     code += '<source src="' + _embedConfig.fallbackUrls[i] + '" />';
                 }
-            }
-
-            if (_embedConfig.fallbackUrls.length > 0) {
                 code += '     </video>' + "\n";
             }
 
