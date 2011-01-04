@@ -4,7 +4,7 @@ Version history:
 -----
 - Removed line breaks from the embed code
 - Embed code: The plugin URLs are not touched if they are complete URLs
-- Added new configuration option "dock"
+- Added new configuration option "dock": http://code.google.com/p/flowplayer-core/issues/detail?id=151
 
 3.2.3
 -----
