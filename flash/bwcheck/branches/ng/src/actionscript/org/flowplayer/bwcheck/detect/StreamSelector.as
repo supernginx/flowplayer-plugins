@@ -10,15 +10,16 @@
  */
 package org.flowplayer.bwcheck.detect {
     import flash.display.Stage;
-
     import flash.display.StageDisplayState;
 
-    import org.flowplayer.bwcheck.Config;
+    import org.flowplayer.bwcheck.config.Config;
     import org.flowplayer.bwcheck.BitrateItem;
+    
     import org.flowplayer.model.DisplayProperties;
     import org.flowplayer.util.Arrange;
     import org.flowplayer.util.Log;
     import org.flowplayer.view.Flowplayer;
+    
     import org.osmf.net.DynamicStreamingItem;
 
     public class StreamSelector {

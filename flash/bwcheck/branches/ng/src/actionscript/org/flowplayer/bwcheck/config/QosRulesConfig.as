@@ -17,7 +17,7 @@
  *    along with FlowPlayer.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.flowplayer.bwcheck{
+package org.flowplayer.bwcheck.config {
 	/**
 	 * @author api
 	 */

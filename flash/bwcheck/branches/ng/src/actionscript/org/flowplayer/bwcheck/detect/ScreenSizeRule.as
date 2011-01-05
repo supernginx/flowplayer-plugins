@@ -1,7 +1,9 @@
 package org.flowplayer.bwcheck.detect {
-    import org.flowplayer.bwcheck.Config;
+    import org.flowplayer.bwcheck.config.Config;
+    
     import org.flowplayer.util.Log;
     import org.flowplayer.view.Flowplayer;
+    
     import org.osmf.net.DynamicStreamingItem;
     import org.osmf.net.SwitchingRuleBase;
     import org.osmf.net.rtmpstreaming.RTMPNetStreamMetrics;
