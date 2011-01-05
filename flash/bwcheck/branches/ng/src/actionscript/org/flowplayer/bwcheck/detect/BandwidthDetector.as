@@ -13,8 +13,9 @@ package org.flowplayer.bwcheck.detect {
     import flash.events.NetStatusEvent;
     import flash.net.NetConnection;
 
-    import org.flowplayer.bwcheck.Config;
+    import org.flowplayer.bwcheck.config.Config;
     import org.flowplayer.bwcheck.NullNetConnectionClient;
+    
     import org.flowplayer.cluster.RTMPCluster;
     import org.flowplayer.model.ClipEvent;
     import org.flowplayer.model.Playlist;
