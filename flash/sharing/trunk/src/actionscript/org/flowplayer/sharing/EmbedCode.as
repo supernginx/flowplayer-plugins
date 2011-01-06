@@ -14,6 +14,7 @@ package org.flowplayer.sharing {
     import flash.system.System;
 
     import org.flowplayer.ui.Notification;
+    import org.flowplayer.ui.Notification;
     import org.flowplayer.view.Flowplayer;
     import org.flowplayer.viralvideos.PlayerEmbed;
     import org.flowplayer.viralvideos.config.EmbedConfig;
@@ -30,7 +31,9 @@ package org.flowplayer.sharing {
 
         override protected function process():void {
             System.setClipboard(_embed.getEmbedCode(true));
-            new Notification(player, "Embed code copied to clipboard! You can now paste it to your site or blog.").show().autoHide();
+            var notification:Notification = new Notification(player, "Embed code copied to clipboard! You can now paste it to your site or blog.");
+            notification.setSize(Math.min(player.panel.width - 20, 240), 50);
+            notification.show().autoHide();
         }
 
         public function get config():EmbedConfig {

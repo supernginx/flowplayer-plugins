@@ -9,17 +9,20 @@
  *    Additional Term, see http://flowplayer.org/license_gpl.html
  */
 package org.flowplayer.sharing {
+    import org.flowplayer.util.Log;
     import org.flowplayer.util.URLUtil;
     import org.flowplayer.view.Flowplayer;
 
     public class AbstractCommand {
         private var _player:Flowplayer;
+        private var log:Log = new Log(this);
 
         public function AbstractCommand(player:Flowplayer) {
             _player = player;
         }
 
         public final function execute():void {
+            log.debug("execute()");
             process();
         }
 
