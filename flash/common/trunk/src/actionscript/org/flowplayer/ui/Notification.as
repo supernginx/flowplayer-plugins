@@ -12,8 +12,11 @@ package org.flowplayer.ui {
     import flash.display.DisplayObject;
     import flash.events.MouseEvent;
     import flash.events.TimerEvent;
+    import flash.text.AntiAliasType;
     import flash.text.TextField;
 
+    import flash.text.TextFieldAutoSize;
+    import flash.text.TextFormatAlign;
     import flash.utils.Timer;
 
     import org.flowplayer.util.Arrange;
@@ -37,6 +40,7 @@ package org.flowplayer.ui {
             _player = player;
             createTextField(player, message);
             addClickListener();
+            this.width = 100;
         }
 
         private function addClickListener():void {
@@ -57,7 +61,7 @@ package org.flowplayer.ui {
         }
 
         public function show():Notification {
-            log.debug("show()");
+            log.debug("show(), width: " + this.width);
             _player.addToPanel(this, { left: '50pct', top: '50pct' });
             return this;
         }
@@ -69,8 +73,12 @@ package org.flowplayer.ui {
 
         private function createTextField(player:Flowplayer, message:String):void {
             _field = player.createTextField(12, true);
+            _field.autoSize = TextFieldAutoSize.CENTER;
+            _field.wordWrap = true;
+            _field.multiline = true;
+            _field.antiAliasType = AntiAliasType.ADVANCED;
+
             _field.htmlText = message;
-            _field.width = _field.textWidth + 4;
             _field.height = _field.textHeight + 4;
             addChild(_field);
             setSize(_field.width + 20, _field.height + 20);
@@ -78,6 +86,8 @@ package org.flowplayer.ui {
 
         override protected function onResize():void {
             log.debug("onResize() " + width + "x" + height);
+            _field.width = width - 20;
+            _field.x = 0;
             Arrange.center(_field, width, height);
             
         }
