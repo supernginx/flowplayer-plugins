@@ -38,6 +38,7 @@ package org.flowplayer.sharing {
         private var _player:Flowplayer;
 
         public function Sharing() {
+            log.debug("Sharing()");
             addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
         }
 
@@ -67,8 +68,8 @@ package org.flowplayer.sharing {
 
             addIcon(new EmailIcon(_config.buttons, player.animationEngine), function():void { _config.email.execute(); });
             addIcon(new EmbedIcon(_config.buttons, player.animationEngine), function():void { _config.embed.execute(); });
-            addIcon(new TwitterIcon(_config.buttons, player.animationEngine), function():void { _config.twitter.execute(); });
-            addIcon(new FacebookIcon(_config.buttons, player.animationEngine), function():void { _config.facebook.execute(); });
+            addIcon(new TwitterIcon(_config.buttons, player.animationEngine, null), function():void { _config.twitter.execute(); });
+            addIcon(new FacebookIcon(_config.buttons, player.animationEngine, null), function():void { _config.facebook.execute(); });
 
             _dock.addToPanel();
         }
@@ -83,4 +84,5 @@ package org.flowplayer.sharing {
             return null;
         }
     }
+
 }
