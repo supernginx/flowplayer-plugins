@@ -16,6 +16,7 @@ package org.flowplayer.ui {
         private var _overColor:String;
         private var _fontColor:String;
         private var _lineColor:String;
+		private var _toggleOnColor:String;
 
         /*
          * Color.
@@ -69,6 +70,31 @@ package org.flowplayer.ui {
         public function setOverColor(color:String):void {
             _overColor = color;
         }
+		
+		/*
+		 * Toggle Color.
+		 */
+		public function get toggleOnColor():Number {
+			return StyleSheetUtil.colorValue(_toggleOnColor);
+		}
+		
+		public function get toggleOnAlpha():Number {
+			return StyleSheetUtil.colorAlpha(_toggleOnColor);
+		}
+		
+		public function get toggleOnColorRGB():Array {
+			return StyleSheetUtil.rgbValue(toggleOnColor);
+		}
+		
+		public function get toggleOnColorRGBA():Array {
+			var rgba:Array = toggleOnColorRGB;
+			rgba.push(toggleOnAlpha);
+			return rgba;
+		}
+		
+		public function setToggleOnColor(color:String):void {
+			_toggleOnColor = color;
+		}
 
         /*
          * Line color.
