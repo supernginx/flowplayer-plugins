@@ -42,6 +42,7 @@ package org.flowplayer.viralvideos.config {
             return _playerEmbed;
         }
 
+        [Value]
         public function get autoPlay():Boolean {
             return _autoPlay == OVERRIDE_TRUE;
         }
@@ -54,6 +55,7 @@ package org.flowplayer.viralvideos.config {
             _autoPlay = value ? OVERRIDE_TRUE : OVERRIDE_FALSE;
         }
 
+        [Value]
         public function get autoBuffering():Boolean {
             return _autoBuffering == OVERRIDE_TRUE;
         }
@@ -66,6 +68,7 @@ package org.flowplayer.viralvideos.config {
             _autoBuffering = value ? OVERRIDE_TRUE : OVERRIDE_FALSE;
         }
 
+        [Value]
         public function get linkUrl():String {
             return _linkUrl;
         }
@@ -74,6 +77,7 @@ package org.flowplayer.viralvideos.config {
             _linkUrl = value;
         }
 
+        [Value]
         public function get configUrl():String {
             return _configUrl;
         }
@@ -82,6 +86,7 @@ package org.flowplayer.viralvideos.config {
             _configUrl = value;
         }
 
+        [Value]
         public function get fallbackUrls():Array {
             return _fallbackUrls;
         }
@@ -90,6 +95,7 @@ package org.flowplayer.viralvideos.config {
             _fallbackUrls = value;
         }
 
+        [Value]
         public function get anchorText():String {
             return _anchorText;
         }
@@ -98,6 +104,7 @@ package org.flowplayer.viralvideos.config {
             _anchorText = value;
         }
 
+        [Value]
         public function get fallbackPoster():String {
             return _fallbackPoster;
         }

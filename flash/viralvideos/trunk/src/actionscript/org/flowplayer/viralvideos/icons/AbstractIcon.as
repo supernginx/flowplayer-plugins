@@ -22,25 +22,30 @@ package org.flowplayer.viralvideos.icons {
         private var _labelText:String;
         private var _label:TextField;
 
-        public function AbstractIcon(config:ButtonConfig, animationEngine:AnimationEngine, label:String) {
+        public function AbstractIcon(config:ButtonConfig, animationEngine:AnimationEngine, label:String = null) {
             _labelText = label;
             super(config, animationEngine);
         }
 
         override protected function onResize():void {
-            face.height = face.width = height - _label.height;
+            face.height = face.width = height - (_label ? _label.height : 0);
+            face.x = int((width / 2) - (face.width / 2));
 
-            _label.width = _label.textWidth + 5;
-            _label.y = height - _label.height;
-            log.debug("label arranged to Y pos " + _label.y);
-            Arrange.center(_label, width);
-            _label.x = _label.x - 5;
+            if (_label) {
+                _label.width = _label.textWidth + 5;
+                _label.y = height - _label.height;
+                log.debug("label arranged to Y pos " + _label.y);
+                Arrange.center(_label, width);
+                _label.x = _label.x - 5;
+            }
         }
 
         override protected final function createFace():DisplayObjectContainer {
             var icon:DisplayObjectContainer = createIcon();
             addChild(icon);
-            createLabel(icon, _labelText);
+            if (_label) {
+                createLabel(icon, _labelText);
+            }
             return icon;
         }
 

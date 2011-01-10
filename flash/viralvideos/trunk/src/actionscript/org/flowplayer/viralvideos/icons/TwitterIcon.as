@@ -18,8 +18,8 @@ package org.flowplayer.viralvideos.icons {
 
     public class TwitterIcon extends AbstractIcon {
 
-        public function TwitterIcon(config:ButtonConfig, animationEngine:AnimationEngine) {
-            super(config, animationEngine, "Twitter");
+        public function TwitterIcon(config:ButtonConfig, animationEngine:AnimationEngine, label:String = "Twitter") {
+            super(config, animationEngine);
         }
 
         override protected function createIcon():DisplayObjectContainer {

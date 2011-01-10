@@ -18,8 +18,8 @@ package org.flowplayer.viralvideos.icons {
 
     public class FacebookIcon extends AbstractIcon {
 
-        public function FacebookIcon(config:ButtonConfig, animationEngine:AnimationEngine) {
-            super(config, animationEngine, "Facebook");
+        public function FacebookIcon(config:ButtonConfig, animationEngine:AnimationEngine, label:String = "Facebook") {
+            super(config, animationEngine, label);
         }
 
         override protected function createIcon():DisplayObjectContainer {

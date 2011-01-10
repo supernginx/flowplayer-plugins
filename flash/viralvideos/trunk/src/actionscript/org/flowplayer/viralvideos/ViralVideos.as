@@ -102,9 +102,7 @@ package org.flowplayer.viralvideos {
 
         private function createIconDock():void {
             if (_iconDock) return;
-            //var dockConfig:DockConfig = new DockConfig();
-            //_iconDock = Dock.getInstance(_player, dockConfig);
-            _iconDock = Dock.getInstance(_player, _config.dockConfig);
+            _iconDock = Dock.getInstance(_player);
             var addIcon:Function = function(icon:DisplayObject, clickCallback:Function):void {
                 _iconDock.addIcon(icon);
                 icon.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void {
