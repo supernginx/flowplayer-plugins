@@ -67,21 +67,24 @@ package org.flowplayer.sharing {
             };
 
             addIcon(new EmailIcon(_config.buttons, player.animationEngine), function():void { _config.email.execute(); });
-            addIcon(new EmbedIcon(_config.buttons, player.animationEngine), function():void { _config.embed.execute(); });
-            addIcon(new TwitterIcon(_config.buttons, player.animationEngine, null), function():void { _config.twitter.execute(); });
-            addIcon(new FacebookIcon(_config.buttons, player.animationEngine, null), function():void { _config.facebook.execute(); });
+            addIcon(new EmbedIcon(_config.buttons, player.animationEngine), function():void { _config.getEmbedCode().execute(); });
+            if (_config.twitter) {
+                addIcon(new TwitterIcon(_config.buttons, player.animationEngine, null), function():void { _config.twitter.execute(); });
+            }
+            if (_config.facebook) {
+                addIcon(new FacebookIcon(_config.buttons, player.animationEngine, null), function():void { _config.facebook.execute(); });
+            }
 
             _dock.addToPanel();
         }
 
-        private function onFacebook():void {
-        }
-
-        private function onTwitter():void {
-        }
-
         public function getDefaultConfig():Object {
             return null;
+        }
+
+        [External]
+        public function get config():Config {
+            return _config;
         }
     }
 
