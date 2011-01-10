@@ -19,7 +19,7 @@ package org.flowplayer.sharing {
     import org.flowplayer.view.Flowplayer;
 
     public class AbstractShareCommand extends AbstractCommand {
-        protected var _description:String = "A cool video";
+        private var _description:String = "A cool video";
         private var _popupOnClick:Boolean = true;
 
         public function AbstractShareCommand(player:Flowplayer) {
@@ -64,6 +64,18 @@ package org.flowplayer.sharing {
 
         public function set popupOnClick(value:Boolean):void {
             _popupOnClick = value;
+        }
+
+        [Value]
+        public function get description():String
+        {
+            return _description;
+        }
+
+        [Value]
+        public function get popupOnClick():Boolean
+        {
+            return _popupOnClick;
         }
     }
 }

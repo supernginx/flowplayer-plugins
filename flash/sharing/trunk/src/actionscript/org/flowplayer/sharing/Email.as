@@ -43,5 +43,23 @@ package org.flowplayer.sharing {
         public function set template(value:String):void {
             _template = value;
         }
+
+        [Value]
+        public function get subject():String
+        {
+            return _subject;
+        }
+
+        [Value]
+        public function get message():String
+        {
+            return _message;
+        }
+
+        [Value]
+        public function get template():String
+        {
+            return _template;
+        }
     }
 }

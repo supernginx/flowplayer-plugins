@@ -14,11 +14,13 @@ package org.flowplayer.sharing {
     import org.flowplayer.ui.ButtonConfig;
     import org.flowplayer.util.PropertyBinder;
     import org.flowplayer.view.Flowplayer;
+    import org.flowplayer.viralvideos.PlayerEmbed;
+    import org.flowplayer.viralvideos.config.EmbedConfig;
 
     public class Config {
         private var _buttons:ButtonConfig;
         private var _email:Email;
-        private var _embed:EmbedCode;
+        private var _embedCode:EmbedCode;
         private var _twitter:Twitter;
         private var _facebook:Facebook;
 
@@ -28,11 +30,12 @@ package org.flowplayer.sharing {
             _buttons.setOverColor("rgba(0,0,0,1)");
 
             _email = new Email(player);
-            _embed = new EmbedCode(player, pluginConfiguredName, stage);
+            _embedCode = new EmbedCode(player, pluginConfiguredName, stage);
             _twitter = new Twitter(player);
             _facebook = new Facebook(player);
         }
 
+        [Value]
         public function get buttons():ButtonConfig {
             return _buttons;
         }
@@ -45,31 +48,47 @@ package org.flowplayer.sharing {
             new PropertyBinder(_email).copyProperties(config);
         }
 
+        [Value]
         public function get email():Email {
             return _email;
         }
 
         public function setEmbed(config:Object):void {
-            new PropertyBinder(_embed.config).copyProperties(config);            
+            new PropertyBinder(_embedCode.config).copyProperties(config);
         }
 
-        public function get embed():EmbedCode {
-            return _embed;
+        [Value]
+        public function get embed():EmbedConfig {
+            return _embedCode.config;
         }
 
+        public function getEmbedCode():EmbedCode {
+            return _embedCode;
+        }
+
+        [Value]
         public function get twitter():Twitter {
             return _twitter;
         }
 
         public function setTwitter(config:Object):void {
+            if (! config) {
+                _twitter = null;
+                return;
+            }
             new PropertyBinder(_twitter).copyProperties(config);
         }
 
+        [Value]
         public function get facebook():Facebook {
             return _facebook;
         }
 
         public function setFacebook(config:Object):void {
+            if (! config) {
+                _facebook = null;
+                return;
+            }
             new PropertyBinder(_facebook).copyProperties(config);
         }
     }
