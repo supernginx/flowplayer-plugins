@@ -27,14 +27,14 @@
 	<link rel="stylesheet" type="text/css" href="http://static.flowplayer.org/css/global-0.25.css" />
 	
 	<link rel="stylesheet" type="text/css" href="bwcheck.css" />
-	<script type="text/javascript" src="http://static.flowplayer.org/js/flowplayer-3.2.2.min.js"></script>	
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
-	<script type="text/javascript"  src="http://cdn.jquerytools.org/1.2.3/jquery.tools.min.js"></script>
+	<script type="text/javascript" src="http://static.flowplayer.org/js/flowplayer-3.2.4.min.js"></script>	
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+	<script type="text/javascript"  src="http://cdn.jquerytools.org/1.2.4/full/jquery.tools.min.js"></script>
 	<script type="text/javascript"  src="global-0.50.js"></script>	
 	<script type="text/javascript" src="flowplayer.bwcheck-3.2.js"></script>
 	<link rel="stylesheet" type="text/css" href="http://static.flowplayer.org/tools/css/overlay-apple.css"/>
-	<script type="text/javascript"  src="http://flowplayer.org/tools/download/1.2.3/overlay/overlay.apple.min.js"></script>	
-	
+	<script type="text/javascript"  src="http://flowplayer.org/tools/download/1.2.4/overlay/overlay.apple.min.js"></script>	
+	 
 	
 	
 	
@@ -101,11 +101,18 @@ $(function() {
 
 // common methods and configs
 
-function switchStreamInfo(mappedBitrate, streamName, oldStreamName) {
-	var content = $f().getPlugin('content');
-	
-	var info = "Chosen bitrate is: " + mappedBitrate.bitrate + "<br /> Video file served: " + streamName + "<br /> Old Video file served: " + oldStreamName;
-	content.setHtml(info);
+function switchStreamInfo(bitrateItem) {
+    var content = $f().getPlugin('content');
+    
+    var info = "Chosen bitrate is: " + bitrateItem.bitrate + "<br /> Video file served: " + bitrateItem.url;
+    content.setHtml(info);
+}
+
+function switchStreamInfoBegin(bitrateItem, newClipUrl, previousClipUrl) {
+    var content = $f().getPlugin('content');
+    
+    var info = "Chosen bitrate is: " + bitrateItem.bitrate + "<br /> Video file served: " + bitrateItem.url + "<br/>" + "Previous file served " + previousClipUrl;
+    content.setHtml(info);
 }
 
 function bwDoneInfo(mappedBitrate, detectedBitrate) {
@@ -121,7 +128,7 @@ var httpPlaylist =  [
 			              			{url: "bbb_160x90.flv", width: 160, height: 90, bitrate: 100},
 			              			{url: "bbb_320x180.flv", width: 320, height: 180, bitrate: 180},
 			              			{url: "bbb_480x270.flv", width: 480, height: 270, bitrate: 270},
-			              			{url: "bbb_640x360.flv", width: 640, height: 360, bitrate: 360}
+			              			{url: "bbb_640x360.flv", width: 640, height: 360, bitrate: 360, hd: true}
 			              		    ]
 			            }
         			];
@@ -352,8 +359,10 @@ flowplayer("player", "@PLAYER_SWF@", {
 			netConnectionUrl: 'http://releases.flowplayer.org/swf/flowplayer-3.1.5.swf',
 			bitrateProfileName: 'HTTPBitrateProfile',
 			onStreamSwitch: switchStreamInfo,
+			onStreamSwitchBegin: switchStreamInfoBegin,
 			// this method is called when the bandwidth check is done
-			onBwDone: bwDoneInfo
+			onBwDone: bwDoneInfo,
+			//maxWidth: 650
 		}
 		
 	},
@@ -2895,9 +2904,7 @@ flowplayer("rtmpErrorPlayer", "@PLAYER_SWF@", {
 				Fires when the bandwidth has been dynamically switched. This event is called only when the <samp>dynamic</samp> configuration property is enabled. The callback is fed with the following arguments:
 
 				<ul>
-					<li><samp>bitrate</samp> the bitrate selected from the <samp>bitrates</samp> array</li>
-					<li><samp>newUrl</samp> the complete URL that was resolved for playback</li>
-					<li><samp>oldUrl</samp> the previous URL being used before the switch</li>
+					<li><samp>bitrateItem</samp> the currently selected <samp>BitrateItem</samp> object, (url, bitrate, width, height, index, label)</li>
 				</ul>
 
 				<p>
