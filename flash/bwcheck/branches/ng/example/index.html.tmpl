@@ -127,7 +127,7 @@ var httpPlaylist =  [
 			              bitrates: [
 			              			{url: "bbb_160x90.flv", width: 160, height: 90, bitrate: 100},
 			              			{url: "bbb_320x180.flv", width: 320, height: 180, bitrate: 180},
-			              			{url: "bbb_480x270.flv", width: 480, height: 270, bitrate: 270},
+			              			{url: "bbb_480x270.flv", width: 480, height: 270, bitrate: 270, normal: true},
 			              			{url: "bbb_640x360.flv", width: 640, height: 360, bitrate: 360, hd: true}
 			              		    ]
 			            }
@@ -141,8 +141,8 @@ var psuedoPlaylist =  [
 			              bitrates: [
 			              			{url: "bbb_160x90.flv", width: 160, height: 90, bitrate: 100, label: "100k"},
 			              			{url: "bbb_320x180.flv", width: 320, height: 180, bitrate: 180, label: "180k"},
-			              			{url: "bbb_480x270.flv", width: 480, height: 270, bitrate: 270, label: "270k"},
-			              			{url: "bbb_640x360.flv", width: 640, height: 360, bitrate: 360, label: "360k"}
+			              			{url: "bbb_480x270.flv", width: 480, height: 270, bitrate: 270, label: "270k", normal: true},
+			              			{url: "bbb_640x360.flv", width: 640, height: 360, bitrate: 360, label: "360k", hd: true}
 			              		    ]
 			            }
         			];
@@ -153,8 +153,8 @@ var fmsPlaylist =  [
 			              bitrates: [
 			              			{url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100, label: "100k"},
 			              			{url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180, label: "180k"},
-			              			{url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270, label: "270k"},
-			              			{url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360, label: "360k"}
+			              			{url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270, label: "270k", normal: true},
+			              			{url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360, label: "360k", hd: true}
 			              		    ]
 			            }
         			];
@@ -166,7 +166,7 @@ var wowzaPlaylist = [
 			              bitrates: [
 			                        {url: "vod/demo.flowplayer/bbb_160x90", width: 160, height: 90, bitrate: 100, label: "100k"},
 			                        {url: "vod/demo.flowplayer/bbb_320x180", width: 320, height: 180, bitrate: 180, label: "180k"},
-			                        {url: "vod/demo.flowplayer/bbb_480x270", width: 480, height: 270, bitrate: 270, label: "270k"},
+			                        {url: "vod/demo.flowplayer/bbb_480x270", width: 480, height: 270, bitrate: 270, label: "270k", normal: true},
 			                        {url: "vod/demo.flowplayer/bbb_640x360", width: 640, height: 360, bitrate: 360, label: "360k", hd:true}
 						           ]
 						}
@@ -958,15 +958,15 @@ flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
 <script type="text/javascript" >
 
 $f("rtmpManualPlayer", "@PLAYER_SWF@", {
-	playlist: testPlaylist,
+	playlist: wowzaPlaylist,
 	// configure the required plugins
 	plugins:  {
 
 		// RTMP streaming plugin
 		rtmp: {
 			url: '../flowplayer.rtmp.swf',
-			//netConnectionUrl: 'rtmp://vod01.netdna.com/play'
-			netConnectionUrl: 'rtmp://rtmp01.hddn.com/play'
+			netConnectionUrl: 'rtmp://vod01.netdna.com/play'
+			//netConnectionUrl: 'rtmp://rtmp01.hddn.com/play'
 		},
 		content: contentPlugin,
 
@@ -1122,7 +1122,7 @@ $(document).ready(function () {
 	Demonstrates the functionality of the default stream selection strategy. Regardless of the available bandwidth the player will only choose the bitrate to match the available player dimensions when a bitrate is chosen from the list. 
 </p>
 
-<div style="width:320px;height:205px;margin:30px auto">
+<div style="width:425px;height:300px;margin:30px auto">
    
 
 
@@ -1131,7 +1131,7 @@ $(document).ready(function () {
 
 <a
 	href="skyandice"
-	style="display:block;width:320px;height:205px;"
+	style="display:block;width:425x;height:300px;"
 	id="rtmpDynamicPlayer">
 
 	<!-- splash image inside the container -->

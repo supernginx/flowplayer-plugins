@@ -110,11 +110,13 @@ package org.flowplayer.bwcheck.detect {
             for (var i:Number = 0; i < _streamItems.length; i++) {
                 if (_streamItems[i]["isDefault"]) {
                     item = _streamItems[i];
+                    _currentIndex = i;
                     break;
                 }
             }
             if (! item) {
                 item = _streamItems[_streamItems.length - 1];
+                _currentIndex = _streamItems.length - 1;
                 log.debug("getDefaultStream(), did not find a default stream -> using the one with lowest bitrate " + item);
             } else {
                 log.debug("getDefaultStream(), found default item " + item);

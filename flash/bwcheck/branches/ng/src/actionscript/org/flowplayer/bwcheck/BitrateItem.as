@@ -20,6 +20,7 @@ package org.flowplayer.bwcheck {
         public var index:int;
         public var label:String;
         public var hd:Boolean;
+        public var normal:Boolean;
 
         public function BitrateItem():void {
             super(null, 0);
