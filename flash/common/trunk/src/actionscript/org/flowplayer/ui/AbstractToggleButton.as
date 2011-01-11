@@ -88,9 +88,7 @@ package org.flowplayer.ui {
 			removeChild(down ? _upStateFace : _downStateFace);
 			_face = down ? _downStateFace : _upStateFace;
 			addChild(_face);
-			
 			_toggle = down;
-			log.error(String(_toggle));
 		}
 		
 		
