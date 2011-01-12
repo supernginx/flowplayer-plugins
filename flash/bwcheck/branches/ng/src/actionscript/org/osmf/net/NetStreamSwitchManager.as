@@ -132,6 +132,10 @@ package org.osmf.net {
         override public function get currentIndex():uint {
             return _currentIndex;
         }
+        
+        public function set currentIndex(index:uint):void {
+        	_currentIndex = index;
+        }
 
         /**
          * @private
