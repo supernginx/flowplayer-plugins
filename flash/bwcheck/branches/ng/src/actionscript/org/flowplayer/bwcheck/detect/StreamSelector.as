@@ -131,6 +131,10 @@ package org.flowplayer.bwcheck.detect {
         public function get currentIndex():Number {
             return _currentIndex;
         }
+        
+        public function set currentIndex(value:Number):void {
+            _currentIndex = value;
+        }
 
         public function get streamItems():Vector.<DynamicStreamingItem> {
             return _streamItems;
