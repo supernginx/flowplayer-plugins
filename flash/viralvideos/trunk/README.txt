@@ -2,6 +2,9 @@ Version history:
 
 3.2.4
 -----
+- removed config property "popupOnClip", introduced "shareWindow" with values "_self", "_blank", "_parent", "_top", "_popup".
+  the default is "_popup"
+- sharing popup dimensions are now specified as [width, height] instead of [height, width]
 - Removed line breaks from the embed code
 - Embed code: The plugin URLs are not touched if they are complete URLs
 - Added new configuration option "dock": http://code.google.com/p/flowplayer-core/issues/detail?id=151
