@@ -19,7 +19,7 @@ package org.flowplayer.sharing {
         }
 
         override protected function get popupDimensions():Array {
-            return [650,1024];
+            return [1024,650];
         }
 
         override protected function get serviceUrl():String {
