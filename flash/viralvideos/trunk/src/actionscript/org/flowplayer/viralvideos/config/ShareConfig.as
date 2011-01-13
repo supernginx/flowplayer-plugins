@@ -18,7 +18,6 @@ package org.flowplayer.viralvideos.config {
 		private var _shareUrl:String = null;
         private var _body:String = "";
         private var _category:String = "";
-        private var _popupOnClick:Boolean = true;
 
         private var _facebook:Boolean = true;
         private var _twitter:Boolean = true;
@@ -29,16 +28,17 @@ package org.flowplayer.viralvideos.config {
         private var _stumbleupon:Boolean = true;
         private var _bebo:Boolean = true;
         private var _icons:ButtonConfig;
+        private var _shareWindow:String = "_popup";
 
         private var _popupDimensions:Object = {
-            facebook: [440,620],
-            myspace: [650,1024],
-            twitter: [650,1024],
-            bebo: [436,626],
-            orkut: [650,1024],
-            digg: [650,1024],
-            stumbleupon: [650,1024],
-            livespaces: [650,1024]
+            facebook: [620,440],
+            myspace: [1024,650],
+            twitter: [1024,650],
+            bebo: [626,436],
+            orkut: [1024,650],
+            digg: [1024,650],
+            stumbleupon: [1024,650],
+            livespaces: [1024,650]
         };
 
         public function get icons():ButtonConfig {
@@ -84,14 +84,6 @@ package org.flowplayer.viralvideos.config {
 
         public function set category(value:String):void {
             _category = value;
-        }
-
-        public function get popupOnClick():Boolean {
-            return _popupOnClick;
-        }
-
-        public function set popupOnClick(value:Boolean):void {
-            _popupOnClick = value;
         }
 
         public function get facebook():Boolean {
@@ -172,6 +164,16 @@ package org.flowplayer.viralvideos.config {
 
         public function set shareUrl(value:String):void {
             _shareUrl = value;
+        }
+
+        public function get shareWindow():String
+        {
+            return _shareWindow;
+        }
+
+        public function set shareWindow(value:String):void
+        {
+            _shareWindow = value;
         }
     }
 

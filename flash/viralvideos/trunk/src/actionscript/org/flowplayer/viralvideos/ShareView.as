@@ -153,25 +153,12 @@ package org.flowplayer.viralvideos {
         }
 
         private function launchURL(url:String, popUpDimensions:Array):void {
-            url = escape(url);
-            var request:URLRequest;
-            
             if (_model && ! _model.dispatchBeforeEvent(PluginEventType.PLUGIN_EVENT, "onBeforeShare", url, popUpDimensions)) {
 				log.debug("onBeforeShare");
 				return;
 			}
-			
-            //if we are using a popup window, launch javascript with window.open
-            if (_config.popupOnClick)
-            {
-                var jscommand:String = "window.open('" + url + "','PopUpWindow','height=" + popUpDimensions[0] + ",width=" + popUpDimensions[1] + ",toolbar=yes,scrollbars=yes');";
-                request = new URLRequest("javascript:" + jscommand + " void(0);");
-                navigateToURL(request, "_self");
-            } else {
-                //request a blank page
-                request = new URLRequest(url);
-                navigateToURL(request, "_blank");
-            }
+			player.pause();
+            URLUtil.openPage(url, _config.shareWindow, popUpDimensions);
         }
 
         private function arrangeIcons():void {
