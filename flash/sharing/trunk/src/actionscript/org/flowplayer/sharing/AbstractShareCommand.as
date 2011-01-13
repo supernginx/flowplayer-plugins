@@ -16,11 +16,14 @@ package org.flowplayer.sharing {
     import flash.net.navigateToURL;
 
     import org.flowplayer.model.PluginEventType;
+    import org.flowplayer.util.Log;
+    import org.flowplayer.util.URLUtil;
     import org.flowplayer.view.Flowplayer;
 
     public class AbstractShareCommand extends AbstractCommand {
+        private var log:Log = new Log(this);
         private var _description:String = "A cool video";
-        private var _popupOnClick:Boolean = true;
+        private var _shareWindow:String = "_popup";
 
         public function AbstractShareCommand(player:Flowplayer) {
             super(player);
@@ -28,6 +31,7 @@ package org.flowplayer.sharing {
 
         override protected function process():void {
             var url:String = formatString(serviceUrl, encodeURIComponent(_description), pageUrl);
+            player.pause();
             launchURL(url, popupDimensions);
         }
 
@@ -42,28 +46,16 @@ package org.flowplayer.sharing {
         }
 
         protected function launchURL(url:String, popUpDimensions:Array):void {
-            url = escape(url);
-
-            var request:URLRequest;
-            //if we are using a popup window, launch javascript with window.open
-            if (_popupOnClick)
-            {
-                var jscommand:String = "window.open('" + url + "','PopUpWindow','height=" + popUpDimensions[0] + ",width=" + popUpDimensions[1] + ",toolbar=yes,scrollbars=yes');";
-                request = new URLRequest("javascript:" + jscommand + " void(0);");
-                navigateToURL(request, "_self");
-            } else {
-                //request a blank page
-                request = new URLRequest(url);
-                navigateToURL(request, "_blank");
-            }
+            log.debug("launchURL() " + url);
+            URLUtil.openPage(url, shareWindow, popUpDimensions);
         }
 
         public function set description(value:String):void {
             _description = value;
         }
 
-        public function set popupOnClick(value:Boolean):void {
-            _popupOnClick = value;
+        public function set shareWindow(value:String):void {
+            _shareWindow = value;
         }
 
         [Value]
@@ -73,9 +65,9 @@ package org.flowplayer.sharing {
         }
 
         [Value]
-        public function get popupOnClick():Boolean
+        public function get shareWindow():String
         {
-            return _popupOnClick;
+            return _shareWindow;
         }
     }
 }
