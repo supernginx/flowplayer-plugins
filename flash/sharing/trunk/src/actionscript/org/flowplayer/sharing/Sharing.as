@@ -10,26 +10,17 @@
  */
 package org.flowplayer.sharing {
     import flash.display.DisplayObject;
-
     import flash.events.Event;
     import flash.events.MouseEvent;
 
-    import flash.net.URLRequest;
-    import flash.net.navigateToURL;
-
-    import org.flowplayer.model.ClipEvent;
     import org.flowplayer.model.Plugin;
     import org.flowplayer.model.PluginModel;
-    import org.flowplayer.sharing.Config;
     import org.flowplayer.ui.Dock;
-    import org.flowplayer.ui.Notification;
     import org.flowplayer.util.PropertyBinder;
     import org.flowplayer.view.AbstractSprite;
     import org.flowplayer.view.Flowplayer;
     import org.flowplayer.viralvideos.icons.EmailIcon;
     import org.flowplayer.viralvideos.icons.EmbedIcon;
-    import org.flowplayer.viralvideos.icons.FacebookIcon;
-    import org.flowplayer.viralvideos.icons.TwitterIcon;
 
     public class Sharing extends AbstractSprite implements Plugin {
         private var _model:PluginModel;

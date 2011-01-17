@@ -16,6 +16,15 @@
     <orderEntry type="module" module-name="common" />
     <orderEntry type="module" module-name="core" />
     <orderEntry type="module" module-name="viralvideos" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/src/flash/twitterfacebook-1bit.swc!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
 
