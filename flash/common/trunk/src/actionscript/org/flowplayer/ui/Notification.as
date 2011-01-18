@@ -16,6 +16,7 @@ package org.flowplayer.ui {
     import flash.text.TextField;
 
     import flash.text.TextFieldAutoSize;
+    import flash.text.TextFormat;
     import flash.text.TextFormatAlign;
     import flash.utils.Timer;
 
@@ -77,6 +78,10 @@ package org.flowplayer.ui {
             _field.wordWrap = true;
             _field.multiline = true;
             _field.antiAliasType = AntiAliasType.ADVANCED;
+
+            var newFormat:TextFormat = new TextFormat();
+            newFormat.align = TextFormatAlign.CENTER;
+            _field.defaultTextFormat = newFormat;
 
             _field.htmlText = message;
             _field.height = _field.textHeight + 4;

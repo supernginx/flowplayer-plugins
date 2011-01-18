@@ -11,6 +11,8 @@
 package org.flowplayer.ui {
     import flash.display.DisplayObject;
 
+    import flash.display.StageDisplayState;
+
     import org.flowplayer.model.DisplayProperties;
     import org.flowplayer.util.Log;
     import org.flowplayer.util.PropertyBinder;
@@ -27,6 +29,7 @@ package org.flowplayer.ui {
 
         public function Dock(config:DockConfig) {
             _config = config;;
+            _config.model.setDisplayObject(this);
         }
 
         /**
@@ -53,11 +56,12 @@ package org.flowplayer.ui {
 
         public function addToPanel():void {
             log.debug("addToPanel()");
-            _player.addToPanel(this, _config.displayProperties);
+            _player.panel.addView(this, null, _config.model);
 
-            if (_autoHide) return;
+            if (_autoHide || ! _config.autoHide.enabled) return;
+
             log.debug("addToPanel(), creating autoHide with config", _config.autoHide);
-            _autoHide = new AutoHide(null, _config.autoHide, _player, stage, this);
+            _autoHide = new AutoHide(_config.model, _config.autoHide, _player, stage, this);
 //            _autoHide.onShow(onButtonsShow);
 //            _autoHide.start();
         }
@@ -79,15 +83,14 @@ package org.flowplayer.ui {
             var config:DockConfig;
             if (player.config.configObject.hasOwnProperty("plugins") && player.config.configObject["plugins"].hasOwnProperty(DOCK_PLUGIN_NAME)) {
                 var dockConfigObj:Object = player.config.configObject["plugins"][DOCK_PLUGIN_NAME];
-                config = new PropertyBinder(new DockConfig()).copyProperties(dockConfigObj) as DockConfig;
-                new PropertyBinder(config.displayProperties).copyProperties(dockConfigObj);
+                config = new PropertyBinder(config || new DockConfig()).copyProperties(dockConfigObj, true) as DockConfig;
+                new PropertyBinder(config.model).copyProperties(dockConfigObj);
             } else {
                 config = config || new DockConfig();
             }
-            log.debug("createDock() config", config);
 
             var dock:Dock = new Dock(config);
-            player.pluginRegistry.registerDisplayPlugin(config.displayProperties, dock);
+            player.pluginRegistry.registerDisplayPlugin(config.model, dock);
             _player = player;
             return dock;
         }
@@ -116,9 +119,13 @@ package org.flowplayer.ui {
         }
 
         override protected function onResize():void {
-            log.debug("onResize() " + width + " x " + height);
+            log.debug("onResize() " + width + " x " + height + ", is fullscreen? " + (stage.displayState == StageDisplayState.FULL_SCREEN));
+
+            var props:DisplayProperties = _player.pluginRegistry.getPluginByDisplay(this);
+            log.debug("onResize() current dimensions " + props.dimensions);
             resizeIcons();
             arrangeIcons();
+
         }
     }
 }

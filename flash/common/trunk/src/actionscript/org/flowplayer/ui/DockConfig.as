@@ -9,12 +9,14 @@
  *    Additional Term, see http://flowplayer.org/license_gpl.html
  */
 package org.flowplayer.ui {
+    import org.flowplayer.model.DisplayPluginModel;
+    import org.flowplayer.model.DisplayPluginModelImpl;
     import org.flowplayer.model.DisplayProperties;
     import org.flowplayer.model.DisplayPropertiesImpl;
     import org.flowplayer.util.PropertyBinder;
 
     public class DockConfig {
-        private var _displayProperties:DisplayProperties;
+        private var _model:DisplayPluginModel;
         private var _autoHide:AutoHideConfig;
         private var _horizontal:Boolean = false;
 
@@ -24,19 +26,20 @@ package org.flowplayer.ui {
             _autoHide.hideStyle = "fade";
             _autoHide.delay = 2000;
             _autoHide.duration = 1000;
-            _displayProperties = new DisplayPropertiesImpl(null, Dock.DOCK_PLUGIN_NAME, false);
-            _displayProperties.top = "20%";
-            _displayProperties.right = "7%";
-            _displayProperties.width = "10%";
-            _displayProperties.height = "30%";
+
+            _model = new DisplayPluginModelImpl(null, Dock.DOCK_PLUGIN_NAME, false);
+            _model.top = "20%";
+            _model.right = "7%";
+            _model.width = "10%";
+            _model.height = "30%";
         }
 
-        public function get displayProperties():DisplayProperties {
-            return _displayProperties;
+        public function get model():DisplayPluginModel {
+            return _model;
         }
 
-        public function set displayProperties(value:DisplayProperties):void {
-            _displayProperties = value;
+        public function set model(value:DisplayPluginModel):void {
+            _model = value;
         }
 
         public function get autoHide():AutoHideConfig {
