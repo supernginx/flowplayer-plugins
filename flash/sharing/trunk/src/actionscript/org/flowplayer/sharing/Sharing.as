@@ -57,10 +57,19 @@ package org.flowplayer.sharing {
             var config:DockConfig = new DockConfig();
             config.horizontal = true;
             var model:DisplayPluginModel = new DisplayPluginModelImpl(null, Dock.DOCK_PLUGIN_NAME, false);
-            model.width = "30%";
-            model.height = "20%";
-            model.left = "18%";
-            model.top = "15%";
+
+            model.height = new int(50/stage.height * 100) + "%";
+            model.left =  15;
+            model.top =  15;
+
+
+            if (_player.screen.getDisplayObject().width < 450) {
+                model.width = "30%";
+                model.height = "20%";
+                model.left = "18%";
+                model.top = "15%";
+            }
+
             config.model = model;
 
             _dock = Dock.getInstance(player, config);
