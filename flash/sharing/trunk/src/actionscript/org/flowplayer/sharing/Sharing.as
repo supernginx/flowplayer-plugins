@@ -13,9 +13,14 @@ package org.flowplayer.sharing {
     import flash.events.Event;
     import flash.events.MouseEvent;
 
+    import org.flowplayer.model.DisplayPluginModel;
+    import org.flowplayer.model.DisplayPluginModelImpl;
+    import org.flowplayer.model.DisplayProperties;
+    import org.flowplayer.model.DisplayPropertiesImpl;
     import org.flowplayer.model.Plugin;
     import org.flowplayer.model.PluginModel;
     import org.flowplayer.ui.Dock;
+    import org.flowplayer.ui.DockConfig;
     import org.flowplayer.util.PropertyBinder;
     import org.flowplayer.view.AbstractSprite;
     import org.flowplayer.view.Flowplayer;
@@ -48,7 +53,17 @@ package org.flowplayer.sharing {
         }
 
         private function createDock(player:Flowplayer):void {
-            _dock = Dock.getInstance(player);
+            log.debug("createDock()");
+            var config:DockConfig = new DockConfig();
+            config.horizontal = true;
+            var model:DisplayPluginModel = new DisplayPluginModelImpl(null, Dock.DOCK_PLUGIN_NAME, false);
+            model.width = "30%";
+            model.height = "20%";
+            model.left = "18%";
+            model.top = "15%";
+            config.model = model;
+
+            _dock = Dock.getInstance(player, config);
 
             var addIcon:Function = function(icon:DisplayObject, clickCallback:Function):void {
                 _dock.addIcon(icon);
