@@ -8,7 +8,10 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
-package org.flowplayer.controls.slider {
+package org.flowplayer.controls.scrubber {
+	import org.flowplayer.controls.buttons.AbstractSlider;
+	import org.flowplayer.controls.buttons.SliderConfig;
+	
     import flash.display.DisplayObject;
     import flash.display.Sprite;
     import flash.events.MouseEvent;
@@ -32,6 +35,8 @@ package org.flowplayer.controls.slider {
 	 */
 	public class ScrubberSlider extends AbstractSlider {
 		
+		public static const DRAG_EVENT:String = AbstractSlider.DRAG_EVENT;
+		
 		private var _bufferEnd:Number;
 		private var _bufferBar:Sprite;
 		private var _allowRandomSeek:Boolean;
@@ -42,15 +47,14 @@ package org.flowplayer.controls.slider {
         private var _startDetectTimer:Timer;
         private var _trickPlayTrackTimer:Timer;
         private var _slowMotionInfo:Object;
-
 		private var _currentClip:Clip;
 
-        public function ScrubberSlider(config:Config, animationEngine:AnimationEngine, controlbar:DisplayObject) {
-            super(config, animationEngine, controlbar);
-            lookupPluginAndBindEvent(config.player, "slowmotion", onSlowMotionEvent);
-            lookupPluginAndBindEvent(config.player, "audio", onAudioEvent);
+        public function ScrubberSlider(config:ScrubberConfig, player:Flowplayer, controlbar:DisplayObject) {
+            super(config, player, controlbar);
+            lookupPluginAndBindEvent(_player, "slowmotion", onSlowMotionEvent);
+            lookupPluginAndBindEvent(_player, "audio", onAudioEvent);
             createBars();
-            addPlaylistListeners(config.player.playlist);
+            addPlaylistListeners(_player.playlist);
         }
 
         private function lookupPluginAndBindEvent(player:Flowplayer, pluginName:String, eventHandler:Function):void {
@@ -96,7 +100,7 @@ package org.flowplayer.controls.slider {
 
             if (! isTrickPlay) {
                 stopTrickPlayTracking();
-                doStart(_slowMotionInfo["clip"], adjustedTime(_config.player.status.time));
+                doStart(_slowMotionInfo["clip"], adjustedTime(_player.status.time));
 
             } else {
                 startTrickPlayTracking();
@@ -106,7 +110,7 @@ package org.flowplayer.controls.slider {
         private function onAudioEvent(event:PluginEvent):void {
             log.debug("onAudioEvent()");
             stop(null);
-            doStart(_config.player.playlist.current);
+            doStart(_player.playlist.current);
 
         }
 
@@ -124,11 +128,13 @@ package org.flowplayer.controls.slider {
         }
 
         private function onTrickPlayProgress(event:TimerEvent):void {
-            updateDraggerPos(_config.player.status.time, _slowMotionInfo["clip"] as Clip);
+            updateDraggerPos(_player.status.time, _slowMotionInfo["clip"] as Clip);
         }
 
 		protected override function onResize():void {
 			super.onResize();
+			
+			//log.error("onResize");
 			
 			doDrawBufferBar(0, 0);
 			drawProgressBar(0, 0);
@@ -136,8 +142,8 @@ package org.flowplayer.controls.slider {
 			if ( _currentClip )
 			{
 				stop(null);
-				updateDraggerPos(_config.player.status.time, _currentClip);
-				doStart(_currentClip, _config.player.status.time);
+				updateDraggerPos(_player.status.time, _currentClip);
+				doStart(_currentClip, _player.status.time);
 			}
 			
         }
@@ -147,15 +153,16 @@ package org.flowplayer.controls.slider {
             if (event.isDefaultPrevented() ) {
 				log.debug("Default prevented ")
 				stop(null);
-				updateDraggerPos(_config.player.status.time, event.target as Clip);
-				doStart(event.target as Clip, _config.player.status.time);
+				updateDraggerPos(_player.status.time, event.target as Clip);
+				doStart(event.target as Clip, _player.status.time);
 				return;
 			}
 
 			
             updateDraggerPos(event.info as Number, event.target as Clip);
             stop(null);
-
+			
+			//log.error("beforeSeek");
 			doDrawBufferBar(0, 0);
         }
 
@@ -164,8 +171,8 @@ package org.flowplayer.controls.slider {
         }
 
         private function seek(event:ClipEvent):void {
-            log.debug("seek(), isPlaying: " + _config.player.isPlaying() + ", seek target time is " + event.info);
-            if (! _config.player.isPlaying()) return;
+            log.debug("seek(), isPlaying: " + _player.isPlaying() + ", seek target time is " + event.info);
+            if (! _player.isPlaying()) return;
 			
 			_currentClip = (event.target as Clip);
             doStart(_currentClip, event.info as Number);
@@ -193,10 +200,10 @@ package org.flowplayer.controls.slider {
                 return;
             }
 
-            var status:Status = _config.player.status;
+            var status:Status = _player.status;
             var time:Number = startTime > 0 ? startTime : status.time;
 
-            if (! _config.player.isPlaying()) {
+            if (! _player.isPlaying()) {
                 log.debug("doStart(), not playing, returning");
                 return;
             }
@@ -213,7 +220,7 @@ package org.flowplayer.controls.slider {
             _startDetectTimer.addEventListener(TimerEvent.TIMER,
                     function(event:TimerEvent):void {
                         log.debug("on startDetectTimer()");
-                        var currentTime:Number = _config.player.status.time;
+                        var currentTime:Number = _player.status.time;
                         if (Math.abs(currentTime - time) > 0.2) {
                             _startDetectTimer.stop();
                             var endPos:Number = width - _dragger.width;
@@ -277,41 +284,30 @@ package org.flowplayer.controls.slider {
 		}
 
 		override protected function getClickTargets(enabled:Boolean):Array {
+			//log.error("getClickTargets", enabled);
 			_enabled = enabled;
 			var targets:Array = [_bufferBar, _progressBar];
 			if (! enabled || _allowRandomSeek) {
 				targets.push(this);
 			}
+						
 			return targets;
 		}
 		
-		override protected function isToolTipEnabled():Boolean {
-			return _config.tooltips && _config.tooltips.scrubber;
+		override protected function isToolTipEnabled():Boolean {			
+			return _config.draggerButtonConfig.tooltipEnabled;
 		}
 
 		private function doDrawBufferBar(leftEdge:Number, rightEdge:Number):void {
-			drawBar(_bufferBar, _config.style.bufferColor, _config.style.bufferAlpha, _config.style.bufferGradient, leftEdge, rightEdge);
+			//log.error("doDrawBufferBar("+ leftEdge +", "+ rightEdge +")");
+			drawBar(_bufferBar, (_config as ScrubberConfig).bufferColor, (_config as ScrubberConfig).bufferAlpha, (_config as ScrubberConfig).bufferGradient, leftEdge, rightEdge);
 		}
 		
 		private function drawProgressBar(leftEdge:Number, rightEdge:Number = 0):void {
-			drawBar(_progressBar, _config.style.progressColor, _config.style.progressAlpha, _config.style.progressGradient, leftEdge || 0, rightEdge || _dragger.x + _dragger.width - 2);
+			drawBar(_progressBar, _config.color, _config.alpha, _config.gradient, leftEdge || 0, rightEdge || _dragger.x + _dragger.width - 2);
 		}
 
-		override protected function get sliderAlpha():Number {
-            return _config.style.sliderAlpha;
-        }
-
-		override protected function get borderWidth():Number {
-			return _config.style.sliderBorderWidth;
-		}
 		
-		override protected function get borderColor():Number {
-			return _config.style.sliderBorderColor;
-		}
-		
-		override protected function get borderAlpha():Number {
-			return _config.style.sliderBorderAlpha;
-		}
 
 		private function createBars():void {
 			_progressBar = new Sprite();
@@ -331,6 +327,7 @@ package org.flowplayer.controls.slider {
 		
 
 		public function set allowRandomSeek(value:Boolean):void {
+			//log.error("set allowRandomSeek", value);
 			_allowRandomSeek = value;
 			if (_enabled) {
 				if (value) {
@@ -342,7 +339,7 @@ package org.flowplayer.controls.slider {
 			}
 		}
 
-		override internal function get maxDrag():Number {
+		override protected function get maxDrag():Number {
 			if (_allowRandomSeek) return width - _dragger.width;
 			return _bufferEnd * (width - _dragger.width);
 		}
@@ -354,7 +351,10 @@ package org.flowplayer.controls.slider {
 		}
 		
 		override protected function canDragTo(xPos:Number):Boolean {
+			//log.error("canDragTo ", _allowRandomSeek);
 			if (_allowRandomSeek) return true;
+			//log.error("xPos "+ xPos + " < " + _bufferBar.x + " + " + _bufferBar.width);
+			
 			return xPos < _bufferBar.x + _bufferBar.width;
 		}
 
@@ -368,10 +368,13 @@ package org.flowplayer.controls.slider {
                 log.debug("drawBars(): seek in progress");
                 return;
             }
+//log.error("drawBufferBar : "+ _dragger.x + " + " + _dragger.width + " / 2 > " + _bufferStart + " * " + width);
             if (_dragger.x + _dragger.width / 2 > _bufferStart * width) {
+	//log.error("doDrawBufferBar("+ _bufferStart +" * " + width + ", " + _bufferEnd + " * "+  width+ ")");
                 doDrawBufferBar(_bufferStart * width, _bufferEnd * width);
 //                drawProgressBar(_bufferStart * width);
             } else {
+	//log.error("clearBar");
                 clearBar(_bufferBar);
 //                _progressBar.graphics.clear();
 //                GraphicsUtil.removeGradient(_progressBar);
@@ -397,29 +400,22 @@ package org.flowplayer.controls.slider {
 			return ! _seekInProgress;
 		}
 		
-		override public function redraw(config:Config):void {
-			super.redraw(config);
-			drawBar(_progressBar, _config.style.progressColor, _config.style.progressAlpha, _config.style.progressGradient, _progressBar.x, _progressBar.width);
-			drawBar(_bufferBar, _config.style.bufferColor, _config.style.bufferAlpha, _config.style.bufferGradient, _bufferBar.x, _bufferBar.width);
+		override public function configure(config:Object):void {
+			super.configure(config);
+			drawBar(_progressBar, _config.color, _config.alpha, _config.gradient, _progressBar.x, _progressBar.width);
+			drawBar(_bufferBar, (_config as ScrubberConfig).bufferColor, (_config as ScrubberConfig).bufferAlpha, (_config as ScrubberConfig).bufferGradient, _bufferBar.x, _bufferBar.width);
 		}
 
-        override protected function get barHeight():Number {
-            return Math.ceil(height * _config.style.scrubberBarHeightRatio);
-
-        }
-
         override protected function get sliderGradient():Array {
-            return _config.style.sliderGradient;
+            return (_config as ScrubberConfig).bufferGradient;
         }
 
         override protected function get sliderColor():Number {
-            return _config.style.sliderColor;
+            return (_config as ScrubberConfig).bufferColor;
         }
+      
 
-        override protected function get barCornerRadius():Number {
-            if (isNaN(_config.style.scrubberBorderRadius)) return super.barCornerRadius;
-            return _config.style.scrubberBorderRadius;
-        }
+
 //
         override protected function onDragging():void {
             stop(null);
