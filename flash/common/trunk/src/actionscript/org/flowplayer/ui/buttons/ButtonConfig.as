@@ -8,7 +8,7 @@
  *    Flowplayer is licensed under the GPL v3 license with an
  *    Additional Term, see http://flowplayer.org/license_gpl.html
  */
-package org.flowplayer.ui {
+package org.flowplayer.ui.buttons {
     import org.flowplayer.util.StyleSheetUtil;
 
     public class ButtonConfig {
@@ -16,7 +16,8 @@ package org.flowplayer.ui {
         private var _overColor:String;
         private var _fontColor:String;
         private var _lineColor:String;
-		private var _toggleOnColor:String;
+		private var _enabled:Boolean = true;
+	//	private var _toggleOnColor:String;
 
         /*
          * Color.
@@ -73,7 +74,7 @@ package org.flowplayer.ui {
 		
 		/*
 		 * Toggle Color.
-		 */
+		 
 		public function get toggleOnColor():Number {
 			return StyleSheetUtil.colorValue(_toggleOnColor);
 		}
@@ -94,7 +95,7 @@ package org.flowplayer.ui {
 		
 		public function setToggleOnColor(color:String):void {
 			_toggleOnColor = color;
-		}
+		}*/
 
         /*
          * Line color.
@@ -133,6 +134,18 @@ package org.flowplayer.ui {
         public function setFontColor(color:String):void {
             _fontColor = color;
         }
+
+		/*
+		 * Enabled 
+		 */
+		
+		public function get enabled():Boolean {
+			return _enabled;
+		}
+		
+		public function setEnabled(value:Boolean):void {
+			_enabled = value;
+		}
         
     }
 }
