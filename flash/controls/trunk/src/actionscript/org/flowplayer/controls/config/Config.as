@@ -98,7 +98,20 @@ package org.flowplayer.controls.config {
 		}
 
 		
-	
+		private function fixBorder(prefix:String, defaultWidth:Number = 2, defaultColor:Number = 0xfff00f, defaultAlpha:Number = 1):String {
+			
+			var width:Number = StyleSheetUtil.borderWidth(prefix, _style, defaultWidth);
+			var color:Array  = StyleSheetUtil.rgbValue(StyleSheetUtil.borderColor(prefix, _style, defaultColor));
+			color.push(StyleSheetUtil.borderAlpha(prefix, _style, defaultAlpha));
+			
+			var str:String = width + 'px solid rgba(';
+			for ( var i:int = 0; i < color.length; i++ ) str+= (i ? ', ' : '') + color[i];
+			str += ')';
+			
+			log.error("Border for "+ prefix + " "+ str);
+			
+			return str;			
+		}
 	
 		private function decodeGradient(value:Object, defVal:String = "medium"):Array {
 			if (! value) return decodeGradient(defVal);
@@ -114,7 +127,7 @@ package org.flowplayer.controls.config {
 		public function get timeConfig():TimeViewConfig {
 			var config:TimeViewConfig = new TimeViewConfig();
 			config.setBackgroundColor(_style["timeBgColor"]);
-			config.setBorder(_style['timeBorder']);	// some work here to handle timeBorderWidth vs timeBorder
+			config.setBorder(fixBorder('timeBorder'));
 			config.setBorderRadius(_style['timeBorderRadius'])
 			config.setDurationColor(_style['durationColor']);
 			config.setFontSize(_style['timeFontSize'] || 0);
@@ -141,7 +154,7 @@ package org.flowplayer.controls.config {
 			draggerConfig.setTooltipEnabled(tooltips.scrubber);	
 			config.setDraggerButtonConfig(draggerConfig);
 			
-			config.setBorder(_style['sliderBorder']);
+			config.setBorder(fixBorder('sliderBorder'));
 			config.setBorderRadius(_style['scrubberBorderRadius']);
 			config.setHeightRatio(_style['scrubberHeightRatio']);
 
@@ -164,7 +177,7 @@ package org.flowplayer.controls.config {
 			config.setColor(_style['volumeColor']);
 			config.setGradient(decodeGradient(_style['sliderGradient']));
 			
-			config.setBorder(_style['volumeBorder']);
+			config.setBorder(fixBorder('volumeBorder'));
 			config.setBorderRadius(_style['volumeBorderRadius']);
 			config.setHeightRatio(_style['volumeSliderHeightRatio']);
 
