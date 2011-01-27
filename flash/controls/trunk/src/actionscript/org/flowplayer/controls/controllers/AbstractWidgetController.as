@@ -15,6 +15,8 @@ package org.flowplayer.controls.controllers {
 	import org.flowplayer.model.ClipEvent;
 	import org.flowplayer.model.Status;
 	
+	import org.flowplayer.controls.Controlbar;
+	
 	import org.flowplayer.ui.buttons.ConfigurableWidget;
 	
 	import flash.utils.*;
@@ -30,13 +32,13 @@ package org.flowplayer.controls.controllers {
 
 		protected var _config:Object;
 		protected var _player:Flowplayer;
-		protected var _controlbar:DisplayObjectContainer;
+		protected var _controlbar:Controlbar;
 	
 		protected var _widget:ConfigurableWidget;
 	
 		protected var log:Log = new Log(this);
 		
-		public function AbstractWidgetController(config:Object, player:Flowplayer, controlbar:DisplayObjectContainer) {
+		public function AbstractWidgetController(config:Object, player:Flowplayer, controlbar:Controlbar) {
 			_config		= config;
 			_player 	= player;
 			_controlbar = controlbar;

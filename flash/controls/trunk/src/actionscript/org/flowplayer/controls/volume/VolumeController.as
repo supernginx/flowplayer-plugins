@@ -17,6 +17,7 @@ package org.flowplayer.controls.volume {
 	import org.flowplayer.model.PlayerEvent;
 	
 	import org.flowplayer.controls.buttons.SurroundedWidget;
+	import org.flowplayer.controls.Controlbar;
 	import org.flowplayer.controls.SkinClasses;
 	
 	import flash.events.Event;
@@ -36,7 +37,7 @@ package org.flowplayer.controls.volume {
 			enabled: true
 		};
 		
-		public function VolumeController(config:SliderConfig, player:Flowplayer, controlbar:DisplayObjectContainer) {
+		public function VolumeController(config:SliderConfig, player:Flowplayer, controlbar:Controlbar) {
 			super(config, player, controlbar);
 			initializeVolume();		
 		}

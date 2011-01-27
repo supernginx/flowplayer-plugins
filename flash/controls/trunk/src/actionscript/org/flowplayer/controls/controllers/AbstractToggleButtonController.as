@@ -15,6 +15,7 @@ package org.flowplayer.controls.controllers {
 	import org.flowplayer.model.ClipEvent;
 	import org.flowplayer.model.Status;
 	
+	import org.flowplayer.controls.Controlbar;
 	import org.flowplayer.controls.buttons.SurroundedButton;
 	
 	import org.flowplayer.ui.buttons.TooltipButtonConfig;
@@ -31,7 +32,7 @@ package org.flowplayer.controls.controllers {
 
 	public class AbstractToggleButtonController extends AbstractButtonController {
 			
-		public function AbstractToggleButtonController(config:ToggleButtonConfig, player:Flowplayer, controlbar:DisplayObjectContainer) {
+		public function AbstractToggleButtonController(config:ToggleButtonConfig, player:Flowplayer, controlbar:Controlbar) {
 			super(config, player, controlbar);
 			setDefaultState();
 		}

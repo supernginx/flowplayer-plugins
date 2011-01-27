@@ -13,6 +13,8 @@ package org.flowplayer.controls.controllers {
 	import org.flowplayer.model.ClipEvent;
 	import org.flowplayer.view.Flowplayer;
 	
+	import org.flowplayer.controls.Controlbar;
+	
 	import flash.utils.Timer;
 	import flash.events.TimerEvent;
 	import flash.display.DisplayObjectContainer;
@@ -21,7 +23,7 @@ package org.flowplayer.controls.controllers {
 
 		protected var _timeUpdateTimer:Timer;
 		
-		public function AbstractTimedWidgetController(config:Object, player:Flowplayer, controlbar:DisplayObjectContainer) {
+		public function AbstractTimedWidgetController(config:Object, player:Flowplayer, controlbar:Controlbar) {
 			super(config, player, controlbar);
 			createUpdateTimer();
 		}

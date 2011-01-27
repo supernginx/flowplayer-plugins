@@ -22,6 +22,7 @@ package org.flowplayer.controls.scrubber {
 	import org.flowplayer.util.Log;
 	import flash.display.DisplayObjectContainer;
 	
+	import org.flowplayer.controls.Controlbar;
 	import org.flowplayer.controls.SkinClasses;
 	import org.flowplayer.controls.time.TimeUtil;
 	import org.flowplayer.controls.controllers.AbstractTimedWidgetController;
@@ -36,7 +37,7 @@ package org.flowplayer.controls.scrubber {
 			enabled: true
 		};
 
-		public function ScrubberController(config:ScrubberConfig, player:Flowplayer, controlbar:DisplayObjectContainer) {
+		public function ScrubberController(config:ScrubberConfig, player:Flowplayer, controlbar:Controlbar) {
 			super(config, player, controlbar);
 		}
 	
