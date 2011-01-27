@@ -111,37 +111,64 @@ package org.flowplayer.controls {
             return result;
         }
 
-		 public function onLoad(player:Flowplayer):void {
-	           // log.info("received player API! autohide == " + _config.autoHide.state);
-	            _player = player;
+		public function onLoad(player:Flowplayer):void {
+			// log.info("received player API! autohide == " + _config.autoHide.state);
+			_player = player;
 
-				rootStyle = _config.bgStyle;
-				
-				
-	            if (_config.skin) {
-	                initSkin();
-	            }
+			rootStyle = _config.bgStyle;
 
-	           
-				
-	            addListeners(player.playlist);
-				// TODO : check this         
-				//   if (_playButton) {
-	  			//         _playButton.down = player.isPlaying();
-	    		//   }
-	            //   if (_muteVolumeButton) {
-	  			//        _muteVolumeButton.down = player.muted;
-	    		//    }
-	
-	            _pluginModel.dispatchOnLoad();
-	        }
-
-
-			private function updateControlbar(animation:Boolean = false):void {
-				_controlbar.configure(_config, animation);
+			if (_config.skin) {
+				initSkin();
 			}
+			addListeners(player.playlist);
 
+			_pluginModel.dispatchOnLoad();
+		}
 
+		private function onAddedToStage(event:Event):void {
+            log.debug("addedToStage, config is " + _config);
+            createControlBarMover();
+        
+    		_controlbar = new Controlbar(_player, _config);
+			addChild(_controlbar);
+			updateControlbar();
+			
+			height = DEFAULT_HEIGHT;
+        }
+
+        private function createControlBarMover():void {
+            if (_config.autoHide.state != 'never' && ! _controlBarMover) {
+                _controlBarMover = new AutoHide(DisplayPluginModel(_pluginModel), _config.autoHide, _player, stage, this);
+            }
+        }
+
+        private function initSkin():void {
+            // must allowDomain because otherwise the dynamically loaded buttons cannot access this controlbar
+            Security.allowDomain("*");
+            var skin:PluginModel = _player.pluginRegistry.getPlugin(_config.skin) as PluginModel;
+            log.debug("using skin " + skin);
+            SkinClasses.skinClasses = skin.pluginObject as ApplicationDomain;
+
+            log.debug("skin has defaults", SkinClasses.defaults);
+            Arrange.fixPositionSettings(_pluginModel as DisplayPluginModel, SkinClasses.defaults);
+            new PropertyBinder(_pluginModel, "config").copyProperties(SkinClasses.defaults, false);
+            _config = createConfig(_pluginModel.config);
+        }
+
+		private function updateControlbar(animation:Boolean = false):void {
+			_controlbar.configure(_config, animation);
+		}
+		
+		/**
+         * Default properties for the controls.
+         */
+        public function getDefaultConfig():Object {
+            // skinless controlbar does not have defaults
+            if (! SkinClasses.defaults) return null;
+            return SkinClasses.defaults;
+        }
+
+		/* External API */
 
         [External(convert="true")]
         public function get config():Config {
@@ -240,7 +267,9 @@ package org.flowplayer.controls {
             return _config.enabled;
         }
 
-
+		
+		
+		/* Resize stuff */
 
 		override public function onBeforeCss(styleProps:Object = null):void 
 		{
@@ -290,7 +319,6 @@ package org.flowplayer.controls {
          * Rearranges the buttons when size changes.
          */
         override protected function onResize():void {
-	log.error("------ CONTROLS ON RESIZE -------");
             if (! _controlbar) return;
            _controlbar.setSize(width, height);
         }
@@ -300,73 +328,21 @@ package org.flowplayer.controls {
          */
         override protected function onRedraw():void {
             log.debug("onRedraw, making controls visible");
-        //    this.visible = true;
-        }
-
-        /**
-         * Default properties for the controls.
-         */
-        public function getDefaultConfig():Object {
-            // skinless controlbar does not have defaults
-            if (! SkinClasses.defaults) return null;
-            return SkinClasses.defaults;
-        }
-
-  
-        private function onAddedToStage(event:Event):void {
-            log.debug("addedToStage, config is " + _config);
-            createControlBarMover();
-        
-    		_controlbar = new Controlbar(_player, _config);
-			addChild(_controlbar);
-			updateControlbar();
-			
-			height = DEFAULT_HEIGHT;
-            
-// TODO: check if we need this
-		//	
-        }
-
-        private function createControlBarMover():void {
-            if (_config.autoHide.state != 'never' && ! _controlBarMover) {
-                _controlBarMover = new AutoHide(DisplayPluginModel(_pluginModel), _config.autoHide, _player, stage, this);
-            }
-        }
-
-       
-
-
-        private function initSkin():void {
-            // must allowDomain because otherwise the dynamically loaded buttons cannot access this controlbar
-            Security.allowDomain("*");
-            var skin:PluginModel = _player.pluginRegistry.getPlugin(_config.skin) as PluginModel;
-            log.debug("using skin " + skin);
-            SkinClasses.skinClasses = skin.pluginObject as ApplicationDomain;
-
-            log.debug("skin has defaults", SkinClasses.defaults);
-            Arrange.fixPositionSettings(_pluginModel as DisplayPluginModel, SkinClasses.defaults);
-            new PropertyBinder(_pluginModel, "config").copyProperties(SkinClasses.defaults, false);
-            _config = createConfig(_pluginModel.config);
+            this.visible = true;
         }
 
         
 
 
-		// TODO : Check this guy
-        private function onTimeViewRearranged(event:Event):void {
-            onResize();
-        }
+        
+		/* Specific clip controls configuration */
 
         private function addListeners(playlist:Playlist):void {
-            
             playlist.onBegin(onPlayBegin);
-
            
             playlist.onStop(onPlayStopped);
             playlist.onBufferStop(onPlayStopped);
             playlist.onFinish(onPlayStopped);
-            
-            
         }
 
         private function onPlayBegin(event:ClipEvent):void {
@@ -377,44 +353,22 @@ package org.flowplayer.controls {
 
         private function handleClipConfig(clip:Clip):void {
             var controlsConfig:Object = clip.getCustomProperty("controls");
+
             if (controlsConfig) {
                 if (controlsConfig == _currentControlsConfig) {
                     return;
                 }
                 log.debug("onPlayBegin(): clip has controls configuration, reconfiguring");
-                reconfigure(controlsConfig);
+                _currentControlsConfig = controlsConfig;
+				_config = createConfig(controlsConfig);
             } else if (_currentControlsConfig) {
                 log.debug("onPlayBegin(): reverting to original configuration");
                 _config = createConfig(_originalConfig);
-				updateControlbar(true);
-/*
-				_config.player = _player;	// setting back player, #48
-                rootStyle = _config.bgStyle;
-                recreateWidgets();
-                enableWidgets();
-                redraw();
-*/
             }
+
+			updateControlbar(true);
         }
 
-        private function reconfigure(controlsConfig:Object):void {
-			_currentControlsConfig = controlsConfig;
-			_config = createConfig(controlsConfig);
-			updateControlbar(true);
-	
-			// TODO: Check this
-			/*
-            _currentControlsConfig = controlsConfig;
-            setWidgets(controlsConfig);
-            if (controlsConfig.hasOwnProperty("tooltips")) {
-                initTooltipConfig(_config, controlsConfig["tooltips"]);
-            }
-            css(controlsConfig);
-            if (controlsConfig.hasOwnProperty("enabled")) {
-                setEnabled(controlsConfig["enabled"]);
-            }
-			*/
-        }
 
       
         private function onPlayStopped(event:ClipEvent):void {

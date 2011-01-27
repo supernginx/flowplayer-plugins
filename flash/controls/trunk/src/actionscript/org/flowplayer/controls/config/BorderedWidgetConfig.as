@@ -10,8 +10,13 @@
 
 package org.flowplayer.controls.config {
     import org.flowplayer.util.StyleSheetUtil;
+	import org.flowplayer.util.NumberUtil;
+
+	import org.flowplayer.util.Log;
 
     public class BorderedWidgetConfig {
+		
+		protected var log:Log = new Log(this);
 		
 		private var _backgroundColor:String;
 		private var _backgroundGradient:Array;
@@ -53,16 +58,16 @@ package org.flowplayer.controls.config {
          */
 
         public function get borderColor():Number {
-            return StyleSheetUtil.colorValue(_border);
+			return StyleSheetUtil.colorValue(StyleSheetUtil.parseShorthand('b', {b: _border})[2]);
         }
 
         public function get borderAlpha():Number {
-            return StyleSheetUtil.colorAlpha(_border);
+			return StyleSheetUtil.colorAlpha(StyleSheetUtil.parseShorthand('b', {b: _border})[2]);
         }
 
-		public function get borderWidth():Number {
-			return 0;
-		//	return StyleSheetUtil.borderWidth(_border);
+		public function get borderWidth():Number {			
+			// something about taking the hammer to get the circle into the square all :)
+			return NumberUtil.decodePixels(StyleSheetUtil.parseShorthand('b', {b: _border})[0]);
 		}
 
         public function setBorder(border:String):void {
