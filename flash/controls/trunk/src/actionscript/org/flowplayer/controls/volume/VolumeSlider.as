@@ -65,13 +65,13 @@ import org.flowplayer.view.AnimationEngine;
 		}
 
 		protected function get volumeColor():Number {			
-			if (isNaN(_config.backgroundColor) || _config.backgroundColor == -2 ) return sliderColor;
-            return _config.backgroundColor;
+			if (isNaN(_config.color) || _config.color == -2 ) return backgroundColor;
+            return _config.color;
         }
 
 		protected function get volumeAlpha():Number {
-			if (isNaN(_config.backgroundAlpha) || _config.backgroundAlpha == -2 ) return sliderAlpha;
-            return _config.backgroundAlpha;
+			if (isNaN(_config.alpha) || _config.alpha == -2 ) return backgroundAlpha;
+            return _config.alpha;
         }
 	}
 }

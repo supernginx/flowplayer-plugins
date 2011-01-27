@@ -131,13 +131,9 @@ package org.flowplayer.controls {
 			immediatePositioning = true;
 		}
 		
-	
-		
-		// TODO : connect me somewhere :)
-		private function onTimeViewRearranged(event:Event):void {
-            onResize();
-        }
-		
+		public function get config():Config {
+			return _config;
+		}
 	
 		/** Visibility stuff **/
 		

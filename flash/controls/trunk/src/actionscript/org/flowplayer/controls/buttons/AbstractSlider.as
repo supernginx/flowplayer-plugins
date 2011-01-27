@@ -341,7 +341,7 @@ package org.flowplayer.controls.buttons {
 
 		private function drawBackground():void {
 			graphics.clear();
-			graphics.beginFill(sliderColor, sliderAlpha);
+			graphics.beginFill(backgroundColor, backgroundAlpha);
 			graphics.drawRoundRect(0, height/2 - barHeight/2, width, barHeight, barCornerRadius, barCornerRadius);
             graphics.endFill();
                                                                                                                      
@@ -388,11 +388,11 @@ package org.flowplayer.controls.buttons {
 			return _config.backgroundGradient;
 		}
 
-		protected function get sliderColor():Number {
+		protected function get backgroundColor():Number {
 			return _config.backgroundColor;
 		}
 
-		protected function get sliderAlpha():Number {
+		protected function get backgroundAlpha():Number {
 			return _config.backgroundAlpha;
 		}
 

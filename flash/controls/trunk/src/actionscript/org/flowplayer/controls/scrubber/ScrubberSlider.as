@@ -406,16 +406,6 @@ package org.flowplayer.controls.scrubber {
 			drawBar(_bufferBar, (_config as ScrubberConfig).bufferColor, (_config as ScrubberConfig).bufferAlpha, (_config as ScrubberConfig).bufferGradient, _bufferBar.x, _bufferBar.width);
 		}
 
-        override protected function get sliderGradient():Array {
-            return (_config as ScrubberConfig).bufferGradient;
-        }
-
-        override protected function get sliderColor():Number {
-            return (_config as ScrubberConfig).bufferColor;
-        }
-      
-
-
 //
         override protected function onDragging():void {
             stop(null);

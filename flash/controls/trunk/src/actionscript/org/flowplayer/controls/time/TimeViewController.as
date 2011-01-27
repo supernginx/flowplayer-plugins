@@ -11,6 +11,7 @@ package org.flowplayer.controls.time {
    
 	import org.flowplayer.controls.controllers.AbstractTimedWidgetController;
 	import org.flowplayer.controls.buttons.SurroundedWidget;
+	import org.flowplayer.controls.Controlbar;
 	import org.flowplayer.controls.SkinClasses;
 	
 	import org.flowplayer.view.Flowplayer;
@@ -20,6 +21,7 @@ package org.flowplayer.controls.time {
 	
 	import flash.display.DisplayObjectContainer;
 	import flash.events.TimerEvent;
+	import flash.events.Event;
 
 	public class TimeViewController extends AbstractTimedWidgetController {
 		
@@ -30,7 +32,7 @@ package org.flowplayer.controls.time {
 		
 		protected var _durationReached:Boolean = false;
 
-		public function TimeViewController(config:TimeViewConfig, player:Flowplayer, controlbar:DisplayObjectContainer) {
+		public function TimeViewController(config:TimeViewConfig, player:Flowplayer, controlbar:Controlbar) {
 			super(config, player, controlbar);
 		}
 
@@ -42,17 +44,11 @@ package org.flowplayer.controls.time {
 											SkinClasses.getDisplayObject("fp.VolumeBottomEdge"),
 											SkinClasses.getDisplayObject("fp.VolumeLeftEdge"));
 			
+			_widget.addEventListener(TimeView.EVENT_REARRANGE, function(event:Event):void {
+				_controlbar.configure(_controlbar.config);
+			});
         }
-	/*
-		override public function redraw(config:Object):void {
-			_config = config as TimeViewConfig;
-			if ( ! _widget ) {
-				createWidget();
-				initWidget();
-			}
-			(_widget as TimeView).redraw(_config as TimeViewConfig);
-		}*/
-	
+
 		override protected function onTimeUpdate(event:TimerEvent):void {
 			var status:Status = getPlayerStatus();
 			if (! status) return;

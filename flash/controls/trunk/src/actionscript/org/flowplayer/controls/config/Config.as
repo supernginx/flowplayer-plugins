@@ -132,6 +132,7 @@ package org.flowplayer.controls.config {
 			config.setBufferGradient(decodeGradient(_style['bufferGradient']));
 			config.setColor(_style['progressColor']);
 			config.setBackgroundGradient(decodeGradient(_style['sliderGradient']));
+			config.setBackgroundColor(_style['sliderColor']);
 			config.setGradient(decodeGradient(_style['progressGradient']));
 			config.setBufferGradient(decodeGradient(_style['bufferGradient']))
 			config.setBarHeightRatio(_style['scrubberBarHeightRatio']);
@@ -140,7 +141,6 @@ package org.flowplayer.controls.config {
 			draggerConfig.setTooltipEnabled(tooltips.scrubber);	
 			config.setDraggerButtonConfig(draggerConfig);
 			
-			config.setBackgroundColor(_style['sliderColor']);
 			config.setBorder(_style['sliderBorder']);
 			config.setBorderRadius(_style['scrubberBorderRadius']);
 			config.setHeightRatio(_style['scrubberHeightRatio']);
@@ -158,10 +158,12 @@ package org.flowplayer.controls.config {
 					
 			config.setDraggerButtonConfig(draggerConfig);
 			
-			config.setBackgroundColor(_style['volumeColor']);
+			config.setBackgroundColor(_style['volumeSliderColor']);
 			config.setBackgroundGradient(decodeGradient(_style['volumeSliderGradient']));
-			config.setColor(_style['volumeSliderColor']);
+			
+			config.setColor(_style['volumeColor']);
 			config.setGradient(decodeGradient(_style['sliderGradient']));
+			
 			config.setBorder(_style['volumeBorder']);
 			config.setBorderRadius(_style['volumeBorderRadius']);
 			config.setHeightRatio(_style['volumeSliderHeightRatio']);

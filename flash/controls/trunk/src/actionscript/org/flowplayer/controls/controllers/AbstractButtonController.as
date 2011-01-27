@@ -15,6 +15,7 @@ package org.flowplayer.controls.controllers {
 	import org.flowplayer.model.ClipEvent;
 	import org.flowplayer.model.Status;
 	
+	import org.flowplayer.controls.Controlbar;
 	import org.flowplayer.controls.buttons.SurroundedButton;
 	import org.flowplayer.ui.buttons.GenericTooltipButton;
 	import org.flowplayer.ui.buttons.TooltipButtonConfig;
@@ -28,7 +29,7 @@ package org.flowplayer.controls.controllers {
 
 	public class AbstractButtonController extends AbstractWidgetController {
 		
-		public function AbstractButtonController(config:Object, player:Flowplayer, controlbar:DisplayObjectContainer) {
+		public function AbstractButtonController(config:Object, player:Flowplayer, controlbar:Controlbar) {
 			super(config, player, controlbar);
 			addWidgetListeners();
 		}
