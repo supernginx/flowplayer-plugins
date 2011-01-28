@@ -7,7 +7,7 @@
  * Released under the MIT License:
  * http://www.opensource.org/licenses/mit-license.php
  */
-package org.flowplayer.controls.controllers {
+package org.flowplayer.ui.controllers {
     
 	import org.flowplayer.view.Flowplayer;
 	import org.flowplayer.view.AbstractSprite;
@@ -15,9 +15,7 @@ package org.flowplayer.controls.controllers {
 	import org.flowplayer.model.ClipEvent;
 	import org.flowplayer.model.Status;
 	
-	import org.flowplayer.controls.Controlbar;
-	import org.flowplayer.controls.buttons.SurroundedButton;
-	
+	import org.flowplayer.ui.buttons.ConfigurableWidget;	
 	import org.flowplayer.ui.buttons.TooltipButtonConfig;
 	import org.flowplayer.ui.buttons.GenericTooltipButton;
 	import org.flowplayer.ui.buttons.ButtonConfig;
@@ -32,44 +30,49 @@ package org.flowplayer.controls.controllers {
 
 	public class AbstractToggleButtonController extends AbstractButtonController {
 			
-		public function AbstractToggleButtonController(config:ToggleButtonConfig, player:Flowplayer, controlbar:Controlbar) {
-			super(config, player, controlbar);
-			setDefaultState();
+		public function AbstractToggleButtonController() {
+			super();
 		}
 		
-		
-		
-		override public function configure(config:Object):void {
-			_config = config;
-												
-			view.configure(_config);
+		override public function init(player:Flowplayer, controlbar:DisplayObjectContainer, defaultConfig:Object):ConfigurableWidget {
+			super.init(player, controlbar, defaultConfig);
+			setDefaultState();
+			
+			return _widget;
 		}
 
 		override protected function createWidget():void {
-			var button:SurroundedButton = new SurroundedButton(
-					new GenericTooltipButton(	name, 
+			var button:GenericTooltipButton = new GenericTooltipButton(	name, 
 												new faceClass(), 
 												((_config as ToggleButtonConfig).config as TooltipButtonConfig), 
-												_player.animationEngine));
+												_player.animationEngine);
 												
-			var downButton:SurroundedButton = new SurroundedButton(
-					new GenericTooltipButton(	downName, 
+			var downButton:GenericTooltipButton = new GenericTooltipButton(	downName, 
 												new downFaceClass(), 
 												((_config as ToggleButtonConfig).downConfig as TooltipButtonConfig), 
-												_player.animationEngine));
+												_player.animationEngine);
 			
 			_widget = new ToggleButton(button, downButton);
 		}
 		
-		public function get downName():String {
-			return Object(this).constructor['DOWN_NAME'];
-		}
+		
 		
 	
 		/* This is what you should override */
+		
+		public function get downName():String {
+			throw new Error("You need to override downName accessor");
+			return null;
+		}
+		
+		public function get downDefaults():Object {
+			throw new Error("You need to override downDefaults accessor");
+			return null;
+		}
+		
 		protected function get downFaceClass():Class {
 			throw new Error("You need to override downFaceClass accessor");
-			return Object;
+			return null;
 		}
 
 		protected function setDefaultState():void {

@@ -7,7 +7,7 @@
  * Released under the MIT License:
  * http://www.opensource.org/licenses/mit-license.php
  */
-package org.flowplayer.controls.controllers {
+package org.flowplayer.ui.controllers {
     
 	import org.flowplayer.view.Flowplayer;
 	import org.flowplayer.view.AbstractSprite;
@@ -15,8 +15,7 @@ package org.flowplayer.controls.controllers {
 	import org.flowplayer.model.ClipEvent;
 	import org.flowplayer.model.Status;
 	
-	import org.flowplayer.controls.Controlbar;
-	import org.flowplayer.controls.buttons.SurroundedButton;
+	import org.flowplayer.ui.buttons.ConfigurableWidget;
 	import org.flowplayer.ui.buttons.GenericTooltipButton;
 	import org.flowplayer.ui.buttons.TooltipButtonConfig;
 	import org.flowplayer.ui.buttons.ButtonEvent;
@@ -29,13 +28,19 @@ package org.flowplayer.controls.controllers {
 
 	public class AbstractButtonController extends AbstractWidgetController {
 		
-		public function AbstractButtonController(config:Object, player:Flowplayer, controlbar:Controlbar) {
-			super(config, player, controlbar);
-			addWidgetListeners();
+		public function AbstractButtonController() {
+			super();
 		}
 		
+		override public function init(player:Flowplayer, controlbar:DisplayObjectContainer, defaultConfig:Object):ConfigurableWidget {
+			super.init(player, controlbar, defaultConfig);
+			addWidgetListeners();
+			
+			return _widget;
+		}
+				
 		override protected function createWidget():void {
-			_widget = new SurroundedButton(new GenericTooltipButton(name, new faceClass(), _config as TooltipButtonConfig, _player.animationEngine));
+			_widget = new GenericTooltipButton(name, new faceClass(), _config as TooltipButtonConfig, _player.animationEngine);
 		}
 		
 		protected function addWidgetListeners():void {
@@ -45,7 +50,7 @@ package org.flowplayer.controls.controllers {
 		/* This is what you should override */
 		protected function get faceClass():Class {
 			throw new Error("You need to override faceClass accessor");
-			return Object;
+			return null;
 		}
 		
 		protected function onButtonClicked(event:ButtonEvent):void {

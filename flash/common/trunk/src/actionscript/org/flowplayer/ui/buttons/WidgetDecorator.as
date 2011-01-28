@@ -7,27 +7,15 @@
  * Released under the MIT License:
  * http://www.opensource.org/licenses/mit-license.php
  */
- package org.flowplayer.controls.buttons {
+ package org.flowplayer.ui.buttons {
     
 	import org.flowplayer.ui.buttons.AbstractButton;
 	import flash.display.DisplayObject;
-    import flash.display.DisplayObjectContainer;
-    import flash.display.MovieClip;
-    import flash.events.Event;
-    import flash.events.MouseEvent;
-    import flash.geom.ColorTransform;
-    import org.flowplayer.view.AbstractSprite;
-    import org.flowplayer.view.AnimationEngine;
-	import org.flowplayer.ui.tooltips.ToolTip;
-	import org.flowplayer.ui.tooltips.NullToolTip;
-	import org.flowplayer.ui.tooltips.DefaultToolTip;
 	import org.flowplayer.ui.buttons.ConfigurableWidget;
-	
-	import org.flowplayer.controls.SkinClasses;
-	
+
 	import org.flowplayer.util.Arrange;
 	
-	public class SurroundedWidget extends ConfigurableWidget {
+	public class WidgetDecorator extends ConfigurableWidget {
       
         protected var _top:DisplayObject;
         protected var _bottom:DisplayObject;
@@ -36,12 +24,18 @@
 		protected var _widget:ConfigurableWidget;
 		protected var _config:Object;
 
-		public function SurroundedWidget(widget:ConfigurableWidget, top:DisplayObject, right:DisplayObject, bottom:DisplayObject, left:DisplayObject) {	
-            _left 	= DisplayObjectContainer(addFaceIfNotNull(left));
-            _right 	= DisplayObjectContainer(addFaceIfNotNull(right));
-            _top 	= DisplayObjectContainer(addFaceIfNotNull(top));
-            _bottom = DisplayObjectContainer(addFaceIfNotNull(bottom));
+		public function WidgetDecorator(top:DisplayObject, right:DisplayObject, bottom:DisplayObject, left:DisplayObject) {	
+            _left 	= addFaceIfNotNull(left);
+            _right 	= addFaceIfNotNull(right);
+            _top 	= addFaceIfNotNull(top);
+            _bottom = addFaceIfNotNull(bottom);
+		}
+		
+		public function init(widget:ConfigurableWidget):ConfigurableWidget {
+			if ( _widget ) throw new Error("Decorator already initialized");
+			
 			_widget = addFaceIfNotNull(widget) as ConfigurableWidget;
+			return this;
 		}
 		
 		public function get widget():ConfigurableWidget {
@@ -53,7 +47,7 @@
             _right.width = width;
         }
 		
-		override public function configure(config:Object):void {
+		override public function configure(config:Object):void {		
 			_config = config;
 			_widget.configure(config);
 			onResize();

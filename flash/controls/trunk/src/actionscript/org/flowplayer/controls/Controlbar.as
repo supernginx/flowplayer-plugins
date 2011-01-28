@@ -19,13 +19,17 @@ package org.flowplayer.controls {
 		
 	import org.flowplayer.ui.buttons.ConfigurableWidget;
 	import org.flowplayer.ui.buttons.ToggleButtonConfig;
+	import org.flowplayer.ui.buttons.WidgetDecorator;
+	import org.flowplayer.ui.buttons.ButtonDecorator;
+	
+	import org.flowplayer.ui.controllers.AbstractWidgetController;
+	import org.flowplayer.ui.controllers.AbstractButtonController;
 	
 	import org.flowplayer.controls.config.Config;
 	import org.flowplayer.controls.controllers.*;
 	import org.flowplayer.controls.time.TimeViewController;
 	import org.flowplayer.controls.scrubber.ScrubberController;
 	import org.flowplayer.controls.volume.VolumeController;
-	import org.flowplayer.controls.buttons.SurroundedWidget;
 	
 	import flash.utils.*
 	import flash.display.Sprite;
@@ -35,11 +39,8 @@ package org.flowplayer.controls {
 	
 	
     public class Controlbar extends StyleableSprite {
-
-
-		private static var _registeredControllers:Array = [];
 		
-		private var _widgets:Dictionary;
+		private var _widgetControllers:Dictionary;		
 
         private var _config:Config;
         private var _immediatePositioning:Boolean = true;
@@ -59,7 +60,7 @@ package org.flowplayer.controls {
 			_config = config;
 		
             this.visible = false;
-			_widgets = new Dictionary();
+			_widgetControllers = new Dictionary();
 
             rootStyle = _config.bgStyle;
 			_bgFill = new Sprite();
@@ -67,59 +68,79 @@ package org.flowplayer.controls {
 
             createChildren();
         }
-
-		public static function get registeredControllers():Array {
-			return Controlbar._registeredControllers;
-		}
-
 	
-		private function addController(controllerClass:Class):void {
-			if ( Controlbar._registeredControllers.indexOf(controllerClass) == -1 )
-				Controlbar._registeredControllers.push(controllerClass);
+		public function addWidget(	controller:AbstractWidgetController, after:String = null, 
+									animation:Boolean = true, decorate:Boolean = true):void 
+		{
+			var index:int = 0;
+			if ( after && _widgetsOrder.indexOf(after) != -1 )
+				index = _widgetsOrder.indexOf(after);
+				
+			_widgetsOrder.splice(index, 0, controller.name);
+			addController(controller, decorate);
+			updateAvailableWidgets();
 			
-			var controller:AbstractWidgetController = createWidgetController(controllerClass);
-			_widgets[controller.name] = controller;
-			// TimeView.EVENT_REARRANGE, onTimeViewRearranged
-			controller.view.visible = false;
+			configure(_config, animation);
 		}
 		
-		private function createWidgetController(controllerClass:Class):AbstractWidgetController {
-			var config:Object = _config.getWidgetConfiguration(controllerClass);
-			var controller:AbstractWidgetController = new controllerClass(config, _player, this);
-
-			return controller;
-		}
 	
+		private function addController(controller:AbstractWidgetController, decorate:Boolean = true):void {	
+			
+			controller.init(_player, this, _config.getWidgetConfiguration(controller));
+			if ( decorate )
+				decorateWidget(controller);
+			
+			controller.view.visible = false;
+			
+			_widgetControllers[controller.name] = controller;
+		}
+
+		private function decorateWidget(controller:AbstractWidgetController):void {
+			if ( controller is AbstractButtonController )
+				controller.decorator = new ButtonDecorator( SkinClasses.getDisplayObject("fp.ButtonTopEdge"), 
+															SkinClasses.getDisplayObject("fp.ButtonRightEdge"), 
+															SkinClasses.getDisplayObject("fp.ButtonBottomEdge"), 
+															SkinClasses.getDisplayObject("fp.ButtonLeftEdge"));
+
+		}
 
         private function createChildren():void {
             //log.error("creating createChildren ", _config);
 
-			addController(ToggleFullScreenButtonController);
-			addController(TogglePlayButtonController);
-			addController(StopButtonController);
-			addController(NextButtonController);
-			addController(PrevButtonController);
-			addController(StopButtonController);
-			addController(ToggleMuteButtonController);
-			addController(VolumeController);
-			addController(TimeViewController);
-			addController(ScrubberController);
+			addController(new ToggleFullScreenButtonController());
+			addController(new TogglePlayButtonController());
+			addController(new StopButtonController());
+			addController(new NextButtonController());
+			addController(new PrevButtonController());
+			addController(new StopButtonController());
+			addController(new ToggleMuteButtonController());
+			addController(new VolumeController());
+			addController(new TimeViewController());
+			addController(new ScrubberController());
 
 			// now that we have registered all our controllers, clear config cache
-			_config.clearCaches();
+			updateAvailableWidgets();
         }
 
+		private function updateAvailableWidgets():void {
+			var widgets:Array = [];
+			for ( var i:String in _widgetControllers )
+				widgets.push(_widgetControllers[i]);
+								
+			_config.availableWidgets = widgets;
+		}
+
 		public function configure(config:Config, animation:Boolean = false):void {
-			log.warn("Configuring new controls");
+			//log.error("Configuring new controls");
 			_config = config;
 			
 			immediatePositioning = ! animation;
 			
-			for ( var i:String in _widgets ) {
-				var widget:AbstractWidgetController = _widgets[i];
-				var widgetConfig:Object = _config.getWidgetConfiguration(Object(widget).constructor);
-			//	log.debug("Got config for widget " + widget.name, widgetConfig);
-				widget.configure(widgetConfig);
+			for ( var i:String in _widgetControllers ) {
+			//	var widget:AbstractWidgetController = _widgetControllers[i].controller;
+				var widgetConfig:Object = _config.getWidgetConfiguration(_widgetControllers[i]);
+			//	log.error("Got config for widget " + i, widgetConfig);
+				_widgetControllers[i].configure(widgetConfig);
 			}
 			
 			enableWidgets();
@@ -138,34 +159,38 @@ package org.flowplayer.controls {
 		/** Visibility stuff **/
 		
 		private function enableWidgets():void {
-			for ( var i:String in _widgets ) {
-				(_widgets[i] as AbstractWidgetController).view.enabled = _config.enabled[i];
+			for ( var i:String in _widgetControllers ) {
+				_widgetControllers[i].view.enabled = _config.enabled[i];
 			}
         }
 		
 		private function updateWidgetsVisibility():void {
 			
-			for ( var i:String in _widgets ) {
-				var controller:AbstractWidgetController = _widgets[i];
-				var show:Boolean = _config.visible[i];
+			for ( var name:String in _widgetControllers ) {
+				var view:ConfigurableWidget = _widgetControllers[name].view;
+				var show:Boolean = _config.visible[name];
 				
-			//	log.debug("Getting visibility for " + i + " "+ show);
+			//	log.debug("Getting visibility for " + name + " "+ show);
 				
 				// remove it
-				if ( contains(controller.view) && ! show ) {
-					log.debug("Removing "+ i)
-					removeChildAnimate(controller.view);
-				} else if ( ! contains(controller.view) && show ) {
+				if ( contains(view) && ! show ) {
+			//		log.error("Removing "+ name)
+					removeChildAnimate(view);
+				} else if ( ! contains(view) && show ) {
 					// add it
-					log.debug("Adding "+ i);
-					resetView(controller.view);
-					addChild(controller.view);
+			//		log.error("Adding "+ name);
+					resetView(view);
+					addChild(view);
 				}
 			}
 
 		}
 		
 		private function resetView(view:DisplayObject):void {
+			
+			//log.error("resetView " + view)
+			
+			_player.animationEngine.cancel(view);
 			view.visible = false;
 			view.x = view.y = 0;
 			view.scaleX = view.scaleY = 1;
@@ -178,6 +203,7 @@ package org.flowplayer.controls {
 				resetView(child);
                 return child;
             }
+
             _player.animationEngine.fadeOut(child, 1000, function():void {
                 removeChild(child);
 				resetView(child);
@@ -192,14 +218,14 @@ package org.flowplayer.controls {
          * Rearranges the buttons when size changes.
          */
         override protected function onResize():void {
-            log.debug("arranging, width is " + width);
+            //log.error("arranging, width is " + width);
 
 			_bgFill.graphics.clear();
 			_bgFill.graphics.beginFill(0, 0);
 			_bgFill.graphics.drawRect(0, 0, width, height);
 			_bgFill.graphics.endFill();
 
-			log.debug("----------------- onResize --------------");
+			//log.error("----------------- onResize --------------");
 
 			rearrangeWidgets();
 
@@ -241,7 +267,7 @@ package org.flowplayer.controls {
 				var leftEdge:Number  = arrangeWidgets(leftWidgets);
 				var rightEdge:Number = arrangeWidgets(rightWidgets, true);
 				
-				arrangeScrubber(leftEdge, rightEdge, nextVisibleWidget(SCRUBBER).view);
+				arrangeScrubber(leftEdge, rightEdge, nextVisibleWidget(SCRUBBER));
 			} else {
 				arrangeWidgets(_widgetsOrder);
 			}
@@ -253,7 +279,7 @@ package org.flowplayer.controls {
 			var x:Number = reverse ? width : _config.style.margins[3];
 			
 			for ( var i:int = 0; i < widgets.length; i++ ) {
-				var widget:AbstractWidgetController = _widgets[widgets[i]];
+				var widget:AbstractWidgetController = _widgetControllers[widgets[i]];
 				
 				if ( ! _config.visible[widget.name] ) 
 					continue;
@@ -285,7 +311,7 @@ package org.flowplayer.controls {
         }
 		
 		private function arrangeScrubber(leftEdge:Number, rightEdge:Number, nextToRight:DisplayObjectContainer):Number {
-			var view:SurroundedWidget = (_widgets[SCRUBBER] as AbstractWidgetController).view as SurroundedWidget;
+			var view:WidgetDecorator = _widgetControllers[SCRUBBER].view as WidgetDecorator;
 			
             view.setRightEdgeWidth(getScrubberRightEdgeWidth(nextToRight))
             arrangeX(view, leftEdge);
@@ -293,6 +319,7 @@ package org.flowplayer.controls {
             if (! _player || _immediatePositioning) {
                 view.width = scrubberWidth;
             } else {
+			//	_player.animationEngine.cancel(view);
                 _player.animationEngine.animateProperty(view, "width", scrubberWidth);
             }
             view.height = height - margins[0] - margins[2];
@@ -300,34 +327,41 @@ package org.flowplayer.controls {
             return rightEdge - getSpaceAfterWidget(SCRUBBER) - scrubberWidth;
         }
 		
-		private function nextVisibleWidget(afterWidget:String):AbstractWidgetController {
+		private function nextVisibleWidget(afterWidget:String):ConfigurableWidget {
 			var widgets:Array = _widgetsOrder.slice(_widgetsOrder.indexOf(afterWidget) +1);
 			for ( var i:int = 0; i < widgets.length; i++ )
 				if ( _config.visible[widgets[i]] )
-					return _widgets[widgets[i]];
+					return _widgetControllers[widgets[i]].view;
 			
 			return null;
 		}
 		
 		private function arrangeX(clip:DisplayObject, pos:Number):void {
 			var a:AbstractSprite = clip as AbstractSprite
-        //    log.debug("arrangeX " + a.name + " x:" + pos);
+            //log.error("arrangeX " + a.name + " x:" + pos + " currentX : "+ clip.x +" alpha: "+ clip.alpha + " parent "+ clip.parent);
 	
             clip.visible = true;
             if (! _player || _immediatePositioning) {
                 clip.x = pos;
+				clip.alpha = 1;
+				//log.error("Immediate Positionning " + a.name + " x:" + pos + " currentX : "+ clip.x +" alpha: "+ clip.alpha + " parent "+ clip.parent);
+	            
                 return;
             }
+
             if (clip.x == 0) {
                 // we are arranging a newly created widget, fade it in
-                clip.x = pos;
+               // clip.x = pos;
                 
-				var currentAlpha:Number = 1;//clip.alpha;
+				var currentAlpha:Number = clip.alpha;
 	            clip.alpha = 0;
 
+				//log.error("Animating alpha " + a.name + " x:" + pos + " currentX : "+ clip.x +" alpha: "+ clip.alpha + " parent "+ clip.parent);
 	            _player.animationEngine.animateProperty(clip, "alpha", currentAlpha);
             }
             // rearrange a previously arrange widget
+			//log.error("Animating X " + a.name + " x:" + pos + " currentX : "+ clip.x +" alpha: "+ clip.alpha + " parent "+ clip.parent);
+
             _player.animationEngine.animateProperty(clip, "x", pos);
         }
 

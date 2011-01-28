@@ -18,6 +18,7 @@ package org.flowplayer.controls {
     import flash.system.Security;
     import flash.utils.Timer;
 
+	import org.flowplayer.ui.controllers.AbstractWidgetController;
     import org.flowplayer.ui.buttons.AbstractTooltipButton;
 	import org.flowplayer.ui.buttons.TooltipButtonConfig;
     import org.flowplayer.ui.buttons.GenericTooltipButton;
@@ -51,7 +52,6 @@ package org.flowplayer.controls {
 
 	import org.flowplayer.controls.time.TimeViewController;
 	import org.flowplayer.controls.time.TimeView;
-	import org.flowplayer.controls.buttons.SurroundedWidget;
 	import org.flowplayer.controls.config.ToolTips;
 
 
@@ -121,6 +121,8 @@ package org.flowplayer.controls {
 				initSkin();
 			}
 			addListeners(player.playlist);
+			
+			_controlbar = new Controlbar(_player, _config);
 
 			_pluginModel.dispatchOnLoad();
 		}
@@ -129,8 +131,8 @@ package org.flowplayer.controls {
             log.debug("addedToStage, config is " + _config);
             createControlBarMover();
         
-    		_controlbar = new Controlbar(_player, _config);
-			addChild(_controlbar);
+    		addChild(_controlbar);
+			
 			updateControlbar();
 			
 			height = DEFAULT_HEIGHT;
@@ -167,6 +169,13 @@ package org.flowplayer.controls {
             if (! SkinClasses.defaults) return null;
             return SkinClasses.defaults;
         }
+
+		/* Public API */
+		
+		public function addWidget(controller:AbstractWidgetController, after:String = null, animation:Boolean = true):void {
+			_controlbar.addWidget(controller, after, animation);
+		}
+		
 
 		/* External API */
 

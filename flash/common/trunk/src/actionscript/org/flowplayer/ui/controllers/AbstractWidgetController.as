@@ -7,17 +7,16 @@
  * Released under the MIT License:
  * http://www.opensource.org/licenses/mit-license.php
  */
-package org.flowplayer.controls.controllers {
+package org.flowplayer.ui.controllers {
     
 	import org.flowplayer.view.Flowplayer;
 	import org.flowplayer.view.AbstractSprite;
 	import org.flowplayer.model.Clip;
 	import org.flowplayer.model.ClipEvent;
 	import org.flowplayer.model.Status;
-	
-	import org.flowplayer.controls.Controlbar;
-	
+		
 	import org.flowplayer.ui.buttons.ConfigurableWidget;
+	import org.flowplayer.ui.buttons.WidgetDecorator;
 	
 	import flash.utils.*;
 	import flash.events.TimerEvent;
@@ -32,88 +31,69 @@ package org.flowplayer.controls.controllers {
 
 		protected var _config:Object;
 		protected var _player:Flowplayer;
-		protected var _controlbar:Controlbar;
-	
+		protected var _controlbar:DisplayObjectContainer;
+		
 		protected var _widget:ConfigurableWidget;
-	
+		protected var _decoratedView:ConfigurableWidget;
+		
 		protected var log:Log = new Log(this);
 		
-		public function AbstractWidgetController(config:Object, player:Flowplayer, controlbar:Controlbar) {
-			_config		= config;
+		public function AbstractWidgetController() {
+		}
+		
+		public function init(player:Flowplayer, controlbar:DisplayObjectContainer, defaultConfig:Object):ConfigurableWidget {
 			_player 	= player;
 			_controlbar = controlbar;
+			_config 	= defaultConfig;
 			
 			addPlayerListeners();
 			
 			createWidget();
 			initWidget();
 			
-			configure(config);
-		}
-		
-		
-		
-		public function get view():ConfigurableWidget {
+			createDecorator();
+			
 			return _widget;
 		}
 		
 		public function configure(config:Object):void {
 			_config = config;
-			view.configure(_config);
+			_decoratedView.configure(_config);
 		}
 		
 		public function get config():Object {
 			return _config;
 		}
 
-		public function get name():String {
-			return Object(this).constructor['NAME'];
+		public function get view():ConfigurableWidget {
+			return _decoratedView;
 		}
-
-
+		
+		public function set decorator(decorator:WidgetDecorator):void {
+			_decoratedView = decorator.init(_widget);
+		}
+		
 		// this is what you should override 
 		
 		protected function createWidget():void {			
 			throw new Error("You need to override createWidget");
 		}
-				
-		// helper methods
 		
-		public static function isKindOfClass(controller:Class, requestedType:Class):Boolean {
-			// if controller is the good type
-			if ( controller == requestedType )
-				return true;
-
-			// else we need to look in super classes
-			var requestedTypeName:String = getQualifiedClassName(requestedType);
-
-			var description:XML = describeType(controller);
-			var superClasses:XMLList = description..extendsClass.@type;
-			for ( var i:int = 0; i < superClasses.length(); i++ ) {
-				if ( superClasses[i] == requestedTypeName )
-					return true;
-			}
-
-			return false;
+		protected function createDecorator():void {
+			_decoratedView = _widget
 		}
-/*
-		protected function mergeConfiguration(config:Object, defaults:Object):Object {
-		log.error("Merging configuration using ", defaults);
-			for ( var i:String in defaults ) {
-				var setterName:String = 'set' + i.substr(0, 1).toUpperCase() + i.substr(1);
-				log.error("using setter name "+ setterName);
-				try {	config[setterName](config[i] === undefined ? defaults[i] : config[i]); }
-				catch(e:Error) { log.error("Got error while setting defaults using "+ setterName); }
-			}
 		
-			log.error("Merging config ",config)
-		
-		
-			return config;
+		public function get name():String {
+			throw new Error("You need to override name accessor");
+			return null;
 		}
-*/
+		
+		public function get defaults():Object {
+			throw new Error("You need to override defaults accessor");
+			return null;
+		}
+
 		protected function initWidget():void {
-			_widget.visible = false;
 			_widget.name    = name;
 		}
 		

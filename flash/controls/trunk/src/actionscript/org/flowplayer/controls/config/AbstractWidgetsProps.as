@@ -14,32 +14,34 @@ package org.flowplayer.controls.config {
 	import org.flowplayer.util.Log;	
 	
 	import org.flowplayer.controls.Controlbar;
-	import org.flowplayer.controls.controllers.AbstractWidgetController;
-	import org.flowplayer.controls.controllers.AbstractButtonController;
-
+	import org.flowplayer.ui.controllers.AbstractWidgetController;
+	import org.flowplayer.ui.controllers.AbstractButtonController;
+	import org.flowplayer.ui.controllers.AbstractToggleButtonController;
+	
 	// This is really a consultation class
 	// no setters here
 	public dynamic class AbstractWidgetsProps {
 
 		protected var _props:Object;
+		protected var _availableWidgets:Array;
 		protected var log:Log = new Log(this);
 		
-		public function AbstractWidgetsProps(styleProps:Object) {
+		
+		public function AbstractWidgetsProps(styleProps:Object, widgets:Array) {
 			_props = styleProps || {};
+			_availableWidgets = widgets;
 		}
 	
-		protected function addWidgetsDefaults(propName:String, checkDownState:Boolean = false):void {
-			log.error("Adding defaults for " + propName);
-			var registeredControllers:Array = Controlbar.registeredControllers;
-			for ( var i:int = 0; i < registeredControllers.length; i++ ) {
-				var controllerClass:Class = registeredControllers[i];
-				if ( controllerClass['DEFAULTS'] && controllerClass['DEFAULTS'][propName] != undefined) {
-					addProperty(controllerClass['NAME'], controllerClass['DEFAULTS'][propName])
+		protected function addWidgetsDefaults(propName:String):void {
+			for ( var i:int = 0; i < _availableWidgets.length; i++ ) {
+				var controller:AbstractWidgetController = _availableWidgets[i];
+				if ( controller.defaults[propName] != undefined) {
+					addProperty(controller.name, controller.defaults[propName])
 				}
 				
-				if ( checkDownState ) {
-					if ( controllerClass['DOWN_DEFAULTS'] && controllerClass['DOWN_DEFAULTS'][propName] != undefined) {
-						addProperty(controllerClass['DOWN_NAME'], controllerClass['DOWN_DEFAULTS'][propName])
+				if ( controller is AbstractToggleButtonController ) {
+					if ((controller as AbstractToggleButtonController).downDefaults[propName] != undefined) {
+						addProperty((controller as AbstractToggleButtonController).downName, (controller as AbstractToggleButtonController).downDefaults[propName])
 					}
 				}
 			}
@@ -47,7 +49,7 @@ package org.flowplayer.controls.config {
 
 		protected function addProperty(name:String, defaultValue:*):void {
 			// take value from config or default
-			log.error("adding "+ name + " = " + _props[name] + " || "+ defaultValue);
+			//log.error("adding "+ name + " = " + _props[name] + " || "+ defaultValue);
 			
 			this[name] = _props[name] == undefined ? defaultValue : _props[name];
 		}
@@ -57,10 +59,9 @@ package org.flowplayer.controls.config {
 		protected function handleAll():void {
 			
 			if ( _props['all'] != undefined ) {
-				var registeredControllers:Array = Controlbar.registeredControllers;
-				for ( var i:int = 0; i < registeredControllers.length; i++ ) {
-					if ( _props[registeredControllers[i]['NAME']] == undefined )
-						_props[registeredControllers[i]['NAME']] = _props['all'];
+				for ( var i:int = 0; i < _availableWidgets.length; i++ ) {
+					if ( _props[_availableWidgets[i]['name']] == undefined )
+						_props[_availableWidgets[i]['name']] = _props['all'];
 				}
 			}
 			
