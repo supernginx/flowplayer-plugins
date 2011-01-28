@@ -16,7 +16,10 @@ package org.flowplayer.controls.volume {
 	import org.flowplayer.model.Status;
 	import org.flowplayer.model.PlayerEvent;
 	
-	import org.flowplayer.controls.buttons.SurroundedWidget;
+	import org.flowplayer.ui.buttons.ConfigurableWidget;
+	import org.flowplayer.ui.controllers.AbstractWidgetController;
+	import org.flowplayer.ui.buttons.WidgetDecorator;
+	
 	import org.flowplayer.controls.Controlbar;
 	import org.flowplayer.controls.SkinClasses;
 	
@@ -24,37 +27,51 @@ package org.flowplayer.controls.volume {
 	
 	import flash.display.DisplayObjectContainer;
 	
-	import org.flowplayer.controls.controllers.AbstractWidgetController;
-
 	import org.flowplayer.controls.buttons.SliderConfig;
 
 	public class VolumeController extends AbstractWidgetController {
-
-		public static const NAME:String = "volume";
-		public static const DEFAULTS:Object = {
-			tooltipEnabled: true,
-			visible: true,
-			enabled: true
-		};
 		
-		public function VolumeController(config:SliderConfig, player:Flowplayer, controlbar:Controlbar) {
-			super(config, player, controlbar);
+		public function VolumeController() {
+			super();
+		}
+	
+		override public function init(player:Flowplayer, controlbar:DisplayObjectContainer, defaultConfig:Object):ConfigurableWidget {
+			super.init(player, controlbar, defaultConfig);
 			initializeVolume();		
+			
+			return _widget;
+		}
+	
+		override public function get name():String {
+			return "volume";
+		}
+	
+		override public function get defaults():Object {
+			return {
+				tooltipEnabled: true,
+				visible: true,
+				enabled: true
+			};
 		}
 	
 		public function initializeVolume():void {
 			var volume:Number = _player.volume;
             log.info("initializing volume to " + volume);
-            ((_widget as SurroundedWidget).widget as VolumeSlider).value = volume;
+            (_widget as VolumeSlider).value = volume;
 		}
 		
 		override protected function createWidget():void {
-			_widget = new SurroundedWidget(	new VolumeSlider(_config as SliderConfig, _player, _controlbar),
-											SkinClasses.getDisplayObject("fp.VolumeTopEdge"),
-											SkinClasses.getDisplayObject("fp.VolumeRightEdge"),
-											SkinClasses.getDisplayObject("fp.VolumeBottomEdge"),
-											SkinClasses.getDisplayObject("fp.VolumeLeftEdge"));
+			_widget = new VolumeSlider(_config as SliderConfig, _player, _controlbar);
         }
+
+
+		override protected function createDecorator():void {
+			_decoratedView = new WidgetDecorator(SkinClasses.getDisplayObject("fp.VolumeTopEdge"),
+												 SkinClasses.getDisplayObject("fp.VolumeRightEdge"),
+												 SkinClasses.getDisplayObject("fp.VolumeBottomEdge"),
+												 SkinClasses.getDisplayObject("fp.VolumeLeftEdge")).init(_widget);;
+		}
+
 
 		override protected function initWidget():void {
 			_widget.addEventListener(VolumeSlider.DRAG_EVENT, onVolumeChanged);
@@ -66,7 +83,7 @@ package org.flowplayer.controls.volume {
 		}
 		
 		private function onPlayerVolumeEvent(event:PlayerEvent):void {
-			((_widget as SurroundedWidget).widget as VolumeSlider).value = event.info as Number
+			(_widget as VolumeSlider).value = event.info as Number
 		}
 
 		private function onVolumeChanged(event:Event):void {
@@ -75,7 +92,7 @@ package org.flowplayer.controls.volume {
 		
 		// TODO: check this guy
 		public function set tooltipTextFunc(tooltipTextFunc:Function):void {
-            ((_widget as SurroundedWidget).widget as VolumeSlider).tooltipTextFunc = tooltipTextFunc;
+            (_widget as VolumeSlider).tooltipTextFunc = tooltipTextFunc;
         }
 
 	}

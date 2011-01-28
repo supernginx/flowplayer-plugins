@@ -7,34 +7,16 @@
  * Released under the MIT License:
  * http://www.opensource.org/licenses/mit-license.php
  */
- package org.flowplayer.controls.buttons {
+ package org.flowplayer.ui.buttons {
     
-	import org.flowplayer.ui.buttons.AbstractButton;
 	import flash.display.DisplayObject;
-    import flash.display.DisplayObjectContainer;
-    import flash.display.MovieClip;
-    import flash.events.Event;
-    import flash.events.MouseEvent;
-    import flash.geom.ColorTransform;
-    import org.flowplayer.view.AbstractSprite;
-    import org.flowplayer.view.AnimationEngine;
-	import org.flowplayer.ui.tooltips.ToolTip;
-	import org.flowplayer.ui.tooltips.NullToolTip;
-	import org.flowplayer.ui.tooltips.DefaultToolTip;
-	import org.flowplayer.ui.buttons.ConfigurableWidget;
-	
-	import org.flowplayer.controls.SkinClasses;
-	
-	public class SurroundedButton extends SurroundedWidget {
+  
+	public class ButtonDecorator extends WidgetDecorator {
       
      
-
-		public function SurroundedButton(button:ConfigurableWidget, top:DisplayObject = null, right:DisplayObject = null, bottom:DisplayObject = null, left:DisplayObject = null) {
-			super(	button, 	
-					(top 	|| SkinClasses.getDisplayObject("fp.ButtonTopEdge")), 
-					(right 	|| SkinClasses.getDisplayObject("fp.ButtonRightEdge")), 
-					(bottom || SkinClasses.getDisplayObject("fp.ButtonBottomEdge")), 
-					(left   || SkinClasses.getDisplayObject("fp.ButtonLeftEdge")));
+		// same as Decorated widget except that it keeps aspect ratio of face
+		public function ButtonDecorator(top:DisplayObject, right:DisplayObject, bottom:DisplayObject, left:DisplayObject ) {
+			super(top, right, bottom, left )
 		}
 		
         override protected function onResize():void {

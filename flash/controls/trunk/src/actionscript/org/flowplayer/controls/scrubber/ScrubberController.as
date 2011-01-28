@@ -22,41 +22,49 @@ package org.flowplayer.controls.scrubber {
 	import org.flowplayer.util.Log;
 	import flash.display.DisplayObjectContainer;
 	
+	import org.flowplayer.ui.buttons.WidgetDecorator;
+	
 	import org.flowplayer.controls.Controlbar;
 	import org.flowplayer.controls.SkinClasses;
 	import org.flowplayer.controls.time.TimeUtil;
 	import org.flowplayer.controls.controllers.AbstractTimedWidgetController;
-	import org.flowplayer.controls.buttons.SurroundedWidget;
 
 	public class ScrubberController extends AbstractTimedWidgetController {
 
-		public static const NAME:String = "scrubber";
-		public static const DEFAULTS:Object = {
-			tooltipEnabled: true,
-			visible: true,
-			enabled: true
-		};
-
-		public function ScrubberController(config:ScrubberConfig, player:Flowplayer, controlbar:Controlbar) {
-			super(config, player, controlbar);
+		public function ScrubberController() {
+			super();
 		}
 	
+		override public function get name():String {
+			return "scrubber";
+		}
+	
+		override public function get defaults():Object {
+			return {
+				tooltipEnabled: true,
+				visible: true,
+				enabled: true
+			};
+		}
 	
 		override protected function createWidget():void {
 			log.debug("Creating scrubber with ", _config)
-			_widget = new SurroundedWidget(	new ScrubberSlider(_config as ScrubberConfig, _player, _controlbar),
-											SkinClasses.getDisplayObject("fp.ScrubberTopEdge"),
-											SkinClasses.getDisplayObject("fp.ScrubberRightEdge"),
-											SkinClasses.getDisplayObject("fp.ScrubberBottomEdge"),
-											SkinClasses.getDisplayObject("fp.ScrubberLeftEdge"));
+			_widget = new ScrubberSlider(_config as ScrubberConfig, _player, _controlbar);
         }
+
+		override protected function createDecorator():void {
+			_decoratedView = new WidgetDecorator(SkinClasses.getDisplayObject("fp.ScrubberTopEdge"),
+										 	 	 SkinClasses.getDisplayObject("fp.ScrubberRightEdge"),
+												 SkinClasses.getDisplayObject("fp.ScrubberBottomEdge"),
+												 SkinClasses.getDisplayObject("fp.ScrubberLeftEdge")).init(_widget);;
+		}
 
 		override protected function onTimeUpdate(event:TimerEvent):void {
             var status:Status = getPlayerStatus();
             if (! status) return;
 
             var duration:Number = status.clip ? status.clip.duration : 0;
-			var scrubber:ScrubberSlider = ((_widget as SurroundedWidget).widget as ScrubberSlider);
+			var scrubber:ScrubberSlider = (_widget as ScrubberSlider);
 			if (duration > 0) {
 				scrubber.value = (status.time / duration) * 100;
 				scrubber.setBufferRange(status.bufferStart / duration, status.bufferEnd / duration);

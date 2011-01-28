@@ -27,7 +27,7 @@ package org.flowplayer.controls.config {
 	import org.flowplayer.controls.buttons.SliderConfig;
 	import org.flowplayer.ui.buttons.TooltipButtonConfig;
 	import org.flowplayer.ui.buttons.ToggleButtonConfig;
-	import org.flowplayer.controls.controllers.*;
+	import org.flowplayer.ui.controllers.*;
 	import org.flowplayer.controls.time.TimeViewController;
 	import org.flowplayer.controls.scrubber.ScrubberController;
 	import org.flowplayer.controls.volume.VolumeController;	
@@ -45,6 +45,8 @@ package org.flowplayer.controls.config {
 		private var _bgStyle:Object = {};
         private var _autoHide:AutoHideConfig = new AutoHideConfig();
 		
+		private var _availableWidgets:Array = [];
+		
 		private var _enabled:WidgetsEnabledStates = null;
 		private var _visible:WidgetsVisibility = null;
 		private var _tooltips:ToolTips = null;
@@ -55,16 +57,16 @@ package org.flowplayer.controls.config {
 			return _style;
 		}
 		
-		public function clearCaches():void {
-			_visible  = null;
-			_tooltips = null;
-			_enabled  = null;
-			_spacing  = null;
+		public function set availableWidgets(widgetControllers:Array):void {
+			_availableWidgets = widgetControllers;
+						
+			_visible  = new WidgetsVisibility(_style, widgetControllers);
+			_tooltips = new ToolTips(_style['tooltips'], widgetControllers);
+			_enabled  = new WidgetsEnabledStates(_style['enabled'], widgetControllers);
+			_spacing  = new WidgetsSpacing(_style['spacing'], widgetControllers);
 		}
 		
 		public function setNewProps(props:Object, to:String = null):void {
-			
-			clearCaches();
 			
 			var dest:Object = _style;
 			if ( to ) {
@@ -77,9 +79,9 @@ package org.flowplayer.controls.config {
 				dest[name] = props[name];
 			}
 			
-			
-			
-			
+			// update tooltip & al
+			availableWidgets = _availableWidgets;
+
 			_bgStyle = _style;
 		}
 		
@@ -108,7 +110,7 @@ package org.flowplayer.controls.config {
 			for ( var i:int = 0; i < color.length; i++ ) str+= (i ? ', ' : '') + color[i];
 			str += ')';
 			
-			log.error("Border for "+ prefix + " "+ str);
+			//log.debug("Border for "+ prefix + " "+ str);
 			
 			return str;			
 		}
@@ -204,24 +206,24 @@ package org.flowplayer.controls.config {
 		}
 	
 	
-		public function getWidgetConfiguration(controller:Class):Object {
-			if ( AbstractWidgetController.isKindOfClass(controller, VolumeController) ) {
+		public function getWidgetConfiguration(controller:Object):Object {
+			if ( controller is VolumeController ) {
 				return volumeConfig;
 			}
-			else if ( AbstractWidgetController.isKindOfClass(controller, ScrubberController) ) {
+			else if ( controller is ScrubberController ) {
 				return scrubberConfig;
 			}
-			else if ( AbstractWidgetController.isKindOfClass(controller, TimeViewController) ) {
+			else if ( controller is TimeViewController ) {
 				return timeConfig;
 			}
 			// this needs to be before the AbstractButtonController
-			else if ( AbstractWidgetController.isKindOfClass(controller, AbstractToggleButtonController) ) {
+			else if ( controller is AbstractToggleButtonController ) {
 				return new ToggleButtonConfig(
-								getButtonConfig(controller['NAME']), 
-								getButtonConfig(controller['DOWN_NAME']));
+								getButtonConfig(controller.name), 
+								getButtonConfig((controller as AbstractToggleButtonController).downName));
 			}
-			else if ( AbstractWidgetController.isKindOfClass(controller, AbstractButtonController) ) {
-				return getButtonConfig(controller['NAME']);
+			else if ( controller is AbstractButtonController ) {
+				return getButtonConfig(controller.name);
 			}
 			else {
 				log.warn("Unknown widget "+ controller);
@@ -232,25 +234,21 @@ package org.flowplayer.controls.config {
 					
         [Value]
 		public function get visible():WidgetsVisibility {
-			if ( ! _visible ) _visible = new WidgetsVisibility(_style);
 			return _visible;
 		}
 		
         [Value]
 		public function get enabled():WidgetsEnabledStates {
-			if ( ! _enabled ) _enabled = new WidgetsEnabledStates(_style['enabled']);
 			return _enabled;
 		}
 		
         [Value]
 		public function get tooltips():ToolTips {
-			if ( ! _tooltips ) _tooltips = new ToolTips(_style['tooltips']);
 			return _tooltips;
 		}
 
 		[Value]
         public function get spacing():WidgetsSpacing {
-            if ( ! _spacing ) _spacing = new WidgetsSpacing(_style['spacing']);
 			return _spacing;
         }
   

@@ -9,8 +9,9 @@
  */
 package org.flowplayer.controls.time {
    
+	import org.flowplayer.ui.buttons.WidgetDecorator;
+
 	import org.flowplayer.controls.controllers.AbstractTimedWidgetController;
-	import org.flowplayer.controls.buttons.SurroundedWidget;
 	import org.flowplayer.controls.Controlbar;
 	import org.flowplayer.controls.SkinClasses;
 	
@@ -24,30 +25,38 @@ package org.flowplayer.controls.time {
 	import flash.events.Event;
 
 	public class TimeViewController extends AbstractTimedWidgetController {
-		
-		public static const NAME:String = "time";
-		public static const DEFAULTS:Object = {
-			visible: true
-		};
-		
+				
 		protected var _durationReached:Boolean = false;
 
-		public function TimeViewController(config:TimeViewConfig, player:Flowplayer, controlbar:Controlbar) {
-			super(config, player, controlbar);
+		public function TimeViewController() {
+			super();
 		}
-
 		
+		override public function get name():String {
+			return "time";
+		}
+		
+		override public function get defaults():Object {
+			return {
+				visible: true
+			};
+		}
+	
 		override protected function createWidget():void {			
-			_widget = new SurroundedWidget(	new TimeView(_config as TimeViewConfig, _player),
-											SkinClasses.getDisplayObject("fp.VolumeTopEdge"),
-											SkinClasses.getDisplayObject("fp.VolumeRightEdge"),
-											SkinClasses.getDisplayObject("fp.VolumeBottomEdge"),
-											SkinClasses.getDisplayObject("fp.VolumeLeftEdge"));
+			_widget = new TimeView(_config as TimeViewConfig, _player);
 			
 			_widget.addEventListener(TimeView.EVENT_REARRANGE, function(event:Event):void {
-				_controlbar.configure(_controlbar.config);
+				(_controlbar as Controlbar).configure((_controlbar as Controlbar).config);
 			});
         }
+
+		override protected function createDecorator():void {
+			_decoratedView = new WidgetDecorator(SkinClasses.getDisplayObject("fp.TimeTopEdge"),
+												 SkinClasses.getDisplayObject("fp.TimeRightEdge"),
+												 SkinClasses.getDisplayObject("fp.TimeBottomEdge"),
+												 SkinClasses.getDisplayObject("fp.TimeLeftEdge")).init(_widget);
+		}
+
 
 		override protected function onTimeUpdate(event:TimerEvent):void {
 			var status:Status = getPlayerStatus();
@@ -55,8 +64,8 @@ package org.flowplayer.controls.time {
 			
 			var duration:Number = status.clip ? status.clip.duration : 0;
 
-			((_widget as SurroundedWidget).widget as TimeView).duration = status.clip.live && duration == 0 ? -1 : duration;
-			((_widget as SurroundedWidget).widget as TimeView).time = _durationReached ? duration : status.time;
+			(_widget as TimeView).duration = status.clip.live && duration == 0 ? -1 : duration;
+			(_widget as TimeView).time = _durationReached ? duration : status.time;
 		}
 
 		override protected function addPlayerListeners():void {

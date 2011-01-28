@@ -14,8 +14,8 @@ package org.flowplayer.controls.config {
 	import org.flowplayer.util.Log;	
 	
 	import org.flowplayer.controls.Controlbar;
-	import org.flowplayer.controls.controllers.AbstractWidgetController;
-	import org.flowplayer.controls.controllers.AbstractButtonController;
+	import org.flowplayer.ui.controllers.AbstractWidgetController;
+	import org.flowplayer.ui.controllers.AbstractButtonController;
 	
 	/**
 	 * @author api
@@ -25,8 +25,8 @@ package org.flowplayer.controls.config {
 	// no setters here
 	public dynamic class WidgetsEnabledStates extends AbstractWidgetsProps {
 
-		public function WidgetsEnabledStates(styleProps:Object) {
-			super(styleProps);
+		public function WidgetsEnabledStates(styleProps:Object, widgets:Array) {
+			super(styleProps, widgets);
 			
 			handleAll();		
 			addWidgetsDefaults('enabled');
