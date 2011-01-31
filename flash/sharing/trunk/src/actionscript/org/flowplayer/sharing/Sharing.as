@@ -62,14 +62,6 @@ package org.flowplayer.sharing {
             model.left =  15;
             model.top =  15;
 
-
-            if (_player.screen.getDisplayObject().width < 450) {
-                model.width = "30%";
-                model.height = "20%";
-                model.left = "18%";
-                model.top = "15%";
-            }
-
             config.model = model;
 
             _dock = Dock.getInstance(player, config);

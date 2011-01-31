@@ -11,10 +11,9 @@
 package org.flowplayer.sharing {
     import flash.display.Stage;
 
-    import org.flowplayer.ui.ButtonConfig;
+    import org.flowplayer.ui.buttons.ButtonConfig;
     import org.flowplayer.util.PropertyBinder;
     import org.flowplayer.view.Flowplayer;
-    import org.flowplayer.viralvideos.PlayerEmbed;
     import org.flowplayer.viralvideos.config.EmbedConfig;
 
     public class Config {

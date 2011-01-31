@@ -9,10 +9,10 @@
  *    Additional Term, see http://flowplayer.org/license_gpl.html
  */
 package org.flowplayer.sharing {
-    import org.flowplayer.sharing.assets.FacebookIcon;
     import flash.display.DisplayObjectContainer;
 
-    import org.flowplayer.ui.ButtonConfig;
+    import org.flowplayer.sharing.assets.FacebookIcon;
+    import org.flowplayer.ui.buttons.ButtonConfig;
     import org.flowplayer.view.AnimationEngine;
     import org.flowplayer.viralvideos.icons.AbstractIcon;
 
