@@ -8,7 +8,7 @@
  *    Flowplayer is licensed under the GPL v3 license with an
  *    Additional Term, see http://flowplayer.org/license_gpl.html
  */
-package org.flowplayer.u.buttons {
+package org.flowplayer.ui.buttons {
     import flash.display.DisplayObject;
     import flash.display.DisplayObjectContainer;
 
