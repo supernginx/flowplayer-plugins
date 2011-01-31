@@ -9,7 +9,7 @@
  *    Additional Term, see http://flowplayer.org/license_gpl.html
  */
 package org.flowplayer.viralvideos.config {
-    import org.flowplayer.ui.ButtonConfig;
+    import org.flowplayer.ui.buttons.ButtonConfig;
 
     public class IconConfig {
         private var _buttons:ButtonConfig;

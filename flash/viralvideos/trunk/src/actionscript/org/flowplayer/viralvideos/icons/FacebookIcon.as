@@ -11,8 +11,7 @@
 package org.flowplayer.viralvideos.icons {
     import flash.display.DisplayObjectContainer;
 
-    import org.flowplayer.ui.AbstractButton;
-    import org.flowplayer.ui.ButtonConfig;
+    import org.flowplayer.ui.buttons.ButtonConfig;
     import org.flowplayer.view.AnimationEngine;
     import org.flowplayer.viral.assets.FacebookIcon;
 

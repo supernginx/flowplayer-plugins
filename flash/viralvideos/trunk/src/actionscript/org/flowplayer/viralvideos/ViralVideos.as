@@ -8,7 +8,6 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 package org.flowplayer.viralvideos {
-
     import flash.display.DisplayObject;
     import flash.display.Sprite;
     import flash.events.MouseEvent;
@@ -16,19 +15,17 @@ package org.flowplayer.viralvideos {
     import org.flowplayer.model.DisplayPluginModel;
     import org.flowplayer.model.PlayerEvent;
     import org.flowplayer.model.Plugin;
-    import org.flowplayer.model.PluginModel;
     import org.flowplayer.model.PluginEventType;
+    import org.flowplayer.model.PluginModel;
     import org.flowplayer.ui.Dock;
-    import org.flowplayer.ui.DockConfig;
-    import org.flowplayer.viralvideos.config.Config;
-    import org.flowplayer.ui.AutoHide;
-    import org.flowplayer.ui.CloseButton;
+    import org.flowplayer.ui.buttons.CloseButton;
     import org.flowplayer.util.PropertyBinder;
     import org.flowplayer.view.AbstractSprite;
     import org.flowplayer.view.FlowStyleSheet;
     import org.flowplayer.view.Flowplayer;
     import org.flowplayer.view.Styleable;
     import org.flowplayer.view.StyleableSprite;
+    import org.flowplayer.viralvideos.config.Config;
     import org.flowplayer.viralvideos.icons.EmailIcon;
     import org.flowplayer.viralvideos.icons.EmbedIcon;
     import org.flowplayer.viralvideos.icons.ShareIcon;

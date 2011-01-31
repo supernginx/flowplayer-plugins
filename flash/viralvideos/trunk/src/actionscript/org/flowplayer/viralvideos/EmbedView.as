@@ -18,11 +18,10 @@ package org.flowplayer.viralvideos {
     import flash.text.TextFormat;
 
     import org.flowplayer.model.DisplayPluginModel;
-    import org.flowplayer.ui.ButtonConfig;
-    import org.flowplayer.viralvideos.config.Config;
     import org.flowplayer.ui.DropdownMenu;
     import org.flowplayer.ui.DropdownMenuEvent;
-    import org.flowplayer.ui.LabelButton;
+    import org.flowplayer.ui.buttons.ButtonConfig;
+    import org.flowplayer.ui.buttons.LabelButton;
     import org.flowplayer.util.Arrange;
     import org.flowplayer.view.AnimationEngine;
     import org.flowplayer.view.Flowplayer;

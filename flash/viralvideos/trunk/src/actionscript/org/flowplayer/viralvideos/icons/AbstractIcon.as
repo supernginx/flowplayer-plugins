@@ -12,8 +12,8 @@ package org.flowplayer.viralvideos.icons {
     import flash.display.DisplayObjectContainer;
     import flash.text.TextField;
 
-    import org.flowplayer.ui.AbstractButton;
-    import org.flowplayer.ui.ButtonConfig;
+    import org.flowplayer.ui.buttons.AbstractButton;
+    import org.flowplayer.ui.buttons.ButtonConfig;
     import org.flowplayer.util.Arrange;
     import org.flowplayer.util.TextUtil;
     import org.flowplayer.view.AnimationEngine;
