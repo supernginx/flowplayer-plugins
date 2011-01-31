@@ -37,6 +37,8 @@ package org.flowplayer.controls.scrubber {
 		
 		public static const DRAG_EVENT:String = AbstractSlider.DRAG_EVENT;
 		
+		protected static const DRAG_THRESHOLD:int = 10;
+		
 		private var _bufferEnd:Number;
 		private var _bufferBar:Sprite;
 		private var _allowRandomSeek:Boolean;
@@ -133,9 +135,7 @@ package org.flowplayer.controls.scrubber {
 
 		protected override function onResize():void {
 			super.onResize();
-			
-			//log.error("onResize");
-			
+					
 			doDrawBufferBar(0, 0);
 			drawProgressBar(0, 0);
 			
@@ -162,7 +162,7 @@ package org.flowplayer.controls.scrubber {
             updateDraggerPos(event.info as Number, event.target as Clip);
             stop(null);
 			
-			//log.error("beforeSeek");
+			log.debug("beforeSeek");
 			doDrawBufferBar(0, 0);
         }
 
@@ -172,6 +172,9 @@ package org.flowplayer.controls.scrubber {
 
         private function seek(event:ClipEvent):void {
             log.debug("seek(), isPlaying: " + _player.isPlaying() + ", seek target time is " + event.info);
+
+			drawBufferBar();
+			
             if (! _player.isPlaying()) return;
 			
 			_currentClip = (event.target as Clip);
@@ -219,14 +222,18 @@ package org.flowplayer.controls.scrubber {
             _startDetectTimer = new Timer(200);
             _startDetectTimer.addEventListener(TimerEvent.TIMER,
                     function(event:TimerEvent):void {
-                        log.debug("on startDetectTimer()");
                         var currentTime:Number = _player.status.time;
+                        log.debug("on startDetectTimer()");
+
                         if (Math.abs(currentTime - time) > 0.2) {
                             _startDetectTimer.stop();
                             var endPos:Number = width - _dragger.width;
-                            var duration:Number = (clip.duration - time) * 1000;  
-                            log.debug("doStart(), starting an animation to x pos " + endPos + ", the duration is " + clip.duration + ", current pos is " + _dragger.x);
+							log.debug("animation duration is " + clip.duration + " - "+ time + " * 1000");
+							// var duration:Number = (clip.duration - time) * 1000;  
+                            var duration:Number = (clip.duration - currentTime) * 1000;  
                             updateDraggerPos(currentTime, clip);
+                            log.debug("doStart(), starting an animation to x pos " + endPos + ", the duration is " + duration + ", current pos is " + _dragger.x + ", time is "+ currentTime);
+
 //                            animationEngine.cancel(_dragger);
                             animationEngine.animateProperty(_dragger, "x", endPos, duration, null,
                                     function():void {
@@ -299,7 +306,7 @@ package org.flowplayer.controls.scrubber {
 		}
 
 		private function doDrawBufferBar(leftEdge:Number, rightEdge:Number):void {
-			//log.error("doDrawBufferBar("+ leftEdge +", "+ rightEdge +")");
+		//	log.error("doDrawBufferBar("+ leftEdge +", "+ rightEdge +")");
 			drawBar(_bufferBar, (_config as ScrubberConfig).bufferColor, (_config as ScrubberConfig).bufferAlpha, (_config as ScrubberConfig).bufferGradient, leftEdge, rightEdge);
 		}
 		
@@ -341,6 +348,8 @@ package org.flowplayer.controls.scrubber {
 
 		override protected function get maxDrag():Number {
 			if (_allowRandomSeek) return width - _dragger.width;
+			
+			//log.debug("maxDrag = "+ _bufferEnd + " * ("+ width + " - "+ _dragger.width +")  = "+ (_bufferEnd * (width - _dragger.width)));
 			return _bufferEnd * (width - _dragger.width);
 		}
 
@@ -352,10 +361,14 @@ package org.flowplayer.controls.scrubber {
 		
 		override protected function canDragTo(xPos:Number):Boolean {
 			//log.error("canDragTo ", _allowRandomSeek);
-			if (_allowRandomSeek) return true;
-			//log.error("xPos "+ xPos + " < " + _bufferBar.x + " + " + _bufferBar.width);
-			
-			return xPos < _bufferBar.x + _bufferBar.width;
+			if (_allowRandomSeek) return true;			
+			return (xPos < _bufferBar.x + _bufferBar.width + DRAG_THRESHOLD ) && (xPos > 0 - DRAG_THRESHOLD);
+		}
+		
+		override protected function onMouseUp(event:MouseEvent):void {
+        	if (! canDragTo(mouseX)/* && _dragger.x > 0*/) {
+				doStart(_currentClip);
+			}
 		}
 
 		override protected function onDispatchDrag():void {
@@ -368,13 +381,10 @@ package org.flowplayer.controls.scrubber {
                 log.debug("drawBars(): seek in progress");
                 return;
             }
-//log.error("drawBufferBar : "+ _dragger.x + " + " + _dragger.width + " / 2 > " + _bufferStart + " * " + width);
             if (_dragger.x + _dragger.width / 2 > _bufferStart * width) {
-	//log.error("doDrawBufferBar("+ _bufferStart +" * " + width + ", " + _bufferEnd + " * "+  width+ ")");
                 doDrawBufferBar(_bufferStart * width, _bufferEnd * width);
 //                drawProgressBar(_bufferStart * width);
             } else {
-	//log.error("clearBar");
                 clearBar(_bufferBar);
 //                _progressBar.graphics.clear();
 //                GraphicsUtil.removeGradient(_progressBar);
