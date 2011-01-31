@@ -17,7 +17,18 @@ package org.flowplayer.ui.buttons {
         private var _fontColor:String;
         private var _lineColor:String;
 		private var _enabled:Boolean = true;
-	//	private var _toggleOnColor:String;
+
+
+		public static function get defaultConfig():ButtonConfig {
+			var config:ButtonConfig = new ButtonConfig;
+			config.setColor("#ffffff");
+			config.setOverColor("#ffffff");
+			config.setFontColor("#000000");
+			config.setLineColor("transparent");
+			config.setEnabled(true);
+			
+			return config;
+		}
 
         /*
          * Color.
@@ -72,30 +83,6 @@ package org.flowplayer.ui.buttons {
             _overColor = color;
         }
 		
-		/*
-		 * Toggle Color.
-		 
-		public function get toggleOnColor():Number {
-			return StyleSheetUtil.colorValue(_toggleOnColor);
-		}
-		
-		public function get toggleOnAlpha():Number {
-			return StyleSheetUtil.colorAlpha(_toggleOnColor);
-		}
-		
-		public function get toggleOnColorRGB():Array {
-			return StyleSheetUtil.rgbValue(toggleOnColor);
-		}
-		
-		public function get toggleOnColorRGBA():Array {
-			var rgba:Array = toggleOnColorRGB;
-			rgba.push(toggleOnAlpha);
-			return rgba;
-		}
-		
-		public function setToggleOnColor(color:String):void {
-			_toggleOnColor = color;
-		}*/
 
         /*
          * Line color.
