@@ -8,17 +8,14 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 package org.flowplayer.viralvideos {
-
     import flash.events.MouseEvent;
     import flash.external.ExternalInterface;
-    import flash.net.URLRequest;
-    import flash.net.navigateToURL;
     import flash.text.TextField;
 
     import org.flowplayer.model.DisplayPluginModel;
     import org.flowplayer.model.PluginError;
     import org.flowplayer.model.PluginEventType;
-    import org.flowplayer.ui.AbstractButton;
+    import org.flowplayer.ui.buttons.AbstractButton;
     import org.flowplayer.util.Arrange;
     import org.flowplayer.util.URLUtil;
     import org.flowplayer.view.Flowplayer;

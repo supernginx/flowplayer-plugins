@@ -8,7 +8,6 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 package org.flowplayer.viralvideos {
-
     import com.adobe.serialization.json.JSON;
 
     import flash.display.Sprite;
@@ -23,11 +22,10 @@ package org.flowplayer.viralvideos {
     import flash.net.URLVariables;
     import flash.net.navigateToURL;
     import flash.text.TextField;
-
     import flash.utils.Timer;
 
     import org.flowplayer.model.DisplayPluginModel;
-    import org.flowplayer.ui.LabelButton;
+    import org.flowplayer.ui.buttons.LabelButton;
     import org.flowplayer.util.URLUtil;
     import org.flowplayer.view.Flowplayer;
     import org.flowplayer.viralvideos.config.Config;

@@ -10,13 +10,8 @@
 
 package org.flowplayer.viralvideos.config
 {
-    import org.flowplayer.model.DisplayProperties;
-    import org.flowplayer.model.DisplayPropertiesImpl;
-    import org.flowplayer.ui.AutoHideConfig;
-    import org.flowplayer.ui.ButtonConfig;
-	import org.flowplayer.ui.DockConfig;
-	import org.flowplayer.util.PropertyBinder;
-    import org.flowplayer.util.URLUtil;
+    import org.flowplayer.ui.buttons.ButtonConfig;
+    import org.flowplayer.util.PropertyBinder;
     import org.flowplayer.viralvideos.PlayerEmbed;
 
     public class Config {
