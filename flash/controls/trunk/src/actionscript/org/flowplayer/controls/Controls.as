@@ -112,6 +112,9 @@ package org.flowplayer.controls {
         }
 
 		public function onLoad(player:Flowplayer):void {
+			// with older versions of FP we are called twice
+			if ( _player )	return;
+		
 			// log.info("received player API! autohide == " + _config.autoHide.state);
 			_player = player;
 
@@ -128,7 +131,7 @@ package org.flowplayer.controls {
 		}
 
 		private function onAddedToStage(event:Event):void {
-            log.debug("addedToStage, config is " + _config);
+
             createControlBarMover();
         
     		addChild(_controlbar);
@@ -295,13 +298,13 @@ package org.flowplayer.controls {
 			if ( _controlBarMover )
 				_controlBarMover.show();
 	
-		//	log.error("Result : ", result);
+		//	log.info("Result : ", result);
             var newStyleProps:Object = _config.completeStyleProps(result);
             if (! styleProps) return newStyleProps;
 			  
-			log.error("About to add ", styleProps);
+		//	log.info("About to add ", styleProps);
 			_config.setNewProps(styleProps);
-		//	log.error("STYLE PROPS : ", _config.style);
+		//	log.info("STYLE PROPS : ", _config.style);
 			
 			updateControlbar();
             //redraw();
@@ -370,12 +373,15 @@ package org.flowplayer.controls {
                 log.debug("onPlayBegin(): clip has controls configuration, reconfiguring");
                 _currentControlsConfig = controlsConfig;
 				_config = createConfig(controlsConfig);
+				updateControlbar(true);
+				
             } else if (_currentControlsConfig) {
                 log.debug("onPlayBegin(): reverting to original configuration");
                 _config = createConfig(_originalConfig);
+				updateControlbar(true);
+
             }
 
-			updateControlbar(true);
         }
 
 

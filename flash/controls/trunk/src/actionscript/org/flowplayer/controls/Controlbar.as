@@ -105,7 +105,7 @@ package org.flowplayer.controls {
 		}
 
         private function createChildren():void {
-            //log.error("creating createChildren ", _config);
+            //log.info("creating createChildren ", _config);
 
 			addController(new ToggleFullScreenButtonController());
 			addController(new TogglePlayButtonController());
@@ -131,15 +131,13 @@ package org.flowplayer.controls {
 		}
 
 		public function configure(config:Config, animation:Boolean = false):void {
-			//log.error("Configuring new controls");
 			_config = config;
 			
 			immediatePositioning = ! animation;
 			
 			for ( var i:String in _widgetControllers ) {
-			//	var widget:AbstractWidgetController = _widgetControllers[i].controller;
 				var widgetConfig:Object = _config.getWidgetConfiguration(_widgetControllers[i]);
-			//	log.error("Got config for widget " + i, widgetConfig);
+			//	log.info("Got config for widget " + i, widgetConfig);
 				_widgetControllers[i].configure(widgetConfig);
 			}
 			
@@ -170,15 +168,15 @@ package org.flowplayer.controls {
 				var view:ConfigurableWidget = _widgetControllers[name].view;
 				var show:Boolean = _config.visible[name];
 				
-			//	log.debug("Getting visibility for " + name + " "+ show);
+				//	log.debug("Getting visibility for " + name + " "+ show);
 				
 				// remove it
 				if ( contains(view) && ! show ) {
-			//		log.error("Removing "+ name)
+					log.debug("Removing "+ name)
 					removeChildAnimate(view);
 				} else if ( ! contains(view) && show ) {
 					// add it
-			//		log.error("Adding "+ name);
+					log.debug("Adding "+ name);
 					resetView(view);
 					addChild(view);
 				}
@@ -188,7 +186,7 @@ package org.flowplayer.controls {
 		
 		private function resetView(view:DisplayObject):void {
 			
-			//log.error("resetView " + view)
+			log.info("resetView " + (view as ConfigurableWidget).name);
 			
 			_player.animationEngine.cancel(view);
 			view.visible = false;
@@ -218,14 +216,13 @@ package org.flowplayer.controls {
          * Rearranges the buttons when size changes.
          */
         override protected function onResize():void {
-            //log.error("arranging, width is " + width);
+            log.debug("arranging, width is " + width);
 
 			_bgFill.graphics.clear();
 			_bgFill.graphics.beginFill(0, 0);
 			_bgFill.graphics.drawRect(0, 0, width, height);
 			_bgFill.graphics.endFill();
 
-			//log.error("----------------- onResize --------------");
 
 			rearrangeWidgets();
 
@@ -338,13 +335,17 @@ package org.flowplayer.controls {
 		
 		private function arrangeX(clip:DisplayObject, pos:Number):void {
 			var a:AbstractSprite = clip as AbstractSprite
-            //log.error("arrangeX " + a.name + " x:" + pos + " currentX : "+ clip.x +" alpha: "+ clip.alpha + " parent "+ clip.parent);
-	
+			
+			
+			log.info("  ");
+            
+            log.info("arrangeX " + a.name + " x:" + pos + " currentX : "+ clip.x +" alpha: "+ clip.alpha + " parent "+ clip.parent);
+			log.info("Has animation running "+ _player.animationEngine.hasAnimationRunning(clip));
             clip.visible = true;
             if (! _player || _immediatePositioning) {
                 clip.x = pos;
 				clip.alpha = 1;
-				//log.error("Immediate Positionning " + a.name + " x:" + pos + " currentX : "+ clip.x +" alpha: "+ clip.alpha + " parent "+ clip.parent);
+				log.info("Immediate Positionning " + a.name + " x:" + pos + " currentX : "+ clip.x +" alpha: "+ clip.alpha + " parent "+ clip.parent);
 	            
                 return;
             }
@@ -356,11 +357,11 @@ package org.flowplayer.controls {
 				var currentAlpha:Number = clip.alpha;
 	            clip.alpha = 0;
 
-				//log.error("Animating alpha " + a.name + " x:" + pos + " currentX : "+ clip.x +" alpha: "+ clip.alpha + " parent "+ clip.parent);
+				log.info("Animating alpha " + a.name + " x:" + pos + " currentX : "+ clip.x +" alpha: "+ clip.alpha + " parent "+ clip.parent);
 	            _player.animationEngine.animateProperty(clip, "alpha", currentAlpha);
             }
             // rearrange a previously arrange widget
-			//log.error("Animating X " + a.name + " x:" + pos + " currentX : "+ clip.x +" alpha: "+ clip.alpha + " parent "+ clip.parent);
+			log.info("Animating X " + a.name + " x:" + pos + " currentX : "+ clip.x +" alpha: "+ clip.alpha + " parent "+ clip.parent);
 
             _player.animationEngine.animateProperty(clip, "x", pos);
         }

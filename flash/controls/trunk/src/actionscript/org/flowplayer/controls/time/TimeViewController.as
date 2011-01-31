@@ -70,6 +70,7 @@ package org.flowplayer.controls.time {
 
 		override protected function addPlayerListeners():void {
 			super.addPlayerListeners();
+			_player.playlist.onSeek(function(event:ClipEvent):void { onTimeUpdate(null); });
 			_player.playlist.onBeforeFinish(durationReached);
 		}
 

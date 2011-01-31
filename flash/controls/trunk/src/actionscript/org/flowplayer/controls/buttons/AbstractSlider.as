@@ -205,22 +205,16 @@ package org.flowplayer.controls.buttons {
 		
 		private function _onMouseUp(event:MouseEvent = null):void {
             onMouseUp(event);
-			log.debug("onMouseUp");
 //			_tooltip.hide();
 			if (event && event.target != this) return;
-			log.debug("onMouseUp2",  canDragTo(mouseX), _dragger.x);
 			
-			if (! canDragTo(mouseX) && _dragger.x > 0) return;
-						log.debug("onMouseUp3");
+			if (! canDragTo(mouseX) /*&& _dragger.x >= 0*/) return;
 						
 			_dragTimer.stop();
 			dragging();
 			updateCurrentPosFromDragger();
-			log.debug("onMouseUp4");
 			
-			if (! dispatchOnDrag) {
-				log.debug("onMouseUp5");
-				
+			if (! dispatchOnDrag) {				
 				dispatchDragEvent();
 			}
 		}
