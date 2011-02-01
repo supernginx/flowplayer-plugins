@@ -40,7 +40,7 @@ package org.flowplayer.ui.controllers {
 		}
 				
 		override protected function createWidget():void {
-			_widget = new GenericTooltipButton(name, new faceClass(), _config as TooltipButtonConfig, _player.animationEngine);
+			_widget = new GenericTooltipButton(new faceClass(), _config as TooltipButtonConfig, _player.animationEngine);
 		}
 		
 		protected function addWidgetListeners():void {

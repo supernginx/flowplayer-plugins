@@ -42,12 +42,12 @@ package org.flowplayer.ui.controllers {
 		}
 
 		override protected function createWidget():void {
-			var button:GenericTooltipButton = new GenericTooltipButton(	name, 
+			var button:GenericTooltipButton = new GenericTooltipButton( 
 												new faceClass(), 
 												((_config as ToggleButtonConfig).config as TooltipButtonConfig), 
 												_player.animationEngine);
 												
-			var downButton:GenericTooltipButton = new GenericTooltipButton(	downName, 
+			var downButton:GenericTooltipButton = new GenericTooltipButton(
 												new downFaceClass(), 
 												((_config as ToggleButtonConfig).downConfig as TooltipButtonConfig), 
 												_player.animationEngine);

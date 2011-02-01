@@ -21,18 +21,12 @@ package org.flowplayer.ui.buttons {
 	 */
 	public class GenericTooltipButton extends AbstractTooltipButton {
 
-		private var _name:String;
 		private var _buttonFace:DisplayObjectContainer;
 
-		public function GenericTooltipButton(name:String, face:DisplayObjectContainer, config:TooltipButtonConfig, animationEngine:AnimationEngine) {
-			_name = name;
+		public function GenericTooltipButton(face:DisplayObjectContainer, config:TooltipButtonConfig, animationEngine:AnimationEngine) {
 			_buttonFace = face;
 			super(config, animationEngine);
 		}
-
-        override public function get name():String {
-            return _name;
-        }
 
         override protected function createFace():DisplayObjectContainer {
             return _buttonFace;
