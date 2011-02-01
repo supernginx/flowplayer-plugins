@@ -71,8 +71,7 @@ package org.osmf.net {
                         , netStream:NetStream
                         , resource:DynamicStreamingResource
                         , metrics:NetStreamMetricsBase
-                        , switchingRules:Vector.<SwitchingRuleBase>
-                        , playStatusHandler:Function = null) {
+                        , switchingRules:Vector.<SwitchingRuleBase>) {
             super();
 
             this.connection = connection;
@@ -95,7 +94,7 @@ package org.osmf.net {
 
             // Make sure we get onPlayStatus first (by setting a higher priority)
             // so that we can expose a consistent state to clients.
-            NetClient(netStream.client).addHandler(NetStreamCodes.ON_PLAY_STATUS, playStatusHandler != null ? playStatusHandler : onPlayStatus, int.MAX_VALUE);
+            NetClient(netStream.client).addHandler(NetStreamCodes.ON_PLAY_STATUS, onPlayStatus, int.MAX_VALUE);
         }
 
         /**
