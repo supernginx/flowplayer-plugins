@@ -4,6 +4,7 @@ Version history:
 -----
 - Now works without configuring netConnectionUrl for the plugin, in this case the netConnectionUrl value is taken from the
   clip. Also works when it's resolved by the SMIL plugin etc.
+- Fix for using bwcheck with the playlist JS plugin
 
 3.2.3
 -----
