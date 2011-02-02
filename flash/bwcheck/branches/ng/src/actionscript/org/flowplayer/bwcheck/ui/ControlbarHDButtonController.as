@@ -66,13 +66,16 @@ package org.flowplayer.bwcheck.ui {
 
         override protected function onButtonClicked(event:ButtonEvent):void
         {
-            log.debug("onButtonClicked(), button down? " + isDown + ", can switch? " + _provider.canSwitchToHD());
+			var down:Boolean = ! isDown;
+            log.error("onButtonClicked(), button down? " + down + ", can switch? " + _provider.canSwitchToHD());
 
-            if (isDown && ! _provider.canSwitchToHD()) {
+            if (down && ! _provider.canSwitchToHD()) {
                 isDown = false;
                 return;
             }
-            _provider.hd = isDown;
+
+			isDown = down;
+            _provider.hd = down;
         }
 
     }
