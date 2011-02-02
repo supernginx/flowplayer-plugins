@@ -23,7 +23,7 @@ package org.flowplayer.ui.buttons {
 			_downButton= downButton;
 			
 			// will add the onButton
-			down = false;
+			isDown = false;
 		}
 
 		override public function addEventListener(type:String, listener:Function, useCapture:Boolean  = false, priority:int  = 0, useWeakReference:Boolean  = false):void {
@@ -67,7 +67,7 @@ package org.flowplayer.ui.buttons {
 			return _isDown;
 		}
 
-		public function set down(down:Boolean):void {
+		public function set isDown(down:Boolean):void {
 			if (isDown == down) return;
 			if ( contains(activeButton) ) removeChild(activeButton);
 			_isDown = down;

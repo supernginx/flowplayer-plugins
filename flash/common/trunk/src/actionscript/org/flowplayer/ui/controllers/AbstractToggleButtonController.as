@@ -55,8 +55,13 @@ package org.flowplayer.ui.controllers {
 			_widget = new ToggleButton(button, downButton);
 		}
 		
+		public function get isDown():Boolean {
+			return (_widget as ToggleButton).isDown;
+		}
 		
-		
+		public function set isDown(down:Boolean):void {
+			(_widget as ToggleButton).isDown = down;
+		}
 	
 		/* This is what you should override */
 		
