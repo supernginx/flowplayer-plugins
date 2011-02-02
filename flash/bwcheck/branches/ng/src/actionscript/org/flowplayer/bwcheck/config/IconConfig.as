@@ -10,21 +10,22 @@
  */
 package org.flowplayer.bwcheck.config {
     import org.flowplayer.ui.buttons.ButtonConfig;
+    import org.flowplayer.ui.buttons.TooltipButtonConfig;
 
     public class IconConfig {
-        private var _buttons:ButtonConfig;
+        private var _buttons:TooltipButtonConfig;
 
         public function IconConfig() {
-            _buttons = new ButtonConfig();
+            _buttons = new TooltipButtonConfig();
             _buttons.setColor("rgba(20,20,20,0.5)");
             _buttons.setOverColor("rgba(0,0,0,1)");        
         }
 
-        public function get buttons():ButtonConfig {
+        public function get buttons():TooltipButtonConfig {
             return _buttons;
         }
 
-        public function set buttons(value:ButtonConfig):void {
+        public function set buttons(value:TooltipButtonConfig):void {
             _buttons = value;
         }
     }
