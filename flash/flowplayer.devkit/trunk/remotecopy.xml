@@ -11,7 +11,7 @@
     </taskdef>
 
     <macrodef name="remotecopy">
-        <attribute name="bucketname" />
+        <attribute name="bucketname" default="flowplayer-releases" />
         <attribute name="keyfile" />
         <attribute name="pass" />
         <element name="releasefiles" />
@@ -47,7 +47,7 @@
         <element name="releasefiles" />
         <sequential>
             <echo message="releasing to @{remotedir}" />
-            <scp todir="@{remotedir}" keyfile="@{keyfile}" passphrase="" verbose="true">
+            <scp todir="@{remotedir}" keyfile="@{keyfile}" passphrase="" verbose="true" trust="yes">
                 <releasefiles />
             </scp>
         </sequential>
