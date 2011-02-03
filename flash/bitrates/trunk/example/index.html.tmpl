@@ -1,0 +1,428 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!-- 
+	Flowplayer website, forums & jQuery Tools by Tero Piirainen 
+	
+	Prefer web standards over Flash. Video is the only exception.	
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+
+		<title>Flowplayer - Flash Video Player for the Web</title>
+		<meta name="Description" content="Embed video streams to your website. Superior alternative to YouTube. Open Sourced under the GPL license. No other software makes this smoother." />	
+		<meta name="Keywords" content="video player for the web, flash video player,web media player,free video player,free flv player,mp4 flash player,mp4 player,open source video player,flash 9 video,flash video,web video,flv player,flv video" />		
+	
+
+	
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+	<meta name="Distribution" content="Global" />
+	<meta name="Author" content="Tero Piirainen" />
+	<meta name="Robots" content="index,follow" /> 
+ 
+		
+	<link rel="stylesheet" type="text/css" href="http://static.flowplayer.org/css/global-0.25.css" />
+	
+	
+	<script type="text/javascript" src="http://static.flowplayer.org/js/flowplayer-3.2.4.min.js"></script>	
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+	<script type="text/javascript"  src="http://cdn.jquerytools.org/1.2.4/full/jquery.tools.min.js"></script>
+	<script type="text/javascript"  src="global-0.50.js"></script>	
+	<link rel="stylesheet" type="text/css" href="http://static.flowplayer.org/tools/css/overlay-apple.css"/>
+	<script type="text/javascript"  src="http://flowplayer.org/tools/download/1.2.4/overlay/overlay.apple.min.js"></script>	
+	 
+	
+	
+	
+	<style type="text/css">
+		div.overlay {
+		width:1024px; 
+		height:432px;
+
+		}
+		
+		
+	</style>
+	
+
+	<!--[if lt IE 7]>
+		<style type="text/css">
+			@import "http://static.flowplayer.org/css/ie6.css?v=0.2";
+		</style>
+	<![endif]-->
+	
+	<!--[if lt IE 8]>
+		<style>
+			html { overflow-x:hidden; }
+			#content ol, #content ul  {margin-left: 50px; }
+		</style>
+	<![endif]-->	
+
+</head>
+
+<body id="plugins_bitrates">
+
+
+
+
+	
+	<div id="wrap">			 
+	<script type="text/javascript" >
+
+$(function() {		
+		
+	// positions for each overlay
+
+		
+	// setup triggers
+	$("button[rel]").each(function(i) {
+			
+		$(this).overlay({
+
+			// common configuration for each overlay
+			oneInstance: false, 
+			closeOnClick: false, 
+			 
+
+			// use apple effect
+			effect: 'apple'
+			
+		});			
+	});
+	
+});
+</script>
+
+<script type="text/javascript">
+
+// common methods and configs
+
+function switchStreamInfo(newItem) {
+     $f().getPlugin('content').setHtml("Switched to: " + newItem.streamName);
+    //var content = $f().getPlugin('content');
+    
+    //var info = "Chosen bitrate is: " + bitrateItem.bitrate + "<br /> Video file served: " + bitrateItem.url;
+    //content.setHtml(info);
+}
+
+function switchStreamInfoBegin(bitrateItem, newClipUrl) {
+    $f().getPlugin('content').setHtml("Will switch to: " + newItem.streamName + 
+                "from " + currentItem.streamName);
+    //var content = $f().getPlugin('content');
+    
+    //var info = "Chosen bitrate is: " + bitrateItem.bitrate + "<br /> Video file served: " + bitrateItem.url + "<br/>" + "Previous file served " + previousClipUrl;
+    //content.setHtml(info);
+}
+
+function bwDoneInfo(mappedBitrate, detectedBitrate) {
+	var content = $f().getPlugin('content');
+	var info = "Your speed is: " + detectedBitrate + "<br /> Your chosen bitrate: " + mappedBitrate.bitrate + "<br /> Video file served: " + mappedBitrate.url;
+	content.setHtml(info);
+}
+
+var httpPlaylist =  [
+			            {
+			              url: "bbb.flv", 
+			              bitrates: [
+			              			{url: "bbb_160x90.flv", width: 160, height: 90, bitrate: 100},
+			              			{url: "bbb_320x180.flv", width: 320, height: 180, bitrate: 180},
+			              			{url: "bbb_480x270.flv", width: 480, height: 270, bitrate: 270, normal: true},
+			              			{url: "bbb_640x360.flv", width: 640, height: 360, bitrate: 360, hd: true}
+			              		    ]
+			            }
+        			];
+        			
+        			
+
+var psuedoPlaylist =  [
+			            {
+			              url: "bbb.flv", 
+			              bitrates: [
+			              			{url: "bbb_160x90.flv", width: 160, height: 90, bitrate: 100, label: "100k"},
+			              			{url: "bbb_320x180.flv", width: 320, height: 180, bitrate: 180, label: "180k"},
+			              			{url: "bbb_480x270.flv", width: 480, height: 270, bitrate: 270, label: "270k", normal: true},
+			              			{url: "bbb_640x360.flv", width: 640, height: 360, bitrate: 360, label: "360k", hd: true}
+			              		    ]
+			            }
+        			];
+        			
+var fmsPlaylist =  [
+			            {
+			              url: "bbb.flv", 
+			              bitrates: [
+			              			{url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100, label: "100k"},
+			              			{url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180, label: "180k"},
+			              			{url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270, label: "270k", normal: true},
+			              			{url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360, label: "360k", hd: true}
+			              		    ]
+			            }
+        			];
+        			
+var wowzaPlaylist = [
+			            {
+			              url: "flv:bbb", 
+			
+			              bitrates: [
+			                        {url: "vod/demo.flowplayer/bbb_160x90", width: 160, height: 90, bitrate: 100, label: "100k"},
+			                        {url: "vod/demo.flowplayer/bbb_320x180", width: 320, height: 180, bitrate: 180, label: "180k"},
+			                        {url: "vod/demo.flowplayer/bbb_480x270", width: 480, height: 270, bitrate: 270, label: "270k", normal: true},
+			                        {url: "vod/demo.flowplayer/bbb_640x360", width: 640, height: 360, bitrate: 360, label: "360k", hd:true}
+						           ]
+						}
+			        ]
+			        
+			        
+ var hdButtonPlaylist = [
+                     {
+                     url: "mp4:bbb",
+                     bitrates: [
+                             { 
+                                url: "mp4:bbb-400", width: 320, height: 180, bitrate: 400,
+                                // this is the default bitrate, the playback kicks off with this and after that
+                                // Quality Of Service monitoring adjusts to the most appropriate bitrate
+                                isDefault: true,
+                                normal: true 
+                             },
+                             { url: "mp4:bbb-1600", width: 1080, bitrate: 1600, hd: true }
+                      ]
+                     }
+                    ];
+
+var testPlaylist = [
+			  		   {
+			        	url: "flv:bbb",
+			   			bitrates: [
+								{ url: "mp4:vod/video.tradingwizards/Stalker_40Kbps.mov", width: 214, bitrate: 40 },
+								{ url: "mp4:vod/video.tradingwizards/Stalker_100Kbps.mov", width: 214, bitrate: 100 },
+								{ 
+									url: "mp4:vod/video.tradingwizards/Stalker_300Kbps.mov", width: 214, height: 120, bitrate: 300,
+									isDefault: true 
+								},
+								{ url: "mp4:vod/video.tradingwizards/Stalker_800Kbps.mov", width: 428, bitrate: 800 },
+								{ url: "mp4:vod/video.tradingwizards/Stalker_1536Kbps.mov", width: 854, bitrate: 1536 }]
+						}
+					]
+					
+var contentPlugin = {
+						url: '../flowplayer.content.swf',
+						prototype: 'content',
+						top: 0,
+						left: 0,
+						width: 350 
+					};
+
+var loggingConfig = { level: 'debug', filter: 'org.flowplayer.rtmp.*, org.flowplayer.bwcheck.*, org.flowplayer.cluster.*,org.flowplayer.controller.*' };
+
+$(document).ready(function () {	
+	$('.checkBandwidthBtn').click(function() {
+		var content = $f().getPlugin('content');
+		content.setHtml("Detecting Bandwidth Please Wait ...");
+		$f().getPlugin("bwcheck").checkBandwidth();
+	});
+		
+});
+
+</script>
+		
+		<div id="content"> 
+		
+		
+
+
+
+
+
+
+<h1 style="background-image:url(http://www.flowplayer.org/img/title/streaminge.png)">
+	<strong>Bandwidth</strong> detection
+	<em>Selecting the best bitrate based on available bandwidth</em>
+</h1>
+
+
+
+<h2>Introduction</h2>
+
+
+
+<h2>List Of Examples</h2>
+
+<ul>
+	<li><a href="#rtmp_dynamicswitching">Dynamic Stream Switching Example.</a></li>	
+</ul>
+
+<h2>Examples</h2>
+
+<a name="rtmp_dynamicswitching"></a>
+<h2><em>RTMP</em> With Dynamic Stream Switching Example</h2>
+
+
+
+<h3>Dynamic stream switching</h3>
+
+<p>
+    Dynamic stream switching is available in Adobe's FMS 3.5 and Wowza Media Server 2. In dynamic switching the available bandwidth is monitored
+    while the stream plays and the stream is switched on-the-fly if the available bandwidth decreases or increases, it will also switch the stream in realtime when a bitrate is manually selected using setBitrate.
+    See more information about dynamic stream switching in <a href="http://www.adobe.com/devnet/flashmediaserver/articles/dynamic_stream_switching.html" class="external">Dynamic stream switching with Flash Media Server 3</a>.
+</p>
+
+<p>
+    If dynamic stream switching is enabled, a bandwidth check at the start is not required, only an initial bitrate with the defaultBitrate can be set 
+    and the quality of service monitor will upgrade the stream in realtime. 
+</p>
+<p>
+   In Wowza and Red5 the bandwidth check applications require to be installed as they are not enabled by default. 
+</p>
+
+<p>
+    Demonstrates the functionality of the default stream selection strategy. Regardless of the available bandwidth the player will only choose the bitrate to match the available player dimensions when a bitrate is chosen from the list. 
+</p>
+
+<div style="width:425px;height:300px;margin:30px auto">
+   
+
+
+<!-- player container-->
+
+
+<a
+    href="skyandice"
+    style="display:block;width:425x;height:300px;"
+    id="rtmpDynamicPlayer">
+
+    <!-- splash image inside the container -->
+    <img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" width="320" height="205" />
+
+</a>
+
+<!-- Flowplayer installation and configuration -->
+<script type="text/javascript" >
+flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
+    playlist: hdButtonPlaylist,
+    // configure the required plugins
+    plugins:  {
+
+        // RTMP streaming plugin
+        rtmp: {
+            url: '../flowplayer.rtmp.swf',
+            netConnectionUrl: 'rtmp://s3b78u0kbtx79q.cloudfront.net/cfx/st'
+            //netConnectionUrl: 'rtmp://vod01.netdna.com/play'
+        },
+
+        bitrates: {
+            url: '@MAIN_PLAYER_SWF@'
+        },
+
+        // bandwidth check plugin
+        bwcheck: {
+            url: '../flowplayer.bwcheck.swf',
+
+            //serverType: 'wowza',
+            serverType: 'fms',
+            // Use this connection for bandwidth detection
+            netConnectionUrl: 'rtmp://s3b78u0kbtx79q.cloudfront.net/cfx/st',
+            //netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
+            bitrateProfileName: 'RTMPBitrateProfile',
+            dynamic: true,
+            
+            //required to enable initial bandwidth checking while als having dynamic switching enabled
+            checkOnStart:true, 
+    
+            hdButton: "controls"
+            
+        }
+
+    },
+
+    // configure the clip to use the rtmp plugin for providing video data
+    // and the bwcheck plugin in resolving the URLs
+    clip: {
+        provider: 'rtmp',
+        //start: 150,
+        // use bwcheck for all clips
+        urlResolvers: 'bwcheck'
+        
+    },
+    log: loggingConfig
+
+});
+
+</script>
+
+
+
+</div>
+
+
+<button type="button" class="checkBandwidthBtn">Check Bandwidth</button>
+        
+
+        
+<button rel="div.overlay:eq(4)" type="button">Configuration For This Example</button>
+
+<div class="overlay">
+<div class="box code">
+<pre><code class="javascript">
+flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
+    playlist: wowzaPlaylist,
+    // configure the required plugins
+    plugins:  {
+
+        // RTMP streaming plugin
+        rtmp: {
+            url: '../flowplayer.rtmp.swf',
+            netConnectionUrl: 'rtmp://vod01.netdna.com/play'
+        },
+        content: contentPlugin,
+        
+        bitrates: {
+            url: '@MAIN_PLAYER_SWF@'
+        },
+
+        // bandwidth check plugin
+        bwcheck: {
+            url: '../flowplayer.bwcheck.swf',
+
+            serverType: 'wowza',
+
+            // Use this connection for bandwidth detection
+            netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
+            bitrateProfileName: 'RTMPBitrateProfile',
+            dynamic: true,
+            
+            //required to enable initial bandwidth checking while als having dynamic switching enabled
+            checkOnStart:true, 
+            onStreamSwitch: switchStreamInfo,
+            // this method is called when the bandwidth check is done
+            onBwDone: bwDoneInfo
+        }
+
+    },
+
+    // configure the clip to use the rtmp plugin for providing video data
+    // and the bwcheck plugin in resolving the URLs
+    clip: {
+        provider: 'rtmp',
+        
+        // use bwcheck for all clips
+        urlResolvers: 'bwcheck'
+        
+    },
+    log: loggingConfig
+
+});
+
+
+        
+
+</code></pre>
+</div>
+</div>
+
+	
+			
+</body>
+
+</html>
