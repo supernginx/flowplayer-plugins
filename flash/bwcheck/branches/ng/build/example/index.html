@@ -367,7 +367,7 @@ $(document).ready(function () {
 <!-- Flowplayer installation and configuration -->
 <script type="text/javascript" >
 
-flowplayer("player", "@PLAYER_SWF@", {
+flowplayer("player", "../flowplayer.swf", {
 	playlist: httpPlaylist,
 	// configure the required plugin
 	plugins:  {
@@ -375,7 +375,7 @@ flowplayer("player", "@PLAYER_SWF@", {
 		
 		// bandwidth check plugin
 		bwcheck: {  
-			url: '@MAIN_PLAYER_SWF@',   
+			url: '../flowplayer.bwcheck-3.2.6-dev.swf',   
 			netConnectionUrl: 'http://releases.flowplayer.org/swf/flowplayer-3.1.5.swf',
 			bitrateProfileName: 'HTTPBitrateProfile',
 			onStreamSwitch: switchStreamInfo,
@@ -455,7 +455,7 @@ $(document).ready(function () {
 		
 });
 
-flowplayer("player", "@PLAYER_SWF@", {
+flowplayer("player", "../flowplayer.swf", {
 	playlist: httpPlaylist,
 	// configure the required plugin
 	plugins:  {
@@ -463,7 +463,7 @@ flowplayer("player", "@PLAYER_SWF@", {
 		
 		// bandwidth check plugin
 		bwcheck: {  
-			url: '@MAIN_PLAYER_SWF@',   
+			url: '../flowplayer.bwcheck-3.2.6-dev.swf',   
 			netConnectionUrl: 'http://releases.flowplayer.org/swf/flowplayer-3.1.5.swf',
 			bitrateProfileName: 'HTTPBitrateProfile',
 			onStreamSwitch: switchStreamInfo,
@@ -743,7 +743,7 @@ playlist: [
 <!-- Flowplayer installation and configuration -->
 <script type="text/javascript" >
 
-flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
+flowplayer("rtmpPlayer", "../flowplayer.swf", {
 	playlist: wowzaPlaylist,
 	// configure the required plugins
 	plugins:  {
@@ -757,7 +757,7 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 
 		// bandwidth check plugin
 		bwcheck: {
-			url: '@MAIN_PLAYER_SWF@',
+			url: '../flowplayer.bwcheck-3.2.6-dev.swf',
 
 			// Wowza media server bandwidth checking type
 			serverType: 'wowza',
@@ -801,7 +801,7 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 
 <div class="overlay">
 <div class="box code">
-<pre><code class="javascript">flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
+<pre><code class="javascript">flowplayer("rtmpPlayer", "../flowplayer.swf", {
 	playlist: wowzaPlaylist,
 	// configure the required plugins
 	plugins:  {
@@ -815,7 +815,7 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 
 		// bandwidth check plugin
 		bwcheck: {
-			url: '@MAIN_PLAYER_SWF@',
+			url: '../flowplayer.bwcheck-3.2.6-dev.swf',
 
 			// Wowza media server bandwidth checking type
 			serverType: 'wowza',
@@ -878,7 +878,7 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 <!-- Flowplayer installation and configuration -->
 <script type="text/javascript" >
 
-flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
+flowplayer("psuedoPlayer", "../flowplayer.swf", {
 	playlist: psuedoPlaylist,
 	// configure the required plugin
 	plugins:  {
@@ -888,7 +888,7 @@ flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
 		},
 		// bandwidth check plugin
 		bwcheck: {  
-			url: '@MAIN_PLAYER_SWF@',   
+			url: '../flowplayer.bwcheck-3.2.6-dev.swf',   
 			netConnectionUrl: 'http://releases.flowplayer.org/swf/flowplayer-3.1.5.swf',
 			bitrateProfileName: 'PseudoBitrateProfile2',
 			onStreamSwitch: switchStreamInfo,
@@ -917,7 +917,7 @@ flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
 
 <div class="overlay">
 <div class="box code">
-<pre><code class="javascript">flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
+<pre><code class="javascript">flowplayer("psuedoPlayer", "../flowplayer.swf", {
 	playlist: psuedoPlaylist,
 	// configure the required plugin
 	plugins:  {
@@ -927,7 +927,7 @@ flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
 		},
 		// bandwidth check plugin
 		bwcheck: {  
-			url: '@MAIN_PLAYER_SWF@',   
+			url: '../flowplayer.bwcheck-3.2.6-dev.swf',   
 			netConnectionUrl: 'http://releases.flowplayer.org/swf/flowplayer-3.1.5.swf',
 			bitrateProfileName: 'PseudoBitrateProfile',
 			onStreamSwitch: switchStreamInfo,
@@ -978,7 +978,7 @@ flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
 <!-- Flowplayer installation and configuration -->
 <script type="text/javascript" >
 
-$f("rtmpManualPlayer", "@PLAYER_SWF@", {
+$f("rtmpManualPlayer", "../flowplayer.swf", {
 	playlist: wowzaPlaylist,
 	// configure the required plugins
 	plugins:  {
@@ -993,7 +993,7 @@ $f("rtmpManualPlayer", "@PLAYER_SWF@", {
 
 		// bandwidth check plugin
 		bwcheck: {
-			url: '@MAIN_PLAYER_SWF@',
+			url: '../flowplayer.bwcheck-3.2.6-dev.swf',
 
 			serverType: 'wowza',
 
@@ -1059,7 +1059,7 @@ $f("rtmpManualPlayer", "@PLAYER_SWF@", {
 
 <pre>
 <code class="javascript">
-$f("rtmpManualPlayer", "@PLAYER_SWF@", {
+$f("rtmpManualPlayer", "../flowplayer.swf", {
 	playlist: wowzaPlaylist,
 	// configure the required plugins
 	plugins:  {
@@ -1073,7 +1073,7 @@ $f("rtmpManualPlayer", "@PLAYER_SWF@", {
 
 		// bandwidth check plugin
 		bwcheck: {
-			url: '@MAIN_PLAYER_SWF@',
+			url: '../flowplayer.bwcheck-3.2.6-dev.swf',
 
 			serverType: 'wowza',
 
@@ -1162,7 +1162,7 @@ $(document).ready(function () {
 
 <!-- Flowplayer installation and configuration -->
 <script type="text/javascript" >
-flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
+flowplayer("rtmpDynamicPlayer", "../flowplayer.swf", {
 	playlist: hdButtonPlaylist,
 	// configure the required plugins
 	plugins:  {
@@ -1177,7 +1177,7 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 
 		// bandwidth check plugin
 		bwcheck: {
-			url: '@MAIN_PLAYER_SWF@',
+			url: '../flowplayer.bwcheck-3.2.6-dev.swf',
 
 			//serverType: 'wowza',
             serverType: 'fms',
@@ -1233,7 +1233,7 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 <div class="overlay">
 <div class="box code">
 <pre><code class="javascript">
-flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
+flowplayer("rtmpDynamicPlayer", "../flowplayer.swf", {
 	playlist: wowzaPlaylist,
 	// configure the required plugins
 	plugins:  {
@@ -1247,7 +1247,7 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 
 		// bandwidth check plugin
 		bwcheck: {
-			url: '@MAIN_PLAYER_SWF@',
+			url: '../flowplayer.bwcheck-3.2.6-dev.swf',
 
 			serverType: 'wowza',
 
@@ -1321,7 +1321,7 @@ $(document).ready(function () {
 
 <!-- Flowplayer installation and configuration -->
 <script type="text/javascript" >
-flowplayer("rtmpDynamicFMSPlayer", "@PLAYER_SWF@", {
+flowplayer("rtmpDynamicFMSPlayer", "../flowplayer.swf", {
 	playlist: fmsPlaylist,
 	// configure the required plugins
 	plugins:  {
@@ -1335,7 +1335,7 @@ flowplayer("rtmpDynamicFMSPlayer", "@PLAYER_SWF@", {
 
 		// bandwidth check plugin
 		bwcheck: {
-			url: '@MAIN_PLAYER_SWF@',
+			url: '../flowplayer.bwcheck-3.2.6-dev.swf',
 
 			serverType: 'wowza',
 
@@ -1387,7 +1387,7 @@ flowplayer("rtmpDynamicFMSPlayer", "@PLAYER_SWF@", {
 <div class="overlay">
 <div class="box code">
 <pre><code class="javascript">
-flowplayer("rtmpDynamicFMSPlayer", "@PLAYER_SWF@", {
+flowplayer("rtmpDynamicFMSPlayer", "../flowplayer.swf", {
 	playlist: fmsPlaylist,
 	// configure the required plugins
 	plugins:  {
@@ -1401,7 +1401,7 @@ flowplayer("rtmpDynamicFMSPlayer", "@PLAYER_SWF@", {
 
 		// bandwidth check plugin
 		bwcheck: {
-			url: '@MAIN_PLAYER_SWF@',
+			url: '../flowplayer.bwcheck-3.2.6-dev.swf',
 
 			serverType: 'wowza',
 
@@ -1471,7 +1471,7 @@ $(document).ready(function () {
 
 <!-- Flowplayer installation and configuration -->
 <script type="text/javascript" >
-flowplayer("rtmpDynamicNoCheckPlayer", "@PLAYER_SWF@", {
+flowplayer("rtmpDynamicNoCheckPlayer", "../flowplayer.swf", {
 	playlist: wowzaPlaylist,
 	// configure the required plugins
 	plugins:  {
@@ -1485,7 +1485,7 @@ flowplayer("rtmpDynamicNoCheckPlayer", "@PLAYER_SWF@", {
 
 		// bandwidth check plugin
 		bwcheck: {
-			url: '@MAIN_PLAYER_SWF@',
+			url: '../flowplayer.bwcheck-3.2.6-dev.swf',
 
 			serverType: 'wowza',
 
@@ -1522,7 +1522,7 @@ flowplayer("rtmpDynamicNoCheckPlayer", "@PLAYER_SWF@", {
 <div class="overlay">
 <div class="box code">
 <pre><code class="javascript">
-flowplayer("rtmpDynamicNoCheckPlayer", "@PLAYER_SWF@", {
+flowplayer("rtmpDynamicNoCheckPlayer", "../flowplayer.swf", {
 	playlist: wowzaPlaylist,
 	// configure the required plugins
 	plugins:  {
@@ -1536,7 +1536,7 @@ flowplayer("rtmpDynamicNoCheckPlayer", "@PLAYER_SWF@", {
 
 		// bandwidth check plugin
 		bwcheck: {
-			url: '@MAIN_PLAYER_SWF@',
+			url: '../flowplayer.bwcheck-3.2.6-dev.swf',
 
 			serverType: 'wowza',
 
@@ -1599,7 +1599,7 @@ flowplayer("rtmpDynamicNoCheckPlayer", "@PLAYER_SWF@", {
 
 <!-- Flowplayer installation and configuration -->
 <script type="text/javascript" >
-flowplayer("rtmpSelectionPlayer", "@PLAYER_SWF@", {
+flowplayer("rtmpSelectionPlayer", "../flowplayer.swf", {
 	playlist: wowzaPlaylist,
 	// configure the required plugins
 	plugins:  {
@@ -1613,7 +1613,7 @@ flowplayer("rtmpSelectionPlayer", "@PLAYER_SWF@", {
 
 		// bandwidth check plugin
 		bwcheck: {
-			url: '@MAIN_PLAYER_SWF@',
+			url: '../flowplayer.bwcheck-3.2.6-dev.swf',
 
 			serverType: 'wowza',
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
@@ -1677,7 +1677,7 @@ flowplayer("rtmpSelectionPlayer", "@PLAYER_SWF@", {
 <div class="box code">
 <pre><code class="javascript">
 
-flowplayer("rtmpSelectionPlayer", "@PLAYER_SWF@", {
+flowplayer("rtmpSelectionPlayer", "../flowplayer.swf", {
 	playlist: wowzaPlaylist,
 	// configure the required plugins
 	plugins:  {
@@ -1691,7 +1691,7 @@ flowplayer("rtmpSelectionPlayer", "@PLAYER_SWF@", {
 
 		// bandwidth check plugin
 		bwcheck: {
-			url: '@MAIN_PLAYER_SWF@',
+			url: '../flowplayer.bwcheck-3.2.6-dev.swf',
 
 			serverType: 'wowza',
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
@@ -1778,7 +1778,7 @@ $(document).ready(function () {
 <script type="text/javascript" >
 var info = null;
 var bufferLength = 8;
-flowplayer("rtmpSelectionResizePlayer", "@PLAYER_SWF@", {
+flowplayer("rtmpSelectionResizePlayer", "../flowplayer.swf", {
 	playlist: [
 			            {
 			              url: "flv:bbb", 
@@ -1867,7 +1867,7 @@ flowplayer("rtmpSelectionResizePlayer", "@PLAYER_SWF@", {
 
 		// bandwidth check plugin
 		bwcheck: {
-			url: '@MAIN_PLAYER_SWF@',
+			url: '../flowplayer.bwcheck-3.2.6-dev.swf',
 
 			serverType: 'wowza',
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
@@ -1989,7 +1989,7 @@ flowplayer("rtmpSelectionResizePlayer", "@PLAYER_SWF@", {
 <div class="overlay">
 <div class="box code">
 <pre><code class="javascript">
-flowplayer("rtmpSelectionResizePlayer", "@PLAYER_SWF@", {
+flowplayer("rtmpSelectionResizePlayer", "../flowplayer.swf", {
 	playlist: [
 			            {
 			              url: "flv:bbb", 
@@ -2078,7 +2078,7 @@ flowplayer("rtmpSelectionResizePlayer", "@PLAYER_SWF@", {
 
 		// bandwidth check plugin
 		bwcheck: {
-			url: '@MAIN_PLAYER_SWF@',
+			url: '../flowplayer.bwcheck-3.2.6-dev.swf',
 
 			serverType: 'wowza',
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
@@ -2212,7 +2212,7 @@ flowplayer("rtmpSelectionResizePlayer", "@PLAYER_SWF@", {
 
 <!-- Flowplayer installation and configuration -->
 <script type="text/javascript" >
-flowplayer("rtmpQosPlayer", "@PLAYER_SWF@", {
+flowplayer("rtmpQosPlayer", "../flowplayer.swf", {
 	playlist: wowzaPlaylist,
 	// configure the required plugins
 	plugins:  {
@@ -2226,7 +2226,7 @@ flowplayer("rtmpQosPlayer", "@PLAYER_SWF@", {
 
 		// bandwidth check plugin
 		bwcheck: {
-			url: '@MAIN_PLAYER_SWF@',
+			url: '../flowplayer.bwcheck-3.2.6-dev.swf',
 
 			serverType: 'wowza',
 
@@ -2281,7 +2281,7 @@ flowplayer("rtmpQosPlayer", "@PLAYER_SWF@", {
 <div class="overlay">
 <div class="box code">
 <pre><code class="javascript">
-flowplayer("rtmpQosPlayer", "@PLAYER_SWF@", {
+flowplayer("rtmpQosPlayer", "../flowplayer.swf", {
 	playlist: wowzaPlaylist,
 	// configure the required plugins
 	plugins:  {
@@ -2295,7 +2295,7 @@ flowplayer("rtmpQosPlayer", "@PLAYER_SWF@", {
 
 		// bandwidth check plugin
 		bwcheck: {
-			url: '@MAIN_PLAYER_SWF@',
+			url: '../flowplayer.bwcheck-3.2.6-dev.swf',
 
 			serverType: 'wowza',
 
@@ -2421,7 +2421,7 @@ The media:content tag needs to be grouped in a media:group tag like so:
 
 <!-- Flowplayer installation and configuration -->
 <script type="text/javascript" >
-flowplayer("rtmpRSSPlayer", "@PLAYER_SWF@", {
+flowplayer("rtmpRSSPlayer", "../flowplayer.swf", {
 	playlist: "example.rss",
 	// configure the required plugins
 	plugins:  {
@@ -2435,7 +2435,7 @@ flowplayer("rtmpRSSPlayer", "@PLAYER_SWF@", {
 
 		// bandwidth check plugin
 		bwcheck: {
-			url: '@MAIN_PLAYER_SWF@',
+			url: '../flowplayer.bwcheck-3.2.6-dev.swf',
 
 			serverType: 'wowza',
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
@@ -2475,7 +2475,7 @@ flowplayer("rtmpRSSPlayer", "@PLAYER_SWF@", {
 <div class="overlay">
 <div class="box code">
 <pre><code class="javascript">
-flowplayer("rtmpRSSPlayer", "@PLAYER_SWF@", {
+flowplayer("rtmpRSSPlayer", "../flowplayer.swf", {
 	playlist: "example.rss",
 	// configure the required plugins
 	plugins:  {
@@ -2489,7 +2489,7 @@ flowplayer("rtmpRSSPlayer", "@PLAYER_SWF@", {
 
 		// bandwidth check plugin
 		bwcheck: {
-			url: '@MAIN_PLAYER_SWF@',
+			url: '../flowplayer.bwcheck-3.2.6-dev.swf',
 
 			serverType: 'wowza',
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
@@ -2547,7 +2547,7 @@ flowplayer("rtmpRSSPlayer", "@PLAYER_SWF@", {
 <!-- Flowplayer installation and configuration -->
 <script type="text/javascript" >
 
-flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
+flowplayer("rtmpBufferPlayer", "../flowplayer.swf", {
 	playlist: wowzaPlaylist,
 	// configure the required plugins
 	plugins:  {
@@ -2561,7 +2561,7 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
 
 		// bandwidth check plugin
 		bwcheck: {
-			url: '@MAIN_PLAYER_SWF@',
+			url: '../flowplayer.bwcheck-3.2.6-dev.swf',
 
 			serverType: 'wowza',
 
@@ -2603,7 +2603,7 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
 <div class="overlay">
 <div class="box code">
 <pre><code class="javascript">
-flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
+flowplayer("rtmpBufferPlayer", "../flowplayer.swf", {
 	playlist: wowzaPlaylist,
 	// configure the required plugins
 	plugins:  {
@@ -2617,7 +2617,7 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
 
 		// bandwidth check plugin
 		bwcheck: {
-			url: '@MAIN_PLAYER_SWF@',
+			url: '../flowplayer.bwcheck-3.2.6-dev.swf',
 
 			serverType: 'wowza',
 
@@ -2676,7 +2676,7 @@ flowplayer("rtmpBufferPlayer", "@PLAYER_SWF@", {
 <!-- Flowplayer installation and configuration -->
 <script type="text/javascript" >
 
-flowplayer("rtmpErrorPlayer", "@PLAYER_SWF@", {
+flowplayer("rtmpErrorPlayer", "../flowplayer.swf", {
 	playlist: wowzaPlaylist,
 	// configure the required plugins
 	plugins:  {
@@ -2690,7 +2690,7 @@ flowplayer("rtmpErrorPlayer", "@PLAYER_SWF@", {
 
 		// bandwidth check plugin
 		bwcheck: {
-			url: '@MAIN_PLAYER_SWF@',
+			url: '../flowplayer.bwcheck-3.2.6-dev.swf',
 
 			// Wowza media server bandwidth checking type
 			serverType: 'wowza',
@@ -2734,7 +2734,7 @@ flowplayer("rtmpErrorPlayer", "@PLAYER_SWF@", {
 
 <div class="overlay">
 <div class="box code">
-<pre><code class="javascript">flowplayer("rtmpErrorPlayer", "@PLAYER_SWF@", {
+<pre><code class="javascript">flowplayer("rtmpErrorPlayer", "../flowplayer.swf", {
 	playlist: wowzaPlaylist,
 	// configure the required plugins
 	plugins:  {
@@ -2748,7 +2748,7 @@ flowplayer("rtmpErrorPlayer", "@PLAYER_SWF@", {
 
 		// bandwidth check plugin
 		bwcheck: {
-			url: '@MAIN_PLAYER_SWF@',
+			url: '../flowplayer.bwcheck-3.2.6-dev.swf',
 
 			// Wowza media server bandwidth checking type
 			serverType: 'wowza',
@@ -3012,7 +3012,7 @@ flowplayer("rtmpErrorPlayer", "@PLAYER_SWF@", {
 <!-- Flowplayer installation and configuration -->
 <script type="text/javascript" >
 
-$f("javascriptPluginPlayer", "@PLAYER_SWF@", {
+$f("javascriptPluginPlayer", "../flowplayer.swf", {
 	playlist: wowzaPlaylist,
 	// configure the required plugins
 	plugins:  {
@@ -3026,7 +3026,7 @@ $f("javascriptPluginPlayer", "@PLAYER_SWF@", {
 
 		// bandwidth check plugin
 		bwcheck: {
-			url: '@MAIN_PLAYER_SWF@',
+			url: '../flowplayer.bwcheck-3.2.6-dev.swf',
 
 			serverType: 'wowza',
 
@@ -3076,7 +3076,7 @@ $f("javascriptPluginPlayer", "@PLAYER_SWF@", {
 <div class="overlay">
 <div class="box code">
 <pre><code class="javascript">
-$f("javascriptPluginPlayer", "@PLAYER_SWF@", {
+$f("javascriptPluginPlayer", "../flowplayer.swf", {
 	playlist: wowzaPlaylist,
 	// configure the required plugins
 	plugins:  {
@@ -3090,7 +3090,7 @@ $f("javascriptPluginPlayer", "@PLAYER_SWF@", {
 
 		// bandwidth check plugin
 		bwcheck: {
-			url: '@MAIN_PLAYER_SWF@',
+			url: '../flowplayer.bwcheck-3.2.6-dev.swf',
 
 			serverType: 'wowza',
 

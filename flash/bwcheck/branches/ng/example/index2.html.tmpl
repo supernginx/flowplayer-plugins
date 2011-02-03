@@ -101,21 +101,11 @@ $(function() {
 
 // common methods and configs
 
-function switchStreamInfo(newItem) {
-     $f().getPlugin('content').setHtml("Switched to: " + newItem.streamName);
-    //var content = $f().getPlugin('content');
-    
-    //var info = "Chosen bitrate is: " + bitrateItem.bitrate + "<br /> Video file served: " + bitrateItem.url;
-    //content.setHtml(info);
-}
-
-function switchStreamInfoBegin(bitrateItem, newClipUrl) {
-    $f().getPlugin('content').setHtml("Will switch to: " + newItem.streamName + 
-                "from " + currentItem.streamName);
-    //var content = $f().getPlugin('content');
-    
-    //var info = "Chosen bitrate is: " + bitrateItem.bitrate + "<br /> Video file served: " + bitrateItem.url + "<br/>" + "Previous file served " + previousClipUrl;
-    //content.setHtml(info);
+function switchStreamInfo(mappedBitrate, streamName, oldStreamName) {
+	var content = $f().getPlugin('content');
+	
+	var info = "Chosen bitrate is: " + mappedBitrate.bitrate + "<br /> Video file served: " + streamName + "<br /> Old Video file served: " + oldStreamName;
+	content.setHtml(info);
 }
 
 function bwDoneInfo(mappedBitrate, detectedBitrate) {
@@ -130,8 +120,8 @@ var httpPlaylist =  [
 			              bitrates: [
 			              			{url: "bbb_160x90.flv", width: 160, height: 90, bitrate: 100},
 			              			{url: "bbb_320x180.flv", width: 320, height: 180, bitrate: 180},
-			              			{url: "bbb_480x270.flv", width: 480, height: 270, bitrate: 270, normal: true},
-			              			{url: "bbb_640x360.flv", width: 640, height: 360, bitrate: 360, hd: true}
+			              			{url: "bbb_480x270.flv", width: 480, height: 270, bitrate: 270},
+			              			{url: "bbb_640x360.flv", width: 640, height: 360, bitrate: 360}
 			              		    ]
 			            }
         			];
@@ -144,8 +134,8 @@ var psuedoPlaylist =  [
 			              bitrates: [
 			              			{url: "bbb_160x90.flv", width: 160, height: 90, bitrate: 100, label: "100k"},
 			              			{url: "bbb_320x180.flv", width: 320, height: 180, bitrate: 180, label: "180k"},
-			              			{url: "bbb_480x270.flv", width: 480, height: 270, bitrate: 270, label: "270k", normal: true},
-			              			{url: "bbb_640x360.flv", width: 640, height: 360, bitrate: 360, label: "360k", hd: true}
+			              			{url: "bbb_480x270.flv", width: 480, height: 270, bitrate: 270, label: "270k"},
+			              			{url: "bbb_640x360.flv", width: 640, height: 360, bitrate: 360, label: "360k"}
 			              		    ]
 			            }
         			];
@@ -156,8 +146,8 @@ var fmsPlaylist =  [
 			              bitrates: [
 			              			{url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100, label: "100k"},
 			              			{url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180, label: "180k"},
-			              			{url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270, label: "270k", normal: true},
-			              			{url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360, label: "360k", hd: true}
+			              			{url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270, label: "270k"},
+			              			{url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360, label: "360k"}
 			              		    ]
 			            }
         			];
@@ -169,28 +159,11 @@ var wowzaPlaylist = [
 			              bitrates: [
 			                        {url: "vod/demo.flowplayer/bbb_160x90", width: 160, height: 90, bitrate: 100, label: "100k"},
 			                        {url: "vod/demo.flowplayer/bbb_320x180", width: 320, height: 180, bitrate: 180, label: "180k"},
-			                        {url: "vod/demo.flowplayer/bbb_480x270", width: 480, height: 270, bitrate: 270, label: "270k", normal: true},
+			                        {url: "vod/demo.flowplayer/bbb_480x270", width: 480, height: 270, bitrate: 270, label: "270k"},
 			                        {url: "vod/demo.flowplayer/bbb_640x360", width: 640, height: 360, bitrate: 360, label: "360k", hd:true}
 						           ]
 						}
 			        ]
-			        
-			        
- var hdButtonPlaylist = [
-                     {
-                     url: "mp4:bbb",
-                     bitrates: [
-                             { 
-                                url: "mp4:bbb-400", width: 320, height: 180, bitrate: 400,
-                                // this is the default bitrate, the playback kicks off with this and after that
-                                // Quality Of Service monitoring adjusts to the most appropriate bitrate
-                                isDefault: true,
-                                normal: true 
-                             },
-                             { url: "mp4:bbb-1600", width: 1080, bitrate: 1600, hd: true }
-                      ]
-                     }
-                    ];
 
 var testPlaylist = [
 			  		   {
@@ -215,7 +188,7 @@ var contentPlugin = {
 						width: 350 
 					};
 
-var loggingConfig = { level: 'debug', filter: 'org.flowplayer.rtmp.*, org.flowplayer.bwcheck.*, org.flowplayer.cluster.*,org.flowplayer.controls.*, org.flowplayer.controller.*' };
+var loggingConfig = { level: 'debug', filter: 'org.flowplayer.rtmp.*, org.flowplayer.bwcheck.*, org.flowplayer.cluster.*,org.flowplayer.rtmp.*, org.flowplayer.controller.*' };
 
 $(document).ready(function () {	
 	$('.checkBandwidthBtn').click(function() {
@@ -379,11 +352,8 @@ flowplayer("player", "@PLAYER_SWF@", {
 			netConnectionUrl: 'http://releases.flowplayer.org/swf/flowplayer-3.1.5.swf',
 			bitrateProfileName: 'HTTPBitrateProfile',
 			onStreamSwitch: switchStreamInfo,
-			onStreamSwitchBegin: switchStreamInfoBegin,
 			// this method is called when the bandwidth check is done
-			onBwDone: bwDoneInfo,
-			hdButton: "dock"
-			//maxWidth: 650
+			onBwDone: bwDoneInfo
 		}
 		
 	},
@@ -979,15 +949,15 @@ flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
 <script type="text/javascript" >
 
 $f("rtmpManualPlayer", "@PLAYER_SWF@", {
-	playlist: wowzaPlaylist,
+	playlist: testPlaylist,
 	// configure the required plugins
 	plugins:  {
 
 		// RTMP streaming plugin
 		rtmp: {
 			url: '../flowplayer.rtmp.swf',
-			netConnectionUrl: 'rtmp://vod01.netdna.com/play'
-			//netConnectionUrl: 'rtmp://rtmp01.hddn.com/play'
+			//netConnectionUrl: 'rtmp://vod01.netdna.com/play'
+			netConnectionUrl: 'rtmp://rtmp01.hddn.com/play'
 		},
 		content: contentPlugin,
 
@@ -1143,7 +1113,7 @@ $(document).ready(function () {
 	Demonstrates the functionality of the default stream selection strategy. Regardless of the available bandwidth the player will only choose the bitrate to match the available player dimensions when a bitrate is chosen from the list. 
 </p>
 
-<div style="width:425px;height:300px;margin:30px auto">
+<div style="width:320px;height:205px;margin:30px auto">
    
 
 
@@ -1152,7 +1122,7 @@ $(document).ready(function () {
 
 <a
 	href="skyandice"
-	style="display:block;width:425x;height:300px;"
+	style="display:block;width:440px;height:353px;"
 	id="rtmpDynamicPlayer">
 
 	<!-- splash image inside the container -->
@@ -1163,15 +1133,16 @@ $(document).ready(function () {
 <!-- Flowplayer installation and configuration -->
 <script type="text/javascript" >
 flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
-	playlist: hdButtonPlaylist,
+	playlist: [
+	   {provider:"rtmp",autoPlay:true,urlResolvers:"bwcheck", url: "mp4:T1437_400.mp4", bitrates: [{ url: "mp4:T1437_400.mp4", width: 440, height: 330, bitrate: 400,isDefault:true },{ url: "mp4:T1437_700.mp4", width: 440, height: 330, bitrate: 700 },{ url: "mp4:T1437_2000.mp4", width: 440, height: 330, bitrate: 2000 }]}
+	   ], 
 	// configure the required plugins
 	plugins:  {
 
 		// RTMP streaming plugin
 		rtmp: {
 			url: '../flowplayer.rtmp.swf',
-			netConnectionUrl: 'rtmp://s3b78u0kbtx79q.cloudfront.net/cfx/st'
-			//netConnectionUrl: 'rtmp://vod01.netdna.com/play'
+			netConnectionUrl: 'rtmp://fms.calvaryftl.org/flvplayer/calvary/sanctuary'
 		},
 		content: contentPlugin,
 
@@ -1179,22 +1150,20 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 		bwcheck: {
 			url: '@MAIN_PLAYER_SWF@',
 
-			//serverType: 'wowza',
-            serverType: 'fms',
+			serverType: 'fms',
+
 			// Use this connection for bandwidth detection
-			netConnectionUrl: 'rtmp://s3b78u0kbtx79q.cloudfront.net/cfx/st',
-			//netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
+			netConnectionUrl: 'rtmp://fms.calvaryftl.org/flvplayer/calvary/sanctuary',
 			bitrateProfileName: 'RTMPBitrateProfile',
 			dynamic: true,
+			rememberBitrate: false,
+			checkOnBegin: true, 
 			
 			//required to enable initial bandwidth checking while als having dynamic switching enabled
 			checkOnStart:true, 
 			onStreamSwitch: switchStreamInfo,
-			onStreamSwitchBegin: switchStreamInfoBegin,
 			// this method is called when the bandwidth check is done
-			onBwDone: bwDoneInfo,
-			hdButton: "controls"
-			
+			onBwDone: bwDoneInfo
 		}
 
 	},
@@ -2930,7 +2899,9 @@ flowplayer("rtmpErrorPlayer", "@PLAYER_SWF@", {
 				Fires when the bandwidth has been dynamically switched. This event is called only when the <samp>dynamic</samp> configuration property is enabled. The callback is fed with the following arguments:
 
 				<ul>
-					<li><samp>bitrateItem</samp> the currently selected <samp>BitrateItem</samp> object, (url, bitrate, width, height, index, label)</li>
+					<li><samp>bitrate</samp> the bitrate selected from the <samp>bitrates</samp> array</li>
+					<li><samp>newUrl</samp> the complete URL that was resolved for playback</li>
+					<li><samp>oldUrl</samp> the previous URL being used before the switch</li>
 				</ul>
 
 				<p>

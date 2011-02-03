@@ -24,6 +24,11 @@
 			<locationURI>FLOWPLAYER_CLUSTER</locationURI>
 		</link>
 		<link>
+			<name>FL_ASSETS</name>
+			<type>2</type>
+			<locationURI>FL_ASSETS</locationURI>
+		</link>
+		<link>
 			<name>FL_LIB</name>
 			<type>2</type>
 			<locationURI>FL_LIB</locationURI>
@@ -32,6 +37,11 @@
 			<name>FP_COMMON</name>
 			<type>2</type>
 			<locationURI>FP_COMMON</locationURI>
+		</link>
+		<link>
+			<name>FP_LIBS</name>
+			<type>2</type>
+			<locationURI>FP_LIBS</locationURI>
 		</link>
 		<link>
 			<name>OSMF</name>

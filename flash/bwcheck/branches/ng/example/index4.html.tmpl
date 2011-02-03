@@ -34,7 +34,7 @@
 	<script type="text/javascript" src="flowplayer.bwcheck-3.2.js"></script>
 	<link rel="stylesheet" type="text/css" href="http://static.flowplayer.org/tools/css/overlay-apple.css"/>
 	<script type="text/javascript"  src="http://flowplayer.org/tools/download/1.2.4/overlay/overlay.apple.min.js"></script>	
-	 
+	<script src="http://v2.lifeordebt.org/js/flowplayer.playlist-3.0.8.js"></script> 
 	
 	
 	
@@ -101,21 +101,11 @@ $(function() {
 
 // common methods and configs
 
-function switchStreamInfo(newItem) {
-     $f().getPlugin('content').setHtml("Switched to: " + newItem.streamName);
-    //var content = $f().getPlugin('content');
-    
-    //var info = "Chosen bitrate is: " + bitrateItem.bitrate + "<br /> Video file served: " + bitrateItem.url;
-    //content.setHtml(info);
-}
-
-function switchStreamInfoBegin(bitrateItem, newClipUrl) {
-    $f().getPlugin('content').setHtml("Will switch to: " + newItem.streamName + 
-                "from " + currentItem.streamName);
-    //var content = $f().getPlugin('content');
-    
-    //var info = "Chosen bitrate is: " + bitrateItem.bitrate + "<br /> Video file served: " + bitrateItem.url + "<br/>" + "Previous file served " + previousClipUrl;
-    //content.setHtml(info);
+function switchStreamInfo(mappedBitrate, streamName, oldStreamName) {
+	var content = $f().getPlugin('content');
+	
+	var info = "Chosen bitrate is: " + mappedBitrate.bitrate + "<br /> Video file served: " + streamName + "<br /> Old Video file served: " + oldStreamName;
+	content.setHtml(info);
 }
 
 function bwDoneInfo(mappedBitrate, detectedBitrate) {
@@ -130,8 +120,8 @@ var httpPlaylist =  [
 			              bitrates: [
 			              			{url: "bbb_160x90.flv", width: 160, height: 90, bitrate: 100},
 			              			{url: "bbb_320x180.flv", width: 320, height: 180, bitrate: 180},
-			              			{url: "bbb_480x270.flv", width: 480, height: 270, bitrate: 270, normal: true},
-			              			{url: "bbb_640x360.flv", width: 640, height: 360, bitrate: 360, hd: true}
+			              			{url: "bbb_480x270.flv", width: 480, height: 270, bitrate: 270},
+			              			{url: "bbb_640x360.flv", width: 640, height: 360, bitrate: 360}
 			              		    ]
 			            }
         			];
@@ -144,8 +134,8 @@ var psuedoPlaylist =  [
 			              bitrates: [
 			              			{url: "bbb_160x90.flv", width: 160, height: 90, bitrate: 100, label: "100k"},
 			              			{url: "bbb_320x180.flv", width: 320, height: 180, bitrate: 180, label: "180k"},
-			              			{url: "bbb_480x270.flv", width: 480, height: 270, bitrate: 270, label: "270k", normal: true},
-			              			{url: "bbb_640x360.flv", width: 640, height: 360, bitrate: 360, label: "360k", hd: true}
+			              			{url: "bbb_480x270.flv", width: 480, height: 270, bitrate: 270, label: "270k"},
+			              			{url: "bbb_640x360.flv", width: 640, height: 360, bitrate: 360, label: "360k"}
 			              		    ]
 			            }
         			];
@@ -156,8 +146,8 @@ var fmsPlaylist =  [
 			              bitrates: [
 			              			{url: "flv:bbb_160x90", width: 160, height: 90, bitrate: 100, label: "100k"},
 			              			{url: "flv:bbb_320x180", width: 320, height: 180, bitrate: 180, label: "180k"},
-			              			{url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270, label: "270k", normal: true},
-			              			{url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360, label: "360k", hd: true}
+			              			{url: "flv:bbb_480x270", width: 480, height: 270, bitrate: 270, label: "270k"},
+			              			{url: "flv:bbb_640x360", width: 640, height: 360, bitrate: 360, label: "360k"}
 			              		    ]
 			            }
         			];
@@ -169,28 +159,11 @@ var wowzaPlaylist = [
 			              bitrates: [
 			                        {url: "vod/demo.flowplayer/bbb_160x90", width: 160, height: 90, bitrate: 100, label: "100k"},
 			                        {url: "vod/demo.flowplayer/bbb_320x180", width: 320, height: 180, bitrate: 180, label: "180k"},
-			                        {url: "vod/demo.flowplayer/bbb_480x270", width: 480, height: 270, bitrate: 270, label: "270k", normal: true},
+			                        {url: "vod/demo.flowplayer/bbb_480x270", width: 480, height: 270, bitrate: 270, label: "270k"},
 			                        {url: "vod/demo.flowplayer/bbb_640x360", width: 640, height: 360, bitrate: 360, label: "360k", hd:true}
 						           ]
 						}
 			        ]
-			        
-			        
- var hdButtonPlaylist = [
-                     {
-                     url: "mp4:bbb",
-                     bitrates: [
-                             { 
-                                url: "mp4:bbb-400", width: 320, height: 180, bitrate: 400,
-                                // this is the default bitrate, the playback kicks off with this and after that
-                                // Quality Of Service monitoring adjusts to the most appropriate bitrate
-                                isDefault: true,
-                                normal: true 
-                             },
-                             { url: "mp4:bbb-1600", width: 1080, bitrate: 1600, hd: true }
-                      ]
-                     }
-                    ];
 
 var testPlaylist = [
 			  		   {
@@ -215,7 +188,7 @@ var contentPlugin = {
 						width: 350 
 					};
 
-var loggingConfig = { level: 'debug', filter: 'org.flowplayer.rtmp.*, org.flowplayer.bwcheck.*, org.flowplayer.cluster.*,org.flowplayer.controls.*, org.flowplayer.controller.*' };
+var loggingConfig = { level: 'debug', filter: 'org.flowplayer.rtmp.*, org.flowplayer.bwcheck.*, org.flowplayer.cluster.*,org.flowplayer.rtmp.*, org.flowplayer.controller.*' };
 
 $(document).ready(function () {	
 	$('.checkBandwidthBtn').click(function() {
@@ -379,11 +352,8 @@ flowplayer("player", "@PLAYER_SWF@", {
 			netConnectionUrl: 'http://releases.flowplayer.org/swf/flowplayer-3.1.5.swf',
 			bitrateProfileName: 'HTTPBitrateProfile',
 			onStreamSwitch: switchStreamInfo,
-			onStreamSwitchBegin: switchStreamInfoBegin,
 			// this method is called when the bandwidth check is done
-			onBwDone: bwDoneInfo,
-			hdButton: "dock"
-			//maxWidth: 650
+			onBwDone: bwDoneInfo
 		}
 		
 	},
@@ -979,15 +949,15 @@ flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
 <script type="text/javascript" >
 
 $f("rtmpManualPlayer", "@PLAYER_SWF@", {
-	playlist: wowzaPlaylist,
+	playlist: testPlaylist,
 	// configure the required plugins
 	plugins:  {
 
 		// RTMP streaming plugin
 		rtmp: {
 			url: '../flowplayer.rtmp.swf',
-			netConnectionUrl: 'rtmp://vod01.netdna.com/play'
-			//netConnectionUrl: 'rtmp://rtmp01.hddn.com/play'
+			//netConnectionUrl: 'rtmp://vod01.netdna.com/play'
+			netConnectionUrl: 'rtmp://rtmp01.hddn.com/play'
 		},
 		content: contentPlugin,
 
@@ -1143,7 +1113,7 @@ $(document).ready(function () {
 	Demonstrates the functionality of the default stream selection strategy. Regardless of the available bandwidth the player will only choose the bitrate to match the available player dimensions when a bitrate is chosen from the list. 
 </p>
 
-<div style="width:425px;height:300px;margin:30px auto">
+<div style="width:852px;height:480px;margin:30px auto">
    
 
 
@@ -1152,26 +1122,212 @@ $(document).ready(function () {
 
 <a
 	href="skyandice"
-	style="display:block;width:425x;height:300px;"
+	style="display:block;width:852px;height:480px;"
 	id="rtmpDynamicPlayer">
 
 	<!-- splash image inside the container -->
-	<img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" width="320" height="205" />
+	<img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" width="852" height="480" />
 
 </a>
 
+<div id="chapterlist">
+        <a style="display:block;" href="${url}" id="${id}">${url} <span class="time">${time}</span></a>
+    </div>
+
 <!-- Flowplayer installation and configuration -->
 <script type="text/javascript" >
+var langS = [];
+
 flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
-	playlist: hdButtonPlaylist,
+	playlist: [ 
+        {
+                    bitrates: [
+                        { url: "mp4:videos/Intro_MMI_0.f4v", width: 560, bitrate: 246 },
+                        { url: "mp4:videos/Intro_MMI_1.f4v", width: 560, bitrate: 384 },
+                        { url: "mp4:videos/Intro_MMI_2.f4v", width: 560, bitrate: 670 },
+                        { url: "mp4:videos/Intro_MMI_3.f4v", width: 560, bitrate: 826, isDefault: true },
+                        { url: "mp4:videos/Intro_MMI_4.f4v", width: 560, bitrate: 956 },
+                        { url: "mp4:videos/Intro_MMI_5.f4v", width: 836, bitrate: 1438 },
+                        { url: "mp4:videos/Intro_MMI_6.f4v", width: 836, bitrate: 1768 },
+                        { url: "mp4:videos/Intro_MMI_7.f4v", width: 836, bitrate: 2048 },
+                        { url: "mp4:videos/Intro_MMI_8.f4v", width: 1280, bitrate: 3968 }
+                    ],
+                    title: langS[17],
+                    id: 'int'
+                },                              
+                {
+                    bitrates: [
+                        { url: "mp4:videos/Chapter 1_0.f4v", width: 560, bitrate: 246 },
+                        { url: "mp4:videos/Chapter 1_1.f4v", width: 560, bitrate: 384 },
+                        { url: "mp4:videos/Chapter 1_2.f4v", width: 560, bitrate: 670 },
+                        { url: "mp4:videos/Chapter 1_3.f4v", width: 560, bitrate: 826, isDefault: true },
+                        { url: "mp4:videos/Chapter 1_4.f4v", width: 560, bitrate: 956 },
+                        { url: "mp4:videos/Chapter 1_5.f4v", width: 836, bitrate: 1438 },
+                        { url: "mp4:videos/Chapter 1_6.f4v", width: 836, bitrate: 1768 },
+                        { url: "mp4:videos/Chapter 1_7.f4v", width: 836, bitrate: 2048 },
+                        { url: "mp4:videos/Chapter 1_8.f4v", width: 1280, bitrate: 3968 }
+                    ],
+                    title: langS[18],
+                    id: 'ch1'
+                },                              
+                {
+                    bitrates: [
+                        { url: "mp4:videos/Chapter 2_0.f4v", width: 560, bitrate: 246 },
+                        { url: "mp4:videos/Chapter 2_1.f4v", width: 560, bitrate: 384 },
+                        { url: "mp4:videos/Chapter 2_2.f4v", width: 560, bitrate: 670 },
+                        { url: "mp4:videos/Chapter 2_3.f4v", width: 560, bitrate: 826, isDefault: true },
+                        { url: "mp4:videos/Chapter 2_4.f4v", width: 560, bitrate: 956 },
+                        { url: "mp4:videos/Chapter 2_5.f4v", width: 836, bitrate: 1438 },
+                        { url: "mp4:videos/Chapter 2_6.f4v", width: 836, bitrate: 1768 },
+                        { url: "mp4:videos/Chapter 2_7.f4v", width: 836, bitrate: 2048 },
+                        { url: "mp4:videos/Chapter 2_8.f4v", width: 1280, bitrate: 3968 }
+                    ],
+                    title: langS[19],
+                    id: 'ch2'
+                },                              
+                {
+                    bitrates: [
+                        { url: "mp4:videos/Chapter 3_0.f4v", width: 560, bitrate: 246 },
+                        { url: "mp4:videos/Chapter 3_1.f4v", width: 560, bitrate: 384 },
+                        { url: "mp4:videos/Chapter 3_2.f4v", width: 560, bitrate: 670 },
+                        { url: "mp4:videos/Chapter 3_3.f4v", width: 560, bitrate: 826, isDefault: true },
+                        { url: "mp4:videos/Chapter 3_4.f4v", width: 560, bitrate: 956 },
+                        { url: "mp4:videos/Chapter 3_5.f4v", width: 836, bitrate: 1438 },
+                        { url: "mp4:videos/Chapter 3_6.f4v", width: 836, bitrate: 1768 },
+                        { url: "mp4:videos/Chapter 3_7.f4v", width: 836, bitrate: 2048 },
+                        { url: "mp4:videos/Chapter 3_8.f4v", width: 1280, bitrate: 3968 }
+                    ],
+                    title: langS[20],
+                    id: 'ch3'
+                },                              
+                {
+                    bitrates: [
+                        { url: "mp4:videos/Chapter 4_0.f4v", width: 560, bitrate: 246 },
+                        { url: "mp4:videos/Chapter 4_1.f4v", width: 560, bitrate: 384 },
+                        { url: "mp4:videos/Chapter 4_2.f4v", width: 560, bitrate: 670 },
+                        { url: "mp4:videos/Chapter 4_3.f4v", width: 560, bitrate: 826, isDefault: true },
+                        { url: "mp4:videos/Chapter 4_4.f4v", width: 560, bitrate: 956 },
+                        { url: "mp4:videos/Chapter 4_5.f4v", width: 836, bitrate: 1438 },
+                        { url: "mp4:videos/Chapter 4_6.f4v", width: 836, bitrate: 1768 },
+                        { url: "mp4:videos/Chapter 4_7.f4v", width: 836, bitrate: 2048 },
+                        { url: "mp4:videos/Chapter 4_8.f4v", width: 1280, bitrate: 3968 }
+                    ],
+                    title: langS[21],
+                    id: 'ch4'
+                },                              
+                {
+                    bitrates: [
+                        { url: "mp4:videos/Chapter 5_0.f4v", width: 560, bitrate: 246 },
+                        { url: "mp4:videos/Chapter 5_1.f4v", width: 560, bitrate: 384 },
+                        { url: "mp4:videos/Chapter 5_2.f4v", width: 560, bitrate: 670 },
+                        { url: "mp4:videos/Chapter 5_3.f4v", width: 560, bitrate: 826, isDefault: true },
+                        { url: "mp4:videos/Chapter 5_4.f4v", width: 560, bitrate: 956 },
+                        { url: "mp4:videos/Chapter 5_5.f4v", width: 836, bitrate: 1438 },
+                        { url: "mp4:videos/Chapter 5_6.f4v", width: 836, bitrate: 1768 },
+                        { url: "mp4:videos/Chapter 5_7.f4v", width: 836, bitrate: 2048 },
+                        { url: "mp4:videos/Chapter 5_8.f4v", width: 1280, bitrate: 3968 }
+                    ],
+                    title: langS[22],
+                    id: 'ch5'
+                },                              
+                {
+                    bitrates: [
+                        { url: "mp4:videos/Chapter 6_0.f4v", width: 560, bitrate: 246 },
+                        { url: "mp4:videos/Chapter 6_1.f4v", width: 560, bitrate: 384 },
+                        { url: "mp4:videos/Chapter 6_2.f4v", width: 560, bitrate: 670 },
+                        { url: "mp4:videos/Chapter 6_3.f4v", width: 560, bitrate: 826, isDefault: true },
+                        { url: "mp4:videos/Chapter 6_4.f4v", width: 560, bitrate: 956 },
+                        { url: "mp4:videos/Chapter 6_5.f4v", width: 836, bitrate: 1438 },
+                        { url: "mp4:videos/Chapter 6_6.f4v", width: 836, bitrate: 1768 },
+                        { url: "mp4:videos/Chapter 6_7.f4v", width: 836, bitrate: 2048 },
+                        { url: "mp4:videos/Chapter 6_8.f4v", width: 1280, bitrate: 3968 }
+                    ],
+                    title: langS[23],
+                    id: 'ch6'
+                },                              
+                {
+                    bitrates: [
+                        { url: "mp4:videos/Chapter 7_0.f4v", width: 560, bitrate: 246 },
+                        { url: "mp4:videos/Chapter 7_1.f4v", width: 560, bitrate: 384 },
+                        { url: "mp4:videos/Chapter 7_2.f4v", width: 560, bitrate: 670 },
+                        { url: "mp4:videos/Chapter 7_3.f4v", width: 560, bitrate: 826, isDefault: true },
+                        { url: "mp4:videos/Chapter 7_4.f4v", width: 560, bitrate: 956 },
+                        { url: "mp4:videos/Chapter 7_5.f4v", width: 836, bitrate: 1438 },
+                        { url: "mp4:videos/Chapter 7_6.f4v", width: 836, bitrate: 1768 },
+                        { url: "mp4:videos/Chapter 7_7.f4v", width: 836, bitrate: 2048 },
+                        { url: "mp4:videos/Chapter 7_8.f4v", width: 1280, bitrate: 3968 }
+                    ],
+                    title: langS[24],
+                    id: 'ch7'
+                },                              
+                {
+                    bitrates: [
+                        { url: "mp4:videos/Chapter 8_0.f4v", width: 560, bitrate: 246 },
+                        { url: "mp4:videos/Chapter 8_1.f4v", width: 560, bitrate: 384 },
+                        { url: "mp4:videos/Chapter 8_2.f4v", width: 560, bitrate: 670 },
+                        { url: "mp4:videos/Chapter 8_3.f4v", width: 560, bitrate: 826, isDefault: true },
+                        { url: "mp4:videos/Chapter 8_4.f4v", width: 560, bitrate: 956 },
+                        { url: "mp4:videos/Chapter 8_5.f4v", width: 836, bitrate: 1438 },
+                        { url: "mp4:videos/Chapter 8_6.f4v", width: 836, bitrate: 1768 },
+                        { url: "mp4:videos/Chapter 8_7.f4v", width: 836, bitrate: 2048 },
+                        { url: "mp4:videos/Chapter 8_8.f4v", width: 1280, bitrate: 3968 }
+                    ],
+                    title: langS[45],
+                    id: 'ch8'
+                },                              
+                {
+                    bitrates: [
+                        { url: "mp4:videos/Chapter 9_0.f4v", width: 560, bitrate: 246 },
+                        { url: "mp4:videos/Chapter 9_1.f4v", width: 560, bitrate: 384 },
+                        { url: "mp4:videos/Chapter 9_2.f4v", width: 560, bitrate: 670 },
+                        { url: "mp4:videos/Chapter 9_3.f4v", width: 560, bitrate: 826, isDefault: true },
+                        { url: "mp4:videos/Chapter 9_4.f4v", width: 560, bitrate: 956 },
+                        { url: "mp4:videos/Chapter 9_5.f4v", width: 836, bitrate: 1438 },
+                        { url: "mp4:videos/Chapter 9_6.f4v", width: 836, bitrate: 1768 },
+                        { url: "mp4:videos/Chapter 9_7.f4v", width: 836, bitrate: 2048 },
+                        { url: "mp4:videos/Chapter 9_8.f4v", width: 1280, bitrate: 3968 }
+                    ],
+                    title: langS[46],
+                    id: 'ch9'
+                },                              
+                {
+                    bitrates: [
+                        { url: "mp4:videos/Chapter 10_0.f4v", width: 560, bitrate: 246 },
+                        { url: "mp4:videos/Chapter 10_1.f4v", width: 560, bitrate: 384 },
+                        { url: "mp4:videos/Chapter 10_2.f4v", width: 560, bitrate: 670 },
+                        { url: "mp4:videos/Chapter 10_3.f4v", width: 560, bitrate: 826, isDefault: true },
+                        { url: "mp4:videos/Chapter 10_4.f4v", width: 560, bitrate: 956 },
+                        { url: "mp4:videos/Chapter 10_5.f4v", width: 836, bitrate: 1438 },
+                        { url: "mp4:videos/Chapter 10_6.f4v", width: 836, bitrate: 1768 },
+                        { url: "mp4:videos/Chapter 10_7.f4v", width: 836, bitrate: 2048 },
+                        { url: "mp4:videos/Chapter 10_8.f4v", width: 1280, bitrate: 3968 }
+                    ],
+                    title: langS[47],
+                    id: 'ch10'
+                },                              
+                {
+                    bitrates: [
+                        { url: "mp4:videos/Conclusion_0.f4v", width: 560, bitrate: 246 },
+                        { url: "mp4:videos/Conclusion_1.f4v", width: 560, bitrate: 384 },
+                        { url: "mp4:videos/Conclusion_2.f4v", width: 560, bitrate: 670 },
+                        { url: "mp4:videos/Conclusion_3.f4v", width: 560, bitrate: 826, isDefault: true },
+                        { url: "mp4:videos/Conclusion_4.f4v", width: 560, bitrate: 956 },
+                        { url: "mp4:videos/Conclusion_5.f4v", width: 836, bitrate: 1438 },
+                        { url: "mp4:videos/Conclusion_6.f4v", width: 836, bitrate: 1768 },
+                        { url: "mp4:videos/Conclusion_7.f4v", width: 836, bitrate: 2048 },
+                        { url: "mp4:videos/Conclusion_8.f4v", width: 1280, bitrate: 3968 }
+                    ],
+                    title: langS[25],
+                    id: 'con'
+                }       
+    ],
 	// configure the required plugins
 	plugins:  {
 
 		// RTMP streaming plugin
 		rtmp: {
 			url: '../flowplayer.rtmp.swf',
-			netConnectionUrl: 'rtmp://s3b78u0kbtx79q.cloudfront.net/cfx/st'
-			//netConnectionUrl: 'rtmp://vod01.netdna.com/play'
+			netConnectionUrl: "rtmp://s8da3vrjthybz.cloudfront.net/cfx/st"
 		},
 		content: contentPlugin,
 
@@ -1179,22 +1335,15 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 		bwcheck: {
 			url: '@MAIN_PLAYER_SWF@',
 
-			//serverType: 'wowza',
-            serverType: 'fms',
-			// Use this connection for bandwidth detection
-			netConnectionUrl: 'rtmp://s3b78u0kbtx79q.cloudfront.net/cfx/st',
-			//netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
-			bitrateProfileName: 'RTMPBitrateProfile',
-			dynamic: true,
+			serverType: 'fms',
+            dynamic: true,
+            netConnectionUrl: "rtmp://s8da3vrjthybz.cloudfront.net/cfx/st",
 			
 			//required to enable initial bandwidth checking while als having dynamic switching enabled
-			checkOnStart:true, 
+			//checkOnStart:true, 
 			onStreamSwitch: switchStreamInfo,
-			onStreamSwitchBegin: switchStreamInfoBegin,
 			// this method is called when the bandwidth check is done
-			onBwDone: bwDoneInfo,
-			hdButton: "controls"
-			
+			onBwDone: bwDoneInfo
 		}
 
 	},
@@ -1210,7 +1359,7 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 	},
 	log: loggingConfig
 
-}).bwcheck('#changeDynamicBitrate',{seperator: "<br/>"});
+}).bwcheck('#changeDynamicBitrate',{seperator: "<br/>"}).playlist("div#chapterlist", {loop:false});
 
 </script>
 
@@ -1219,6 +1368,8 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 </div>
 
 
+    
+    
 <button type="button" class="checkBandwidthBtn">Check Bandwidth</button>
 		
 <div style="display:none;">
@@ -2930,7 +3081,9 @@ flowplayer("rtmpErrorPlayer", "@PLAYER_SWF@", {
 				Fires when the bandwidth has been dynamically switched. This event is called only when the <samp>dynamic</samp> configuration property is enabled. The callback is fed with the following arguments:
 
 				<ul>
-					<li><samp>bitrateItem</samp> the currently selected <samp>BitrateItem</samp> object, (url, bitrate, width, height, index, label)</li>
+					<li><samp>bitrate</samp> the bitrate selected from the <samp>bitrates</samp> array</li>
+					<li><samp>newUrl</samp> the complete URL that was resolved for playback</li>
+					<li><samp>oldUrl</samp> the previous URL being used before the switch</li>
 				</ul>
 
 				<p>
