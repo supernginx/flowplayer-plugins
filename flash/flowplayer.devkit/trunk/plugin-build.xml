@@ -15,6 +15,7 @@
 	<property name="flowplayer-js-version-info" value="3.1.4" />
 	<property name="src-flowplayer" value="../core" />
     <property name="plugin-swc" value="${basename}.swc" />
+	<property name="plugin-swc-versioned" value="${basename}-${version}.swc" />
  
 	<condition property="extra.libs" value="${plugin-libs}" else="">
         <isset property="plugin-libs" />
@@ -130,6 +131,10 @@
             	            <condition property="compc-sources" value="${extra-sources}" else="">
             	                <isset property="extra-sources" />
             	            </condition>
+							
+							<condition property="compc-defines" value="${compiler-defines}" else="">
+				                <isset property="compiler-defines" />
+				            </condition>
 
             	            <echo message="compiling lbrary with  ${compc-library-path}" />
             	            <echo message="compiling with  ${compc-define}" />
@@ -139,6 +144,7 @@
                             <arg line="-source-path @{src}" />
                             <arg line="${libs}" />
                     		<arg line="${compc-define}" />
+							<arg line="${compc-defines}" />
                             <arg line="-library-path ${flex3dir}/frameworks/locale/en_US ${flex-libs-path} ${flowplayer_lib} ${compc-library-path}" />
                             <arg line="-include-sources @{src}" />
             
@@ -194,8 +200,10 @@
 		</sequential>
 	</macrodef>
 	
-	<target name="library" depends="compile" description="builds the plugin lib">
+	<target name="library" depends="build" description="builds the plugin lib">
 		<compc.compile src="${src-as}" libs="${extra.libs}" sources="." out="${plugin-swc}" />
+		<copy file="${build-dir}/${plugin-swc}" tofile="${build-dir}/${plugin-swc-versioned}">
+        </copy>
 	</target>
 
 	<target name="compile">
@@ -257,6 +265,18 @@
 		</zip>
 	</target>
 	
+	<target name="zip-swc" depends="prepare, library">
+        <zip destfile="${dist-dir}/${basename}-${version}.swc.zip">
+            <zipfileset prefix="${basename}" dir=".">
+                <include name="LICENSE.txt" />
+                <include name="README-swc.txt" />
+            </zipfileset>
+            <zipfileset prefix="${basename}" dir="${build-dir}">
+                <include name="${plugin-swc-versioned}" />
+            </zipfileset>
+        </zip>
+    </target>
+	
 	<target name="zip-with-examples" depends="prepare, build">
 		<zip destfile="${dist-dir}/${basename}-${version}.zip">
 			<zipfileset prefix="${basename}" dir=".">
@@ -271,6 +291,7 @@
 			</zipfileset>
 		</zip>
 	</target>
+	
     
     <target name="write-zip-url">
 <echo file="${url-file}" append="true">&#60;a href="http://flowplayer-releases.s3.amazonaws.com/${basename}/${basename}-${version}.zip"&#62;${basename}-${version}.zip&#60;/a&#62; &#60;br /&#62;
