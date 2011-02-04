@@ -103,19 +103,14 @@ $(function() {
 
 function switchStreamInfo(newItem) {
      $f().getPlugin('content').setHtml("Switched to: " + newItem.streamName);
-    //var content = $f().getPlugin('content');
-    
-    //var info = "Chosen bitrate is: " + bitrateItem.bitrate + "<br /> Video file served: " + bitrateItem.url;
-    //content.setHtml(info);
+
 }
 
-function switchStreamInfoBegin(bitrateItem, newClipUrl) {
+function switchStreamInfoBegin(newItem, currentItem) {
+
     $f().getPlugin('content').setHtml("Will switch to: " + newItem.streamName + 
-                "from " + currentItem.streamName);
-    //var content = $f().getPlugin('content');
-    
-    //var info = "Chosen bitrate is: " + bitrateItem.bitrate + "<br /> Video file served: " + bitrateItem.url + "<br/>" + "Previous file served " + previousClipUrl;
-    //content.setHtml(info);
+                " from " + currentItem.streamName);
+
 }
 
 function bwDoneInfo(mappedBitrate, detectedBitrate) {
@@ -467,8 +462,9 @@ flowplayer("player", "@PLAYER_SWF@", {
 			netConnectionUrl: 'http://releases.flowplayer.org/swf/flowplayer-3.1.5.swf',
 			bitrateProfileName: 'HTTPBitrateProfile',
 			onStreamSwitch: switchStreamInfo,
-			// this method is called when the bandwidth check is done
-			onBwDone: bwDoneInfo
+            onStreamSwitchBegin: switchStreamInfoBegin,
+            // this method is called when the bandwidth check is done
+            onBwDone: bwDoneInfo
 		}
 		
 	},
@@ -765,10 +761,10 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 			// Use this connection for bandwidth detection
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
-			
 			onStreamSwitch: switchStreamInfo,
-			// this method is called when the bandwidth check is done
-			onBwDone: bwDoneInfo
+            onStreamSwitchBegin: switchStreamInfoBegin,
+            // this method is called when the bandwidth check is done
+            onBwDone: bwDoneInfo
 		}
 
 	},
@@ -823,10 +819,10 @@ flowplayer("rtmpPlayer", "@PLAYER_SWF@", {
 			// Use this connection for bandwidth detection
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
-			
 			onStreamSwitch: switchStreamInfo,
-			// this method is called when the bandwidth check is done
-			onBwDone: bwDoneInfo
+            onStreamSwitchBegin: switchStreamInfoBegin,
+            // this method is called when the bandwidth check is done
+            onBwDone: bwDoneInfo
 		}
 
 	},
@@ -892,25 +888,37 @@ flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
 			netConnectionUrl: 'http://releases.flowplayer.org/swf/flowplayer-3.1.5.swf',
 			bitrateProfileName: 'PseudoBitrateProfile2',
 			onStreamSwitch: switchStreamInfo,
-			// this method is called when the bandwidth check is done
-			onBwDone: bwDoneInfo
+            onStreamSwitchBegin: switchStreamInfoBegin,
+            // this method is called when the bandwidth check is done
+            onBwDone: bwDoneInfo,
+            checkOnStart: true,
+            rememberBitrate: true,
+            hdButton: "dock",
+			maxWidth: 1000
 		}
 		
 	},
 	clip: {
 		provider: 'psuedo',
 		urlResolvers: 'bwcheck',
-		start: 150,
+		//start: 150,
 		baseUrl: 'http://vod01.netdna.com/vod/demo.flowplayer/pseudo/'
 	},
 	log: { level: 'debug', filter: 'org.flowplayer.bwcheck.*, org.flowplayer.pseudostreaming.*, org.flowplayer.cluster.*, org.flowplayer.controls.slider.*' }
 	
-});
+}).bwcheck('#changePseudoBitrate',{seperator: "<br/>"});
 
 </script>	
 
 
 
+</div>
+
+<div style="display:none;">
+<b>Choose Video Bitrate:</b> <br/>  
+<div id="changePseudoBitrate" style="display:none;">
+    <label><input type="radio" name="bitrateBtn" value="{bitrate}" />{label}</label>
+</div>
 </div>
 
 <button rel="div.overlay:eq(2)" type="button">Configuration For This Example</button>
@@ -931,8 +939,9 @@ flowplayer("psuedoPlayer", "@PLAYER_SWF@", {
 			netConnectionUrl: 'http://releases.flowplayer.org/swf/flowplayer-3.1.5.swf',
 			bitrateProfileName: 'PseudoBitrateProfile',
 			onStreamSwitch: switchStreamInfo,
-			// this method is called when the bandwidth check is done
-			onBwDone: bwDoneInfo
+            onStreamSwitchBegin: switchStreamInfoBegin,
+            // this method is called when the bandwidth check is done
+            onBwDone: bwDoneInfo
 		}
 		
 	},
@@ -987,7 +996,6 @@ $f("rtmpManualPlayer", "@PLAYER_SWF@", {
 		rtmp: {
 			url: '../flowplayer.rtmp.swf',
 			netConnectionUrl: 'rtmp://vod01.netdna.com/play'
-			//netConnectionUrl: 'rtmp://rtmp01.hddn.com/play'
 		},
 		content: contentPlugin,
 
@@ -1005,15 +1013,10 @@ $f("rtmpManualPlayer", "@PLAYER_SWF@", {
 			streamSelectionStrategy: 'resizable',
 			maxContainerWidth: 640,
 			bitrateProfileName: 'RTMPBitrateProfile',
-			
 			onStreamSwitch: switchStreamInfo,
-			// this method is called when the bandwidth check is done
-			onBwDone: bwDoneInfo,
-			preferredBufferLength: 8,
-			aggressiveModeBufferLength: 8,
-			emptyBufferLength: 8,
-			droppedFramesTimerDelay: 1000,
-			monitorQOSTimerDelay: 1000
+            onStreamSwitchBegin: switchStreamInfoBegin,
+            // this method is called when the bandwidth check is done
+            onBwDone: bwDoneInfo
 		}
 
 	},
@@ -1081,10 +1084,10 @@ $f("rtmpManualPlayer", "@PLAYER_SWF@", {
 			netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			
 			bitrateProfileName: 'RTMPBitrateProfile',
-			
 			onStreamSwitch: switchStreamInfo,
-			// this method is called when the bandwidth check is done
-			onBwDone: bwDoneInfo
+            onStreamSwitchBegin: switchStreamInfoBegin,
+            // this method is called when the bandwidth check is done
+            onBwDone: bwDoneInfo
 		}
 
 	},
@@ -1179,11 +1182,9 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 		bwcheck: {
 			url: '@MAIN_PLAYER_SWF@',
 
-			//serverType: 'wowza',
-            serverType: 'fms',
+			serverType: 'fms',
 			// Use this connection for bandwidth detection
 			netConnectionUrl: 'rtmp://s3b78u0kbtx79q.cloudfront.net/cfx/st',
-			//netConnectionUrl: 'rtmp://flashy.flowplayer.org:1935/bwcheck',
 			bitrateProfileName: 'RTMPBitrateProfile',
 			dynamic: true,
 			
@@ -1259,8 +1260,9 @@ flowplayer("rtmpDynamicPlayer", "@PLAYER_SWF@", {
 			//required to enable initial bandwidth checking while als having dynamic switching enabled
 			checkOnStart:true, 
 			onStreamSwitch: switchStreamInfo,
-			// this method is called when the bandwidth check is done
-			onBwDone: bwDoneInfo
+            onStreamSwitchBegin: switchStreamInfoBegin,
+            // this method is called when the bandwidth check is done
+            onBwDone: bwDoneInfo
 		}
 
 	},
@@ -1347,8 +1349,9 @@ flowplayer("rtmpDynamicFMSPlayer", "@PLAYER_SWF@", {
 			//checkOnStart:true, 
 			
 			onStreamSwitch: switchStreamInfo,
-			// this method is called when the bandwidth check is done
-			onBwDone: bwDoneInfo
+            onStreamSwitchBegin: switchStreamInfoBegin,
+            // this method is called when the bandwidth check is done
+            onBwDone: bwDoneInfo
 		}
 
 	},
@@ -1413,8 +1416,9 @@ flowplayer("rtmpDynamicFMSPlayer", "@PLAYER_SWF@", {
 			checkOnStart:true, 
 			
 			onStreamSwitch: switchStreamInfo,
-			// this method is called when the bandwidth check is done
-			onBwDone: bwDoneInfo
+            onStreamSwitchBegin: switchStreamInfoBegin,
+            // this method is called when the bandwidth check is done
+            onBwDone: bwDoneInfo
 		}
 
 	},
@@ -1494,8 +1498,9 @@ flowplayer("rtmpDynamicNoCheckPlayer", "@PLAYER_SWF@", {
 			bitrateProfileName: 'RTMPBitrateProfile',
 			dynamic: true,
 			onStreamSwitch: switchStreamInfo,
-			// this method is called when the bandwidth check is done
-			onBwDone: bwDoneInfo
+            onStreamSwitchBegin: switchStreamInfoBegin,
+            // this method is called when the bandwidth check is done
+            onBwDone: bwDoneInfo
 		}
 
 	},
@@ -1545,8 +1550,9 @@ flowplayer("rtmpDynamicNoCheckPlayer", "@PLAYER_SWF@", {
 			bitrateProfileName: 'RTMPBitrateProfile',
 			dynamic: true,
 			onStreamSwitch: switchStreamInfo,
-			// this method is called when the bandwidth check is done
-			onBwDone: bwDoneInfo
+            onStreamSwitchBegin: switchStreamInfoBegin,
+            // this method is called when the bandwidth check is done
+            onBwDone: bwDoneInfo
 		}
 
 	},
