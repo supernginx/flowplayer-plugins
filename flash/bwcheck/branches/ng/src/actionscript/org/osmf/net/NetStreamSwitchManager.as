@@ -384,7 +384,7 @@ package org.osmf.net {
             }
         }
 
-		protected function onPlayStatus(info:Object):void
+		private function onPlayStatus(arg1:Object, arg2:Object, info:Object):void
 		{
             CONFIG::LOGGING
             {
