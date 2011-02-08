@@ -85,8 +85,10 @@ package org.flowplayer.controls.scrubber {
 
             playlist.onPause(stop);
 
-            // cannot have this, causes trouble!
-//            playlist.onBufferEmpty(stop);
+            // possible fix for #175 danielr
+            //calls animationEngine.pause and animationEngine.resume during rebuffering
+            playlist.onBufferEmpty(bufferEmpty);
+            playlist.onBufferFull(bufferFull);
 
             playlist.onStop(stopAndRewind);
             playlist.onFinish(stopAndRewind);
@@ -269,6 +271,24 @@ package org.flowplayer.controls.scrubber {
                 _startDetectTimer.stop();
             }
             animationEngine.cancel(_dragger);
+        }
+        
+        private function bufferEmpty(event:ClipEvent):void {
+            log.debug("bufferEmpty()");
+            /*if (_startDetectTimer) {
+                _startDetectTimer.stop();
+            }*/
+            animationEngine.pause(_dragger);
+        }
+        
+        private function bufferFull(event:ClipEvent):void {
+            log.debug("bufferFull()");
+            
+            animationEngine.resume(_dragger);
+            //log.debug("resume() " + event.target);
+            //_currentClip = (event.target as Clip);
+            //stop(null);
+            //doStart(_currentClip);
         }
 
         private function stopAndRewind(event:ClipEvent):void {
