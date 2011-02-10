@@ -2,18 +2,11 @@
  * This file is part of Flowplayer, http://flowplayer.org
  *
  * By: Richard Mueller  richard@3232design.com, Anssi Piirainen api@iki.fi
- * Copyright (c) 2009 Flowplayer Oy
+ * Copyright (c) 2009-2011 Flowplayer Oy
  *
  * Released under the MIT License:
  * http://www.opensource.org/licenses/mit-license.php
  */
-
-/*
- This should work as a standalone plugin, but the whole point of this was to embed the player on
- external sites and track where, if possible, so I needed a fully-contained player with all options
- and plugins compiled in (except for clip URL, which is passed in separately).
- */
-
 
 package org.flowplayer.analytics {
     import com.google.analytics.GATracker;
@@ -25,7 +18,9 @@ package org.flowplayer.analytics {
 
     import flash.ui.Keyboard;
 
-    import org.flowplayer.model.*;
+import flash.utils.getTimer;
+
+import org.flowplayer.model.*;
 
     import org.flowplayer.util.Log;
     import org.flowplayer.util.PropertyBinder;
@@ -39,6 +34,8 @@ package org.flowplayer.analytics {
         private var _player:Flowplayer;
         private var _config:Config;
         private var _tracker:AnalyticsTracker;
+        private var _startTimeMillis:int;
+        private var _viewDurationMillis:int = 0;
 
         public function onConfig(model:PluginModel):void {
             _model = model;
@@ -48,12 +45,13 @@ package org.flowplayer.analytics {
         public function onLoad(player:Flowplayer):void {
             _player = player;
             var events:Events = _config.events;
-            createClipEventTracker(_player.playlist.onStart, events.start, true);
-            createClipEventTracker(_player.playlist.onStop, events.stop, true);
-            createClipEventTracker(_player.playlist.onFinish, events.finish, true);
-            createClipEventTracker(_player.playlist.onPause, events.pause, events.trackPause);
-            createClipEventTracker(_player.playlist.onResume, events.resume, events.trackResume);
-            createClipEventTracker(_player.playlist.onSeek, events.seek, events.trackSeek);
+            var playlist:Playlist = _player.playlist;
+            createClipEventTracker(playlist.onStart, events.start, true);
+            createClipEventTracker(playlist.onStop, events.stop, true);
+            createClipEventTracker(playlist.onFinish, events.finish, true);
+            createClipEventTracker(playlist.onPause, events.pause, events.trackPause);
+            createClipEventTracker(playlist.onResume, events.resume, events.trackResume);
+            createClipEventTracker(playlist.onSeek, events.seek, events.trackSeek);
 
             createPlayerEventTracker(_player.onMute, events.mute, events.trackMute);
             createPlayerEventTracker(_player.onUnmute, events.unmute, events.trackUnmute);
@@ -64,13 +62,31 @@ package org.flowplayer.analytics {
             // been tracked or the playback has not started at all.
             createPlayerEventTracker(_player.onUnload, events.unload, true, function():Boolean { return _player.isPlaying() ||  _player.isPaused() });
 
+            // bind listeners for tracking the total view time
+            playlist.onStart(startTimeTracking, null, true);
+            playlist.onResume(startTimeTracking, null, true);
+
+            playlist.onStop(stopTimeTracking, null, true);
+            playlist.onPause(stopTimeTracking, null, true);
+            playlist.onFinish(stopTimeTracking, null, true);
+
             _model.dispatchOnLoad();
+        }
+
+        private function startTimeTracking(event:ClipEvent):void {
+            _startTimeMillis = getTimer();
+            log.debug("startTimeTracking(), started at " + _startTimeMillis + ", total view time " + _viewDurationMillis + " milliseconds");
+        }
+
+        private function stopTimeTracking(event:ClipEvent = null):void {
+            _viewDurationMillis += getTimer() - _startTimeMillis;
+            log.debug("stopTimeTracking(), total view time " + _viewDurationMillis + " milliseconds");
         }
 
         private function createClipEventTracker(eventBinder:Function, eventName:String, doTrack:Boolean):void {
             if (! doTrack) return;
             eventBinder(function(event:ClipEvent):void {
-                doTrackEvent(eventName, event.target as Clip);
+                doTrackEvent(eventName, isStopping(event), event);
             });
         }
 
@@ -83,7 +99,7 @@ package org.flowplayer.analytics {
                         return;
                     }
                 }
-                doTrackEvent(eventName);
+                doTrackEvent(eventName, true);
             });
         }
 
@@ -128,23 +144,28 @@ package org.flowplayer.analytics {
         }
 
 
-        // 			if the local server URL is unavailable, change the null to a prettier 'Unknown'
-        //			Finally, send the time each event happened.
-        private function doTrackEvent(eventName:String, clip:Clip = null):void {
+        private function doTrackEvent(eventName:String, trackViewDuration:Boolean = false, event:ClipEvent = null):void {
             if (_tracker == null) {
                 instantiateTracker();
             }
-            if (clip == null)
-                clip = _player.currentClip;
+            var clip:Clip = Clip(event ? event.target : _player.currentClip);
 
             try {
-                log.debug("Tracking " + eventName + "[" + (clip.completeUrl + (clip.isInStream ? ": instream" : "")) + "] : " + (_player.status ? _player.status.time : 0) + " on page " + getCategory());
+                var time:int = trackViewDuration ? (_viewDurationMillis / 1000) : int(_player.status ? _player.status.time : 0);
+
+                log.debug("Tracking " + eventName + "[" + (clip.completeUrl + (clip.isInStream ? ": instream" : "")) + "] : " + time + " on page " + getCategory());
                 if (_tracker.isReady()) {
-                    _tracker.trackEvent(getCategory(), eventName, clip.completeUrl + (clip.isInStream ? ": instream" : ""), int(_player.status ? _player.status.time : 0));
+                    _tracker.trackEvent(getCategory(), eventName, clip.completeUrl + (clip.isInStream ? ": instream" : ""), time);
                 }
             } catch (e:Error) {
                 log.error("Got error while tracking event " + eventName);
             }
+        }
+
+        private function isStopping(event:ClipEvent):Boolean {
+            if (event.eventType == ClipEventType.STOP) return true;
+            if (event.eventType == ClipEventType.FINISH) return true;
+            return false;
         }
 
         [External]
