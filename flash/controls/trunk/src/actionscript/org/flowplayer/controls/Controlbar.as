@@ -272,21 +272,32 @@ package org.flowplayer.controls {
 		}
 		
 		private function arrangeWidgets(widgets:Array, reverse:Boolean = false):Number {
+			log.error("Got widgets", widgets);
 			widgets = reverse ? widgets.reverse() : widgets;
-			var x:Number = reverse ? width : _config.style.margins[3];
+			log.error("calculating x", _config.style);
+			var x:Number = reverse ? width : margins[3];
+			log.error("looping...");
 			
 			for ( var i:int = 0; i < widgets.length; i++ ) {
 				var widget:AbstractWidgetController = _widgetControllers[widgets[i]];
 				
+				log.error("Got controller " + widget + " view : "+ widget.view);
+				
+				
 				if ( ! _config.visible[widget.name] ) 
 					continue;
 				
+			/*	if ( widget.view is WidgetDecorator ) {
+					(widget.view as WidgetDecorator).spaceAfterWidget = getSpaceAfterWidget(widget.name);
+				}
+				*/
 				// some exception
 				if ( widget.name == 'volume' )
 					arrangeVolumeControl(widget.view)
 				else
 					arrangeYCentered(widget.view);
 				
+				//var newX:Number = x + widget.view.width * (reverse ? -1 : 1);
 				var newX:Number = x + (widget.view.width + getSpaceAfterWidget(widget.name)) * (reverse ? -1 : 1);
 				
 				arrangeX(widget.view, reverse ? newX : x);
@@ -304,15 +315,19 @@ package org.flowplayer.controls {
         }
 		
 		private function get margins():Array {
-            return _config.style.margins;
+            return _config.margins;
         }
 		
 		private function arrangeScrubber(leftEdge:Number, rightEdge:Number, nextToRight:DisplayObjectContainer):Number {
 			var view:WidgetDecorator = _widgetControllers[SCRUBBER].view as WidgetDecorator;
 			
-            view.setRightEdgeWidth(getScrubberRightEdgeWidth(nextToRight))
+           // view.setRightEdgeWidth(getScrubberRightEdgeWidth(nextToRight));
+			view.spaceAfterWidget = getSpaceAfterWidget(SCRUBBER);
+			
             arrangeX(view, leftEdge);
-            var scrubberWidth:Number = rightEdge - leftEdge - 2 * getSpaceAfterWidget(SCRUBBER);
+            //var scrubberWidth:Number = rightEdge - leftEdge;// - getSpaceAfterWidget(SCRUBBER);
+			var scrubberWidth:Number = rightEdge - leftEdge - 2 * getSpaceAfterWidget(SCRUBBER);
+            
             if (! _player || _immediatePositioning) {
                 view.width = scrubberWidth;
             } else {
@@ -321,7 +336,7 @@ package org.flowplayer.controls {
             }
             view.height = height - margins[0] - margins[2];
             view.y = _height - margins[2] - view.height;
-            return rightEdge - getSpaceAfterWidget(SCRUBBER) - scrubberWidth;
+            return rightEdge  - scrubberWidth;
         }
 		
 		private function nextVisibleWidget(afterWidget:String):ConfigurableWidget {
@@ -379,7 +394,7 @@ package org.flowplayer.controls {
 		}
 
 		private function getSpaceAfterWidget(name:String):int {
-			if (nextVisibleWidget(name) == null) return _config.style.margins[1];
+			if (nextVisibleWidget(name) == null) return _config.margins[1];
 			return _config.spacing[name];
 		}
 
