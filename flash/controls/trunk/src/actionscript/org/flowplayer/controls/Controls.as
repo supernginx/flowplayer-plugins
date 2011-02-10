@@ -76,7 +76,7 @@ package org.flowplayer.controls {
         private var _player:Flowplayer;
         private var _pluginModel:PluginModel;
         private var _currentControlsConfig:Object;
-        private var _originalConfig:Object;
+        private var _previousConfig:Config;
 
 		private var _controlbar:Controlbar;
 		
@@ -90,17 +90,9 @@ package org.flowplayer.controls {
 		public function onConfig(model:PluginModel):void {
             log.info("received my plugin config ", model.config);
             _pluginModel = model;
-            storeOriginalConfig(model);
             log.debug("-");
             _config = createConfig(model.config);
             log.debug("config created");
-        }
-
-        private function storeOriginalConfig(model:PluginModel):void {
-            _originalConfig = new Object();
-            for (var prop:String in model.config) {
-                _originalConfig[prop] = model.config[prop];
-            }
         }
 
         private function createConfig(config:Object):Config {
@@ -370,14 +362,19 @@ package org.flowplayer.controls {
                 if (controlsConfig == _currentControlsConfig) {
                     return;
                 }
-                log.debug("onPlayBegin(): clip has controls configuration, reconfiguring");
+                log.error("onPlayBegin(): clip has controls configuration, reconfiguring", controlsConfig);
                 _currentControlsConfig = controlsConfig;
-				_config = createConfig(controlsConfig);
+				_previousConfig = _config.clone();
+				
+				_config.setNewProps(controlsConfig);
+				
+				log.error("Got new config ", _config);
+				
 				updateControlbar(true);
 				
             } else if (_currentControlsConfig) {
                 log.debug("onPlayBegin(): reverting to original configuration");
-                _config = createConfig(_originalConfig);
+                _config = _previousConfig;
 				updateControlbar(true);
 
             }

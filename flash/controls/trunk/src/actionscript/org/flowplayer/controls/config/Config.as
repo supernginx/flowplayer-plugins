@@ -57,6 +57,14 @@ package org.flowplayer.controls.config {
 			return _style;
 		}
 		
+		public function clone():Config {
+			var conf:Config = new Config();
+			conf.setNewProps(_style);
+			conf.availableWidgets = _availableWidgets;
+			
+			return conf;
+		}
+		
 		public function set availableWidgets(widgetControllers:Array):void {
 			_availableWidgets = widgetControllers;
 						
@@ -99,8 +107,11 @@ package org.flowplayer.controls.config {
 			return _bgStyle;
 		}
 
+		public function get margins():Array {
+			return _style['margins'] || [0, 0, 0, 0];
+		}
 		
-		private function fixBorder(prefix:String, defaultWidth:Number = 2, defaultColor:Number = 0xfff00f, defaultAlpha:Number = 1):String {
+		private function fixBorder(prefix:String, defaultWidth:Number = 0, defaultColor:Number = 0x000000, defaultAlpha:Number = 1):String {
 			
 			var width:Number = StyleSheetUtil.borderWidth(prefix, _style, defaultWidth);
 			var color:Array  = StyleSheetUtil.rgbValue(StyleSheetUtil.borderColor(prefix, _style, defaultColor));
