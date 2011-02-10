@@ -383,9 +383,11 @@ package org.osmf.net {
                     break;
             }
         }
-
-		private function onPlayStatus(arg1:Object, arg2:Object, info:Object):void
+        
+        //fix for wowza sending random arguments  
+		private function onPlayStatus(...rest):void
 		{
+			var info:Object = rest.length > 1 ? rest[2] : rest[0];
             CONFIG::LOGGING
             {
                 debug("onPlayStatus() - info.code=" + info.code);
