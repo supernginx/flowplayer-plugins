@@ -60,8 +60,10 @@ package org.flowplayer.bwcheck {
         public function set onTransitionComplete(onTransitionComplete:Function):void {
             _onTransitionComplete = onTransitionComplete;
         }
-
-        public function playStatusHandler(info:Object):void {
+        
+        //fix for wowza sending random arguments     
+        public function playStatusHandler(...rest):void {
+        	var info:Object = rest.length > 1 ? rest[2] : rest[0];
             log.debug("playStatusHandler() -- " + info.code, info);
             if (info.code == "NetStream.Play.TransitionComplete" && _onTransitionComplete != null) {
                 _onTransitionComplete();
