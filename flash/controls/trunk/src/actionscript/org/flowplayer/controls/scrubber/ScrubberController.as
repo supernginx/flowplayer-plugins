@@ -56,7 +56,7 @@ package org.flowplayer.controls.scrubber {
 			_decoratedView = new WidgetDecorator(SkinClasses.getDisplayObject("fp.ScrubberTopEdge"),
 										 	 	 SkinClasses.getDisplayObject("fp.ScrubberRightEdge"),
 												 SkinClasses.getDisplayObject("fp.ScrubberBottomEdge"),
-												 SkinClasses.getDisplayObject("fp.ScrubberLeftEdge")).init(_widget);;
+												 SkinClasses.getDisplayObject("fp.ScrubberLeftEdge"), true).init(_widget);
 		}
 
 		override protected function onTimeUpdate(event:TimerEvent):void {
