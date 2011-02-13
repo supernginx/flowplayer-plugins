@@ -37,18 +37,18 @@
 
             _top.x = 0;
             _top.y = 0;
-            _top.width = _widget.width + _left.width + _right.width;
+            _top.width = _widget.width + _left.width + _right.width + spaceAfterWidget;
 
-            _right.x = _left.width + _widget.width;
+            _right.x = _left.width + _widget.width + spaceAfterWidget;
             _right.y = _top.height;
             _right.height = height - _top.height - _bottom.height;
 
             _bottom.x = 0;
             _bottom.y = height - _bottom.height;
-            _bottom.width = _widget.width + _left.width + _right.width;
+            _bottom.width = _widget.width + _left.width + _right.width + spaceAfterWidget;
 
             _height = _top.height + _widget.height + _bottom.height;
-            _width = _left.width + _widget.width + _right.width; 
+            _width = _left.width + _widget.width + _right.width + spaceAfterWidget; 
         }
 
     }

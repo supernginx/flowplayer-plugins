@@ -24,11 +24,24 @@
 		protected var _widget:ConfigurableWidget;
 		protected var _config:Object;
 
-		public function WidgetDecorator(top:DisplayObject, right:DisplayObject, bottom:DisplayObject, left:DisplayObject) {	
+		protected var _spaceAfterWidget:Number = 0;
+		protected var _includeSpacing:Boolean = false;
+		
+		public function WidgetDecorator(top:DisplayObject, right:DisplayObject, bottom:DisplayObject, left:DisplayObject, includeSpacing:Boolean = false) {	
             _left 	= addFaceIfNotNull(left);
             _right 	= addFaceIfNotNull(right);
             _top 	= addFaceIfNotNull(top);
             _bottom = addFaceIfNotNull(bottom);
+
+			_includeSpacing = includeSpacing;
+		}
+		
+		public function set spaceAfterWidget(value:Number):void {
+			_spaceAfterWidget = value;
+		}
+		
+		public function get spaceAfterWidget():Number {
+			return _spaceAfterWidget;
 		}
 		
 		public function init(widget:ConfigurableWidget):ConfigurableWidget {
@@ -41,11 +54,6 @@
 		public function get widget():ConfigurableWidget {
 			return _widget;
 		}
-		
-		public function setRightEdgeWidth(width:Number):void {
-            log.debug("setRightEdgeWidth() " + width);
-            _right.width = width;
-        }
 		
 		override public function configure(config:Object):void {		
 			_config = config;
@@ -83,14 +91,15 @@
             _left.x = 0;
             _left.y = _top.height;
 
-            _right.height = _height - _top.height - _bottom.height;
-            _right.x = _width - _right.width;
-            _right.y = _top.height;
-
-
             _widget.x = _left.width;
-            _widget.setSize(_width - _left.width - _right.width, (height-_bottom.height) * widgetHeightRatio);
+            _widget.setSize(_width - _left.width - _right.width - (_includeSpacing ? spaceAfterWidget : 0), height* widgetHeightRatio);
             Arrange.center(_widget, 0, height);
+
+			_right.height = _height - _top.height - _bottom.height;
+	        _right.x = _widget.x + _widget.width + spaceAfterWidget;
+	        _right.y = _top.height;
+			
+			_width = _widget.x + _widget.width + spaceAfterWidget + _right.width;
 
             _bottom.y = _height - _bottom.height;
             _bottom.width = _width;
@@ -98,10 +107,6 @@
             _top.y = 0;
             _top.width = _width;
         }
-
-		public override function get width():Number {
-			return _left.width + _widget.width + _right.width;
-		}
 
 		protected function get widgetHeightRatio():Number {
 			return _config['heightRatio'] || 1;
