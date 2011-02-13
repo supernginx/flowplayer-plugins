@@ -186,9 +186,9 @@ package org.flowplayer.controls.config {
 			
 			config.setBackgroundColor(_style['volumeSliderColor']);
 			config.setBackgroundGradient(decodeGradient(_style['volumeSliderGradient']));
-			
-			config.setColor(_style['volumeColor']);
-			config.setGradient(decodeGradient(_style['sliderGradient']));
+
+ 			config.setColor(_style['volumeColor'] || _style['volumeSliderColor']);
+			config.setGradient(decodeGradient(_style['sliderGradient'] || _style['volumeSliderGradient'] ));
 			
 			config.setBorder(fixBorder('volumeBorder'));
 			config.setBorderRadius(_style['volumeBorderRadius']);
