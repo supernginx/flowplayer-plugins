@@ -77,6 +77,11 @@ package org.flowplayer.controls.time {
 		protected function durationReached(event:ClipEvent):void {
 			_durationReached = true;
 		}
+		
+		override protected function onPlayResumed(event:ClipEvent):void {
+           super.onPlayResumed(event);
+			_durationReached = false;
+        }
 
 		override protected function onPlayStarted(event:ClipEvent):void {
 			super.onPlayStarted(event);

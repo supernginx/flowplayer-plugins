@@ -116,7 +116,10 @@ package org.flowplayer.controls.scrubber {
 
 		private function enableScrubber(enabled:Boolean):void {
 			if (!_widget) return;
-		
+			
+			// if scrubber is already disabled, don't do anything
+			if ( ! _widget.enabled )	return;
+			
 			_widget.enabled = enabled;
 
 		//	log.error("Enabling scrubber :", enabled);
