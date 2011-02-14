@@ -183,27 +183,8 @@ package org.flowplayer.viralvideos {
             fixPluginsURLs(updatedConfig);
             fixShareUrl(updatedConfig);
 
-            var clip:Object;
-
-            if (_embedConfig.shareCurrentPlaylistItem) {
-                log.debug("Sharing just current playlist item");
-                delete updatedConfig.playlist;
-
-                if (! updatedConfig.clip) {
-                    updatedConfig.clip = {};
-                }
-                clip = updatedConfig.clip;
-                clip.url = _player.currentClip.url;
-            }
-            
-            if (! updatedConfig.playlist && ! updatedConfig.clip) {
-                updatedConfig.clip = { url: _player.currentClip.url };
-                clip = updatedConfig.clip;
-            }
-
-            if (updatedConfig.playlist) {
-                clip = updatedConfig.playlist[0];
-            }
+            var clip:Object = getSharedClip(updatedConfig);
+            if (! clip) return updatedConfig;
 
             if (_embedConfig.isAutoPlayOverriden) {
                 clip.autoPlay = _embedConfig.autoPlay;
@@ -216,6 +197,37 @@ package org.flowplayer.viralvideos {
             }
 
             return updatedConfig;
+        }
+
+        private function getSharedClip(updatedConfig:Object):Object {
+            var clip:Object;
+
+            if (updatedConfig.playlist is String) {
+                // RSS or SMIL playlist
+                return null;
+            }
+
+            if (_embedConfig.shareCurrentPlaylistItem) {
+                log.debug("Sharing just current playlist item");
+                delete updatedConfig.playlist;
+
+                if (! updatedConfig.clip) {
+                    updatedConfig.clip = {};
+                }
+                var clip:Object = updatedConfig.clip;
+                clip.url = _player.currentClip.url;
+                return clip;
+            }
+
+            if (! updatedConfig.playlist && ! updatedConfig.clip) {
+                updatedConfig.clip = { url: _player.currentClip.url };
+                return updatedConfig.clip;
+            }
+
+            if (updatedConfig.playlist) {
+                return updatedConfig.playlist[0];
+            }
+            return _player.playlist.current;
         }
 
 
