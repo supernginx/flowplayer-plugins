@@ -74,25 +74,32 @@ package org.flowplayer.controls.config {
 			_spacing  = new WidgetsSpacing(_style['spacing'], widgetControllers);
 		}
 		
-		public function setNewProps(props:Object, to:String = null):void {
+		public function setNewProps(props:Object):void {
+			log.info("settin new props", props);
+			_style = _setNewProps(props, _style);
 			
-			var dest:Object = _style;
-			if ( to ) {
-				_style[to] = _style[to] || {};
-				dest = _style[to];
-			}
-			
-			for (var name:String in props) {
-			//	log.error("Adding "+ name + " = "+ props[name]);
-				dest[name] = props[name];
-			}
-			
-			// update tooltip & al
 			availableWidgets = _availableWidgets;
-
 			_bgStyle = _style;
+			
 		}
 		
+		private function _setNewProps(newProps:Object, oldProps:Object):Object {
+			var dest:Object = oldProps;
+			
+			for ( var name:String in newProps ) {
+				if ( newProps[name] is Number || newProps[name] is String || newProps[name] is Boolean ) {
+				//	log.debug("copying in "+ newProps[name] + " in " + name);
+					dest[name] = newProps[name];	
+				}
+				else {
+				//	log.debug("recursing in "+ name);
+					dest[name] = oldProps[name] != undefined ? _setNewProps(newProps[name], oldProps[name]) : newProps[name];
+				}
+			}
+			
+			return dest;
+		}
+			
 		public function completeStyleProps(styleProps:Object):Object {
 			for (var name:String in _style) {
 			//	log.error("Merging back "+ name + " = "+ styleProps[name]);

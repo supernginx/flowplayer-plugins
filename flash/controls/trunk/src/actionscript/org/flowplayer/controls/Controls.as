@@ -182,7 +182,7 @@ package org.flowplayer.controls {
         [External]
         public function setTooltips(props:Object):void {
            // initTooltipConfig(_config, props);
-			_config.setNewProps(props, 'tooltips');
+			_config.setNewProps({tooltips: props});
            	updateControlbar();
  		//	redraw(props);
         }
@@ -257,7 +257,7 @@ package org.flowplayer.controls {
             log.debug("enable()");
            // setConfigBooleanStates("enabled", enabledWidgets);
             
-			_config.setNewProps(enabledWidgets, 'enabled');
+			_config.setNewProps({enabled: enabledWidgets});
 		
 
 			updateControlbar();
@@ -362,13 +362,13 @@ package org.flowplayer.controls {
                 if (controlsConfig == _currentControlsConfig) {
                     return;
                 }
-                log.error("onPlayBegin(): clip has controls configuration, reconfiguring", controlsConfig);
+                log.info("onPlayBegin(): clip has controls configuration, reconfiguring", controlsConfig);
                 _currentControlsConfig = controlsConfig;
 				_previousConfig = _config.clone();
 				
 				_config.setNewProps(controlsConfig);
 				
-				log.error("Got new config ", _config);
+				log.info("Got new config ", _config);
 				
 				updateControlbar(true);
 				
