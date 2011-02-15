@@ -149,12 +149,8 @@ package org.flowplayer.viralvideos {
             initializeTabProperties();
             createTabs();
 
-//            _autoHide = new AutoHide(null, _config.autoHide, _player, stage, _iconBar);
-////            if (_config.autoHide)
-////            _autoHide.hide();
-//            _autoHide.onShow(onButtonsShow);
-//            _autoHide.start();
             _iconDock.addToPanel();
+            _iconDock.onShow(onDockShow);
 
             hideViews();
 
@@ -171,7 +167,7 @@ package org.flowplayer.viralvideos {
 			}
         }
 
-        private function onButtonsShow():Boolean {
+        private function onDockShow():Boolean {
             return ! this.visible || this.alpha == 0;
         }
 

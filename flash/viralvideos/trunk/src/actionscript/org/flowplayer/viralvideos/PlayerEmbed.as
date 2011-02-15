@@ -200,8 +200,6 @@ package org.flowplayer.viralvideos {
         }
 
         private function getSharedClip(updatedConfig:Object):Object {
-            var clip:Object;
-
             if (updatedConfig.playlist is String) {
                 // RSS or SMIL playlist
                 return null;
