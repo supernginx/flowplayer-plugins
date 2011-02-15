@@ -127,5 +127,13 @@ package org.flowplayer.ui {
             arrangeIcons();
 
         }
+
+        public function onShow(callback:Function):void {
+            _autoHide.onShow(callback);
+        }
+
+        public function onHide(callback:Function):void {
+            _autoHide.onHide(callback);
+        }
     }
 }
