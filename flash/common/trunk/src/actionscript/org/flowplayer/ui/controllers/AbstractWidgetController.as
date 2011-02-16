@@ -88,6 +88,10 @@ package org.flowplayer.ui.controllers {
 			return null;
 		}
 		
+		public function get groupName():String {
+			return null;
+		}
+		
 		public function get defaults():Object {
 			throw new Error("You need to override defaults accessor");
 			return null;
