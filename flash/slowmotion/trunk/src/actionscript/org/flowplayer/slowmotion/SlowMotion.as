@@ -28,6 +28,13 @@ package org.flowplayer.slowmotion {
     import org.flowplayer.util.Log;
     import org.flowplayer.view.Flowplayer;
 	import org.flowplayer.util.PropertyBinder;
+	
+	import org.flowplayer.ui.containers.WidgetContainer;
+	import org.flowplayer.ui.containers.WidgetContainerEvent;
+	
+	import org.flowplayer.ui.controllers.GenericButtonController;
+	
+	import fp.*;
 
     public class SlowMotion implements Plugin {
         private var log:Log = new Log(this);
@@ -89,8 +96,73 @@ package org.flowplayer.slowmotion {
 
             lookupSpeedIndicator();
 
+			var controlbar:* = player.pluginRegistry.plugins['controls'];
+			controlbar.pluginObject.addEventListener(WidgetContainerEvent.CONTAINER_READY, addButtons);
+			
+			
             _model.dispatchOnLoad();
         }
+
+		private function addButtons(event:WidgetContainerEvent):void {
+			var container:WidgetContainer = event.container;
+			
+			var FBwdButtonController:GenericButtonController = new GenericButtonController("slowMotionFBwd", fp.SlowMotionFBwdButton, {
+				enabled: true,
+				visible: true,
+				tooltipEnabled : true,
+				tooltipLabel: 'Fast Backward'
+			}, function():void {
+				log.info("Fast backward clicked");
+				onSlowMotionClicked(true, false);
+			}, "slowmotion");
+			
+			var bwdButtonController:GenericButtonController = new GenericButtonController("slowMotionBwd", fp.SlowMotionBwdButton, {
+				enabled: true,
+				visible: true,
+				tooltipEnabled : true,
+				tooltipLabel: 'Slow Backward'
+			}, function():void {
+				log.info("Slow backward clicked");
+				onSlowMotionClicked(false, false);
+			}, "slowmotion");
+			
+			var fwdButtonController:GenericButtonController = new GenericButtonController("slowMotionFwd", fp.SlowMotionFwdButton, {
+				enabled: true,
+				visible: true,
+				tooltipEnabled : true,
+				tooltipLabel: 'Slow Forward'
+			}, function():void {
+				log.info("Slow Forward clicked");
+				onSlowMotionClicked(false, true);
+			}, "slowmotion");
+			
+			var FFwdButtonController:GenericButtonController = new GenericButtonController("slowMotionFFwd", fp.SlowMotionFFwdButton, {
+				enabled: true,
+				visible: true,
+				tooltipEnabled : true,
+				tooltipLabel: 'Fast Forward'
+			}, function():void {
+				log.info("Fast Forward clicked");
+				onSlowMotionClicked(true, true);
+			}, "slowmotion");
+			
+			container.addWidget(FBwdButtonController, "stop", false);
+			container.addWidget(bwdButtonController, "slowMotionFBwd", false);
+			container.addWidget(fwdButtonController, "play", false);
+			container.addWidget(FFwdButtonController, "slowMotionFwd", false);
+		}
+		
+		private function onSlowMotionClicked(fast:Boolean, goForward:Boolean):void
+		{
+			var nextSpeed:Number = getNextSpeed(fast, goForward);
+				
+			if ( nextSpeed == 0 )
+				normal();
+			else if ( goForward )
+				forward(nextSpeed);
+			else
+				backward(nextSpeed);
+		}
 
         [External]
         public function forward(multiplier:Number = 4, fps:Number = -1):void {
