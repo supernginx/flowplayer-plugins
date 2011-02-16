@@ -49,7 +49,7 @@ package org.flowplayer.controls.config {
 		
 		private var _enabled:WidgetsEnabledStates = null;
 		private var _visible:WidgetsVisibility = null;
-		private var _tooltips:ToolTips = null;
+		private var _tooltips:ToolTipsConfig = null;
         private var _spacing:WidgetsSpacing = null;
 
 		// base guy
@@ -69,7 +69,7 @@ package org.flowplayer.controls.config {
 			_availableWidgets = widgetControllers;
 						
 			_visible  = new WidgetsVisibility(_style, widgetControllers);
-			_tooltips = new ToolTips(_style['tooltips'], widgetControllers);
+			_tooltips = new ToolTipsConfig(_style['tooltips'], widgetControllers);
 			_enabled  = new WidgetsEnabledStates(_style['enabled'], widgetControllers);
 			_spacing  = new WidgetsSpacing(_style['spacing'], widgetControllers);
 		}
@@ -261,7 +261,7 @@ package org.flowplayer.controls.config {
 		}
 		
         [Value]
-		public function get tooltips():ToolTips {
+		public function get tooltips():ToolTipsConfig {
 			return _tooltips;
 		}
 

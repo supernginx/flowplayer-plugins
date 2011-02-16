@@ -51,7 +51,7 @@ package org.flowplayer.controls {
 		private var _bgFill:Sprite;
 		
 		
-		private var _widgetsOrder:Array = ['stop', 'play', 'previous', 'next', 'scrubber', 'time', 'mute', 'volume', 'fullscreen'];
+		private var _widgetsOrder:Array = [];
 		private const SCRUBBER:String = "scrubber";
 		
 		
@@ -70,17 +70,15 @@ package org.flowplayer.controls {
         }
 	
 		public function addWidget(	controller:AbstractWidgetController, after:String = null, 
-									animation:Boolean = true, decorate:Boolean = true):void 
+									animated:Boolean = true, decorated:Boolean = true):void 
 		{
-			var index:int = 0;
-			if ( after && _widgetsOrder.indexOf(after) != -1 )
-				index = _widgetsOrder.indexOf(after);
+			var index:int = _widgetsOrder.indexOf(after) + 1;
 				
 			_widgetsOrder.splice(index, 0, controller.name);
-			addController(controller, decorate);
+			addController(controller, decorated);
 			updateAvailableWidgets();
 			
-			configure(_config, animation);
+			configure(_config, animated);
 		}
 		
 	
@@ -107,16 +105,16 @@ package org.flowplayer.controls {
         private function createChildren():void {
             //log.info("creating createChildren ", _config);
 
-			addController(new ToggleFullScreenButtonController());
-			addController(new TogglePlayButtonController());
-			addController(new StopButtonController());
-			addController(new NextButtonController());
-			addController(new PrevButtonController());
-			addController(new StopButtonController());
-			addController(new ToggleMuteButtonController());
-			addController(new VolumeController());
-			addController(new TimeViewController());
-			addController(new ScrubberController());
+			// call addWidget in reverse order so we add widgets at the beginning
+			addWidget(new ToggleFullScreenButtonController(), null, false);
+			addWidget(new VolumeController(), null, false);
+			addWidget(new ToggleMuteButtonController(), null, false);
+			addWidget(new TimeViewController(), null, false);
+			addWidget(new ScrubberController(), null, false);
+			addWidget(new NextButtonController(), null, false);
+			addWidget(new PrevButtonController(), null, false);
+			addWidget(new TogglePlayButtonController(), null, false);
+			addWidget(new StopButtonController(), null, false);
 
 			// now that we have registered all our controllers, clear config cache
 			updateAvailableWidgets();
