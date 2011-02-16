@@ -1,7 +1,7 @@
 /*    
  *    Author: Anssi Piirainen, <api@iki.fi>
  *
- *    Copyright (c) 2009 Flowplayer Oy
+ *    Copyright (c) 2009-2011 Flowplayer Oy
  *
  *    This file is part of Flowplayer.
  *
@@ -61,7 +61,10 @@ package org.flowplayer.slowmotion {
 			_requestedSpeed = 1;
 			
 			var handler:Function = function(event:KeyboardEvent, increaseSpeed:Boolean):void {
-				if ( ! event.ctrlKey )	return;
+				if ( ! event.ctrlKey )	{
+                    log.debug("control key not pressed");
+                    return;
+                }
 				
 				var nextSpeed:Number = getClosestSpeed(increaseSpeed);
 				log.warn("Speeding now at "+ nextSpeed);
