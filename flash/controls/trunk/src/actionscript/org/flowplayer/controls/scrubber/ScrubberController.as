@@ -51,6 +51,7 @@ package org.flowplayer.controls.scrubber {
 		override protected function createWidget():void {
 			log.debug("Creating scrubber with ", _config)
 			_widget = new ScrubberSlider(_config as ScrubberConfig, _player, _controlbar);
+            enableScrubber(true);
         }
 
 		override protected function createDecorator():void {
@@ -91,7 +92,7 @@ package org.flowplayer.controls.scrubber {
 
 		override protected function onPlayStarted(event:ClipEvent):void {
 			super.onPlayStarted(event);
-            log.info("received " + event);
+            log.info("received " + event + ", time " + _player.status.time);
 			if (_player.status.time < 0.5) {
                 if (_enableOnStart) {
                     enableScrubber(true);
@@ -103,7 +104,7 @@ package org.flowplayer.controls.scrubber {
 		
 		override protected function onPlayPaused(event:ClipEvent):void {
 			super.onPlayPaused(event);
-			log.info("received " + event);
+            log.info("received " + event + ", time " + _player.status.time);
 			var clip:Clip = event.target as Clip;
 			log.info("clip.seekableOnBegin: " + clip.seekableOnBegin);
 			if (_player.status.time == 0 && ! clip.seekableOnBegin) {
@@ -116,7 +117,7 @@ package org.flowplayer.controls.scrubber {
 
         override protected function onPlayResumed(event:ClipEvent):void {
 			super.onPlayResumed(event);
-            log.info("received " + event);
+            log.info("received " + event + ", time " + _player.status.time);
 			if (_player.status.time < 0.5) {
                 if (_enableOnStart) {
                     enableScrubber(true);
@@ -143,6 +144,7 @@ package org.flowplayer.controls.scrubber {
 		
 
 		private function onScrubbed(event:Event):void {
+            log.debug("onScrubbed() " + ScrubberSlider(event.target).value);
 			_player.seekRelative(ScrubberSlider(event.target).value);
 		}
 
