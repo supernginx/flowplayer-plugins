@@ -30,6 +30,7 @@ package org.flowplayer.controls.scrubber {
 	import org.flowplayer.controls.controllers.AbstractTimedWidgetController;
 
 	public class ScrubberController extends AbstractTimedWidgetController {
+        private var _enableOnStart:Boolean;
 
 		public function ScrubberController() {
 			super();
@@ -90,8 +91,12 @@ package org.flowplayer.controls.scrubber {
 
 		override protected function onPlayStarted(event:ClipEvent):void {
 			super.onPlayStarted(event);
+            log.info("received " + event);
 			if (_player.status.time < 0.5) {
-				enableScrubber(true);
+                if (_enableOnStart) {
+                    enableScrubber(true);
+                    _enableOnStart = false;
+                }
 			}
 		}
 
@@ -102,24 +107,29 @@ package org.flowplayer.controls.scrubber {
 			var clip:Clip = event.target as Clip;
 			log.info("clip.seekableOnBegin: " + clip.seekableOnBegin);
 			if (_player.status.time == 0 && ! clip.seekableOnBegin) {
-				enableScrubber(false);
-			}
+                if (_widget.enabled) {
+                    enableScrubber(false);
+                    _enableOnStart = true;
+                }
+            }
         }
 
         override protected function onPlayResumed(event:ClipEvent):void {
 			super.onPlayResumed(event);
+            log.info("received " + event);
 			if (_player.status.time < 0.5) {
-				enableScrubber(true);
+                if (_enableOnStart) {
+                    enableScrubber(true);
+                    _enableOnStart = false;
+                }
 			}
         }
 
 
 		private function enableScrubber(enabled:Boolean):void {
-			if (!_widget) return;
-			
-			// if scrubber is already disabled, don't do anything
-			if ( ! _widget.enabled )	return;
-			
+            log.debug("enableScrubber() setting scrubber enabled " + enabled);
+            if (!_widget) return;
+
 			_widget.enabled = enabled;
 
 		//	log.error("Enabling scrubber :", enabled);
