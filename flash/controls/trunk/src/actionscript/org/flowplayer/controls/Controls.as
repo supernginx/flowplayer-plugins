@@ -9,65 +9,43 @@
  */
 
 package org.flowplayer.controls {
-    import flash.display.DisplayObject;
-	import flash.display.DisplayObjectContainer;
-	import flash.display.Sprite;
-    import flash.events.Event;
-    import flash.events.TimerEvent;
-    import flash.system.ApplicationDomain;
-    import flash.system.Security;
-    import flash.utils.Timer;
-
-	import org.flowplayer.ui.controllers.AbstractWidgetController;
-    import org.flowplayer.ui.buttons.AbstractTooltipButton;
-	import org.flowplayer.ui.buttons.TooltipButtonConfig;
-    import org.flowplayer.ui.buttons.GenericTooltipButton;
-    import org.flowplayer.ui.buttons.ToggleButton;
-    import org.flowplayer.ui.buttons.ButtonEvent;
-
-    import org.flowplayer.controls.config.*;
-    import org.flowplayer.controls.buttons.*;
-
-    import org.flowplayer.model.Clip;
-    import org.flowplayer.model.ClipEvent;
-    import org.flowplayer.model.DisplayPluginModel;
-    import org.flowplayer.model.PlayerEvent;
-    import org.flowplayer.model.PlayerEventType;
-    import org.flowplayer.model.Playlist;
-    import org.flowplayer.model.Plugin;
-    import org.flowplayer.model.PluginEventDispatcher;
-    import org.flowplayer.model.PluginModel;
-    import org.flowplayer.model.Status;
-
-    import org.flowplayer.ui.AutoHide;
-    import org.flowplayer.ui.AutoHideConfig;
-
-    import org.flowplayer.util.Arrange;
-    import org.flowplayer.util.PropertyBinder;
-
-    import org.flowplayer.view.AnimationEngine;
-    import org.flowplayer.view.Flowplayer;
-    import org.flowplayer.view.StyleableSprite;
-	import org.flowplayer.view.AbstractSprite;
-
-	import org.flowplayer.controls.time.TimeViewController;
-	import org.flowplayer.controls.time.TimeView;
-	import org.flowplayer.controls.config.ToolTips;
-
-
-	import org.flowplayer.controls.scrubber.ScrubberController;
-	import org.flowplayer.controls.controllers.*;
-	import org.flowplayer.ui.buttons.ToggleButtonConfig;
-	import org.flowplayer.ui.buttons.ConfigurableWidget;
+    
+	import org.flowplayer.view.StyleableSprite;
+	import org.flowplayer.view.Flowplayer;
 	
-	import org.flowplayer.controls.volume.VolumeController;
-	import flash.utils.Dictionary;
-
+	import org.flowplayer.model.Plugin;
+	import org.flowplayer.model.PluginModel;
+	import org.flowplayer.model.Playlist;
+	import org.flowplayer.model.ClipEvent;
+	import org.flowplayer.model.Clip;
+	import org.flowplayer.model.DisplayPluginModel;
+	
+	import org.flowplayer.util.PropertyBinder;
+	import org.flowplayer.util.Arrange
+	
+	import org.flowplayer.ui.containers.WidgetContainer;
+	import org.flowplayer.ui.containers.WidgetContainerEvent;
+	
+	import org.flowplayer.ui.controllers.AbstractWidgetController;
+	
+	import org.flowplayer.ui.AutoHide;
+	import org.flowplayer.ui.AutoHideConfig;
+	
+	import org.flowplayer.controls.config.Config;
+	import org.flowplayer.controls.config.ToolTipsConfig;
+	import org.flowplayer.controls.config.WidgetsVisibility;
+	import org.flowplayer.controls.config.WidgetsEnabledStates;
+	
+	import flash.events.Event;
+	import flash.system.Security;
+	import flash.system.ApplicationDomain;
+	
+	import flash.utils.*;
 
     /**
      * @author anssi
      */
-    public class Controls extends StyleableSprite implements Plugin {
+    public class Controls extends StyleableSprite implements Plugin, WidgetContainer {
 
         private static const DEFAULT_HEIGHT:Number = 28;
     
@@ -118,7 +96,11 @@ package org.flowplayer.controls {
 			addListeners(player.playlist);
 			
 			_controlbar = new Controlbar(_player, _config);
-
+			var self:Controls = this;
+			setTimeout(function():void {
+				self.dispatchEvent(new WidgetContainerEvent(WidgetContainerEvent.CONTAINER_READY, self));
+			}, 0);
+			
 			_pluginModel.dispatchOnLoad();
 		}
 
@@ -167,8 +149,13 @@ package org.flowplayer.controls {
 
 		/* Public API */
 		
-		public function addWidget(controller:AbstractWidgetController, after:String = null, animation:Boolean = true):void {
-			_controlbar.addWidget(controller, after, animation);
+		public function addWidget(	controller:AbstractWidgetController, after:String = null, 
+									animated:Boolean = true, decorated:Boolean = true):void {
+			if ( ! _controlbar ) {
+				log.error("WidgetContainer not ready yet !");
+				return;
+			}
+			_controlbar.addWidget(controller, after, animated, decorated);
 		}
 		
 
@@ -188,7 +175,7 @@ package org.flowplayer.controls {
         }
 
         [External(convert="true")]
-        public function getTooltips():ToolTips {
+        public function getTooltips():ToolTipsConfig {
             return _config.tooltips;
         }
 
