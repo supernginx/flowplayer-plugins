@@ -2,8 +2,7 @@
  * This file is part of Flowplayer, http://flowplayer.org
  *
  * By: Anssi Piirainen, <support@flowplayer.org>
- * Copyright (c) 2008, 2009 Flowplayer Oy
-
+ * Copyright (c) 2008-2011 Flowplayer Oy
  * H.264 support by: Arjen Wagenaar, <h264@code-shop.com>
  * Copyright (c) 2009 CodeShop B.V.
  *
