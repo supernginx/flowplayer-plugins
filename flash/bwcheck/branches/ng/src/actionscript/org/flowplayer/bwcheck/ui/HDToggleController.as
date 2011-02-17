@@ -75,17 +75,17 @@ package org.flowplayer.bwcheck.ui {
 		}
 		
 		override protected function onButtonClicked(event:ButtonEvent):void {
-			log.error("HD button clicked");
+			log.debug("HD button clicked");
 			_provider.hd = ! isDown;
 		}
 		
 		private function onHD(event:HDEvent):void {
-			log.error("Stream switched to HD ? "+ event.hasHD);
+			log.debug("Stream switched to HD ? "+ event.hasHD);
 			(_widget as ToggleButton).isDown = event.hasHD;
 		}
 		
 		private function onHDAvailable(event:HDEvent):void {
-			log.error("HD Available ? "+ event.hasHD);
+			log.debug("HD Available ? "+ event.hasHD);
 			_widget.enabled = event.hasHD;
 		}
 	}
