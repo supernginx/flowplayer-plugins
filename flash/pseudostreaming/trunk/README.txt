@@ -3,7 +3,7 @@ Version history:
 3.2.6
 -----
 Fixes:
-- Pseudostreaming was causing cuepoints to be missed.
+- Pseudostreaming was causing cuepoints to be skipped. As a results subtitles shown using the captions plugin were skipped too.
 
 3.2.5
 -----

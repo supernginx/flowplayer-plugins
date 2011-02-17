@@ -2,8 +2,7 @@ Version history:
 
 3.2.3
 -----
-- fixed to work when there is a RTMP plugin in player config, and it does not contain any configuration. durationFunc
-  lookup was failing in this case.  
+- fixed to work when there is a RTMP plugin in player config, and it does not contain any configuration. durationFunc lookup was failing in this case.  
 
 3.2.2
 -----

@@ -2,7 +2,7 @@
  * This file is part of Flowplayer, http://flowplayer.org
  *
  * By: Anssi Piirainen, Flowplayer Oy
- * Copyright (c) 2009 Flowplayer Oy
+ * Copyright (c) 2009-2011 Flowplayer Oy
  *
  * Released under the MIT License:
  * http://www.opensource.org/licenses/mit-license.php
