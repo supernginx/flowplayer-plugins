@@ -28,7 +28,10 @@ package org.flowplayer.controls.config {
 		
 		
 		public function AbstractWidgetsProps(styleProps:Object, widgets:Array) {
-			_props = styleProps || {};
+			_props = {};
+			for ( var name:String in styleProps )
+				_props[name] = styleProps[name];
+				
 			_availableWidgets = widgets;
 		}
 	
@@ -49,7 +52,7 @@ package org.flowplayer.controls.config {
 
 		protected function addProperty(name:String, defaultValue:*):void {
 			// take value from config or default
-			//log.error("adding "+ name + " = " + _props[name] + " || "+ defaultValue);
+			log.debug("adding "+ name + " = " + _props[name] + " || "+ defaultValue);
 			
 			this[name] = _props[name] == undefined ? defaultValue : _props[name];
 		}
@@ -60,8 +63,14 @@ package org.flowplayer.controls.config {
 			
 			if ( _props['all'] != undefined ) {
 				for ( var i:int = 0; i < _availableWidgets.length; i++ ) {
-					if ( _props[_availableWidgets[i]['name']] == undefined )
+					if ( _props[_availableWidgets[i]['name']] == undefined ) {
+						log.debug("Setting all default to "+ _availableWidgets[i]['name'] + " to "+ _props['all']);
 						_props[_availableWidgets[i]['name']] = _props['all'];
+					}
+					if ( _availableWidgets[i].hasOwnProperty('downName') && _props[_availableWidgets[i]['downName']] == undefined ) {
+						log.debug("Setting all default to "+ _availableWidgets[i]['downName'] + " to "+ _props['all']);
+						_props[_availableWidgets[i]['downName']] = _props['all'];
+					}
 				}
 			}
 			
