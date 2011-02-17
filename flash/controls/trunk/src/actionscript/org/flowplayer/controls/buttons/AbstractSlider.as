@@ -183,6 +183,7 @@ package org.flowplayer.controls.buttons {
 		protected function createDragger():void {
  			_dragger = new DraggerButton(_config.draggerButtonConfig, _animationEngine);
 			_dragger.buttonMode = true;
+			_dragger.x = 0;
 			addChild(_dragger);
 		}
 		
