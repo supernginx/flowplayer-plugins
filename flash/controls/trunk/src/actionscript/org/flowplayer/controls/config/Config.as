@@ -75,11 +75,35 @@ package org.flowplayer.controls.config {
 		
 		public function setNewProps(props:Object):void {
 			log.info("settin new props", props);
+			handleAllProperty(props);
+			
 			_style = _setNewProps(props, _style);
 			
 			availableWidgets = _availableWidgets;
 			_bgStyle = _style;
 			
+		}
+		
+		// some special code to handle setWidgets({all:true}) and setEnabled({all: true}) that must wipe out the existing values
+		// instead of setting default values
+		private function handleAllProperty(newProps:Object):void {
+			var props:Object = null;
+			if ( newProps['all'] != undefined )
+				props = _style;
+			else if ( newProps['enabled'] != undefined && newProps['enabled']['all'] != undefined )
+				props = _style['enabled'];
+				
+			if ( ! props ) return;
+				
+			for ( var i:int = 0; i < _availableWidgets.length; i++ ) {
+				log.debug("deleting "+_availableWidgets[i]['name']);
+				delete props[_availableWidgets[i]['name']];
+				
+				if ( _availableWidgets[i]['groupName'] ) {
+					log.debug("deleting group "+_availableWidgets[i]['groupName']);
+					delete props[_availableWidgets[i]['groupName']];
+				}
+			}
 		}
 		
 		private function _setNewProps(newProps:Object, oldProps:Object):Object {
