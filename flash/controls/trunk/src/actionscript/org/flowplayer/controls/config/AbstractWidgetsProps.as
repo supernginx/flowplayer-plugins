@@ -67,10 +67,12 @@ package org.flowplayer.controls.config {
 			
 			
 			for ( var j:int = 0; j < _availableWidgets.length; j++ ) {
-				if ( _availableWidgets[j]['groupName'] != null && _props[_availableWidgets[j]['groupName']] != undefined )
+				if ( _availableWidgets[j]['groupName'] != null && _props[_availableWidgets[j]['groupName']] != undefined ) {
 					log.debug("setting " + _availableWidgets[j]['name'] + " to "+ _props[_availableWidgets[j]['groupName']] + " from group "+ _availableWidgets[j]['groupName']);
 					_props[_availableWidgets[j]['name']] = _props[_availableWidgets[j]['groupName']];
+				}
 			}
+			
 		}		
 	}
 }
