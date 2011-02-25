@@ -8,30 +8,19 @@
  */
 
 package org.flowplayer.controls.config {
-    import flash.display.DisplayObject;
-
-    import org.flowplayer.controls.*;
-    import org.flowplayer.ui.AutoHide;
+    import org.flowplayer.controls.buttons.SliderConfig;
+    import org.flowplayer.controls.scrubber.ScrubberConfig;
+    import org.flowplayer.controls.scrubber.ScrubberController;
+    import org.flowplayer.controls.time.TimeViewConfig;
+    import org.flowplayer.controls.time.TimeViewController;
+    import org.flowplayer.controls.volume.VolumeController;
     import org.flowplayer.ui.AutoHideConfig;
+    import org.flowplayer.ui.buttons.ToggleButtonConfig;
+    import org.flowplayer.ui.buttons.TooltipButtonConfig;
+    import org.flowplayer.ui.controllers.*;
     import org.flowplayer.util.Log;
-	import org.flowplayer.util.PropertyBinder;
+    import org.flowplayer.util.StyleSheetUtil;
     import org.flowplayer.view.Flowplayer;
-
-	import org.flowplayer.ui.buttons.TooltipButtonConfig;
-	import org.flowplayer.controls.buttons.SliderConfig;
-	import org.flowplayer.controls.scrubber.ScrubberConfig;
-	import org.flowplayer.util.StyleSheetUtil;
-	import org.flowplayer.controls.time.TimeViewConfig;
-	import org.flowplayer.controls.scrubber.ScrubberConfig;
-	import org.flowplayer.controls.buttons.SliderConfig;
-	import org.flowplayer.ui.buttons.TooltipButtonConfig;
-	import org.flowplayer.ui.buttons.ToggleButtonConfig;
-	import org.flowplayer.ui.controllers.*;
-	import org.flowplayer.controls.time.TimeViewController;
-	import org.flowplayer.controls.scrubber.ScrubberController;
-	import org.flowplayer.controls.volume.VolumeController;	
-	import flash.utils.*;
-	
 
     /**
 	 * @author api
@@ -231,7 +220,11 @@ package org.flowplayer.controls.config {
 		public function get buttonConfig():TooltipButtonConfig {
 			var config:TooltipButtonConfig = new TooltipButtonConfig();
 			config.setColor(_style['buttonColor']);
-			config.setOverColor(_style['buttonOverColor']);
+            config.setOverColor(_style['buttonOverColor']);
+
+            config.setOffColor(_style['buttonOffColor']);
+            config.setOnColor(_style['buttonColor']);
+
 			config.setTooltipColor(_style['tooltipColor']);
 			config.setTooltipTextColor(_style['tooltipTextColor']);
 			
