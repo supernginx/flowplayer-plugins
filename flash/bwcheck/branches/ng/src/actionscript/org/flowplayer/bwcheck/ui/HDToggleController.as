@@ -8,24 +8,15 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 package org.flowplayer.bwcheck.ui {
-    
-	import org.flowplayer.view.Flowplayer;
-	import org.flowplayer.model.PlayerEvent;
-	import org.flowplayer.model.ClipEvent;
-	
-	import org.flowplayer.ui.controllers.AbstractToggleButtonController;
-	import org.flowplayer.ui.buttons.ToggleButtonConfig;
-	import org.flowplayer.ui.buttons.ButtonEvent;
-	import org.flowplayer.ui.buttons.ToggleButton;
-	
-	import org.flowplayer.bwcheck.HDEvent;
-	import org.flowplayer.bwcheck.BitrateProvider;
-	
-	import flash.display.DisplayObjectContainer;
-	
-	import fp.*;
-	
-	public class HDToggleController extends AbstractToggleButtonController {
+    import fp.*;
+
+    import org.flowplayer.bwcheck.BitrateProvider;
+    import org.flowplayer.bwcheck.HDEvent;
+    import org.flowplayer.ui.buttons.ButtonEvent;
+    import org.flowplayer.ui.buttons.ToggleButton;
+    import org.flowplayer.ui.controllers.AbstractToggleButtonController;
+
+    public class HDToggleController extends AbstractToggleButtonController {
 
 		private var _isIcon:Boolean;
 		private var _provider:BitrateProvider;
@@ -51,7 +42,11 @@ package org.flowplayer.bwcheck.ui {
 				enabled: false
 			};
 		}
-		
+
+        override protected function setDefaultState():void {
+            (_widget as ToggleButton).setToggledColor(false);
+        }
+
 		override public function get downName():String {
 			return "sd";
 		}
@@ -65,23 +60,24 @@ package org.flowplayer.bwcheck.ui {
 			};
 		}
 
-		// get it included in swc
 		override protected function get faceClass():Class {
-			return _isIcon ? fp.HDIcon : fp.HDButton;
+			return _isIcon ? HDIcon : SDButton;
 		}
 		
 		override protected function get downFaceClass():Class {
-			return _isIcon ? fp.SDIcon : fp.SDButton;
+            return _isIcon ? HDIcon : HDButton;
 		}
 		
 		override protected function onButtonClicked(event:ButtonEvent):void {
+
 			log.debug("HD button clicked");
 			_provider.hd = ! isDown;
 		}
 		
 		private function onHD(event:HDEvent):void {
-			log.debug("Stream switched to HD ? "+ event.hasHD);
+			log.debug("Stream switched to HD? "+ event.hasHD);
 			(_widget as ToggleButton).isDown = event.hasHD;
+            (_widget as ToggleButton).setToggledColor(event.hasHD);
 		}
 		
 		private function onHDAvailable(event:HDEvent):void {
