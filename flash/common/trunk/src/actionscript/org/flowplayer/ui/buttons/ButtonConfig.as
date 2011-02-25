@@ -17,6 +17,8 @@ package org.flowplayer.ui.buttons {
         private var _fontColor:String;
         private var _lineColor:String;
 		private var _enabled:Boolean = true;
+        private var _offColor:String;
+        private var _onColor:String;
 
 
 		public static function get defaultConfig():ButtonConfig {
@@ -25,6 +27,8 @@ package org.flowplayer.ui.buttons {
 			config.setOverColor("#ffffff");
 			config.setFontColor("#000000");
 			config.setLineColor("transparent");
+            config.setOffColor("#aaaaaa");
+            config.setOnColor("#ffffff");
 			config.setEnabled(true);
 			
 			return config;
@@ -122,6 +126,48 @@ package org.flowplayer.ui.buttons {
             _fontColor = color;
         }
 
+        /*
+         * Icon color.
+         */
+        public function setOffColor(color:String):void {
+            _offColor = color;
+        }
+
+        public function get offColor():Number {
+            return StyleSheetUtil.colorValue(_offColor);
+        }
+
+        public function get offRGB():Array {
+            return StyleSheetUtil.rgbValue(offColor);
+        }
+
+        public function get offRGBA():Array {
+            var rgba:Array = offRGB;
+            rgba.push(lineAlpha);
+            return rgba;
+        }
+
+        /*
+         * Highlighted icon color.
+         */
+        public function setOnColor(color:String):void {
+            _onColor = color;
+        }
+
+        public function get onColor():Number {
+            return StyleSheetUtil.colorValue(_onColor);
+        }
+
+        public function get onRGB():Array {
+            return StyleSheetUtil.rgbValue(onColor);
+        }
+
+        public function get onRGBA():Array {
+            var rgba:Array = onRGB;
+            rgba.push(lineAlpha);
+            return rgba;
+        }
+
 		/*
 		 * Enabled 
 		 */
@@ -133,6 +179,5 @@ package org.flowplayer.ui.buttons {
 		public function setEnabled(value:Boolean):void {
 			_enabled = value;
 		}
-        
     }
 }

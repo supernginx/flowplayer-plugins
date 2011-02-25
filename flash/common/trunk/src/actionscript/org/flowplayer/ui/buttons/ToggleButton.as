@@ -73,5 +73,12 @@ package org.flowplayer.ui.buttons {
 			_isDown = down;
 			addChild(activeButton);
 		}
+
+        public function setToggledColor(isToggled:Boolean):void {
+            log.debug("setToggledColor")
+            AbstractButton(_button).setToggledColor(isToggled);
+            AbstractButton(_downButton).setToggledColor(isToggled);
+        }
+
 	}
 }
