@@ -19,6 +19,9 @@ package org.flowplayer.bwcheck.config {
             _buttons = new TooltipButtonConfig();
             _buttons.setColor("rgba(20,20,20,0.5)");
             _buttons.setOverColor("rgba(0,0,0,1)");
+
+            _buttons.setOnColor("rgba(255,255,255,1)");
+            _buttons.setOffColor("rgba(130,130,130,1)");
         }
 
         public function get buttons():TooltipButtonConfig {
