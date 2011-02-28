@@ -31,13 +31,13 @@ package org.flowplayer.bwcheck.ui {
 		}
 		
 		override public function get name():String {
-			return "hd";
+			return "sd";
 		}
 		
 		override public function get defaults():Object {
 			return {
 				tooltipEnabled: ! _dockButton,
-				tooltipLabel: "High Quality",
+				tooltipLabel: "HD is off",
 				visible: true,
 				enabled: false
 			};
@@ -48,13 +48,13 @@ package org.flowplayer.bwcheck.ui {
         }
 
 		override public function get downName():String {
-			return "sd";
+			return "hd";
 		}
 		
 		override public function get downDefaults():Object {
 			return {
 				tooltipEnabled: ! _dockButton,
-				tooltipLabel: "Standard Quality",
+				tooltipLabel: "SD is on",
 				visible: true,
 				enabled: false
 			};
