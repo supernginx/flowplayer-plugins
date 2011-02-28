@@ -48,6 +48,7 @@ package org.flowplayer.controls.buttons {
         private var _mouseOver:Boolean;
 		private var _border:Sprite;
 		protected var _player:Flowplayer;
+        private var _mouseDown:Boolean;
 		
         public function AbstractSlider(config:SliderConfig, player:Flowplayer, controlbar:DisplayObject) {
             _config = config;
@@ -60,19 +61,28 @@ package org.flowplayer.controls.buttons {
             addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
             addEventListener(MouseEvent.ROLL_OVER, onMouseOver);
             addEventListener(MouseEvent.ROLL_OUT, onMouseOut);
+            addEventListener(MouseEvent.MOUSE_DOWN, setMouseDown);
         }
- 
+
+        private function setMouseDown(event:MouseEvent):void {
+            _mouseDown = true;
+            stage.addEventListener(MouseEvent.MOUSE_UP, setMouseUp);
+        }
+
+        private function setMouseUp(event:MouseEvent):void {
+            log.debug("setMouseUp()");
+            this.removeEventListener(MouseEvent.MOUSE_DOWN, setMouseUp);
+            _mouseDown = false;
+            if (! _mouseOver) {
+                log.debug("setMouseUp() hiding tooltip");
+                hideTooltip();
+            }
+        }
+
         private function onMouseMove(event:MouseEvent):void {
             if (! _mouseOver) return;
-           // log.debug("onMouseMove(), changing tooltip text to " + tooltipText);
             var text:String = tooltipText;
-            if (! tooltipText) {
-                _tooltip.hide();
-            } else if (_tooltip.visible) {
-                showTooltip();
-            } else {
-			    _tooltip.text = tooltipText;
-            }
+            _tooltip.text = tooltipText;
         }
 
         private function get tooltipText():String {
@@ -81,17 +91,18 @@ package org.flowplayer.controls.buttons {
         }
 
         protected function onMouseOut(event:MouseEvent = null):void {
-//            if (event && isParent(event.relatedObject as DisplayObject, this)) return;
             log.debug("onMouseOut");
-            hideTooltip();
             _mouseOver = false;
+            if (_mouseDown) return;
+            hideTooltip();
             removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
         }
 
         protected function onMouseOver(event:MouseEvent):void {
             log.debug("onMouseOver");
-            showTooltip();
             _mouseOver = true;
+            if (_mouseDown) return;
+            showTooltip();
             addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
         }
 
