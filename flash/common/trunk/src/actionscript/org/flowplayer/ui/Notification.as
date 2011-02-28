@@ -1,47 +1,44 @@
-/*    
- *    Author: Anssi Piirainen, <api@iki.fi>
+/*
+ * This file is part of Flowplayer, http://flowplayer.org
  *
- *    Copyright (c) 2009-2011 Flowplayer Oy
+ * By: Anssi Piirainen, <support@flowplayer.org>
  *
- *    This file is part of Flowplayer.
+ * Copyright (c) 2008-2011 Flowplayer Oy
  *
- *    Flowplayer is licensed under the GPL v3 license with an
- *    Additional Term, see http://flowplayer.org/license_gpl.html
+ * Released under the MIT License:
+ * http://www.opensource.org/licenses/mit-license.php
  */
 package org.flowplayer.ui {
     import flash.display.DisplayObject;
     import flash.events.MouseEvent;
     import flash.events.TimerEvent;
-    import flash.text.AntiAliasType;
-    import flash.text.TextField;
-
-    import flash.text.TextFieldAutoSize;
-    import flash.text.TextFormat;
-    import flash.text.TextFormatAlign;
     import flash.utils.Timer;
 
-    import org.flowplayer.util.Arrange;
     import org.flowplayer.view.Flowplayer;
     import org.flowplayer.view.StyleableSprite;
 
-
     /**
-     * Creates a notification message that is shown in the player area. Usage example:
-     * 
-     * new Notification(player, "Hello world!").show().autoHide();
+     * Base class for notifications that are shown in the Panel. Supports hiding after a specified delay.
+     *
+     * Provides factory methods for creating text field based notifications and display object notifications.
+     * Display object notifications can be used to show a display object in the player's panel.
      */
     public class Notification extends StyleableSprite {
-        private var _player:Flowplayer;
-        private var _field:TextField;
+        protected var _player:Flowplayer;
+
         private var _hideTimer:Timer;
 
-        public function Notification(player:Flowplayer, message:String) {
-            super();
-            super.rootStyle = { backgroundGradient: [ 0.1, 0.2 ], border: 'none' };
+        public function Notification(player:Flowplayer) {
             _player = player;
-            createTextField(player, message);
             addClickListener();
-            this.width = 100;
+        }
+
+        public static function createTextNotification(player:Flowplayer, message:String):Notification {
+            return new TextNotification(player, message);
+        }
+
+        public static function createDisplayObjectNotification(player:Flowplayer, view:DisplayObject):Notification {
+            return new DisplayObjectNotification(player, view);
         }
 
         private function addClickListener():void {
@@ -61,9 +58,16 @@ package org.flowplayer.ui {
             };
         }
 
-        public function show():Notification {
+        /**
+         * Shows the notification.
+         * @param displayProperties if null, shows up using defaults
+         * @return
+         */
+        public function show(displayProperties:Object = null):Notification {
             log.debug("show(), width: " + this.width);
-            _player.addToPanel(this, { left: '50pct', top: '50pct' });
+            this.alpha = 0;
+            _player.addToPanel(this, displayProperties || { left: '50pct', top: '50pct' });
+            _player.animationEngine.fadeIn(this);
             return this;
         }
 
@@ -72,32 +76,7 @@ package org.flowplayer.ui {
             return this;
         }
 
-        private function createTextField(player:Flowplayer, message:String):void {
-            _field = player.createTextField(12, true);
-            _field.autoSize = TextFieldAutoSize.CENTER;
-            _field.wordWrap = true;
-            _field.multiline = true;
-            _field.antiAliasType = AntiAliasType.ADVANCED;
-
-            var newFormat:TextFormat = new TextFormat();
-            newFormat.align = TextFormatAlign.CENTER;
-            _field.defaultTextFormat = newFormat;
-
-            _field.htmlText = message;
-            _field.height = _field.textHeight + 4;
-            addChild(_field);
-            setSize(_field.width + 20, _field.height + 20);
-        }
-
-        override protected function onResize():void {
-            log.debug("onResize() " + width + "x" + height);
-            _field.width = width - 20;
-            _field.x = 0;
-            Arrange.center(_field, width, height);
-            
-        }
-
-        protected function createHideTimer(delay:int, onHiddenCallback:Function = null):void {
+        private function createHideTimer(delay:int, onHiddenCallback:Function = null):void {
             _hideTimer = new Timer(delay, 1);
             _hideTimer.addEventListener(TimerEvent.TIMER_COMPLETE, createTimerCompleteListener(_player, this, onHiddenCallback));
             _hideTimer.start();
@@ -116,6 +95,4 @@ package org.flowplayer.ui {
             };
         }
     }
-
-
 }
