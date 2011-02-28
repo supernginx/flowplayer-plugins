@@ -18,12 +18,12 @@ package org.flowplayer.bwcheck.ui {
 
     public class HDToggleController extends AbstractToggleButtonController {
 
-		private var _isIcon:Boolean;
+		private var _dockButton:Boolean;
 		private var _provider:BitrateProvider;
 
-		public function HDToggleController(isIcon:Boolean, provider:BitrateProvider) {
+		public function HDToggleController(dockButton:Boolean, provider:BitrateProvider) {
 			super();
-			_isIcon = isIcon;
+			_dockButton = dockButton;
 			
 			_provider = provider;
 			_provider.addEventListener(HDEvent.HD_AVAILABILITY, onHDAvailable);
@@ -36,7 +36,7 @@ package org.flowplayer.bwcheck.ui {
 		
 		override public function get defaults():Object {
 			return {
-				tooltipEnabled: ! _isIcon,
+				tooltipEnabled: ! _dockButton,
 				tooltipLabel: "High Quality",
 				visible: true,
 				enabled: false
@@ -53,7 +53,7 @@ package org.flowplayer.bwcheck.ui {
 		
 		override public function get downDefaults():Object {
 			return {
-				tooltipEnabled: ! _isIcon,
+				tooltipEnabled: ! _dockButton,
 				tooltipLabel: "Standard Quality",
 				visible: true,
 				enabled: false
@@ -61,11 +61,11 @@ package org.flowplayer.bwcheck.ui {
 		}
 
 		override protected function get faceClass():Class {
-			return _isIcon ? HDIcon : SDButton;
+			return _dockButton ? HDDockButton : SDButton;
 		}
 		
 		override protected function get downFaceClass():Class {
-            return _isIcon ? HDIcon : HDButton;
+            return _dockButton ? HDDockButton : HDButton;
 		}
 		
 		override protected function onButtonClicked(event:ButtonEvent):void {
