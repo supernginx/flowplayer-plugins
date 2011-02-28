@@ -77,8 +77,9 @@ package org.flowplayer.controls.scrubber {
             playlist.onResume(function(event:ClipEvent):void {
                 _currentClip = event.target as Clip;
             });
-			
-            playlist.onStart(start);
+
+            // onBegin instead of onStart: http://code.google.com/p/flowplayer-core/issues/detail?id=190
+            playlist.onBegin(start);
 
             playlist.onResume(resume);
 
