@@ -163,7 +163,7 @@ $f("lighty", "@PLAYER_SWF@", {
 	// streaming plugins are configured normally under the plugins node
 	plugins: {
 		lighttpd: {
-			url: 'flowplayer.pseudostreaming-3.2.2.swf'
+			url: '@MAIN_PLAYER_SWF@'
 		}
 	},
 	log: {
@@ -183,7 +183,7 @@ $f("lighty", "@PLAYER_SWF@", {
 	// streaming plugins are configured normally under the plugins node
 	plugins: {
 		lighttpd: {
-			url: 'flowplayer.pseudostreaming-3.2.2.swf'
+			url: '@MAIN_PLAYER_SWF@'
 		}
 	}
 });</code></pre>
@@ -259,7 +259,7 @@ $f("lighty", "@PLAYER_SWF@", {
 <div class="box code">
 <pre><code class="javascript">plugins: {
 	lighttpd: {
-		url: 'flowplayer.pseudostreaming-3.2.2.swf',
+		url: '@MAIN_PLAYER_SWF@',
 
 		// use ${start} as a placeholder for the target keyframe
 		queryString: escape('?target=${start}&amp;secretToken=1235oh8qewr5uweynkc')
@@ -298,7 +298,7 @@ $f("range", "@PLAYER_SWF@", {
 
 	// configure clip to use "lighthttpd" plugin for providing video data
 	clip: {
-		url: 'http://flowplayer.electroteque.org/videos/eye-pseudo.mp4',
+		url: 'http://pseudo01.hddn.com/vod/demo.flowplayervod/Extremists.flv',
 		provider: 'lighttpd'
 	},
 	
