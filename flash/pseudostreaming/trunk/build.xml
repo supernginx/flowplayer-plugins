@@ -20,6 +20,10 @@
 
 	<property name="plugin-main-class" value="org/flowplayer/pseudostreaming/PseudoStreaming.as" />
 
+    <target name="build-byterange">
+        <ant antfile="build-byterange.xml" target="build" inheritall="false" />
+    </target>
+
 	<target name="release" description="makes a release" depends="build">
 		<copyrelease targetdir="flowplayer.pseudostreaming">
 			<releasefiles>
