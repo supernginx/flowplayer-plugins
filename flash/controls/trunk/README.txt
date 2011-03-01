@@ -1,5 +1,9 @@
 Version history:
 
+3.2.5
+-----
+- buffer bar is not unnecessary reset (cleared) when seeking: http://code.google.com/p/flowplayer-core/issues/detail?id=198
+
 3.2.4
 -----
 Fixes:
