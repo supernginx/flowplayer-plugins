@@ -102,19 +102,16 @@ package org.flowplayer.smil{
         private function updateClip(clip:Clip, smilContent:String):void {
 			var result:Array = parseSmil(smilContent);
 				
-			//log.debug("Got result : ", result);	
+			//log.debug("Got result : ", result);
 				
             clip.setCustomProperty("netConnectionUrl", result[0]);
             clip.baseUrl = null;
 
 			if ( result[1] is Array ) {
+
 				if (!clip.getCustomProperty("bitrates")) clip.setCustomProperty("bitrates", []);
-				
-				for ( var i:int = 0; i < result[1].length; i++ )
-					{
-                        var bitrateItem:Array = result[1][i];
-                        clip.customProperties["bitrates"].push({url: bitrateItem[0], bitrate: bitrateItem[1], width: bitrateItem[2]});
-                    }
+                clip.customProperties["bitrates"] = result[1];
+
 			} else {
 				clip.setResolvedUrl(this, result[1]);
 			}    
@@ -133,15 +130,20 @@ package org.flowplayer.smil{
 				var item:XML;
 				var bitrates:Array = [];
 				for each(item in  smil.body.child("switch").video ) {
-                    var bitrateItem:Array = [new String(item.@src), new Number(item.attribute("system-bitrate"))];
-                    bitrates.push(bitrateItem);
+                    var bitrateItem:Object = new Object();
+                    bitrateItem.url = String(item.@src);
+                    bitrateItem.bitrate = Number(item.attribute("system-bitrate"));
 
-                    // use width if it is specified
-                    var width:Number = new Number(item.attribute("width"));
-                    if (width > 0) {
-                        bitrateItem.push(width);
-                    }
+                    //add optional properties
+                    if (item.hasOwnProperty("@width")) bitrateItem.width = Number(item.@width);
+                    if (item.hasOwnProperty("@height")) bitrateItem.height = Number(item.@height);
+                    if (item.hasOwnProperty("@hd")) bitrateItem.hd = Boolean(item.@hd);
+                    if (item.hasOwnProperty("@normal")) bitrateItem.normal = Boolean(item.@normal);
+                    if (item.hasOwnProperty("@isDefault")) bitrateItem.isDefault = Boolean(item.@isDefault);
+                    if (item.hasOwnProperty("@label")) bitrateItem.label = String(item.@label);
+                    bitrates.push(bitrateItem);
 	            }
+
 				result.push(bitrates);
 			} else {
 				result.push(new String(smil.body.video.@src));
