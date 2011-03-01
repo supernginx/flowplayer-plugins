@@ -186,9 +186,12 @@ console.log("ipad closure");
 					url = clip.ipadUrl;
 				else if ( clip.url )
 					url = clip.url;
-					
-				if ( clip.baseUrl )
-					url = clip.baseUrl + '/' + url;
+
+                //use ipadBaseUrl if available
+				if ( url && url.indexOf('://') == -1 && extendedClip.ipadBaseUrl )
+                    url = extendedClip.ipadBaseUrl + '/' + url;
+                else if ( url && url.indexOf('://') == -1 && extendedClip.baseUrl )
+                    url = extendedClip.baseUrl + '/' + url;
 					
 				if ( clip.autoBuffering != undefined && clip.autoBuffering == false )
 					autoBuffering = false;
