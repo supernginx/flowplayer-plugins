@@ -160,12 +160,10 @@ package org.flowplayer.controls.scrubber {
 				return;
 			}
 
-			
             updateDraggerPos(event.info as Number, event.target as Clip);
             stop(null);
 			
 			log.debug("beforeSeek");
-			doDrawBufferBar(0, 0);
         }
 
         private function updateDraggerPos(time:Number, clip:Clip):void {
@@ -275,20 +273,12 @@ package org.flowplayer.controls.scrubber {
         
         private function bufferEmpty(event:ClipEvent):void {
             log.debug("bufferEmpty()");
-            /*if (_startDetectTimer) {
-                _startDetectTimer.stop();
-            }*/
             animationEngine.pause(_dragger);
         }
         
         private function bufferFull(event:ClipEvent):void {
             log.debug("bufferFull()");
-            
             animationEngine.resume(_dragger);
-            //log.debug("resume() " + event.target);
-            //_currentClip = (event.target as Clip);
-            //stop(null);
-            //doStart(_currentClip);
         }
 
         private function stopAndRewind(event:ClipEvent):void {
@@ -344,14 +334,7 @@ package org.flowplayer.controls.scrubber {
 			addChild(_bufferBar);
 			swapChildren(_dragger, _bufferBar);
 		}
-		
-//
-//		override protected function onSetValue():void {
-//			if (_seekInProgress) return;
-//			drawProgressBar(_bufferStart * width);
-//		}
 
-		
 
 		public function set allowRandomSeek(value:Boolean):void {
 			//log.error("set allowRandomSeek", value);
@@ -397,17 +380,10 @@ package org.flowplayer.controls.scrubber {
 		}
 
         private function drawBufferBar():void {
-            if (_seekInProgress)  {
-                log.debug("drawBars(): seek in progress");
-                return;
-            }
             if (_dragger.x + _dragger.width / 2 > _bufferStart * width) {
                 doDrawBufferBar(_bufferStart * width, _bufferEnd * width);
-//                drawProgressBar(_bufferStart * width);
             } else {
                 clearBar(_bufferBar);
-//                _progressBar.graphics.clear();
-//                GraphicsUtil.removeGradient(_progressBar);
             }
         }
 
