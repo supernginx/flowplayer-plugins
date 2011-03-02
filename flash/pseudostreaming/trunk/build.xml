@@ -34,4 +34,18 @@
 		</copyrelease>
 	</target>
 
+    <target name="zip" depends="prepare, build, build-byterange">
+        <echo message="zipping controls" />
+        <zip destfile="${dist-dir}/${basename}-${version}.zip">
+            <zipfileset prefix="${basename}" dir=".">
+                <include name="LICENSE.txt" />
+                <include name="README.txt" />
+            </zipfileset>
+            <zipfileset prefix="${basename}" dir="${build-dir}">
+                <include name="${plugin-binary-versioned}" />
+                <include name="flowplayer.pseudostreaming-byterange-${version}.swf" />
+            </zipfileset>
+        </zip>
+    </target>
+
 </project>
