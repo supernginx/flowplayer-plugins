@@ -40,6 +40,7 @@ package org.flowplayer.playlist.scroller {
         private var posy:Number;
         private var posY:Number;
         private var min:Number;
+        private var lastY:Number;
         private var _animationEngine:AnimationEngine;
         
         
@@ -221,80 +222,41 @@ package org.flowplayer.playlist.scroller {
                 }
             }
         }
-        
-        public function onMouseMove(event:MouseEvent):void {
-        	
-            var min:Number = Math.max(0, Math.min(_scrollHeight, _target.mouseY));
-            var posy:Number = (min - _target.getChildAt(0).height) * (targetHeight - _scrollHeight) / (_scrollHeight - _target.getChildAt(_target.numChildren - 1).height)
-            var range:Number = _target.mouseY / _scrollHeight;
-            log.error(range + "");
-            
-            var pos:Number = range * targetHeight;
-            
-            log.error(pos + "");
-            //log.error((min - _target.getChildAt(0).height) * (_scrollHeight - targetHeight) + "");
-            
-            //if (posy != posY){
-               // posy = posY;
-                if (posy >= 0){
-                   // posy;
-                }
-                if (posy >= Math.round(targetHeight - _scrollHeight)){
-                   // posy = Math.round(targetHeight - _scrollHeight)  - 10;
-                }
-                
-                //posy = targetHeight - _scrollHeight;
-           
-                Tweener.addTween(_target, {_scrollRect_y:int(pos), "time":0.5, "transition":"easeOutQuad", "onUpdate":function ():void {
-                    //posY = (min - _target.getChildAt(0).height) * (targetHeight - _scrollHeight) / (_scrollHeight - 2 * _target.getChildAt(_target.numChildren - 1).height);
-                    return;
-                 }       
-                });
-           // }
-            return;
-            //var min:Number;
-            //var posy:Number;
-            //var event:* = event;
-            //var min:Number = Math.max(0, Math.min(_scrollHeight, _target.mouseY));
-            //var posy:Number = (_target.getChildAt(0).height) * (_scrollHeight - targetHeight) / (_scrollHeight - _target.getChildAt(_target.numChildren - 1).height);
-            
-            
-            //min = Math.max(0, Math.min(_scrollHeight,_target.mouseY));
-            
-            //var ratio:Number = (targetHeight - range)/range;
-            //posy = (_target.mouseY * ratio);
-            //if (_target.mouseY > _scrollHeight) return;
-            ///var mouseY:int = _target.mouseY;
-            //if (_target.mouseY > _scrollHeight) mouseY = _scrollHeight;
-            //var p:int = (mouseY ) / range;
-            //var p:int = (mouseY - _scrollHeight ) / range;
-            //var posy:int = targetHeight * p;
-            //var p:int = ( mouseY - _scrollHeight ) / range;
-            //var posy:int = _target.height * p;
-            //var rect:Rectangle = _target.scrollRect;
-            //var posy:int = targetHeight - _scrollHeight;
-            //trace(posy);
-            //posy = (min - _target.getChildAt(0).height) * (targetHeight - _scrollHeight) / (_scrollHeight - _target.getChildAt(_target.numChildren - 1).height);
-            
-            //if (posy < 0) posy = 0;
-            //if (posy > (targetHeight - _scrollHeight)) posy = _scrollHeight - 10;
 
-            
-           //log.error(p + " " + mouseY + " " + posy + " " + range);
-            
-           // Tweener.addTween(_target, {_scrollRect_y:int(posy), time:0.5, transition:"easeOutQuad"});
-            //var rect:Rectangle = _target.scrollRect;
-            //var rect:Rectangle = _target.scrollRect;
-             /*_animationEngine.animateObjectProperty(rect, "y", posy, 500 , function():void {
-                    //scrollTarget();
-                    _target.scrollRect = rect;
-                    return;
-                    }, Quadratic.easeOut);*/
-                    
-           
-            //}
+
+        public function onMouseMove(event:MouseEvent) : void
+        {
+           // _target.mouseY
+            var min:Number;
+            var posy:Number;
+            var value:* = event;
+            var event:* = value;
+            min = Math.max(0, Math.min(_scrollHeight, _target.mouseY));
+            posy = min - 5 * _scrollHeight - targetHeight / _scrollHeight - 25;
+            if (posy != this.posY)
+            {
+                posy = this.posY;
+                if (posy >= 0)
+                {
+                }
+                if (posy <= Math.round(_scrollHeight - targetHeight))
+                {
+                    posy = Math.round(_scrollHeight - targetHeight) + 1;
+                }
+            }
+
+            log.error(posy + "");
+            Tweener.addTween(_target, {_scrollRect_y:int(posy), time:0.5, transition:"easeOutQuad", onUpdate:function () : void
+            {
+                var _loc_1:* = undefined;
+                posY = (min - 5) * (_scrollHeight - targetHeight) / (_scrollHeight - 2 * 25);
+                _loc_1 = Math.abs(_target.y - lastY);
+                lastY = _target.y;
+                return;
+            }// end function
+            });
             return;
-        }
+        }// end function
         
         
     }
