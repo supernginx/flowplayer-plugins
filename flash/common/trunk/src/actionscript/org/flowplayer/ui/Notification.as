@@ -85,7 +85,7 @@ package org.flowplayer.ui {
         private function createTimerCompleteListener(player:Flowplayer, disp:DisplayObject, onHiddenCallback:Function):Function {
             return function(event:TimerEvent):void {
                 log.debug("hiding Notification");
-                player.animationEngine.fadeOut(disp, 500,
+                player.animationEngine.fadeOut(disp, 800,
                         function():void {
                             disp.parent.removeChild(disp);
                             if (onHiddenCallback != null) {
