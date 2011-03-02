@@ -1,49 +1,32 @@
-/*    
- *    Author: Anssi Piirainen, <api@iki.fi>
- *
- *    Copyright (c) 2009 Flowplayer Oy
- *
- *    This file is part of Flowplayer.
- *
- *    Flowplayer is licensed under the GPL v3 license with an
- *    Additional Term, see http://flowplayer.org/license_gpl.html
+/**
+ * Created by IntelliJ IDEA.
+ * User: danielr
+ * Date: 3/03/11
+ * Time: 2:02 AM
+ * To change this template use File | Settings | File Templates.
  */
 package org.flowplayer.playlist.config {
-    import org.flowplayer.model.DisplayProperties;
-    import org.flowplayer.model.DisplayPropertiesImpl;
-    import org.flowplayer.ui.ButtonConfig;
+    import org.flowplayer.ui.buttons.ButtonConfig;
+    import org.flowplayer.ui.buttons.TooltipButtonConfig;
 
     public class IconConfig {
-        private var _buttons:ButtonConfig;
-        private var _displayProps:DisplayProperties;
+        private var _buttons:TooltipButtonConfig;
 
         public function IconConfig() {
-            _displayProps = new DisplayPropertiesImpl()
-            _displayProps = new DisplayPropertiesImpl(null, "playlist-icons", false);
-            _displayProps.top = "20%";
-            _displayProps.right = "7%";
-            _displayProps.width = "10%";
-            _displayProps.height = "30%";
-
-
-            _buttons = new ButtonConfig();
+            _buttons = new TooltipButtonConfig();
             _buttons.setColor("rgba(20,20,20,0.5)");
-            _buttons.setOverColor("rgba(0,0,0,1)");        }
+            _buttons.setOverColor("rgba(0,0,0,1)");
 
-        public function get buttons():ButtonConfig {
+            _buttons.setOnColor("rgba(255,255,255,1)");
+            _buttons.setOffColor("rgba(130,130,130,1)");
+        }
+
+        public function get buttons():TooltipButtonConfig {
             return _buttons;
         }
 
-        public function set buttons(value:ButtonConfig):void {
+        public function set buttons(value:TooltipButtonConfig):void {
             _buttons = value;
-        }
-
-        public function get displayProps():DisplayProperties {
-            return _displayProps;
-        }
-
-        public function set displayProps(value:DisplayProperties):void {
-            _displayProps = value;
         }
     }
 }

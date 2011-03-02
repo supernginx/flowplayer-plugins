@@ -3,8 +3,8 @@ package org.flowplayer.playlist.ui {
     import org.flowplayer.playlist.assets.BuyIcon;
     import flash.display.DisplayObjectContainer;
 
-    import org.flowplayer.ui.AbstractButton;
-    import org.flowplayer.ui.ButtonConfig;
+    import org.flowplayer.ui.buttons.AbstractButton;
+    import org.flowplayer.ui.buttons.ButtonConfig;
     import org.flowplayer.view.AnimationEngine;
 
     

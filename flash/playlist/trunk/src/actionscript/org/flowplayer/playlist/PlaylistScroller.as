@@ -6,8 +6,11 @@ package org.flowplayer.playlist {
     import org.flowplayer.view.FlowStyleSheet;
     
     import org.flowplayer.model.Clip;
-    
-	import org.flowplayer.playlist.ui.PlaylistButton;
+
+    import org.flowplayer.ui.buttons.ToggleButtonConfig;
+    import org.flowplayer.ui.buttons.ToggleButton;
+
+	import org.flowplayer.playlist.ui.PlaylistItemController;
 	import org.flowplayer.playlist.ui.BuyButton;
 	import org.flowplayer.playlist.config.Config;
 	import org.flowplayer.playlist.scroller.ScrollBar;
@@ -82,7 +85,7 @@ package org.flowplayer.playlist {
         	 
         	if (scrollBar) removeChild(scrollBar);
             
-            scrollBar = new ScrollBar(buttonsContainer, _player.animationEngine, scrollHeight);
+            scrollBar = new ScrollBar(buttonsContainer, _player.animationEngine, scrollHeight, false);
             addChild(scrollBar);
             
         	for (var i:int = 0; i < buttonsContainer.numChildren; i++) { 
@@ -107,11 +110,16 @@ package org.flowplayer.playlist {
                 var clip:Clip = _player.playlist.clips[i];  
                 var itemContainer:Sprite = new Sprite();
                 
-                var item:PlaylistButton = new PlaylistButton(parseText(clip), _config.items , _player.animationEngine, style);
-                
+                //var item:PlaylistItemController = new PlaylistItemController(parseText(clip), _config.itemConfig , _player.animationEngine, style);
+                var controller:PlaylistItemController = new PlaylistItemController();
+
+                var item:ToggleButton = controller.init(_player, this, new ToggleButtonConfig(_config.iconConfig, _config.iconConfig)) as ToggleButton;
+
                 log.error(i + "");
-                       
-                item.height = _config.playlistDisplayProperties.heightPx;
+
+                item.height = 50;
+                item.width = width;
+                //item.height = _config.playlistDisplayProperties.heightPx;
 
                 //item.alpha = _config.playlistDisplayProperties.alpha;
                 item.alpha = 0.7;
@@ -122,7 +130,8 @@ package org.flowplayer.playlist {
                 item.buttonMode = true;
                 item.addEventListener(MouseEvent.CLICK,onMouseClick);
                 itemContainer.addChild(item);
-                
+
+                /*
                 if (clip.getCustomProperty("buyUrl")) {
                     var buyIcon:BuyButton = new BuyButton(_config.items, _player.animationEngine);
                     buyIcon.width = 20;
@@ -131,7 +140,7 @@ package org.flowplayer.playlist {
                     buyIcon.y = (item.height / 2) - (buyIcon.height / 2);
                     buyIcon.addEventListener(MouseEvent.CLICK,onBuyClick);
                     itemContainer.addChild(buyIcon);
-                }
+                }    */
                 
               /*  if (clip.getCustomProperty("time")) {
                 	var time:TextField = TextUtil.createTextField(false, "Arial", 12);
@@ -170,7 +179,7 @@ package org.flowplayer.playlist {
        
         private function toggleOff(index:Number):void {
         	for (var i:int = 0; i < buttonsContainer.numChildren; i++) { 
-                if (i != index) PlaylistButton(Sprite(buttonsContainer.getChildAt(i)).getChildAt(0)).reset();
+               // if (i != index) PlaylistItemController(Sprite(buttonsContainer.getChildAt(i)).getChildAt(0)).reset();
             }
         }
         
@@ -184,17 +193,17 @@ package org.flowplayer.playlist {
         }
         
         private function onMouseClick(event:MouseEvent):void {
-        	var item:Sprite = event.currentTarget as Sprite;
-
-            var index:Number = buttonsContainer.getChildIndex(item.parent);
+        	//var item:Sprite = event.currentTarget as Sprite;
+             log.error("clicked");
+            //var index:Number = buttonsContainer.getChildIndex(item.parent);
            
             
-            toggleOff(index);
-            _listener();
-           _player.stop();
-           _player.playlist.toIndex(index);
+            //toggleOff(index);
+            //_listener();
+           //_player.stop();
+           //_player.playlist.toIndex(index);
 
-           _player.play();
+           //_player.play();
         
         }
         
