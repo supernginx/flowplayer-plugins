@@ -365,6 +365,7 @@ package org.flowplayer.ui {
 
         private function onHidden():void {
             log.debug("onHidden()");
+            _disp.visible = false;
             dispatchEvent("onHidden");
         }
 
@@ -378,6 +379,7 @@ package org.flowplayer.ui {
                 log.debug("showListener returned false, will not show");
                 return;
             }
+//            _disp.visible = true;
             _player.animationEngine.animate(_disp, showingPos, 400, onShowed);
         }
 
