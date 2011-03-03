@@ -78,6 +78,8 @@ package org.flowplayer.viralvideos {
             icon.addEventListener(MouseEvent.MOUSE_DOWN, listener);
             addChild(icon);
             _iconArray.push(icon);
+            _originalIconWidth = icon.width;
+            _originalIconHeight = icon.height;
             return icon;
         }
 
@@ -97,8 +99,6 @@ package org.flowplayer.viralvideos {
             addChild(_title);
 
             _facebookIcon = AbstractIcon(initIcon(_config.facebook, new FacebookIcon(_config.icons, player.animationEngine), shareFacebook));
-            _originalIconWidth = _facebookIcon.width;
-            _originalIconHeight = _facebookIcon.height;
             _twitterIcon = initIcon(_config.twitter, new TwitterIcon(_config.icons, player.animationEngine), shareTwitter);
             _myspaceIcon = initIcon(_config.myspace, new MyspaceIcon(_config.icons, player.animationEngine), shareMyspace);
             _liveSpacesIcon = initIcon(_config.livespaces, new LivespacesIcon(_config.icons, player.animationEngine), shareLiveSpaces);
