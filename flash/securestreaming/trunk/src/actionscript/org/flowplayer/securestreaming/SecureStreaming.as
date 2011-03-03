@@ -99,7 +99,7 @@ package org.flowplayer.securestreaming {
                 log.debug("found cluster plugin " + plugin);
                 return plugin;
             } else {
-                player.showError("cluster plugin not found in configuration");
+                log.debug("cluster plugin not found in configuration");
             }
             return null;
         }

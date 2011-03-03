@@ -1,5 +1,10 @@
 Version history:
 
+3.2.3
+-----
+Fixes
+- does not show ""cluster plugin not found in configuration" any more: http://code.google.com/p/flowplayer-core/issues/detail?id=208
+
 3.2.2
 -----
 - Added support for the cluster plugin
