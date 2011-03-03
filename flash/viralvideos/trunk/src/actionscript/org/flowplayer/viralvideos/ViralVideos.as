@@ -100,16 +100,18 @@ package org.flowplayer.viralvideos {
         private function createIconDock():void {
             if (_iconDock) return;
             _iconDock = Dock.getInstance(_player);
-            var addIcon:Function = function(icon:DisplayObject, clickCallback:Function):void {
+            var addIcon:Function = function(enabled:Boolean, iconClass:Class, clickCallback:Function):void {
+                if (! enabled) return;
+                var icon:DisplayObject = new iconClass(_config.iconButtons, _player.animationEngine);
                 _iconDock.addIcon(icon);
                 icon.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void {
                     clickCallback();
                 });
             };
 
-            addIcon(new EmailIcon(_config.iconButtons, _player.animationEngine), function():void { fadeIn("Email"); });
-            addIcon(new EmbedIcon(_config.iconButtons, _player.animationEngine), function():void { fadeIn("Embed"); });
-            addIcon(new ShareIcon(_config.iconButtons, _player.animationEngine), function():void { fadeIn("Share"); });
+            addIcon(_config.email, EmailIcon, function():void { fadeIn("Email"); });
+            addIcon(_config.embed, EmbedIcon, function():void { fadeIn("Embed"); });
+            addIcon(_config.share, ShareIcon, function():void { fadeIn("Share"); });
         }
 
         public function onLoad(player:Flowplayer):void {

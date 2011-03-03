@@ -2,7 +2,11 @@ Version history:
 
 3.2.5
 -----
+
+Fixes:
 - fixed error when share.facebook: false, http://code.google.com/p/flowplayer-core/issues/detail?id=207
+- the dock button were clickable even when they were hidden: http://code.google.com/p/flowplayer-core/issues/list?cursor=206
+- disabling email/embed/share did not remove the dock button: http://code.google.com/p/flowplayer-core/issues/detail?id=205
 
 3.2.4
 -----
