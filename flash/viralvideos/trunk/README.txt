@@ -1,5 +1,9 @@
 Version history:
 
+3.2.5
+-----
+- fixed error when share.facebook: false, http://code.google.com/p/flowplayer-core/issues/detail?id=207
+
 3.2.4
 -----
 - removed config property "popupOnClip", introduced "shareWindow" with values "_self", "_blank", "_parent", "_top", "_popup".
