@@ -2,7 +2,6 @@
 <module type="Flex" version="4">
   <component name="Flex.Build.Configuration">
     <option name="DO_BUILD" value="true" />
-    <option name="MAIN_CLASS" value="org.flowplayer.ui.LabelButton" />
     <option name="OUTPUT_FILE_NAME" value="common.swf" />
     <option name="TARGET_PLAYER_VERSION" value="10.0.0" />
     <option name="VERSION" value="3" />
@@ -15,25 +14,6 @@
     <orderEntry type="jdk" jdkName="flex_sdk_4 (player 10.0)" jdkType="Flex SDK Type" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="core" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/src/flash/labelbutton.swc!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/src/flash/closebutton.swc!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module" module-name="osmf" />
   </component>
 </module>
 

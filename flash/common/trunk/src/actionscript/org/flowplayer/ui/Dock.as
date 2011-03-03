@@ -62,8 +62,6 @@ package org.flowplayer.ui {
 
             log.debug("addToPanel(), creating autoHide with config", _config.autoHide);
             _autoHide = new AutoHide(_config.model, _config.autoHide, _player, stage, this);
-//            _autoHide.onShow(onButtonsShow);
-//            _autoHide.start();
         }
 
         public function startAutoHide():void {
