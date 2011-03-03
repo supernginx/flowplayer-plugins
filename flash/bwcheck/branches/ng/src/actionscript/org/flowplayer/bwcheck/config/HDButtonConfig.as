@@ -18,7 +18,7 @@ package org.flowplayer.bwcheck.config {
         public static const HD_BUTTON_DOCK:String = "dock";
         public static const HD_BUTTON_CONTROLS:String = "controls";
 
-        private var _place:String = HD_BUTTON_CONTROLS;
+        private var _place:String = "none";
         private var _onLabel:String = "IS ON";
         private var _offLabel:String = "IS OFF";
         private var _splash:DisplayProperties;
