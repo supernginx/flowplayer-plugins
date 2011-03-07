@@ -13,7 +13,7 @@ package org.flowplayer.playlist {
 	import org.flowplayer.playlist.ui.PlaylistItemController;
 	import org.flowplayer.playlist.ui.BuyButton;
 	import org.flowplayer.playlist.config.Config;
-	import org.flowplayer.playlist.scroller.ScrollBar;
+	import org.flowplayer.playlist.scroller.ScrollBar2;
 	import org.flowplayer.view.StyleableSprite;
 	import org.flowplayer.util.TextUtil;
 
@@ -47,7 +47,7 @@ package org.flowplayer.playlist {
         
         private var _player:Flowplayer;
         private var _config:Config;
-        private var scrollBar:ScrollBar;
+        private var scrollBar:ScrollBar2;
         private var scrollHeight:Number = 150;
         private var containerWidth:Number;
         private var _style:FlowStyleSheet;
@@ -85,7 +85,7 @@ package org.flowplayer.playlist {
         	 
         	if (scrollBar) removeChild(scrollBar);
             
-            scrollBar = new ScrollBar(buttonsContainer, _player.animationEngine, scrollHeight, false);
+            scrollBar = new ScrollBar2(buttonsContainer, _player.animationEngine, scrollHeight, false);
             addChild(scrollBar);
             
         	for (var i:int = 0; i < buttonsContainer.numChildren; i++) { 
