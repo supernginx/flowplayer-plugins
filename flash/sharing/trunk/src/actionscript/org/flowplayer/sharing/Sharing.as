@@ -66,21 +66,19 @@ package org.flowplayer.sharing {
 
             _dock = Dock.getInstance(player, config);
 
-            var addIcon:Function = function(icon:DisplayObject, clickCallback:Function):void {
+            var addIcon:Function = function(enabled:Boolean, iconClass:Class, clickCallback:Function):void {
+                if (! enabled) return;
+                var icon:DisplayObject = new iconClass(_config.buttons, player.animationEngine);
                 _dock.addIcon(icon);
                 icon.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void {
                     clickCallback();
                 });
             };
 
-            addIcon(new EmailIcon(_config.buttons, player.animationEngine), function():void { _config.email.execute(); });
-            addIcon(new EmbedIcon(_config.buttons, player.animationEngine), function():void { _config.getEmbedCode().execute(); });
-            if (_config.twitter) {
-                addIcon(new TwitterIcon(_config.buttons, player.animationEngine, null), function():void { _config.twitter.execute(); });
-            }
-            if (_config.facebook) {
-                addIcon(new FacebookIcon(_config.buttons, player.animationEngine, null), function():void { _config.facebook.execute(); });
-            }
+            addIcon(_config.email, EmailIcon, function():void { return; _config.email.execute(); });
+            addIcon(_config.embed, EmbedIcon, function():void { _config.getEmbedCode().execute(); });
+            addIcon(_config.twitter, TwitterIcon, function():void { _config.twitter.execute(); });
+            addIcon(_config.facebook, FacebookIcon, function():void { _config.facebook.execute(); });
 
             _dock.addToPanel();
         }

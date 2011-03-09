@@ -44,6 +44,10 @@ package org.flowplayer.sharing {
         }
 
         public function setEmail(config:Object):void {
+            if (! config) {
+                _email = null;
+                return;
+            }
             new PropertyBinder(_email).copyProperties(config);
         }
 
@@ -53,11 +57,16 @@ package org.flowplayer.sharing {
         }
 
         public function setEmbed(config:Object):void {
+            if (! config) {
+                _embedCode = null;
+                return;
+            }
             new PropertyBinder(_embedCode.config).copyProperties(config);
         }
 
         [Value]
         public function get embed():EmbedConfig {
+            if (! _embedCode) return null;
             return _embedCode.config;
         }
 
