@@ -132,7 +132,7 @@ public class SmilResolver implements ClipURLResolver, Plugin {
             for each(item in  smil.body.child("switch").video) {
                 var bitrateItem:Object = new Object();
                 bitrateItem.url = String(item.@src);
-                bitrateItem.bitrate = Number(item.attribute("system-bitrate"));
+                bitrateItem.bitrate = Number(item.attribute("system-bitrate")) / 1000;
 
                 //add optional properties
                 if (item.hasOwnProperty("@width")) bitrateItem.width = Number(item.@width);

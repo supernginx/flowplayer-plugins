@@ -1,5 +1,9 @@
 Version history:
 
+3.2.3
+-----
+- Fixed: the system-bitrate value in a SMIL file is specified in bps not in kbps
+
 3.2.2
 -----
 - Fixed parser to accomodate for optional bitrate properties required for the bwcheck hd button.
