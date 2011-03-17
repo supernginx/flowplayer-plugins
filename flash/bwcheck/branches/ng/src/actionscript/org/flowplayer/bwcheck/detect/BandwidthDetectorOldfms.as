@@ -8,13 +8,12 @@
  */
 
 package org.flowplayer.bwcheck.detect {
-import org.flowplayer.bwcheck.detect.*;
     import org.flowplayer.bwcheck.detect.AbstractDetectionStrategy;
 
     /**
      * @author danielr
      */
-    public class BandwidthDetectorFms extends AbstractDetectionStrategy {
+    public class BandwidthDetectorOldfms extends AbstractDetectionStrategy {
 
         private var _host:String;
 
@@ -22,23 +21,14 @@ import org.flowplayer.bwcheck.detect.*;
             _host = host;
         }
 
-
-        public function onBWCheck(... rest):Number {
-            log.debug("onBWCheck");
+        public function onBwCheck(... rest):Number {
             dispatchStatus(rest);
-            return 1;
+            return 0;
         }
 
-        public function onBWDone(... rest):void {
-
+        public function onBwDone(... rest):void {
             if (rest[0] != undefined) {
-                //fixes for #218 cloudfront FMS is unstable to returns zero on the first few calls
-                if (rest[0] == 0) {
-                    log.debug("Bandwidth Returned is zero starting again");
-                    connection.call(_service, null);
-                }
-
-                log.debug("onBWDone() " + rest);
+                log.debug("onBWDone() " + rest[0]);
                 var obj:Object = new Object();
                 obj.kbitDown = rest[0];
                 obj.latency = rest[3];
@@ -47,13 +37,12 @@ import org.flowplayer.bwcheck.detect.*;
         }
 
         override public function connect(host:String = null):void {
-            connection.connect(host);
+            connection.connect(host, true);
         }
 
         override public function detect():void {
-            log.debug("detect() calling service " + _service);
+            log.debug("detect() Using FMS Legacy ");
             connection.client = this;
-            connection.call(_service, null);
         }
 
         public function close(... rest):void {

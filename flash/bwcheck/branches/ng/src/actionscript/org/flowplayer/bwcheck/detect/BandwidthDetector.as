@@ -33,7 +33,8 @@ package org.flowplayer.bwcheck.detect {
         // --------- These references are needed here, so that the classes get compiled in!
         private var wowzaImpl:BandwidthDetectorWowza;
         private var httpImpl:BandwidthDetectorHttp;
-        private var fmsImpl:BandwidthDetectorFms;
+        private var fmsImpl:BandwidthDetectorOldfms;
+        private var fms35Impl:BandwidthDetectorFms;
         private var red5Impl:BandwidthDetectorRed5;
         // ---------
 
