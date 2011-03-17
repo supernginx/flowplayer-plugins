@@ -21,12 +21,12 @@ package org.flowplayer.bwcheck.detect {
             _host = host;
         }
 
-        public function onBWCheck(... rest):Number {
+        public function onBwCheck(... rest):Number {
             dispatchStatus(rest);
             return 0;
         }
 
-        public function onBWDone(... rest):void {
+        public function onBwDone(... rest):void {
             if (rest[0] != undefined) {
                 log.debug("onBWDone() " + rest[0]);
                 var obj:Object = new Object();
@@ -34,6 +34,15 @@ package org.flowplayer.bwcheck.detect {
                 obj.latency = rest[3];
                 dispatchComplete(obj);
             }
+        }
+
+        public function onBWCheck(... rest):Number {
+            onBwCheck(rest);
+            return 0;
+        }
+
+        public function onBWDone(... rest):void {
+            onBwDone(rest);
         }
 
         override public function connect(host:String = null):void {
