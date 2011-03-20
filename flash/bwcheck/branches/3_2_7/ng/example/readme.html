@@ -1,0 +1,77 @@
+<p>
+    flowplayer.bwcheck.js is a JavaScript plugin for generating a bitrate selection user interface.
+    You can see <a href="http://flowplayer.org/demos/plugins/streaming/bwcheck-selection.html">it in action here</a>.
+</p>
+
+<p>A template of the listing can be set in the html of the set wrapper, and using special variables can be replaced with the required fields.</p>
+<p>If the default stream selection strategy is used, it will check the width of the player and the bitrate width and disable the bitrate selections larger than the player width along with info text.</p>
+
+<p>Here are the CSS classes used to the style the user interface:</p>
+
+<table>
+	<thead>
+		<tr>
+			<th nowrap="nowrap">property / datatype</th>
+			<th>default</th>
+			<th>description</th>
+		</tr>
+	</thead>
+
+    <tr>
+        <td class="code">selectedBitrateClass <div class="type">string</div></td>
+        <td class="code default">bitrate-selected</td>
+        <td class="description">
+            The selected bitrate link class.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">activeClass <div class="type">string</div></td>
+        <td class="code default">bitrate-active</td>
+        <td class="description">
+            The active bitrate link class.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">disabledClass <div class="type">string</div></td>
+        <td class="code default">bitrate-disabled</td>
+        <td class="description">
+            The disabled bitrate link class.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">bwCheckPlugin <div class="type">string</div></td>
+        <td class="code default">bwcheck</td>
+        <td class="description">
+				The name of the bandwidth check plugin in the player configuration.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">template <div class="type">string</div></td>
+        <td class="code default"><a href="${bitrate}">{bitrate} k</a></td>
+        <td class="description">
+        	The template config to be used for generating the links. The fields of the bitrates clip config are used as the template variables ie {bitrate}.
+        	If the wrapper has the template set, it will be used instead of the template config.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">disabledText <div class="type">string</div></td>
+        <td class="code default">(not valid with this player size )</td>
+        <td class="description">
+            The text to display if the item is disabled due to size constraints and the selection strategy.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">fadeTime <div class="type">int</div></td>
+        <td class="code default">100</td>
+        <td class="description">
+				The interval time for fading the wrapper in and out. Useful for hiding the wrapper if a template is set in it.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">seperator <div class="type">string</div></td>
+        <td class="code default"></td>
+        <td class="description">
+				A seperator character to use for seperating the links ie <br/> or | .
+        </td>
+    </tr>
+</table>
