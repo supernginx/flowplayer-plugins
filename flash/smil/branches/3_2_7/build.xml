@@ -1,0 +1,18 @@
+<project name="SMIL resolver for Flowplayer" default="deploy">
+
+	<property name="devkit-dir" value="../flowplayer.devkit" />
+	
+	<property file="${devkit-dir}/plugin-build.properties" />
+	<import file="${devkit-dir}/plugin-build.xml"/>
+	<property name="flowplayer_lib" value="${devkit-dir}/flowplayer.swc" />
+	
+	<property name="version" value="3.2.3-dev" />
+	<property name="basename" value="flowplayer.smil" />
+    <property name="releasedir" value="${basename}" />
+	<property name="plugin-binary" value="${basename}.swf" />
+	<property name="plugin-binary-versioned" value="${basename}-${version}.swf" />
+	<property name="plugin-main-class" value="org/flowplayer/smil/SmilPlugin.as" />
+	<property name="library-path" value="" />
+    <property name="extra-sources" value="../rtmp/src/actionscript"/>
+
+</project>
