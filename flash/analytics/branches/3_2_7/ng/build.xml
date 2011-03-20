@@ -1,0 +1,16 @@
+<project name="Google Analytics plugin for Flowplayer" default="deploy">
+    <property file="build.generated.properties"/>
+    <property file="build.properties"/>
+
+	<property file="../flowplayer.devkit/plugin-build.properties" />
+	<import file="../flowplayer.devkit/plugin-build.xml"/>
+	<property name="flowplayer_lib" value="../core/build/flowplayer.swc" />
+    <property name="library-path" value="lib" />
+
+    <property name="basename" value="flowplayer.analytics" />
+    <property name="releasedir" value="flowplayer.analytics" />
+    <property name="plugin-binary" value="${basename}.swf" />
+    <property name="plugin-binary-versioned" value="${basename}-${version}.swf" />
+    <property name="plugin-main-class" value="org/flowplayer/analytics/GoogleTracker.as" />
+
+</project>
