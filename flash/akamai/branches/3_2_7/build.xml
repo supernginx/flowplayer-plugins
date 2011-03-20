@@ -1,0 +1,19 @@
+<project name="Akamai plugin that uses the Akamai's IDENT service" default="deploy">
+    <property file="build.generated.properties"/>
+
+	<property name="devkit-dir" value="../flowplayer.devkit" />
+	
+	<property file="${devkit-dir}/plugin-build.properties" />
+	<import file="${devkit-dir}/plugin-build.xml"/>
+	<property name="flowplayer_lib" value="${devkit-dir}/flowplayer.swc" />
+	
+	<property name="version" value="3.2.0" />
+	<property name="basename" value="flowplayer.akamai" />
+    <property name="releasedir" value="flowplayer.akamai" />
+	<property name="plugin-binary" value="${basename}.swf" />
+	<property name="plugin-binary-versioned" value="${basename}-${version}.swf" />
+    <property name="plugin-main-class" value="org/flowplayer/akamai/AkamaiPlugin.as" />
+    <!--<property name="plugin-main-class" value="org/flowplayer/akamai/AkamaiPlugin.as" />-->
+	<property name="library-path" value="" />
+
+</project>
