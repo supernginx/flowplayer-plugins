@@ -160,12 +160,12 @@ flowplayer("player", "@PLAYER_SWF@", {
         url: "sample1_150kbps.f4m",
         urlResolvers: ['f4m'],
         provider: 'httpstreaming',
-        baseUrl: "http://httpstreaming.electrocode.net/videos/vod/"
+        baseUrl: "http://httpstreaming.electroteque.org/videos/vod/"
 
     },
     log: {
         level: 'debug',
-        filter: 'org.flowplayer.f4m.*, org.flowplayer.httpstreaming.*, org.flowplayer.controller.*, org.flowplayer.view.Screen'
+        filter: 'org.flowplayer.controller.*, org.flowplayer.view.MediaResizer, org.flowplayer.view.VideoDisplay, org.flowplayer.view.Screen'
     }
 
 });
@@ -238,7 +238,7 @@ flowplayer("multirate", "@PLAYER_SWF@", {
         url: "sample1.f4m",
         urlResolvers: ['f4m','bwcheck'],
         provider: 'httpstreaming',
-        baseUrl: "http://httpstreaming.electrocode.net/videos/vod/"
+        baseUrl: "http://httpstreaming.electroteque.org/videos/vod/"
 
     },
     log: {
