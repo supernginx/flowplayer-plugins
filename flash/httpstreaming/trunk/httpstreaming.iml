@@ -3,7 +3,7 @@
   <component name="Flex.Build.Configuration">
     <option name="DO_BUILD" value="true" />
     <option name="OUTPUT_FILE_NAME" value="httpstreaming.swf" />
-    <option name="TARGET_PLAYER_VERSION" value="10.1.0" />
+    <option name="TARGET_PLAYER_VERSION" value="10.1" />
     <option name="VERSION" value="3" />
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
@@ -15,6 +15,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="osmf" />
     <orderEntry type="module" module-name="core" />
+    <orderEntry type="module" module-name="common" />
   </component>
 </module>
 

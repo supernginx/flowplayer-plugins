@@ -10,6 +10,12 @@
 
 package org.flowplayer.httpstreaming {
 
+
+    import flash.events.NetStatusEvent;
+
+    import flash.net.NetStream;
+    import flash.net.NetConnection;
+
     import org.flowplayer.model.Clip;
     import org.flowplayer.model.ClipEvent;
     import org.flowplayer.controller.NetStreamControllingStreamProvider;
@@ -19,10 +25,6 @@ package org.flowplayer.httpstreaming {
     import org.flowplayer.model.PluginModel;
     import org.flowplayer.util.PropertyBinder;
     import org.flowplayer.view.Flowplayer;
-    
-    import flash.events.NetStatusEvent;
-    import flash.net.NetStream;
-    import flash.net.NetConnection;
 
     import org.osmf.net.httpstreaming.HTTPNetStream;
 	import org.osmf.net.httpstreaming.f4f.HTTPStreamingF4FFileHandler;
@@ -30,6 +32,7 @@ package org.flowplayer.httpstreaming {
     import org.osmf.net.httpstreaming.HTTPStreamingIndexHandlerBase;
     import org.osmf.net.httpstreaming.HTTPStreamingFileHandlerBase;
     import org.osmf.net.httpstreaming.HTTPStreamingUtils;
+
     import org.osmf.media.URLResource;
 
     public class HttpStreamingProvider extends NetStreamControllingStreamProvider implements Plugin {
@@ -41,17 +44,16 @@ package org.flowplayer.httpstreaming {
         private var _currentClip:Clip;
         private var _player:Flowplayer;
         private var netResource:URLResource;
-    
         
         override public function onConfig(model:PluginModel):void {
             _model = model;
-            
             _config = new PropertyBinder(new Config(), null).copyProperties(model.config) as Config;
         }
     
         override public function onLoad(player:Flowplayer):void {
             log.info("onLoad()");
             _player = player;
+
             _model.dispatchOnLoad();
         }
     
@@ -120,7 +122,7 @@ package org.flowplayer.httpstreaming {
 
             netResource = clip.getCustomProperty("urlResource") as URLResource;
 
-              var fileHandler:HTTPStreamingFileHandlerBase = new HTTPStreamingF4FFileHandler();
+            var fileHandler:HTTPStreamingFileHandlerBase = new HTTPStreamingF4FFileHandler();
 			var indexHandler:HTTPStreamingIndexHandlerBase = new HTTPStreamingF4FIndexHandler(fileHandler);
 			var httpNetStream:HTTPNetStream = new HTTPNetStream(connection, indexHandler, fileHandler);
 			httpNetStream.manualSwitchMode = true;
