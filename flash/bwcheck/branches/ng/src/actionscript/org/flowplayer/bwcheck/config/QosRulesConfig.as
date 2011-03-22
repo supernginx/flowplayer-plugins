@@ -26,7 +26,7 @@ package org.flowplayer.bwcheck.config {
 		protected var log:Log = new Log(this);
 
 		private var _values:Object = new Object();
-		private var _properties:Array = ["bwUp", "bwDown", "frames", "buffer", "screen"];
+		private var _properties:Array = ["bwUp", "bwDown", "frames", "buffer", "screen","ratio"];
 
 		public function reset():void {
 			_values = new Object();
@@ -70,6 +70,14 @@ package org.flowplayer.bwcheck.config {
 
 		public function set screen(value:Boolean):void {
 			_values["screen"] = value;
+		}
+
+        public function get ratio():Boolean {
+			return value("ratio");
+		}
+
+		public function set ratio(value:Boolean):void {
+			_values["ratio"] = value;
 		}
 
         protected function value(prop:String, defaultVal:Boolean = true):Boolean {
