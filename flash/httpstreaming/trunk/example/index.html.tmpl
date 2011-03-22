@@ -115,7 +115,7 @@ $(function() {
 <h2>Examples</h2>
 
 <a name="anchor"></a>
-<h2><em>small description</em> longer description</h2>
+<h2><em>Basic</em> example with a single bitrate</h2>
 
 
 <p>
@@ -157,15 +157,93 @@ flowplayer("player", "@PLAYER_SWF@", {
 
 
     clip: {
-        url: "sample1_700kbps.f4m",
+        url: "sample1_150kbps.f4m",
         urlResolvers: ['f4m'],
         provider: 'httpstreaming',
-        baseUrl: "http://httpstreaming.electrocode.net/videos/vod/f4f/"
+        baseUrl: "http://httpstreaming.electrocode.net/videos/vod/"
 
     },
     log: {
         level: 'debug',
         filter: 'org.flowplayer.f4m.*, org.flowplayer.httpstreaming.*, org.flowplayer.controller.*, org.flowplayer.view.Screen'
+    }
+
+});
+
+</script>
+
+
+
+</div>
+
+<a name="anchor"></a>
+<h2><em>Example</em> with a multiple bitrate</h2>
+
+
+<p>
+    Blurb here soon.
+</p>
+
+
+<div style="width:425px;height:300px;margin:30px auto">
+
+
+
+<!-- player container-->
+
+
+<a
+    href="skyandice"
+    style="display:block;width:425x;height:300px;"
+    id="multirate">
+
+    <!-- splash image inside the container -->
+    <img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" width="320" height="205" />
+
+</a>
+
+<!-- Flowplayer installation and configuration -->
+<script type="text/javascript" >
+flowplayer("multirate", "@PLAYER_SWF@", {
+    // configure the required plugins
+    plugins:  {
+        f4m: {
+            url: '../flowplayer.f4m.swf',
+            bitrates: {
+                hd: '1500',
+                normal: '500',
+                defaultItem: '500'
+            }
+        },
+        httpstreaming: {
+            url: '@MAIN_PLAYER_SWF@'
+        },
+        bwcheck: {
+            url: '../flowplayer.bwcheck.swf',
+            netConnectionUrl: 'http://releases.flowplayer.org/swf/flowplayer-3.1.5.swf',
+			bitrateProfileName: 'HTTPBitrateProfile',
+            dynamic: true,
+			//onStreamSwitch: switchStreamInfo,
+			//onStreamSwitchBegin: switchStreamInfoBegin,
+			// this method is called when the bandwidth check is done
+		//	onBwDone: bwDoneInfo,
+			hdButton: { place: "dock" }
+        }
+
+
+    },
+
+
+    clip: {
+        url: "sample1.f4m",
+        urlResolvers: ['f4m','bwcheck'],
+        provider: 'httpstreaming',
+        baseUrl: "http://httpstreaming.electrocode.net/videos/vod/"
+
+    },
+    log: {
+        level: 'debug',
+        filter: 'org.flowplayer.f4m.*, org.flowplayer.httpstreaming.*, org.flowplayer.bwcheck.*, org.flowplayer.controller.*, org.flowplayer.view.Screen'
     }
 
 });
