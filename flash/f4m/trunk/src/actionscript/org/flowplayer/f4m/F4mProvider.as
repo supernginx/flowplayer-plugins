@@ -10,16 +10,9 @@
 
 package org.flowplayer.f4m {
 
-        import flash.events.Event;
-        import flash.events.IOErrorEvent;
         import flash.events.NetStatusEvent;
-        import flash.events.SecurityErrorEvent;
-        import flash.net.URLLoader;
-        import flash.net.URLLoaderDataFormat;
-        import flash.net.URLRequest;
 
         import flash.utils.ByteArray;
-
 
         import org.flowplayer.model.Plugin;
         import org.flowplayer.model.PluginModel;
@@ -35,23 +28,21 @@ package org.flowplayer.f4m {
 
         import org.flowplayer.view.Flowplayer;
 
+        import org.flowplayer.bwcheck.BitrateItem;
+
+        import org.flowplayer.f4m.config.Config;
+
         import org.osmf.elements.f4mClasses.DRMAdditionalHeader;
         import org.osmf.elements.f4mClasses.Manifest;
         import org.osmf.elements.f4mClasses.ManifestParser;
-        import org.osmf.events.DVRStreamInfoEvent;
+
         import org.osmf.media.MediaResourceBase;
         import org.osmf.media.URLResource;
-        import org.osmf.metadata.Metadata;
-        import org.osmf.metadata.MetadataNamespaces;
+
         import org.osmf.net.DynamicStreamingResource;
+        import org.osmf.net.DynamicStreamingItem;
         import org.osmf.net.StreamingURLResource;
 
-        import org.osmf.net.httpstreaming.HTTPNetStream;
-        import org.osmf.net.httpstreaming.dvr.DVRInfo;
-        import org.osmf.net.httpstreaming.dvr.HTTPStreamingDVRCastDVRTrait;
-        import org.osmf.net.httpstreaming.dvr.HTTPStreamingDVRCastTimeTrait;
-        import org.osmf.net.httpstreaming.f4f.HTTPStreamingF4FFileHandler;
-        import org.osmf.net.httpstreaming.f4f.HTTPStreamingF4FIndexHandler;
 
         public class F4mProvider implements ClipURLResolver, Plugin {
             private var _config:Config;
@@ -61,14 +52,11 @@ package org.flowplayer.f4m {
             private var _successListener:Function;
             private var _clip:Clip;
             private var _player:Flowplayer;
-
-            private var manifestLoader:URLLoader;
             private var manifest:Manifest;
             private var parser:ManifestParser;
             private var netResource:MediaResourceBase;
             private var dynResource:DynamicStreamingResource;
             private var streamResource:StreamingURLResource;
-
             private var unfinishedDRMHeaders:Number = 0;
     
 
@@ -103,6 +91,44 @@ package org.flowplayer.f4m {
                 parseF4MManifest(f4mContent);
             }
 
+
+            protected function formatStreamItems(streamItems:Vector.<DynamicStreamingItem>):Vector.<DynamicStreamingItem> {
+                var bitrateItems:Vector.<DynamicStreamingItem> = new Vector.<DynamicStreamingItem>();
+
+                for (var index:int = 0; index < dynResource.streamItems.length; index++) {
+
+                    var item:DynamicStreamingItem = streamItems[index];
+
+                    var bitrateItem:BitrateItem = new BitrateItem();
+                    bitrateItem.url = item.streamName;
+                    bitrateItem.bitrate = item.bitrate;
+
+                    bitrateItem.width = item.width ?
+                        item.width :
+                        manifest.media[index].metadata.width;
+                    bitrateItem.height = item.height ?
+                        item.height :
+                        manifest.media[index].metadata.height;
+
+                    if (_config.bitratesConfig) {
+                        if (_config.bitratesConfig.defaultItem == item.bitrate) bitrateItem.isDefault = true;
+                        if (_config.bitratesConfig.labels && _config.bitratesConfig.labels[item.bitrate])
+                            bitrateItem.label = _config.bitratesConfig.labels[item.bitrate];
+
+                        if (_config.bitratesConfig.hd == item.bitrate) {
+                            bitrateItem.hd = true;
+                            _clip.setCustomProperty("hdBitrateItem", bitrateItem);
+                        }
+                        if (_config.bitratesConfig.normal == item.bitrate) {
+                            bitrateItem.normal = true;
+                            _clip.setCustomProperty("normalBitrateItem", bitrateItem);
+                        }
+                    }
+                    bitrateItems.push(bitrateItem);
+                }
+                return bitrateItems;
+            }
+
             private function onF4MFinished():void
             {
                 log.debug("F4M Manifest Finished");
@@ -112,17 +138,22 @@ package org.flowplayer.f4m {
                     netResource = parser.createResource(manifest, new URLResource(_clip.completeUrl));
 
 
+
+
+
                     if (netResource is DynamicStreamingResource) {
                         dynResource = netResource as DynamicStreamingResource;
 
-                        if (!_clip.getCustomProperty("bitrates")) _clip.setCustomProperty("bitrates", []);
-                        _clip.customProperties["bitrates"] = dynResource.streamItems;
+                        //formats the stream items to be ready for the bwcheck plugin
+                        dynResource.streamItems = formatStreamItems(dynResource.streamItems);
 
+                        _clip.setCustomProperty("dynamicStreamingItems", dynResource.streamItems);
+                        _clip.setCustomProperty("urlResource", dynResource);
 
                     } else {
                         streamResource = netResource as StreamingURLResource;
                         _clip.setResolvedUrl(this, streamResource.url);
-
+                        _clip.setCustomProperty("urlResource", streamResource);
                     }
 
                     if (manifest.baseURL && URLUtil.isRtmpUrl(manifest.baseURL)) {
@@ -130,10 +161,6 @@ package org.flowplayer.f4m {
                     }
 
                     _clip.setCustomProperty("manifestInfo",manifest);
-                    _clip.setCustomProperty("urlResource", netResource);
-
-
-
 
 
                     if (_successListener != null) {
