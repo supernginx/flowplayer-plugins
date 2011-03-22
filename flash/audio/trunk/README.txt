@@ -1,5 +1,10 @@
 Version history:
 
+3.2.3
+-----
+Fixes:
+- Fixed to dispatch onStart when the mp3 file does not contain a id3 tag
+
 3.2.2
 -----
 Fixes:
