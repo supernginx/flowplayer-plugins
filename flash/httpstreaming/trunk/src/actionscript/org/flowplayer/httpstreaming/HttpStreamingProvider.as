@@ -26,6 +26,7 @@ package org.flowplayer.httpstreaming {
     import org.flowplayer.util.PropertyBinder;
     import org.flowplayer.view.Flowplayer;
 
+    import org.osmf.logging.Log;
     import org.osmf.net.httpstreaming.HTTPNetStream;
 	import org.osmf.net.httpstreaming.f4f.HTTPStreamingF4FFileHandler;
 	import org.osmf.net.httpstreaming.f4f.HTTPStreamingF4FIndexHandler;
@@ -34,6 +35,9 @@ package org.flowplayer.httpstreaming {
     import org.osmf.net.httpstreaming.HTTPStreamingUtils;
 
     import org.osmf.media.URLResource;
+
+    import org.flowplayer.bwcheck.OsmfLoggerFactory;
+    import org.flowplayer.bwcheck.OsmfLogger;
 
     public class HttpStreamingProvider extends NetStreamControllingStreamProvider implements Plugin {
         private var _bufferStart:Number;
@@ -48,6 +52,7 @@ package org.flowplayer.httpstreaming {
         override public function onConfig(model:PluginModel):void {
             _model = model;
             _config = new PropertyBinder(new Config(), null).copyProperties(model.config) as Config;
+            Log.loggerFactory = new OsmfLoggerFactory();
         }
     
         override public function onLoad(player:Flowplayer):void {
@@ -86,11 +91,6 @@ package org.flowplayer.httpstreaming {
 
         override public function get allowRandomSeek():Boolean {
            return true;
-        }
-    
-       
-        override protected function onMetaData(event:ClipEvent):void {
-            
         }
     
         override protected function canDispatchBegin():Boolean {
