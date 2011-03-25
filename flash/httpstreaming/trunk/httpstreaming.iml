@@ -14,8 +14,8 @@
     <orderEntry type="jdk" jdkName="flex_sdk_4.1.0.16076 (player 10.1)" jdkType="Flex SDK Type" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="osmf" />
-    <orderEntry type="module" module-name="core" />
     <orderEntry type="module" module-name="common" />
+    <orderEntry type="module" module-name="bwcheck" />
   </component>
 </module>
 
