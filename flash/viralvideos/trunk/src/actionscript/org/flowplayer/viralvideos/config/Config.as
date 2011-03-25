@@ -23,6 +23,7 @@ package org.flowplayer.viralvideos.config
         private var _buttonConfig:ButtonConfig;
         private var _closeButton:ButtonConfig;
         private var _icons:IconConfig = new IconConfig();
+        private var _pauseVideo:Boolean = true;
 
         public function get email():EmailConfig {
             return _email;
@@ -175,6 +176,14 @@ package org.flowplayer.viralvideos.config
 
         public function get embedViewTexts():EmbedViewTexts {
             return _embedViewTexts;
+        }
+
+        public function set pauseVideo(pause:Boolean):void {
+            _pauseVideo = pause;
+        }
+
+        public function get pauseVideo():Boolean {
+            return _pauseVideo;
         }
     }
 }

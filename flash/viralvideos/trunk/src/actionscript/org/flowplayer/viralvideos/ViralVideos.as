@@ -129,12 +129,16 @@ package org.flowplayer.viralvideos {
         }
 
         private function fadeIn(view:String):void {
-        	var event:String = "onBeforeShow" + view;
+
+            //fix for #221 now pauses video on display of overlays
+            if (_config.pauseVideo) _player.pause();
+
+            var event:String = "onBeforeShow" + view;
         	if (_model &&  !_model.dispatchBeforeEvent(PluginEventType.PLUGIN_EVENT, event)) {
 				log.debug(event);
 				return;
 			}
-				
+
             this.visible = true;
             this.alpha = 0;
             _player.setKeyboardShortcutsEnabled(false);
@@ -281,7 +285,10 @@ package org.flowplayer.viralvideos {
         private function onFadeOut():void {
             displayButtons(true);
             _player.setKeyboardShortcutsEnabled(true);
-            
+
+            //fix for #221 now pause / resume video when showing / hiding overlays
+            if (_config.pauseVideo) _player.resume();
+
             _model.dispatch(PluginEventType.PLUGIN_EVENT, "onClose");
         }
 
