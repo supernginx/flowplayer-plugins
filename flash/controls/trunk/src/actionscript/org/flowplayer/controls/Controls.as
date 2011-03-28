@@ -86,7 +86,7 @@ package org.flowplayer.controls {
 		
 			// log.info("received player API! autohide == " + _config.autoHide.state);
 			_player = player;
-
+			loader = _player.createLoader();
 			rootStyle = _config.bgStyle;
 
 			if (_config.skin) {
@@ -345,24 +345,36 @@ package org.flowplayer.controls {
             var controlsConfig:Object = clip.getCustomProperty("controls");
 
             if (controlsConfig) {
+	
                 if (controlsConfig == _currentControlsConfig) {
                     return;
                 }
+
                 log.info("onPlayBegin(): clip has controls configuration, reconfiguring", controlsConfig);
                 _currentControlsConfig = controlsConfig;
+				
+				// reset config before applying a new one
+				if ( _previousConfig )	_config = _previousConfig;
+
 				_previousConfig = _config.clone();
 				
 				_config.setNewProps(controlsConfig);
 				
 				log.info("Got new config ", _config);
 				
+				rootStyle = _config.bgStyle;
+				_player.css(_pluginModel.name, _config.style);
+				
 				updateControlbar(true);
 				
             } else if (_currentControlsConfig) {
-                log.debug("onPlayBegin(): reverting to original configuration");
+                log.debug("onPlayBegin(): reverting to original configuration", _previousConfig.style);
                 _config = _previousConfig;
-				updateControlbar(true);
 
+				rootStyle = _config.bgStyle;
+				_player.css(_pluginModel.name, _config.style);
+
+				updateControlbar(true);
             }
 
         }
