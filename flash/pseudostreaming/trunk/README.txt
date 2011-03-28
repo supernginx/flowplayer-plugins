@@ -4,6 +4,8 @@ Version history:
 -----
 - The plugin now comes with two versions, the byte-range enabled version is now in a different SWF to reduce the size
 of the standard version that does not have the byte range request powered seeking support.
+Fixes:
+- #214 , need to reset the datastore on completion or else time won't reset when seeking mp4 clips
 
 3.2.6
 -----
