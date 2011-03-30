@@ -2,7 +2,6 @@
 <module type="Flex" version="4">
   <component name="Flex.Build.Configuration">
     <option name="DO_BUILD" value="true" />
-    <option name="MAIN_CLASS" value="org.flowplayer.bwcheck.BwCheckPlugin" />
     <option name="OUTPUT_FILE_NAME" value="bwcheck.swf" />
     <option name="TARGET_PLAYER_VERSION" value="10.1.0" />
     <option name="VERSION" value="3" />
@@ -11,23 +10,14 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src/actionscript" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/flash" isTestSource="false" />
     </content>
     <orderEntry type="jdk" jdkName="flex_sdk_4.1.0.16076 (player 10.1)" jdkType="Flex SDK Type" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
-      <library name="assets" type="flex">
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/src/flash" />
-          <root url="file://$MODULE_DIR$/src/flash" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-        <jarDirectory url="file://$MODULE_DIR$/src/flash" recursive="false" />
-      </library>
-    </orderEntry>
-    <orderEntry type="module" module-name="osmf" />
-    <orderEntry type="module" module-name="core" />
+    <orderEntry type="library" name="Flowplayer_Swc" level="project" />
     <orderEntry type="module" module-name="common" />
+    <orderEntry type="module" module-name="osmf" />
+    <orderEntry type="module" module-name="cluster" />
   </component>
 </module>
 
