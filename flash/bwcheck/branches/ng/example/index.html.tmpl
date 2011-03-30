@@ -32,12 +32,6 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
     <script type="text/javascript" src="http://cdn.jquerytools.org/1.2.4/full/jquery.tools.min.js"></script>
     <script type="text/javascript" src="flowplayer.bwcheck-3.2.js"></script>
-    <link rel="stylesheet" type="text/css" href="http://static.flowplayer.org/tools/css/overlay-apple.css"/>
-    <script type="text/javascript"
-            src="http://flowplayer.org/tools/download/1.2.4/overlay/overlay.apple.min.js"></script>
-    <script src="http://static.flowplayer.org/js/jquery.mousewheel.js"></script>
-    <link rel="stylesheet" type="text/css" href="http://static.flowplayer.org/css/playlist.css"/>
-    <script src="http://static.flowplayer.org/js/flowplayer.playlist-3.0.8.min.js"></script>
 
 
     <style type="text/css">
@@ -173,6 +167,9 @@
             href="bbb_320x180"
             style="display:block;width:480px;height:270px"
             id="player">
+        <!-- splash image inside the container -->
+        <img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" width="320"
+             height="205"/>
     </a>
 
     <!-- Flowplayer installation and configuration -->
@@ -240,11 +237,11 @@
                             color: '#ffffff'
                         }
                     }
-                },
-                log: {
-                    level: 'debug',
-                    filter: 'org.flowplayer.rtmp.*, org.flowplayer.bwcheck.*,org.flowplayer.controller.*'
                 }
+            },
+            log: {
+                level: 'debug',
+                filter: 'org.flowplayer.rtmp.*, org.flowplayer.bwcheck.*,org.flowplayer.controller.*'
             }
         });
     </script>
@@ -325,15 +322,112 @@
     color: '#ffffff'
     }
     }
+    }
     },
     log: {
     level: 'debug',
     filter: 'org.flowplayer.rtmp.*, org.flowplayer.bwcheck.*,org.flowplayer.controller.*'
     }
-    }
     });</code></pre>
 </div>
 
+<h3>Bitrate Clip Options</h3>
+
+<h2>Configuration</h2>
+
+<table class="listing">
+    <thead>
+    <tr>
+        <th nowrap="nowrap">property / datatype</th>
+        <th>description</th>
+    </tr>
+    </thead>
+
+    <tr>
+        <td class="code">url
+            <div class="type">string</div>
+        </td>
+        <td class="description">
+            The url to the clip
+        </td>
+    </tr>
+    <tr>
+        <td class="code">bitrate
+            <div class="type">number</div>
+        </td>
+        <td class="description">
+            The clip bitrate
+        </td>
+    </tr>
+    <tr>
+        <td class="code">width
+            <div class="type">number</div>
+        </td>
+        <td class="description">
+            The clip width.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">height
+            <div class="type">number</div>
+        </td>
+        <td class="description">
+            The clip height.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">isDefault (optional)
+            <div class="type">boolean</div>
+        </td>
+        <td class="description">
+            Set the clip as default to play on startup, will be used as fallback if there was no bandwidth detected.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">sd (optional)
+            <div class="type">boolean</div>
+        </td>
+        <td class="description">
+            Sets the clip as a SD clip.
+            Not required to be configured for the HD button feature as it will be set by the plugin, can be configured
+            to be returned in the events
+            for the bitrate item. May be used in the future for hd notifications for dynamic stream switching.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">hd (optional)
+            <div class="type">boolean</div>
+        </td>
+        <td class="description">
+            Sets the clip as a HD clip.
+            Not required to be configured for the HD button feature as it will be set by the plugin, can be configured
+            to be returned in the events
+            for the bitrate item. May be used in the future for hd notifications for dynamic stream switching.
+        </td>
+    </tr>
+    <tr>
+        <td class="code">label (optional)
+            <div class="type">string</div>
+        </td>
+        <td class="description">
+            Sets the label for the bitrate item. To be used for the javascript bitrate menu and a future flash bitrate
+            menu.
+        </td>
+    </tr>
+</table>
+
+<p>The following clip options are possible</p>
+
+<div class="box code">
+<pre><code class="javascript">
+    bitrates: [
+    { url: "mp4:bbb-400", width: 320, height: 180, bitrate: 400, isDefault: true, label: '400k'},
+    { url: "mp4:bbb-800", width: 480, bitrate: 800, sd: true, label: '800k' },
+    { url: "mp4:bbb-1200", width: 720, bitrate: 1200, label: '1200k' },
+    { url: "mp4:bbb-1600", width: 1080, bitrate: 1600, hd: true, label: '1600k' }
+    ]
+</code></pre>
+</div>
 
 <h2>Configuration</h2>
 
@@ -374,8 +468,7 @@
         <td class="code">checkOnStart
             <div class="type">boolean</div>
         </td>
-        <td class="code default"><samp>false</samp>, if <samp>dynamic: true</samp>. <samp>true</samp> if <samp>dynamic:
-            false</samp></td>
+        <td class="code default"><samp>false</samp></td>
         <td class="description">
             Set this to <samp>true</samp> if you want to perform an initial bwcheck with RTMP. This way the playback can
             be started
@@ -631,6 +724,9 @@ The <samp>hdButton</samp> object accepts following properties:
             href="bbb_320x180"
             style="display:block;width:480px;height:270px"
             id="hdplayer">
+        <!-- splash image inside the container -->
+        <img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" width="320"
+             height="205"/>
     </a>
 
     <!-- Flowplayer installation and configuration -->
@@ -692,12 +788,13 @@ The <samp>hdButton</samp> object accepts following properties:
                             color: '#ffffff'
                         }
                     }
-                },
-                log: {
-                    level: 'debug',
-                    filter: 'org.flowplayer.rtmp.*, org.flowplayer.bwcheck.*,org.flowplayer.controller.*'
                 }
+            },
+            log: {
+                level: 'debug',
+                filter: 'org.flowplayer.rtmp.*, org.flowplayer.bwcheck.*,org.flowplayer.controller.*'
             }
+
         });
     </script>
 
@@ -728,6 +825,7 @@ The <samp>hdButton</samp> object accepts following properties:
     // bandwidth check plugin
     bwcheck: {
     url: '@MAIN_PLAYER_SWF@',
+    hdButton: { place: "both" },
     //no detection url configured here, use default clip
     // show the selected file in the content box. This is not used in real installations.
     onStreamSwitchBegin: function (newItem, currentItem) {
@@ -760,12 +858,13 @@ The <samp>hdButton</samp> object accepts following properties:
     color: '#ffffff'
     }
     }
+    }
     },
     log: {
     level: 'debug',
     filter: 'org.flowplayer.rtmp.*, org.flowplayer.bwcheck.*,org.flowplayer.controller.*'
     }
-    }
+
     });</code></pre>
 </div>
 
@@ -785,6 +884,9 @@ The <samp>hdButton</samp> object accepts following properties:
             href="bbb_320x180"
             style="display:block;width:480px;height:270px"
             id="hddefaultplayer">
+        <!-- splash image inside the container -->
+        <img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" width="320"
+             height="205"/>
     </a>
 
     <!-- Flowplayer installation and configuration -->
@@ -813,6 +915,7 @@ The <samp>hdButton</samp> object accepts following properties:
                 // bandwidth check plugin
                 bwcheck: {
                     url: '@MAIN_PLAYER_SWF@',
+                    hdButton: { place: "both" },
                     //no detection url configured here, use default clip
                     // show the selected file in the content box. This is not used in real installations.
                     onStreamSwitchBegin: function (newItem, currentItem) {
@@ -845,11 +948,12 @@ The <samp>hdButton</samp> object accepts following properties:
                             color: '#ffffff'
                         }
                     }
-                },
-                log: {
-                    level: 'debug',
-                    filter: 'org.flowplayer.rtmp.*, org.flowplayer.bwcheck.*,org.flowplayer.controller.*'
                 }
+            },
+            log: {
+                level: 'debug',
+                filter: 'org.flowplayer.rtmp.*, org.flowplayer.bwcheck.*,org.flowplayer.controller.*'
+
             }
         });
     </script>
@@ -881,6 +985,7 @@ The <samp>hdButton</samp> object accepts following properties:
     // bandwidth check plugin
     bwcheck: {
     url: '@MAIN_PLAYER_SWF@',
+    hdButton: { place: "both" },
     //no detection url configured here, use default clip
     // show the selected file in the content box. This is not used in real installations.
     onStreamSwitchBegin: function (newItem, currentItem) {
@@ -913,11 +1018,12 @@ The <samp>hdButton</samp> object accepts following properties:
     color: '#ffffff'
     }
     }
+    }
     },
     log: {
     level: 'debug',
     filter: 'org.flowplayer.rtmp.*, org.flowplayer.bwcheck.*,org.flowplayer.controller.*'
-    }
+
     }
     });</code></pre>
 </div>
@@ -939,6 +1045,9 @@ The <samp>hdButton</samp> object accepts following properties:
             href="bbb_320x180"
             style="display:block;width:480px;height:270px"
             id="detectionplayer">
+        <!-- splash image inside the container -->
+        <img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" width="320"
+             height="205"/>
     </a>
 
     <!-- Flowplayer installation and configuration -->
@@ -988,8 +1097,7 @@ The <samp>hdButton</samp> object accepts following properties:
 
         // show the selected file in the content box. This is not used in real installations.
         onStreamSwitchBegin: function (newItem, currentItem) {
-        $f().getPlugin('content').setHtml("Will switch to: " + newItem.streamName +
-        " from " + currentItem.streamName);
+        $f().getPlugin('content').setHtml("Will switch to: " + newItem.streamName + " from " + currentItem.streamName);
         },
         onStreamSwitch: function (newItem) {
         $f().getPlugin('content').setHtml("Switched to: " + newItem.streamName);
@@ -997,8 +1105,8 @@ The <samp>hdButton</samp> object accepts following properties:
 
         onBwDone: function(mappedBitrate, detectedBitrate) {
         var content = $f().getPlugin('content');
-        var info = "Your speed is: " + detectedBitrate + "<br/> Your chosen bitrate: " + mappedBitrate.bitrate + "<br/>
-        Video file served: " + mappedBitrate.url;
+        var info = "Your speed is: " + detectedBitrate + "<br/> Your chosen bitrate: " + mappedBitrate.bitrate + "<br/>Video
+        file served: " + mappedBitrate.url;
         content.setHtml(info);
         }
         },
@@ -1024,11 +1132,11 @@ The <samp>hdButton</samp> object accepts following properties:
         color: '#ffffff'
         }
         }
+        }
         },
         log: {
         level: 'debug',
         filter: 'org.flowplayer.rtmp.*, org.flowplayer.bwcheck.*,org.flowplayer.controller.*'
-        }
         }
         });
     </script>
@@ -1039,7 +1147,7 @@ The <samp>hdButton</samp> object accepts following properties:
 
 
 <div class="box code">
-<pre><code class="javascript">flowplayer("player", "@PLAYER_SWF@", {
+<pre><code class="javascript">flowplayer("detectionplayer", "@PLAYER_SWF@", {
     clip: {
 
     urlResolvers: 'bwcheck',
@@ -1067,17 +1175,33 @@ The <samp>hdButton</samp> object accepts following properties:
     // bandwidth check plugin
     bwcheck: {
     url: '@MAIN_PLAYER_SWF@',
-    // we use dynamic switching, the appropriate bitrate is switched on the fly, we don't set server detection, the
-    default clip will be used.
+    // we use dynamic switching, the appropriate bitrate is switched on the fly.
     dynamic: true,
+
+    //cloudfront uses fms 3.5
+    serverType: 'fms',
+
+    netConnectionUrl: 'rtmp://s3b78u0kbtx79q.cloudfront.net/cfx/st',
+
+    //detect bandwidth on startup
+    checkOnStart: true,
+
+    //remember the bitrate so detection happens only once
+    rememberBitrate: true,
 
     // show the selected file in the content box. This is not used in real installations.
     onStreamSwitchBegin: function (newItem, currentItem) {
-    $f().getPlugin('content').setHtml("Will switch to: " + newItem.streamName +
-    " from " + currentItem.streamName);
+    $f().getPlugin('content').setHtml("Will switch to: " + newItem.streamName + " from " + currentItem.streamName);
     },
     onStreamSwitch: function (newItem) {
     $f().getPlugin('content').setHtml("Switched to: " + newItem.streamName);
+    },
+
+    onBwDone: function(mappedBitrate, detectedBitrate) {
+    var content = $f().getPlugin('content');
+    var info = "Your speed is: " + detectedBitrate + "<br/> Your chosen bitrate: " + mappedBitrate.bitrate + "<br/>Video
+    file served: " + mappedBitrate.url;
+    content.setHtml(info);
     }
     },
 
@@ -1102,22 +1226,211 @@ The <samp>hdButton</samp> object accepts following properties:
     color: '#ffffff'
     }
     }
+    }
     },
     log: {
     level: 'debug',
     filter: 'org.flowplayer.rtmp.*, org.flowplayer.bwcheck.*,org.flowplayer.controller.*'
     }
-    }
     });
+</code></pre>
+</div>
 
 
-    $(document).ready(function () {
-    $('.checkBandwidthBtn').click(function() {
+<h2>Server Bandwidth Detection with HD Button Example</h2>
+
+<p>
+    Detecting bandwidth on startup via cloudfront, with HD button feature, and increasing max width to allow for HD clip
+    to be selected.
+</p>
+
+<div style="width:425px;margin:30px auto">
+
+
+    <!-- player container-->
+
+
+    <a
+            href="bbb_320x180"
+            style="display:block;width:480px;height:270px"
+            id="detectionhdplayer">
+        <!-- splash image inside the container -->
+        <img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" width="320"
+             height="205"/>
+    </a>
+
+    <!-- Flowplayer installation and configuration -->
+    <script language="JavaScript">
+
+        flowplayer("detectionhdplayer", "@PLAYER_SWF@", {
+        clip: {
+
+        urlResolvers: 'bwcheck',
+        provider: 'rtmp',
+        autoPlay: false,
+        scaling: 'fit',
+
+        bitrates: [
+        {
+        url: "mp4:bbb-400", width: 320, height: 180, bitrate: 400
+        },
+        { url: "mp4:bbb-1200", width: 720, bitrate: 1200 }
+        ]
+        },
+        plugins: {
+
+        // bandwidth check plugin
+        bwcheck: {
+        url: '@MAIN_PLAYER_SWF@',
+
+
+        //cloudfront uses fms 3.5
+        serverType: 'fms',
+
+        netConnectionUrl: 'rtmp://s3b78u0kbtx79q.cloudfront.net/cfx/st',
+
+        //detect bandwidth on startup
+        checkOnStart: true,
+
+        hdButton: { place: "both" },
+
+        maxWidth: 720,
+
+        //remember the bitrate so detection happens only once
+        rememberBitrate: false,
+
+        // show the selected file in the content box. This is not used in real installations.
+        onStreamSwitchBegin: function (newItem, currentItem) {
+        $f().getPlugin('content').setHtml("Will switch to: " + newItem.streamName + " from " + currentItem.streamName);
+        },
+        onStreamSwitch: function (newItem) {
+        $f().getPlugin('content').setHtml("Switched to: " + newItem.streamName);
+        },
+
+        onBwDone: function(mappedBitrate, detectedBitrate) {
+        var content = $f().getPlugin('content');
+        var info = "Your speed is: " + detectedBitrate + "<br/> Your chosen bitrate: " + mappedBitrate.bitrate + "<br/>Video
+        file served: " + mappedBitrate.url;
+        content.setHtml(info);
+        }
+        },
+
+        // RTMP streaming plugin
+        rtmp: {
+        url: '../flowplayer.rtmp.swf',
+        netConnectionUrl: 'rtmp://s3b78u0kbtx79q.cloudfront.net/cfx/st'
+        },
+
+        // a content box so that we can see the selected video dimensions. This is not used in real
+        // installations.
+        content: {
+        url: '../flowplayer.content.swf',
+        bottom: 30, left: 0, width: 250, height: 150,
+        backgroundColor: 'transparent', backgroundGradient: 'none', border: 0,
+        textDecoration: 'outline',
+        style: {
+        body: {
+        fontSize: 14,
+        fontFamily: 'Arial',
+        textAlign: 'center',
+        color: '#ffffff'
+        }
+        }
+        }
+        },
+        log: {
+        level: 'debug',
+        filter: 'org.flowplayer.rtmp.*, org.flowplayer.bwcheck.*,org.flowplayer.controller.*'
+        }
+        });
+    </script>
+
+</div>
+
+<button type="button" class="checkBandwidthBtn">Check Bandwidth</button>
+
+
+<div class="box code">
+<pre><code class="javascript">flowplayer("detectionhdplayer", "@PLAYER_SWF@", {
+    clip: {
+
+    urlResolvers: 'bwcheck',
+    provider: 'rtmp',
+    autoPlay: false,
+    scaling: 'fit',
+
+    bitrates: [
+    {
+    url: "mp4:bbb-400", width: 320, height: 180, bitrate: 400
+    },
+    { url: "mp4:bbb-1200", width: 720, bitrate: 1200 }
+    ]
+    },
+    plugins: {
+
+    // bandwidth check plugin
+    bwcheck: {
+    url: '@MAIN_PLAYER_SWF@',
+
+
+    //cloudfront uses fms 3.5
+    serverType: 'fms',
+
+    netConnectionUrl: 'rtmp://s3b78u0kbtx79q.cloudfront.net/cfx/st',
+
+    //detect bandwidth on startup
+    checkOnStart: true,
+
+    hdButton: { place: "both" },
+
+    maxWidth: 720,
+
+    //remember the bitrate so detection happens only once
+    rememberBitrate: false,
+
+    // show the selected file in the content box. This is not used in real installations.
+    onStreamSwitchBegin: function (newItem, currentItem) {
+    $f().getPlugin('content').setHtml("Will switch to: " + newItem.streamName + " from " + currentItem.streamName);
+    },
+    onStreamSwitch: function (newItem) {
+    $f().getPlugin('content').setHtml("Switched to: " + newItem.streamName);
+    },
+
+    onBwDone: function(mappedBitrate, detectedBitrate) {
     var content = $f().getPlugin('content');
-    content.setHtml("Detecting Bandwidth Please Wait ...");
-    $f().getPlugin("bwcheck").checkBandwidth();
-    });
+    var info = "Your speed is: " + detectedBitrate + "<br/> Your chosen bitrate: " + mappedBitrate.bitrate + "<br/>Video
+    file served: " + mappedBitrate.url;
+    content.setHtml(info);
+    }
+    },
 
+    // RTMP streaming plugin
+    rtmp: {
+    url: '../flowplayer.rtmp.swf',
+    netConnectionUrl: 'rtmp://s3b78u0kbtx79q.cloudfront.net/cfx/st'
+    },
+
+    // a content box so that we can see the selected video dimensions. This is not used in real
+    // installations.
+    content: {
+    url: '../flowplayer.content.swf',
+    bottom: 30, left: 0, width: 250, height: 150,
+    backgroundColor: 'transparent', backgroundGradient: 'none', border: 0,
+    textDecoration: 'outline',
+    style: {
+    body: {
+    fontSize: 14,
+    fontFamily: 'Arial',
+    textAlign: 'center',
+    color: '#ffffff'
+    }
+    }
+    }
+    },
+    log: {
+    level: 'debug',
+    filter: 'org.flowplayer.rtmp.*, org.flowplayer.bwcheck.*,org.flowplayer.controller.*'
+    }
     });
 </code></pre>
 </div>
@@ -1139,6 +1452,9 @@ The <samp>hdButton</samp> object accepts following properties:
             href="bbb_320x180"
             style="display:block;width:480px;height:270px"
             id="httpplayer">
+        <!-- splash image inside the container -->
+        <img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" width="320"
+             height="205"/>
     </a>
 
     <!-- Flowplayer installation and configuration -->
@@ -1150,6 +1466,7 @@ The <samp>hdButton</samp> object accepts following properties:
         urlResolvers: 'bwcheck',
         autoPlay: false,
         scaling: 'fit',
+        baseUrl: 'http://vod01.netdna.com/vod/demo.flowplayer/',
 
         bitrates: [
         {url: "bbb_480x270.flv", width: 480, height: 270, bitrate: 270, label: "270k"},
@@ -1187,8 +1504,8 @@ The <samp>hdButton</samp> object accepts following properties:
 
         onBwDone: function(mappedBitrate, detectedBitrate) {
         var content = $f().getPlugin('content');
-        var info = "Your speed is: " + detectedBitrate + "<br/> Your chosen bitrate: " + mappedBitrate.bitrate + "<br/>
-        Video file served: " + mappedBitrate.url;
+        var info = "Your speed is: " + detectedBitrate + "<br/> Your chosen bitrate: " + mappedBitrate.bitrate + "<br/>Video
+        file served: " + mappedBitrate.url;
         content.setHtml(info);
         }
         },
@@ -1208,11 +1525,11 @@ The <samp>hdButton</samp> object accepts following properties:
         color: '#ffffff'
         }
         }
+        }
         },
         log: {
         level: 'debug',
         filter: 'org.flowplayer.rtmp.*, org.flowplayer.bwcheck.*,org.flowplayer.controller.*'
-        }
         }
         });
     </script>
@@ -1227,6 +1544,7 @@ The <samp>hdButton</samp> object accepts following properties:
     urlResolvers: 'bwcheck',
     autoPlay: false,
     scaling: 'fit',
+    baseUrl: 'http://vod01.netdna.com/vod/demo.flowplayer/pseudo/',
 
     bitrates: [
     {url: "bbb_480x270.flv", width: 480, height: 270, bitrate: 270, label: "270k"},
@@ -1264,8 +1582,8 @@ The <samp>hdButton</samp> object accepts following properties:
 
     onBwDone: function(mappedBitrate, detectedBitrate) {
     var content = $f().getPlugin('content');
-    var info = "Your speed is: " + detectedBitrate + "<br/> Your chosen bitrate: " + mappedBitrate.bitrate + "<br/>
-    Video file served: " + mappedBitrate.url;
+    var info = "Your speed is: " + detectedBitrate + "<br/> Your chosen bitrate: " + mappedBitrate.bitrate + "<br/>Video
+    file served: " + mappedBitrate.url;
     content.setHtml(info);
     }
     },
@@ -1285,11 +1603,11 @@ The <samp>hdButton</samp> object accepts following properties:
     color: '#ffffff'
     }
     }
+    }
     },
     log: {
     level: 'debug',
     filter: 'org.flowplayer.rtmp.*, org.flowplayer.bwcheck.*,org.flowplayer.controller.*'
-    }
     }
     });</code></pre>
 </div>
@@ -1310,6 +1628,9 @@ The <samp>hdButton</samp> object accepts following properties:
             href="bbb_320x180"
             style="display:block;width:480px;height:270px"
             id="pseudoplayer">
+        <!-- splash image inside the container -->
+        <img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" width="320"
+             height="205"/>
     </a>
 
     <!-- Flowplayer installation and configuration -->
@@ -1362,8 +1683,8 @@ The <samp>hdButton</samp> object accepts following properties:
 
         onBwDone: function(mappedBitrate, detectedBitrate) {
         var content = $f().getPlugin('content');
-        var info = "Your speed is: " + detectedBitrate + "<br/> Your chosen bitrate: " + mappedBitrate.bitrate + "<br/>
-        Video file served: " + mappedBitrate.url;
+        var info = "Your speed is: " + detectedBitrate + "<br/> Your chosen bitrate: " + mappedBitrate.bitrate + "<br/>Video
+        file served: " + mappedBitrate.url;
         content.setHtml(info);
         }
         },
@@ -1383,11 +1704,11 @@ The <samp>hdButton</samp> object accepts following properties:
         color: '#ffffff'
         }
         }
+        }
         },
         log: {
         level: 'debug',
         filter: 'org.flowplayer.rtmp.*, org.flowplayer.bwcheck.*,org.flowplayer.controller.*'
-        }
         }
         });
     </script>
@@ -1443,8 +1764,8 @@ The <samp>hdButton</samp> object accepts following properties:
 
     onBwDone: function(mappedBitrate, detectedBitrate) {
     var content = $f().getPlugin('content');
-    var info = "Your speed is: " + detectedBitrate + "<br/> Your chosen bitrate: " + mappedBitrate.bitrate + "<br/>
-    Video file served: " + mappedBitrate.url;
+    var info = "Your speed is: " + detectedBitrate + "<br/> Your chosen bitrate: " + mappedBitrate.bitrate + "<br/>Video
+    file served: " + mappedBitrate.url;
     content.setHtml(info);
     }
     },
@@ -1464,11 +1785,11 @@ The <samp>hdButton</samp> object accepts following properties:
     color: '#ffffff'
     }
     }
+    }
     },
     log: {
     level: 'debug',
     filter: 'org.flowplayer.rtmp.*, org.flowplayer.bwcheck.*,org.flowplayer.controller.*'
-    }
     }
     });</code></pre>
 </div>
@@ -1490,6 +1811,9 @@ The <samp>hdButton</samp> object accepts following properties:
             href="bbb_320x180"
             style="display:block;width:480px;height:270px"
             id="javascriptplayer">
+        <!-- splash image inside the container -->
+        <img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" width="320"
+             height="205"/>
     </a>
 
     <!-- Flowplayer installation and configuration -->
@@ -1524,7 +1848,7 @@ The <samp>hdButton</samp> object accepts following properties:
         bwcheck: {
         url: '@MAIN_PLAYER_SWF@',
         // we use dynamic switching, the appropriate bitrate is switched on the fly.
-        dynamic: true,
+        //dynamic: true,
 
         //cloudfront uses fms 3.5
         serverType: 'fms',
@@ -1535,7 +1859,9 @@ The <samp>hdButton</samp> object accepts following properties:
         checkOnStart: true,
 
         //remember the bitrate so detection happens only once
-        rememberBitrate: true,
+        rememberBitrate: false,
+
+        maxWidth: 1080,
 
         // show the selected file in the content box. This is not used in real installations.
         onStreamSwitchBegin: function (newItem, currentItem) {
@@ -1548,8 +1874,8 @@ The <samp>hdButton</samp> object accepts following properties:
 
         onBwDone: function(mappedBitrate, detectedBitrate) {
         var content = $f().getPlugin('content');
-        var info = "Your speed is: " + detectedBitrate + "<br/> Your chosen bitrate: " + mappedBitrate.bitrate + "<br/>
-        Video file served: " + mappedBitrate.url;
+        var info = "Your speed is: " + detectedBitrate + "<br/> Your chosen bitrate: " + mappedBitrate.bitrate + "<br/>Video
+        file served: " + mappedBitrate.url;
         content.setHtml(info);
         }
         },
@@ -1575,11 +1901,11 @@ The <samp>hdButton</samp> object accepts following properties:
         color: '#ffffff'
         }
         }
+        }
         },
         log: {
         level: 'debug',
         filter: 'org.flowplayer.rtmp.*, org.flowplayer.bwcheck.*,org.flowplayer.controller.*'
-        }
         }
         }).bwcheck('#bitrateMenu',{seperator: " | "});
     </script>
@@ -1651,8 +1977,8 @@ The <samp>hdButton</samp> object accepts following properties:
 
     onBwDone: function(mappedBitrate, detectedBitrate) {
     var content = $f().getPlugin('content');
-    var info = "Your speed is: " + detectedBitrate + "<br/> Your chosen bitrate: " + mappedBitrate.bitrate + "<br/>
-    Video file served: " + mappedBitrate.url;
+    var info = "Your speed is: " + detectedBitrate + "<br/> Your chosen bitrate: " + mappedBitrate.bitrate + "<br/>Video
+    file served: " + mappedBitrate.url;
     content.setHtml(info);
     }
     },
@@ -1678,23 +2004,13 @@ The <samp>hdButton</samp> object accepts following properties:
     color: '#ffffff'
     }
     }
+    }
     },
     log: {
     level: 'debug',
     filter: 'org.flowplayer.rtmp.*, org.flowplayer.bwcheck.*,org.flowplayer.controller.*'
     }
-    }
     }).bwcheck('#bitrateMenu',{seperator: " | "});
-
-
-    $(document).ready(function () {
-    $('.checkBandwidthBtn').click(function() {
-    var content = $f().getPlugin('content');
-    content.setHtml("Detecting Bandwidth Please Wait ...");
-    $f().getPlugin("bwcheck").checkBandwidth();
-    });
-
-    });
 </code></pre>
 </div>
 
