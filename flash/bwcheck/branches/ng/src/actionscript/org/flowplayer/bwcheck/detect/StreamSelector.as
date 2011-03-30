@@ -115,8 +115,9 @@ package org.flowplayer.bwcheck.detect {
                 }
             }
             if (! item) {
-                item = _streamItems[_streamItems.length - 1];
-                _currentIndex = _streamItems.length - 1;
+                //fix for #241 lowest item is the first index not the last once ordered.
+                item = _streamItems[0];
+                _currentIndex = 0;
                 log.debug("getDefaultStream(), did not find a default stream -> using the one with lowest bitrate " + item);
             } else {
                 log.debug("getDefaultStream(), found default item " + item);
