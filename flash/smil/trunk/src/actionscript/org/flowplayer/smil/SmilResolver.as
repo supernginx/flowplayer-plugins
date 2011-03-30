@@ -138,7 +138,8 @@ public class SmilResolver implements ClipURLResolver, Plugin {
                 if (item.hasOwnProperty("@width")) bitrateItem.width = Number(item.@width);
                 if (item.hasOwnProperty("@height")) bitrateItem.height = Number(item.@height);
                 if (item.hasOwnProperty("@hd")) bitrateItem.hd = Boolean(item.@hd);
-                if (item.hasOwnProperty("@normal")) bitrateItem.normal = Boolean(item.@normal);
+                //refactor normal to sd #240
+                if (item.hasOwnProperty("@sd")) bitrateItem.sd = Boolean(item.@sd);
                 if (item.hasOwnProperty("@isDefault")) bitrateItem.isDefault = Boolean(item.@isDefault);
                 if (item.hasOwnProperty("@label")) bitrateItem.label = String(item.@label);
                 bitrates.push(bitrateItem);
