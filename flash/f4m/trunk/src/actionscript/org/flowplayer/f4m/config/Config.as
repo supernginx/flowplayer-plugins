@@ -10,19 +10,9 @@
 
 package org.flowplayer.f4m.config {
 
-    import org.flowplayer.util.PropertyBinder;
 
     public class Config {
 
-        private var _bitratesConfig:BitratesConfig = new BitratesConfig();
-
-        public function set bitrates(config:Object):void {
-            new PropertyBinder(_bitratesConfig).copyProperties(config);
-        }
-
-        public function get bitratesConfig():BitratesConfig {
-            return _bitratesConfig;
-        }
 
         
     }

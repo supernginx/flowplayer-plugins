@@ -95,8 +95,14 @@ package org.flowplayer.f4m {
             protected function formatStreamItems(streamItems:Vector.<DynamicStreamingItem>):Vector.<DynamicStreamingItem> {
                 var bitrateItems:Vector.<DynamicStreamingItem> = new Vector.<DynamicStreamingItem>();
 
-                for (var index:int = 0; index < dynResource.streamItems.length; index++) {
+                //if we have custom bitrates property set on the bitrates clip property
+                var bitrateOptions:Array = [];
+                if (_clip.getCustomProperty("bitrates")) {
+                    bitrateOptions = _clip.getCustomProperty("bitrates") as Array;
+                    bitrateOptions.sortOn(["bitrate"], Array.NUMERIC);
+                }
 
+                for (var index:int = 0; index < dynResource.streamItems.length; index++) {
                     var item:DynamicStreamingItem = streamItems[index];
 
                     var bitrateItem:BitrateItem = new BitrateItem();
@@ -110,20 +116,15 @@ package org.flowplayer.f4m {
                         item.height :
                         manifest.media[index].metadata.height;
 
-                    if (_config.bitratesConfig) {
-                        if (_config.bitratesConfig.defaultItem == item.bitrate) bitrateItem.isDefault = true;
-                        if (_config.bitratesConfig.labels && _config.bitratesConfig.labels[item.bitrate])
-                            bitrateItem.label = _config.bitratesConfig.labels[item.bitrate];
-
-                        if (_config.bitratesConfig.hd == item.bitrate) {
-                            bitrateItem.hd = true;
-                            _clip.setCustomProperty("hdBitrateItem", bitrateItem);
-                        }
-                        if (_config.bitratesConfig.normal == item.bitrate) {
-                            bitrateItem.normal = true;
-                            _clip.setCustomProperty("normalBitrateItem", bitrateItem);
-                        }
+                    //if we have custom bitrates property set on the bitrates clip property
+                    //set the custom bitrate label, sd, hd properties
+                    if (bitrateOptions[index])  {
+                        var itemConfig:Object = bitrateOptions[index];
+                        if (itemConfig.hasOwnProperty("label")) bitrateItem.label = itemConfig.label;
+                        if (itemConfig.hasOwnProperty("sd")) bitrateItem.sd = itemConfig.sd;
+                        if (itemConfig.hasOwnProperty("hd")) bitrateItem.hd = itemConfig.hd;
                     }
+
                     bitrateItems.push(bitrateItem);
                 }
                 return bitrateItems;
@@ -136,10 +137,6 @@ package org.flowplayer.f4m {
                 {
 
                     netResource = parser.createResource(manifest, new URLResource(_clip.completeUrl));
-
-
-
-
 
                     if (netResource is DynamicStreamingResource) {
                         dynResource = netResource as DynamicStreamingResource;
