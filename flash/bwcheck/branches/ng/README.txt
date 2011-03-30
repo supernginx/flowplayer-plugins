@@ -1,4 +1,12 @@
 Version history:
+3.2.6
+-----
+- Refactored HD button feature to be only available with a combination of two bitrates. hd and normal properties not required.
+- HD button should now be toggled to HD when a hd clip is set as default or when a HD clip is chosen after server detection.
+- Fixed up issues with server detection with cloudfront fms 3.5 servers. Will return zero bytes requiring re-detection multiple times.
+- Fixed up detection and switching on fullscreen toggling.
+- Fullscreen switching does not happen now when a hd mode is set.
+- Added initial support for dynamic stream switching for httpstreaming provider.
 
 3.2.4
 -----
