@@ -2,7 +2,7 @@ Version history:
 
 3.2.4
 -----
-- p2p multicast support
+- p2p multicast support, added property p2pGroupSpec
 
 3.2.3
 -----
