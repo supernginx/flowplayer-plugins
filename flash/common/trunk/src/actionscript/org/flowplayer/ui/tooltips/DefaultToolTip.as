@@ -54,7 +54,7 @@ package org.flowplayer.ui.tooltips {
 		
 		public function set text(value:String):void {
 			if (! _tf) return;
-			_tf.htmlText = value;
+			_tf.htmlText = value ? value : "";
 			setDefaultWidth();
 			drawBG();
 		}
