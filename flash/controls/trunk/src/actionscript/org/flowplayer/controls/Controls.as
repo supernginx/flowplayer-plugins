@@ -141,8 +141,11 @@ package org.flowplayer.controls {
          * Default properties for the controls.
          */
         public function getDefaultConfig():Object {
-            // skinless controlbar does not have defaults
-            if (! SkinClasses.defaults) return null;
+            if (! SkinClasses.defaults) return {
+                backgroundColor: "none",
+                backgroundGradient: "none",
+                border: "0px"
+            };
             return SkinClasses.defaults;
         }
 
