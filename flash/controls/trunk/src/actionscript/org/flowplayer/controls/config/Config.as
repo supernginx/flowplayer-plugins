@@ -100,11 +100,11 @@ package org.flowplayer.controls.config {
 			
 			for ( var name:String in newProps ) {
 				if ( newProps[name] is Number || newProps[name] is String || newProps[name] is Boolean ) {
-				//	log.debug("copying in "+ newProps[name] + " in " + name);
+					log.debug("copying in "+ newProps[name] + " in " + name);
 					dest[name] = newProps[name];	
 				}
 				else {
-				//	log.debug("recursing in "+ name);
+					log.debug("recursing in "+ name);
 					dest[name] = oldProps[name] != undefined ? _setNewProps(newProps[name], oldProps[name]) : newProps[name];
 				}
 			}

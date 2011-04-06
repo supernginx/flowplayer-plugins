@@ -131,6 +131,7 @@ package org.flowplayer.controls {
 
 		public function configure(config:Config, animation:Boolean = false):void {
 			_config = config;
+            rootStyle = config.bgStyle;
 			
 			immediatePositioning = ! animation;
 			
@@ -145,7 +146,7 @@ package org.flowplayer.controls {
 			updateWidgetsVisibility();
 			
 			onResize();
-			
+
 			immediatePositioning = true;
 		}
 		
