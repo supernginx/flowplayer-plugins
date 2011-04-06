@@ -62,6 +62,7 @@ package org.flowplayer.controls {
             this.visible = false;
 			_widgetControllers = new Dictionary();
 
+            loader = _player.createLoader();
             rootStyle = _config.bgStyle;
 			_bgFill = new Sprite();
 			addChild(_bgFill);
