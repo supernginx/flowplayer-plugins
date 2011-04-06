@@ -2,7 +2,9 @@ Version history:
 
 3.2.6
 -----
+Fixes:
 - fixed a problem in the skinless version, a border was drawn around controls: http://flowplayer.org/forum/8/60060
+- support of background images was broken: http://flowplayer.org/forum/8/60403
 
 3.2.5
 -----
