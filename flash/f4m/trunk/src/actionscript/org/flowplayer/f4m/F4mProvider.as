@@ -108,6 +108,7 @@ package org.flowplayer.f4m {
                     var bitrateItem:BitrateItem = new BitrateItem();
                     bitrateItem.url = item.streamName;
                     bitrateItem.bitrate = item.bitrate;
+                    bitrateItem.index = index;
 
                     bitrateItem.width = item.width ?
                         item.width :
