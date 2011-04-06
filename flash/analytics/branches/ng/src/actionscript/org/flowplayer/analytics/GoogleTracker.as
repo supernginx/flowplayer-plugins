@@ -85,22 +85,27 @@ import org.flowplayer.model.*;
 
         private function createClipEventTracker(eventBinder:Function, eventName:String, doTrack:Boolean):void {
             if (! doTrack) return;
-            eventBinder(function(event:ClipEvent):void {
-                doTrackEvent(eventName, isStopping(event), event);
-            });
+            eventBinder(
+                    function(event:ClipEvent):void {
+                        doTrackEvent(eventName, isStopping(event), event);
+                    },
+                    function(clip:Clip):Boolean {
+                        return _config.clipTypes.indexOf(clip.typeStr) >= 0;
+                    });
         }
 
         private function createPlayerEventTracker(eventBinder:Function, eventName:String, doTrack:Boolean, extraCheck:Function = null):void {
             if (!doTrack) return;
-            eventBinder(function(event:PlayerEvent):void {
-                if (extraCheck != null) {
-                    if (! extraCheck()) {
-                        // extra check returns false --> don't track
-                        return;
-                    }
-                }
-                doTrackEvent(eventName, true);
-            });
+            eventBinder(
+                    function(event:PlayerEvent):void {
+                        if (extraCheck != null) {
+                            if (! extraCheck()) {
+                                // extra check returns false --> don't track
+                                return;
+                            }
+                        }
+                        doTrackEvent(eventName, true);
+                    });
         }
 
         public function getCategory():String {
@@ -119,16 +124,6 @@ import org.flowplayer.model.*;
                 var _confdebug:DebugConfiguration = new DebugConfiguration();
                 _confdebug.minimizedOnStart = true;
 
-                if (_config.mode == "Bridge") {
-                    if (! ExternalInterface.available) {
-                        _model.dispatchError(PluginError.ERROR, "Unable to create tracker in Bridge mode because ExternalInterface is not available");
-                        return;
-                    }
-                    log.debug("Creating tracker in Bridge mode using " + _config.bridgeObject + ", debug ? " + _config.debug);
-                    _tracker = new GATracker(this, _config.bridgeObject, "Bridge", _config.debug);
-                    return;
-                }
-
                 if (! _config.accountId) {
                     _model.dispatchError(PluginError.ERROR, "Google Analytics account ID not specified. Look it up in your Analytics account, the format is 'UA-XXXXXX-N'");
                     return;
@@ -142,7 +137,6 @@ import org.flowplayer.model.*;
                 _model.dispatchError(PluginError.ERROR, "Unable to create tracker: " + e);
             }
         }
-
 
         private function doTrackEvent(eventName:String, trackViewDuration:Boolean = false, event:ClipEvent = null):void {
             if (_tracker == null) {
