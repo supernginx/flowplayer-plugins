@@ -14,9 +14,11 @@ package org.flowplayer.analytics {
     public class Config {
         private var _debug:Boolean = false;
         private var _mode:String = "AS3";
-        private var _bridgeObject:String = "window.pageTracker";
         private var _accountId:String; // required
         private var _events:Events = new Events();
+
+        // possible values are "video", "audio", "image"
+        private var _clipTypes:Array = [ "video", "audio" ];
 
         [Value]
         public function get mode():String {
@@ -25,15 +27,6 @@ package org.flowplayer.analytics {
 
         public function set mode(value:String):void {
             _mode = value;
-        }
-
-        [Value]
-        public function get bridgeObject():String {
-            return _bridgeObject;
-        }
-
-        public function set bridgeObject(value:String):void {
-            _bridgeObject = value;
         }
 
         [Value]
@@ -61,6 +54,14 @@ package org.flowplayer.analytics {
 
         public function set debug(value:Boolean):void {
             _debug = value;
+        }
+
+        public function get clipTypes():Array {
+            return _clipTypes;
+        }
+
+        public function set clipTypes(value:Array):void {
+            _clipTypes = value;
         }
     }
 }
