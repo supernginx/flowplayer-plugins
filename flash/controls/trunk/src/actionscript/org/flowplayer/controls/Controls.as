@@ -288,7 +288,6 @@ package org.flowplayer.controls {
 		//	log.info("STYLE PROPS : ", _config.style);
 			
 			updateControlbar();
-            //redraw();
             return _config.style;
         }
 
