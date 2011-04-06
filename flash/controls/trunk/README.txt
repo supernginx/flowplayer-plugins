@@ -2,10 +2,11 @@ Version history:
 
 3.2.6
 -----
-- Flex 4.5 compatibility fixes
+- fixed a problem in the skinless version, a border was drawn around controls: http://flowplayer.org/forum/8/60060
 
 3.2.5
 -----
+- scrubber was not moving with RTMP audio: http://code.google.com/p/flowplayer-core/issues/detail?id=190
 - buffer bar is not unnecessary reset (cleared) when seeking: http://code.google.com/p/flowplayer-core/issues/detail?id=198
 
 3.2.4
