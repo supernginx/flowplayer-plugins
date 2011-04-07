@@ -9,6 +9,7 @@
  */
 
 package org.flowplayer.akamai {
+    import org.flowplayer.model.ClipType;
     import org.flowplayer.util.Log;
 
     public class URLUtil {
@@ -147,10 +148,16 @@ package org.flowplayer.akamai {
         }
 
         public static function stripFlvExtension(name:String):String {
-            if (name.slice(-5, name.length).toLowerCase() == ".flv2")
+            var knownExtensions:Array = ClipType.knownFileExtensions();
+            log.debug("known file extensions", knownExtensions);
+
+            // strip out if one of the known extensions
+            if (knownExtensions.indexOf(name.slice(-4, name.length).toLowerCase()) >= 0) {
                 return name.slice(0, -5);
-            else if (name.slice(-4, name.length).toLowerCase() == ".flv")
+            }
+            if (knownExtensions.indexOf(name.slice(-3, name.length).toLowerCase()) >= 0) {
                 return name.slice(0, -4);
+            }
             return name;
         }
     }

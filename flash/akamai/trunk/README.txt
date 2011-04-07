@@ -1,5 +1,10 @@
 Version history:
 
+3.2.1
+-----
+Fixes:
+- Now handles also other than .flv files
+
 3.2.0
 -----
 Fixes:
