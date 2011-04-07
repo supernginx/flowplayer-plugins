@@ -7,7 +7,7 @@
 	<import file="${devkit-dir}/plugin-build.xml"/>
 	<property name="flowplayer_lib" value="${devkit-dir}/flowplayer.swc" />
 	
-	<property name="version" value="3.2.0" />
+	<property name="version" value="3.2.1-dev" />
 	<property name="basename" value="flowplayer.akamai" />
     <property name="releasedir" value="flowplayer.akamai" />
 	<property name="plugin-binary" value="${basename}.swf" />
