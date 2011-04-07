@@ -113,7 +113,7 @@ package org.flowplayer.akamai {
             tempApp = p.indexOf("_fcs_vhost") != -1 ?
                       p.slice(p.indexOf(tempApp)+tempApp.length+1, p.indexOf("_fcs_vhost")-1)
                         : p.slice(p.indexOf(tempApp)+tempApp.length+1, p.length);
-            return URLUtil.stripFlvExtension(tempApp);
+            return URLUtil.stripFileExtension(tempApp);
         }
 
         public function set onFailure(listener:Function):void {

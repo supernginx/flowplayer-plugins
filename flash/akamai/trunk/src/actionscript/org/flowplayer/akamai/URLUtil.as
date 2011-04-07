@@ -61,7 +61,7 @@ package org.flowplayer.akamai {
             if (endIndex < 0)
             {
                 parseResults.streamName = url.slice(startIndex, url.length);
-                parseResults.streamName = stripFlvExtension(parseResults.streamName);
+                parseResults.streamName = stripFileExtension(parseResults.streamName);
                 return;
             }
             parseResults.appName += "/";
@@ -70,7 +70,7 @@ package org.flowplayer.akamai {
 
             // get flv name
             parseResults.streamName = url.slice(startIndex, url.length);
-            parseResults.streamName = stripFlvExtension(parseResults.streamName);
+            parseResults.streamName = stripFileExtension(parseResults.streamName);
         }
 
         private static function parseWrappedRtmp(url:String, indexes:Array, parseResults:Object):void {
@@ -147,7 +147,7 @@ package org.flowplayer.akamai {
             return [endIndex, endIndex];
         }
 
-        public static function stripFlvExtension(name:String):String {
+        public static function stripFileExtension(name:String):String {
             var knownExtensions:Array = ClipType.knownFileExtensions();
             log.debug("known file extensions", knownExtensions);
 
