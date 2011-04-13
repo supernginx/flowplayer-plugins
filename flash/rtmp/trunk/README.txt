@@ -3,6 +3,7 @@ Version history:
 3.2.4
 -----
 - p2p multicast support, added property p2pGroupSpec
+- Fixes for #247, native switching on transition failures requires live stream check.
 
 3.2.3
 -----
