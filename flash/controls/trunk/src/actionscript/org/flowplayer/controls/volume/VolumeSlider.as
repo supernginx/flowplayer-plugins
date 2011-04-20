@@ -57,7 +57,7 @@ import org.flowplayer.view.AnimationEngine;
 			var pos:Number = value/100 * (width - _dragger.width);	
 			if ( pos < 0 || pos > width )
 				return;
-            animationEngine.animateProperty(_dragger, "x", pos, 200);
+            _dragger.x = pos;
 			drawBar(_volumeBar, volumeColor, volumeAlpha, _config.gradient, 0, pos + _dragger.width / 2);
         }
 

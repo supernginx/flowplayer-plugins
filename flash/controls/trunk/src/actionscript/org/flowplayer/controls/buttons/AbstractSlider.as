@@ -55,7 +55,7 @@ package org.flowplayer.controls.buttons {
 			_player = player;
             _animationEngine = player.animationEngine;
             _controlbar = controlbar;
-            _dragTimer = new Timer(50);
+            _dragTimer = new Timer(20);
             createDragger();
             toggleTooltip();
             addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
