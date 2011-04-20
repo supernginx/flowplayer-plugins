@@ -5,7 +5,8 @@ Version history:
 Fixes:
 - fixed a problem in the skinless version, a border was drawn around controls: http://flowplayer.org/forum/8/60060
 - support of background images was broken: http://flowplayer.org/forum/8/60403
-- It was not possible to change backgroundColor using JavaScript css() method: http://code.google.com/p/flowplayer-core/issues/detail?id=242
+- It was not possible to change backgroundColor using JavaScript API's css() method: http://code.google.com/p/flowplayer-core/issues/detail?id=242
+- The buffer bar now moves also in paused state if the player keeps buffering: http://code.google.com/p/flowplayer-core/issues/detail?id=249
 
 3.2.5
 -----

@@ -68,16 +68,6 @@ package org.flowplayer.controls.controllers {
 			startUpdateTimer();
 		}
 
-		override protected function onPlayPaused(event:ClipEvent):void {
-			super.onPlayPaused(event);
-			stopUpdateTimer();
-		}
-
-		override protected function onPlayResumed(event:ClipEvent):void {
-			super.onPlayResumed(event);
-			startUpdateTimer();
-		}
-
 		override protected function onPlayStopped(event:ClipEvent):void {
 			super.onPlayStopped(event);
 			stopUpdateTimer();
