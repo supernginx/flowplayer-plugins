@@ -7,6 +7,8 @@ Fixes:
 - support of background images was broken: http://flowplayer.org/forum/8/60403
 - It was not possible to change backgroundColor using JavaScript API's css() method: http://code.google.com/p/flowplayer-core/issues/detail?id=242
 - The buffer bar now moves also in paused state if the player keeps buffering: http://code.google.com/p/flowplayer-core/issues/detail?id=249
+- Time display showed the second value truncated. For example if the clip's duration was 3.8 it was showing a 3 second duration
+  instead of the correct rounded value of 4 seconds.
 
 3.2.5
 -----
