@@ -8,6 +8,8 @@
  */
 
 package org.flowplayer.controls.config {
+    import flash.utils.describeType;
+
     import org.flowplayer.controls.buttons.SliderConfig;
     import org.flowplayer.controls.scrubber.ScrubberConfig;
     import org.flowplayer.controls.scrubber.ScrubberController;
@@ -97,9 +99,14 @@ package org.flowplayer.controls.config {
 		
 		private function _setNewProps(newProps:Object, oldProps:Object):Object {
 			var dest:Object = oldProps;
-			
+
+            if (needsRecursing(newProps) && ! needsRecursing(dest)) {
+                dest = newProps;
+                return dest;
+            }
+
 			for ( var name:String in newProps ) {
-				if ( newProps[name] is Number || newProps[name] is String || newProps[name] is Boolean ) {
+                if (! needsRecursing(newProps[name])) {
 					log.debug("copying in "+ newProps[name] + " in " + name);
 					dest[name] = newProps[name];	
 				}
@@ -111,6 +118,10 @@ package org.flowplayer.controls.config {
 			
 			return dest;
 		}
+
+        private function needsRecursing(newVal:*):Boolean {
+            return ! (newVal is Number || newVal is String || newVal is Boolean);
+        }
 			
 		public function completeStyleProps(styleProps:Object):Object {
 			for (var name:String in _style) {
