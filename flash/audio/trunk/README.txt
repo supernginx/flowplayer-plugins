@@ -4,6 +4,7 @@ Version history:
 -----
 Fixes:
 - Fixed to dispatch onStart when the mp3 file does not contain a id3 tag
+- Now uses baseUrl if that is given
 
 3.2.2
 -----
