@@ -49,6 +49,7 @@ package org.flowplayer.controls.scrubber {
         private var _trickPlayTrackTimer:Timer;
         private var _slowMotionInfo:Object;
 		private var _currentClip:Clip;
+        private var _isSeekPaused:Boolean;
 
         public function ScrubberSlider(config:ScrubberConfig, player:Flowplayer, controlbar:DisplayObject) {
             super(config, player, controlbar);
@@ -367,12 +368,27 @@ package org.flowplayer.controls.scrubber {
 			if (_allowRandomSeek) return true;			
 			return (xPos < _bufferBar.x + _bufferBar.width + DRAG_THRESHOLD ) && (xPos > 0 - DRAG_THRESHOLD);
 		}
-		
+
+        override protected function onMouseDown(event:MouseEvent):void {
+            if (_player.isPlaying()) {
+                _player.silent = true;
+                _player.pause();
+                _player.silent = false;
+                _isSeekPaused = true;
+            }
+        }
+
 		override protected function onMouseUp(event:MouseEvent):void {
         	if (! canDragTo(mouseX)/* && _dragger.x > 0*/) {
 				doStart(_currentClip);
 			}
-		}
+            if (_isSeekPaused) {
+                _player.silent = true;
+                _player.resume();
+                _isSeekPaused = false;
+            }
+            _player.silent = false;
+        }
 
 		override protected function onDispatchDrag():void {
 			drawBufferBar();
@@ -416,6 +432,9 @@ package org.flowplayer.controls.scrubber {
         override protected function onDragging():void {
             stop(null);
             drawProgressBar(_bufferStart * width);
+
+            _player.silent = true;
+            _player.seekRelative(valueFromScrubberPos);
         }
 	}
 }

@@ -87,7 +87,11 @@ package org.flowplayer.controls.buttons {
 
         private function get tooltipText():String {
             if (_tooltipTextFunc == null) return null;
-            return _tooltipTextFunc(((mouseX - _dragger.width/2) / (width - _dragger.width)) * 100);
+            return _tooltipTextFunc(valueFromScrubberPos);
+        }
+
+        protected function get valueFromScrubberPos():Number {
+            return ((mouseX - _dragger.width / 2) / (width - _dragger.width)) * 100;
         }
 
         protected function onMouseOut(event:MouseEvent = null):void {
