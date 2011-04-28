@@ -27,6 +27,7 @@ package org.flowplayer.slowmotion {
 		
 		private var _provider:String = 'rtmp';
 		private var _speedIndicator:String = 'speedIndicator';
+        private var _serverType:String = "fms";
 		
 		public function get normalLabel():String
 		{
@@ -107,6 +108,13 @@ package org.flowplayer.slowmotion {
 		{
 			_speedIndicatorDelay = speedIndicatorDelay;
 		}
-		
+
+        public function get serverType():String {
+            return _serverType;
+        }
+
+        public function set serverType(value:String):void {
+            _serverType = value;
+        }
     }
 }
