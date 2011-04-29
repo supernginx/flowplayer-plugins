@@ -38,6 +38,8 @@ public class SmilResolver implements ClipURLResolver, Plugin {
     private var _clip:Clip;
     private var _rtmpConnectionProvider:ConnectionProvider;
 
+    private var xmlns:Namespace = new Namespace("http://www.w3.org/XML/1998/namespace");
+
     public function resolve(provider:StreamProvider, clip:Clip, successListener:Function):void {
         log.debug("resolve(), resolving " + clip.url);
         _successListener = successListener;
@@ -50,9 +52,9 @@ public class SmilResolver implements ClipURLResolver, Plugin {
     public function resolveSmil(smilUrl:String, callback:Function):void {
         log.debug("resolveSmil()");
         loadSmil(smilUrl, function(smilContent:String):void {
-            var result:Array = parseSmil(smilContent);
-            log.debug("resolveSmil(), resolved to netConnectionUrl " + result[0] + " streamName " + result[1]);
-            callback(result[0], result[1]);
+             var result:SmilItem = parseSmil(smilContent);
+             log.debug("resolveSmil(), resolved to netConnectionUrl " + result.baseUrl + " streamName " + result.streamName);
+            callback(result);
         });
     }
 
@@ -67,7 +69,7 @@ public class SmilResolver implements ClipURLResolver, Plugin {
 
     private function onSmilLoaded(smilContent:String):void {
         updateClip(_clip, smilContent);
-        _successListener(_clip);
+         _successListener(_clip);
     }
 
 
@@ -100,35 +102,52 @@ public class SmilResolver implements ClipURLResolver, Plugin {
     }
 
     private function updateClip(clip:Clip, smilContent:String):void {
-        var result:Array = parseSmil(smilContent);
 
+        var item:SmilItem = parseSmil(smilContent);
         //log.debug("Got result : ", result);
+        clip.setCustomProperty("netConnectionUrl", item.baseUrl);
+        clip.setCustomProperty("netConnectionUrls", item.servers);
 
-        clip.setCustomProperty("netConnectionUrl", result[0]);
         clip.baseUrl = null;
 
-        if (result[1] is Array) {
-
-            if (!clip.getCustomProperty("bitrates")) clip.setCustomProperty("bitrates", []);
-            clip.customProperties["bitrates"] = result[1];
-
+        if (item.bitrates is Array) {
+            clip.setCustomProperty("bitrates", item.bitrates);
         } else {
-            clip.setResolvedUrl(this, result[1]);
+            clip.setResolvedUrl(this, item.streamName);
         }
 
-        //log.debug("updated clip ", clip);
+        log.debug("updated clip ", clip);
     }
 
-    private function parseSmil(smilContent:String):Array {
+    private function parseSmil(smilContent:String):SmilItem {
         var smil:XML = new XML(smilContent);
+        var smilItem:SmilItem = new SmilItem();
 
         var result:Array = [];
-        result.push(new String(smil.head.meta.@base));
+
+
+        var servers:XMLList = smil.head.paramGroup.(@xmlns::id == "cluster");
+
+        //Check for cluster configuration inside a paramGroup tag
+        if (servers.length() >= 1) {
+            log.debug("Got Clustered Servers");
+
+            smilItem.servers = [];
+
+		    for each (var server:XML in servers.param)
+	        {
+                smilItem.servers.push(new String(server.@value));
+		    }
+		}
+
+        smilItem.baseUrl = new String(smil.head.meta.@base);
 
         if (smil.body.child("switch").length()) {
             log.debug("Got switch tag");
             var item:XML;
-            var bitrates:Array = [];
+
+            smilItem.bitrates = [];
+
             for each(item in  smil.body.child("switch").video) {
                 var bitrateItem:Object = new Object();
                 bitrateItem.url = String(item.@src);
@@ -142,15 +161,14 @@ public class SmilResolver implements ClipURLResolver, Plugin {
                 if (item.hasOwnProperty("@sd")) bitrateItem.sd = Boolean(item.@sd);
                 if (item.hasOwnProperty("@isDefault")) bitrateItem.isDefault = Boolean(item.@isDefault);
                 if (item.hasOwnProperty("@label")) bitrateItem.label = String(item.@label);
-                bitrates.push(bitrateItem);
+                smilItem.bitrates.push(bitrateItem);
             }
 
-            result.push(bitrates);
         } else {
-            result.push(new String(smil.body.video.@src));
+            smilItem.streamName = new String(smil.body.video.@src);
         }
 
-        return result;
+        return smilItem;
     }
 }
 
