@@ -4,6 +4,8 @@ Version history:
 -----
 - Fixed: the system-bitrate value in a SMIL file is specified in bps not in kbps
 - Fixed: refactor normal to sd to suit changes with bwcheck , issue #240
+- New Feature: Cluster server configuration support using a paramGroup tag. To be used in conjunction with the cluster and bwcheck plugin. #255
+- Refactored resolveSmil api method to provide an object of type SmilItem for the callback argument. #255
 
 3.2.2
 -----
