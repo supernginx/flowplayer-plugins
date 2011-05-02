@@ -14,15 +14,20 @@ package org.flowplayer.slowmotion {
 	import flash.utils.*;
 	import flash.events.*;
 	import flash.display.Loader;
-	import org.flowplayer.layout.LayoutEvent;
+
+    import org.flowplayer.controller.TimeProvider;
+    import org.flowplayer.layout.LayoutEvent;
 
 	import flash.events.KeyboardEvent;
     import flash.ui.Keyboard;
 
     import org.flowplayer.controller.StreamProvider;
+    import org.flowplayer.model.Clip;
     import org.flowplayer.model.ClipEvent;
+    import org.flowplayer.model.Playlist;
     import org.flowplayer.model.Plugin;
     import org.flowplayer.model.PluginError;
+    import org.flowplayer.model.PluginEventType;
     import org.flowplayer.model.PluginModel;
 	import org.flowplayer.model.DisplayProperties;
     import org.flowplayer.util.Log;
@@ -36,14 +41,24 @@ package org.flowplayer.slowmotion {
 
 	import fp.*;
 
-    public class AbstractSlowMotion {
+    public class AbstractSlowMotion implements TimeProvider {
         protected var log:Log = new Log(this);
         private var _provider:StreamProvider;
-        private var _timeProvider:SlowMotionTimeProvider;
+        private var _info:SlowMotionInfo;
+        private var _model:PluginModel;
+        private var _playlist:Playlist;
 
-        public function AbstractSlowMotion(provider:StreamProvider, timeProvider:SlowMotionTimeProvider) {
+        public function AbstractSlowMotion(model:PluginModel, playlist:Playlist, provider:StreamProvider, providerName:String) {
+            _model = model;
+            _playlist = playlist;
             _provider = provider;
-            _timeProvider = timeProvider;
+
+            playlist.onStart(onStart, function(clip:Clip):Boolean { return clip.provider == providerName; });
+            reset();
+        }
+
+        public function getTimeProvider():TimeProvider {
+            return null;
         }
 
         public final function normal():void {
@@ -70,12 +85,69 @@ package org.flowplayer.slowmotion {
             return _provider;
         }
 
-        protected function get timeProvider():SlowMotionTimeProvider {
-            return _timeProvider;
+        protected function get time():Number {
+            return getTime(netStream);
         }
 
-        protected function get time():Number {
-            return timeProvider.getTime(netStream);
+        public function getInfo(event:NetStatusEvent):SlowMotionInfo {
+            // should be overridden in subclasses
+            return null;
+        }
+
+        public function getTime(netStream:NetStream):Number {
+            var time:Number = _provider.netStream.time;
+            if (! _info) return time;
+            if (_info.isTrickPlay) {
+                return _info.adjustedTime(time);
+            }
+
+            return time;
+        }
+
+        public function info():SlowMotionInfo {
+            return _info;
+        }
+
+		private function reset():void {
+            log.debug("reset()");
+			_info = new SlowMotionInfo(_playlist.current, false, true, 0, 1);
+		}
+
+        private function onStart(event:ClipEvent):void {
+            log.warn("onStart(), netStream: " + netStream);
+//			reset(event);
+            netStream.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
+        }
+
+        private function onNetStatus(event:NetStatusEvent):void {
+            logNetStatus(event);
+
+            var info:SlowMotionInfo = getInfo(event);
+
+            log.debug("previous info: " + _info);
+            log.debug("new info: " + info);
+
+            if (info) {
+                if (info.equals(_info)) {
+                    log.debug("onNetStatus(), status did not change, will not dispatch 'onTrickPlay'");
+                    return;
+                }
+                _info = info;
+                log.info("dispatching PluginEvent 'onTrickPlay', trickPlay == " + info.isTrickPlay);
+                _model.dispatch(PluginEventType.PLUGIN_EVENT, "onTrickPlay", _info);
+
+            }
+        }
+
+        private function logNetStatus(event:NetStatusEvent):void {
+            log.debug("onNetStatus(): ");
+            for (var propName:String in event.info) {
+                log.debug("  " + propName + " = " + event.info[propName]);
+            }
+        }
+
+        protected function get playlist():Playlist {
+            return _playlist;
         }
     }
 }

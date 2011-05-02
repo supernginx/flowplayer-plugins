@@ -9,23 +9,28 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 package org.flowplayer.slowmotion {
+    import flash.events.NetStatusEvent;
     import flash.events.TimerEvent;
     import flash.utils.Timer;
 
     import org.flowplayer.controller.StreamProvider;
+    import org.flowplayer.controller.TimeProvider;
     import org.flowplayer.model.Clip;
     import org.flowplayer.model.ClipEvent;
     import org.flowplayer.model.Playlist;
+    import org.flowplayer.model.PluginModel;
 
     public class FMSSlowMotion extends AbstractSlowMotion {
         private static var FASTPLAY_STEP_INTERVAL:int = 100; // == 10 FPS
         private var _stepTimer:Timer;
         private var _frameStep:Number;
         private var _clipFPS:int;
-        private var _normalSpeed:Boolean;
+        private var _info:SlowMotionInfo;
+        private var _playlist:Playlist;
 
-        public function FMSSlowMotion(playlist:Playlist, provider:StreamProvider, timeProvider:SlowMotionTimeProvider) {
-            super(provider, timeProvider);
+        public function FMSSlowMotion(model:PluginModel, playlist:Playlist, provider:StreamProvider, providerName:String) {
+            super(model, playlist, provider, providerName);
+            _playlist = playlist;
             playlist.onStart(onStart);
             playlist.onPause(onPause);
             playlist.onResume(onResume);
@@ -37,8 +42,9 @@ package org.flowplayer.slowmotion {
         }
 
         private function onResume(event:ClipEvent):void {
+            log.debug("onResume()");
             if (! _stepTimer) return;
-            if (! _normalSpeed) {
+            if (_info.isTrickPlay) {
                 log.debug("onResume(), resuming trick play");
                 netStream.pause();
                 _stepTimer.start();
@@ -60,19 +66,19 @@ package org.flowplayer.slowmotion {
             var clip:Clip = Clip(event.target);
             _clipFPS = clip.metaData ? clip.metaData.framerate : 0;
             log.debug("frameRate from metadata == " + _clipFPS);
+            netStream.inBufferSeek = true;
         }
 
         override protected function normalSpeed():void {
-            log.debug("normalSpeed()");
+            log.info("normalSpeed()");
             _stepTimer.stop();
             netStream.resume();
-            _normalSpeed = true;
+            _info = new SlowMotionInfo(_playlist.current, false, true, 0, 0);
         }
 
         override protected function trickSpeed(multiplier:Number, fpsIgnored:Number, forward:Boolean):void {
-            log.debug("trickSpeed() multiplier == " + multiplier + ", " + (forward ? "forward" : "backward"));
+            log.info("trickSpeed() multiplier == " + multiplier + ", " + (forward ? "forward" : "backward"));
             netStream.pause();
-            netStream.inBufferSeek = true;
 
             if (netStream.currentFPS > 0 && netStream.currentFPS > _clipFPS) {
                 _clipFPS = netStream.currentFPS;
@@ -84,6 +90,7 @@ package org.flowplayer.slowmotion {
             } else {
                 startFastPlay(multiplier, forward);
             }
+            _info = new SlowMotionInfo(_playlist.current, true, forward, 0, multiplier);
         }
 
         private function startFastPlay(multiplier:Number, forward:Boolean):void {
@@ -104,6 +111,10 @@ package org.flowplayer.slowmotion {
 
         private function onStepTimer(event:TimerEvent):void {
             netStream.step(_frameStep);
+        }
+
+        override public function getInfo(event:NetStatusEvent):SlowMotionInfo {
+            return _info;
         }
     }
 }
