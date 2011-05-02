@@ -8,7 +8,8 @@
  */
 
 package org.flowplayer.controls.scrubber {
-	import org.flowplayer.controls.buttons.AbstractSlider;
+    import org.flowplayer.controller.StreamProvider;
+    import org.flowplayer.controls.buttons.AbstractSlider;
 	import org.flowplayer.controls.buttons.SliderConfig;
 	
     import flash.display.DisplayObject;
@@ -50,6 +51,7 @@ package org.flowplayer.controls.scrubber {
         private var _slowMotionInfo:Object;
 		private var _currentClip:Clip;
         private var _isSeekPaused:Boolean;
+        private var _isRtmp:Boolean;
 
         public function ScrubberSlider(config:ScrubberConfig, player:Flowplayer, controlbar:DisplayObject) {
             super(config, player, controlbar);
@@ -71,7 +73,12 @@ package org.flowplayer.controls.scrubber {
             playlist.onStart(setSeekDone);
             playlist.onBeforeSeek(setSeekBegin);
             playlist.onSeek(setSeekDone);
-			
+
+            playlist.onBeforeBegin(function(event:ClipEvent):void {
+                _currentClip = event.target as Clip;
+                detectProvider();
+            });
+
             playlist.onBegin(function(event:ClipEvent):void {
                 _currentClip = event.target as Clip;
             });
@@ -96,6 +103,14 @@ package org.flowplayer.controls.scrubber {
             
             playlist.onBeforeSeek(beforeSeek);
             playlist.onSeek(seek);
+        }
+
+        private function detectProvider():void {
+            if (! _currentClip.provider) return;
+            var model:PluginModel = PluginModel(_player.pluginRegistry.getPlugin(_currentClip.provider));
+            if (! model) return;
+            var plugin:StreamProvider = StreamProvider(model.pluginObject);
+            _isRtmp = plugin.type == "rtmp";
         }
 
         private function onSlowMotionEvent(event:PluginEvent):void {
@@ -326,6 +341,10 @@ package org.flowplayer.controls.scrubber {
 		}
 		
 		private function drawProgressBar(leftEdge:Number, rightEdge:Number = 0):void {
+            if (_isRtmp) {
+                clearBar(_progressBar);
+                return;
+            }
 			drawBar(_progressBar, _config.color, _config.alpha, _config.gradient, leftEdge || 0, rightEdge || _dragger.x + _dragger.width - 2);
 		}
 
