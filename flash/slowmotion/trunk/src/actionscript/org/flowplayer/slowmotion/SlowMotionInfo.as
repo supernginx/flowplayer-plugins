@@ -54,5 +54,16 @@ package org.flowplayer.slowmotion {
         public function get clip():Clip {
             return _clip;
         }
+
+        public function equals(info:SlowMotionInfo):Boolean {
+            if (! info) return false;
+            return _clip == info.clip && _isTrickPlay == info.isTrickPlay && _forwardDirection == info.forwardDirection &&
+                    _timeOffset == info.timeOffset && _speedMultiplier == info.speedMultiplier;
+        }
+
+        public function toString():String {
+            return "[SlowMotionInfo] clip: '" + _clip + "', isTrickPlay: " + _isTrickPlay + ", forward: " + _forwardDirection +
+                    ", offset " + _timeOffset + ", multiplier " + _speedMultiplier;
+        }
     }
 }

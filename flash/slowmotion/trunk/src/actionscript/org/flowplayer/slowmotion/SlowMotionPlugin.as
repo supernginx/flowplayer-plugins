@@ -41,7 +41,7 @@ package org.flowplayer.slowmotion {
         private var _provider:StreamProvider;
         private var _model:PluginModel;
         private var _player:Flowplayer;
-        private var _timeProvider:SlowMotionTimeProvider;
+//        private var _timeProvider:SlowMotionTimeProvider;
 		private var _config:Config;
         private var _providerName:String;
 
@@ -50,6 +50,7 @@ package org.flowplayer.slowmotion {
 		
 		private var _requestedSpeed:Number;
         private var _controller:AbstractSlowMotion;
+        private var _controlbar:Object;
 
         public function onConfig(model:PluginModel):void {
             _model = model;
@@ -86,10 +87,9 @@ package org.flowplayer.slowmotion {
             }
             log.debug("Found RTMP provider " + _provider);
 
-            _timeProvider = new SlowMotionTimeProvider(_model, _provider, _providerName, _player.playlist);
-            _provider.timeProvider = _timeProvider;
-            _controller = _config.serverType == "wowza" ? new WowzaSlowMotion(_provider, _timeProvider)
-                    : new FMSSlowMotion(_player.playlist, _provider, _timeProvider);
+            _controller = _config.serverType == "wowza" ? new WowzaSlowMotion(_model, _player.playlist, _provider, _providerName)
+                    : new FMSSlowMotion(_model, _player.playlist, _provider, _providerName);
+            _provider.timeProvider = _controller.getTimeProvider();
 
 			var resetSpeed:Function = function(event:ClipEvent):void {
 				_requestedSpeed = 1;
@@ -100,20 +100,45 @@ package org.flowplayer.slowmotion {
 			_player.playlist.onFinish(resetSpeed);
 			_player.playlist.onPlaylistReplace(resetSpeed);
 
+            _player.playlist.onStart(onStart);
+            _player.playlist.onFinish(onFinish);
+            _player.playlist.onStop(onFinish);
+
             lookupSpeedIndicator();
 
 			var controlbar:* = player.pluginRegistry.plugins['controls'];
-			controlbar.pluginObject.addEventListener(WidgetContainerEvent.CONTAINER_READY, addButtons);
+            _controlbar = controlbar.pluginObject;
+			_controlbar.addEventListener(WidgetContainerEvent.CONTAINER_READY, addButtons);
 			
 			
             _model.dispatchOnLoad();
         }
 
+        private function onStart(event:ClipEvent):void {
+            enableBackwardButtons(true);
+            enableForwardButtons(true);
+        }
+
+        private function onFinish(event:ClipEvent):void {
+            enableBackwardButtons(false);
+            enableForwardButtons(false);
+        }
+
+        [External]
+        public function enableForwardButtons(enabled:Boolean):void {
+            _controlbar["setEnabled"]({ slowForward: enabled, fastForward: enabled });
+        }
+
+        [External]
+        public function enableBackwardButtons(enabled:Boolean):void {
+            _controlbar["setEnabled"]({ slowBackward: enabled, fastBackward: enabled });
+        }
+
 		private function addButtons(event:WidgetContainerEvent):void {
 			var container:WidgetContainer = event.container;
 			
-			var FBwdButtonController:GenericButtonController = new GenericButtonController("slowMotionFBwd", fp.SlowMotionFBwdButton, {
-				enabled: true,
+			var FBwdButtonController:GenericButtonController = new GenericButtonController("fastBackward", fp.SlowMotionFBwdButton, {
+				enabled: false,
 				visible: true,
 				tooltipEnabled : true,
 				tooltipLabel: 'Fast Backward'
@@ -122,8 +147,8 @@ package org.flowplayer.slowmotion {
 				onSlowMotionClicked(true, false);
 			}, "slowmotion");
 			
-			var bwdButtonController:GenericButtonController = new GenericButtonController("slowMotionBwd", fp.SlowMotionBwdButton, {
-				enabled: true,
+			var bwdButtonController:GenericButtonController = new GenericButtonController("slowBackward", fp.SlowMotionBwdButton, {
+				enabled: false,
 				visible: true,
 				tooltipEnabled : true,
 				tooltipLabel: 'Slow Backward'
@@ -132,8 +157,8 @@ package org.flowplayer.slowmotion {
 				onSlowMotionClicked(false, false);
 			}, "slowmotion");
 			
-			var fwdButtonController:GenericButtonController = new GenericButtonController("slowMotionFwd", fp.SlowMotionFwdButton, {
-				enabled: true,
+			var fwdButtonController:GenericButtonController = new GenericButtonController("slowForward", fp.SlowMotionFwdButton, {
+				enabled: false,
 				visible: true,
 				tooltipEnabled : true,
 				tooltipLabel: 'Slow Forward'
@@ -142,8 +167,8 @@ package org.flowplayer.slowmotion {
 				onSlowMotionClicked(false, true);
 			}, "slowmotion");
 			
-			var FFwdButtonController:GenericButtonController = new GenericButtonController("slowMotionFFwd", fp.SlowMotionFFwdButton, {
-				enabled: true,
+			var FFwdButtonController:GenericButtonController = new GenericButtonController("fastForward", fp.SlowMotionFFwdButton, {
+				enabled: false,
 				visible: true,
 				tooltipEnabled : true,
 				tooltipLabel: 'Fast Forward'
@@ -151,11 +176,11 @@ package org.flowplayer.slowmotion {
 				log.info("Fast Forward clicked");
 				onSlowMotionClicked(true, true);
 			}, "slowmotion");
-			
+
 			container.addWidget(FBwdButtonController, "stop", false);
-			container.addWidget(bwdButtonController, "slowMotionFBwd", false);
+			container.addWidget(bwdButtonController, "fastBackward", false);
 			container.addWidget(fwdButtonController, "play", false);
-			container.addWidget(FFwdButtonController, "slowMotionFwd", false);
+			container.addWidget(FFwdButtonController, "slowForward", false);
 		}
 		
 		private function onSlowMotionClicked(fast:Boolean, goForward:Boolean):void
@@ -173,6 +198,10 @@ package org.flowplayer.slowmotion {
         [External]
         public function forward(multiplier:Number = 4, fps:Number = -1):void {
             log.debug("forward()");
+            if (_player.isPaused()) {
+                _player.resume();
+            }
+
             if (multiplier == 1) {
                 normal();
                 return;
@@ -185,6 +214,9 @@ package org.flowplayer.slowmotion {
         [External]
         public function backward(multiplier:Number = 4, fps:Number = -1):void {
             log.debug("backward()");
+            if (_player.isPaused()) {
+                _player.resume();
+            }
 
 			_requestedSpeed = -multiplier;
             setFastPlay(multiplier, fps, false);
@@ -193,6 +225,9 @@ package org.flowplayer.slowmotion {
         [External]
         public function normal():void {
             log.debug("normal()");
+            if (_player.isPaused()) {
+                _player.resume();
+            }
 
 			_requestedSpeed = 1;
 			showSpeedIndicator(1, false);
@@ -201,7 +236,7 @@ package org.flowplayer.slowmotion {
 
         [External]
         public function get info():SlowMotionInfo {
-            return _timeProvider.info();
+            return _controller.info();
         }
 
         private function setFastPlay(multiplier:Number, fps:Number, forward:Boolean):void {
