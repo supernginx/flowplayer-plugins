@@ -145,6 +145,7 @@ package org.flowplayer.controls.scrubber {
 
 		private function onScrubbed(event:Event):void {
             log.debug("onScrubbed() " + ScrubberSlider(event.target).value);
+            _player.silent = false;
 			_player.seekRelative(ScrubberSlider(event.target).value);
 		}
 

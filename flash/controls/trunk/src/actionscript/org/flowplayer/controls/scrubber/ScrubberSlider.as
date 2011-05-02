@@ -120,13 +120,17 @@ package org.flowplayer.controls.scrubber {
         }
 
         private function stopTrickPlayTracking():void {
+            log.debug("stopTrickPlayTracking()");
             if (_trickPlayTrackTimer) {
                 _trickPlayTrackTimer.stop();
             }
         }
 
         private function startTrickPlayTracking():void {
-            stopTrickPlayTracking();
+            log.debug("startTrickPlayTracking()");
+            if (_trickPlayTrackTimer) {
+                _trickPlayTrackTimer.stop();
+            }
             _trickPlayTrackTimer = new Timer(200);
             _trickPlayTrackTimer.addEventListener(TimerEvent.TIMER, onTrickPlayProgress);
             _trickPlayTrackTimer.start();
@@ -370,6 +374,7 @@ package org.flowplayer.controls.scrubber {
 		}
 
         override protected function onMouseDown(event:MouseEvent):void {
+            log.debug("onMouseDown()");
             if (_player.isPlaying()) {
                 _player.silent = true;
                 _player.pause();
@@ -379,6 +384,7 @@ package org.flowplayer.controls.scrubber {
         }
 
 		override protected function onMouseUp(event:MouseEvent):void {
+            log.debug("onMouseUp()");
         	if (! canDragTo(mouseX)/* && _dragger.x > 0*/) {
 				doStart(_currentClip);
 			}
@@ -430,6 +436,7 @@ package org.flowplayer.controls.scrubber {
 
 //
         override protected function onDragging():void {
+            log.debug("onDragging()");
             stop(null);
             drawProgressBar(_bufferStart * width);
 

@@ -71,7 +71,7 @@ package org.flowplayer.controls.buttons {
 
         private function setMouseUp(event:MouseEvent):void {
             log.debug("setMouseUp()");
-            this.removeEventListener(MouseEvent.MOUSE_DOWN, setMouseUp);
+            this.removeEventListener(MouseEvent.MOUSE_UP, setMouseUp);
             _mouseDown = false;
             if (! _mouseOver) {
                 log.debug("setMouseUp() hiding tooltip");
@@ -95,7 +95,7 @@ package org.flowplayer.controls.buttons {
         }
 
         protected function onMouseOut(event:MouseEvent = null):void {
-            log.debug("onMouseOut");
+//            log.debug("onMouseOut");
             _mouseOver = false;
             if (_mouseDown) return;
             hideTooltip();
@@ -103,7 +103,7 @@ package org.flowplayer.controls.buttons {
         }
 
         protected function onMouseOver(event:MouseEvent):void {
-            log.debug("onMouseOver");
+//            log.debug("onMouseOver");
             _mouseOver = true;
             if (_mouseDown) return;
             showTooltip();
@@ -228,8 +228,8 @@ package org.flowplayer.controls.buttons {
 			_dragTimer.stop();
 			dragging();
 			updateCurrentPosFromDragger();
-			
-			if (! dispatchOnDrag) {				
+
+			if (! dispatchOnDrag) {
 				dispatchDragEvent();
 			}
 		}
