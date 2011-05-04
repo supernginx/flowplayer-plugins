@@ -488,12 +488,12 @@ package org.flowplayer.captions {
             text = text.replace(/\n/, '<br>');
 
             _captionView.html = "<p class='" + event.info.parameters.style + "'>" + text + "</p>";
-            if (Number(event.info.parameters.end) > 0)
+            if (Number(event.info.parameters.duration) > 0)
             {
                 _currentCaption = {
-                    captionInterval: setInterval(clearCaption, Number(event.info.parameters.end)),
+                    captionInterval: setInterval(clearCaption, Number(event.info.parameters.duration)),
                     beginTime: _player.status.time,
-                    endTime: _player.status.time + Number(event.info.parameters.end)
+                    endTime: _player.status.time + Number(event.info.parameters.duration)
                 };
             }
         }

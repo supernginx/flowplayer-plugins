@@ -82,7 +82,7 @@ package org.flowplayer.captions.parsers
                     var cue:Object = Cuepoint.createDynamic(time, "embedded");
                     var parameters:Object = new Object();
                     var pStyle:String = getStyleObj(p.@style).hasOwnProperty("color") ? p.@style : divStyle;
-                    var endTime:int = end ? end : (p.hasOwnProperty("@dur") ? NumberFormatter.seconds(p.@dur) : NumberFormatter.seconds(p.@end) - time);
+                    var duration:int = end ? end : (p.hasOwnProperty("@dur") ? NumberFormatter.seconds(p.@dur) : NumberFormatter.seconds(p.@end) - time);
                     var name:String = p.hasOwnProperty("@id") ? p.@*::id : (property.hasOwnProperty("@id") ? property.@*::id : "cue" + cueRow);
 
                     cue.captionType = "external";
@@ -91,7 +91,7 @@ package org.flowplayer.captions.parsers
                     cue.name = name;
                     cue.type = "event";
                     parameters.begin = time;
-                    parameters.end = endTime;
+                    parameters.duration = duration;
                     parameters.lang = lang;
                     parameters.style = pStyle;
 

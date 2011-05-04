@@ -24,6 +24,8 @@ package org.flowplayer.captions.parsers
         private var _arr:Array = new Array();
         private var cueRow:int = 0;
 
+        // { text: 'captionText', time: 10, duration: 3 }
+
         private function parseRows(item:*, index:int, array:Array):void
         {
 
@@ -31,22 +33,17 @@ package org.flowplayer.captions.parsers
             var cue:Object = Cuepoint.createDynamic(time, "embedded"); // creates a dynamic
             var parameters:Object = new Object();
             var name:String = (item.name ? item.name : "cue" + cueRow);
-            cue.time = time;
-            cue.name = name;
+
+            // convert to milliseconds
+            cue.time = time * 1000;
             cue.type = "event";
-
-            if (item.parameters)
-            {
-
-                for (var param:String in item.parameters)
-                {
-                    parameters[param] = item.parameters[param];
-                }
-            }
+            cue.name = "caption"+time;
 
             parameters.style = styles.rootStyleName;
-            parameters.begin = item.parameters.begin;
-            parameters.end = item.parameters.end - item.parameters.begin;
+            parameters.begin = cue.time;
+            parameters.duration = item.duration * 1000;
+            parameters.text = item.text;
+
             cue.parameters = parameters;
             _arr.push(cue);
             cueRow++;
