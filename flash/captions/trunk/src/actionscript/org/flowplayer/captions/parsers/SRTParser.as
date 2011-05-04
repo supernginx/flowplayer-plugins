@@ -41,8 +41,8 @@ package org.flowplayer.captions.parsers
             var time:Array = time_pattern.exec(rows[1]);
             var text:String = rows.slice(2, rows.length).join("\n");
             var begin:Number = NumberFormatter.seconds(time[1]);
-            var end:Number = (NumberFormatter.seconds(time[2]) - begin);
-            log.debug("" + end);
+            var duration:Number = (NumberFormatter.seconds(time[2]) - begin);
+            log.debug("" + duration);
             var name:String = (rows[0] ? rows[0] : "cue" + cueRow);
             var parameters:Object = new Object();
 
@@ -52,7 +52,7 @@ package org.flowplayer.captions.parsers
             cue.name = name;
             cue.type = "event";
             parameters.begin = begin;
-            parameters.end = end;
+            parameters.duration = duration;
             parameters.style = styles.rootStyleName;
             parameters.text = text;
             cue.parameters = parameters;
