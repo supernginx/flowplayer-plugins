@@ -13,6 +13,8 @@ package org.flowplayer.bwcheck.detect {
     import flash.events.NetStatusEvent;
     import flash.net.NetConnection;
 
+    import flash.utils.setTimeout;
+
     import org.flowplayer.bwcheck.config.Config;
     import org.flowplayer.bwcheck.NullNetConnectionClient;
 
@@ -118,6 +120,15 @@ package org.flowplayer.bwcheck.detect {
 
                     detect();
                     break;
+                case "NetConnection.Connect.Rejected":
+                    // Fix for #259, reconnect to hddn nodes, stop the cluster timer.
+                    _rtmpCluster.stop();
+                    setTimeout(function():void{
+                        log.debug("connecting to a redirected URL " + event.info.ex.redirect);
+                        _strategy.connect(event.info.ex.redirect);
+                    }, 100);
+
+                break;
                 //connection has closed
                 case "NetConnection.Connect.Closed":
             }
