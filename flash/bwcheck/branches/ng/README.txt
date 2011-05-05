@@ -7,6 +7,7 @@ Version history:
 - Fixed up detection and switching on fullscreen toggling.
 - Fullscreen switching does not happen now when a hd mode is set.
 - Added initial support for dynamic stream switching for httpstreaming provider.
+- Fixed #259, redirect bwcheck connections to hddn nodes.
 
 3.2.4
 -----
