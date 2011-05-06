@@ -97,7 +97,7 @@
 				<arg line="-keep-as3-metadata=Value,External" />
 				<arg line="'${src-as}/@{plugin-main-class}'" />
 				<arg line="-output '${build-dir}/@{out}'" />
-                <arg line="-target-player '10.1.0'" />
+                <arg line="-target-player '10.2.0'" />
                 <arg line="-incremental=true"/>
 			</exec>
 		</sequential>
@@ -217,8 +217,7 @@
 	
 	<target name="build" description="builds all">
 		<build-plugin plugin-binary="${plugin-binary}" plugin-main-class="${plugin-main-class}" />
-		<copy file="${build-dir}/${plugin-binary}" tofile="${build-dir}/${plugin-binary-versioned}">
-		</copy>
+        <copy file="${build-dir}/${plugin-binary}" tofile="${build-dir}/${plugin-binary-versioned}" />
 	</target>
 
 	<target name="deploy" description="Deploys the plugin into the target dir" depends="build">
@@ -230,7 +229,9 @@
 		<echo message="deploying plugin to ${deploy_dir}" />
 		<copy file="${build-dir}/${plugin-binary}" todir="${deploy_dir}/${build-dir}" overwrite="true" />
 		<copy file="${build-dir}/${plugin-binary-versioned}" todir="${deploy_dir}/${build-dir}" overwrite="true" />
-		<copy file="${build-dir}/${plugin-binary-versioned}" todir="${deploy_dir}/${dist-dir}" overwrite="true" />
+        <copy file="${build-dir}/${plugin-binary-versioned}" todir="${deploy_dir}/${dist-dir}" overwrite="true" />
+
+        <!--<copy file="${build-dir}/${plugin-binary}" tofile="${deploy_dir}/${build-dir}/${basename}-dev.swf" overwrite="true" />-->
 	</target>
 
 
@@ -263,6 +264,8 @@
 				<include name="${plugin-binary-versioned}" />
 			</zipfileset>
 		</zip>
+        <echo message="copying to ${dist-dir}/${basename}.zip" />
+        <copy file="${dist-dir}/${basename}-${version}.zip" tofile="${dist-dir}/${basename}.zip" overwrite="true" />
 	</target>
 	
 	<target name="zip-swc" depends="prepare, library">
@@ -294,8 +297,19 @@
 	
     
     <target name="write-zip-url">
-<echo file="${url-file}" append="true">&#60;a href="http://flowplayer-releases.s3.amazonaws.com/${basename}/${basename}-${version}.zip"&#62;${basename}-${version}.zip&#60;/a&#62; &#60;br /&#62;
+<echo file="${url-file}" append="true">&#60;a href="http://flowplayer-releases.s3.amazonaws.com/${basename}/${basename}.zip"&#62;${basename}.zip&#60;/a&#62; &#60;br /&#62;
 </echo>
+    </target>
+
+    <target name="write-version">
+        <echo file="${yaml-file}" append="true" message="        ${basename}: ${version}${line.separator}" />
+    </target>
+
+    <target name="write-filesize">
+        <length property="filesize" file="${build-dir}/${plugin-binary}" />
+        <echo file="${yaml-file}" append="true" message="        ${plugin-binary}: ${filesize}${line.separator}" />
+        <length property="zip.filesize" file="${dist-dir}/${basename}-${version}.zip" />
+        <echo file="${yaml-file}" append="true" message="        ${basename}.zip: ${zip.filesize}${line.separator}" />
     </target>
 
 	<target name="source-zip" depends="prepare">
@@ -313,10 +327,10 @@
                 <include name="**/*" />
             </zipfileset>
 		</zip>
+        <copy file="${dist-dir}/${basename}-${version}-src.zip" tofile="${dist-dir}/${basename}-src.zip" />
 	</target>
 
     <target name="release-remote" depends="release-swfs">
-        
         <echo message="release-remote: releasing to ${releasedir}" />
         <remotecopy bucketname="flowplayer-releases/${releasedir}" keyfile="${keyfile}" pass="${pass}">
             <releasefiles>
@@ -327,6 +341,22 @@
                 </fileset>
                 <fileset dir="${build-dir}">
                     <include name="${plugin-binary-versioned}" />
+                </fileset>
+            </releasefiles>
+        </remotecopy>
+    </target>
+
+    <target name="upload-dev-version" depends="upload-dev-swfs">
+        <echo message="release-remote: releasing to ${releasedir}" />
+        <remotecopy bucketname="flowplayer-releases/${releasedir}" keyfile="${keyfile}" pass="${pass}">
+            <releasefiles>
+                <fileset dir="${dist-dir}">
+                    <include name="${basename}.zip" />
+                    <include name="${basename}-src.zip" />
+                    <include name="${basename}.swf" />
+                </fileset>
+                <fileset dir="${build-dir}">
+                    <include name="${basename}.swf" />
                 </fileset>
             </releasefiles>
         </remotecopy>
@@ -354,6 +384,16 @@
         </remotecopy>
     </target>
 
+    <target name="upload-dev-swfs">
+        <remotecopy bucketname="flowplayer-releases/swf" keyfile="${keyfile}" pass="${pass}">
+            <releasefiles>
+                <fileset dir="${build-dir}">
+                    <include name="${basename}.swf" />
+                </fileset>
+            </releasefiles>
+        </remotecopy>
+    </target>
+
 	<target name="echo-name">
 		<echo message="${plugin-binary-versioned}" />
 	</target>
@@ -362,7 +402,7 @@
         <updatezip zip="${all-swf-zip}">
             <zipfiles>
                 <fileset dir="${build-dir}">
-                    <include name="${plugin-binary-versioned}" />
+                    <include name="${basename}.swf" />
                 </fileset>
             </zipfiles>
         </updatezip>
