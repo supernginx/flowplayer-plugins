@@ -13,6 +13,9 @@ package org.flowplayer.slowmotion {
     import flash.events.TimerEvent;
     import flash.utils.Timer;
 
+    import flash.utils.clearInterval;
+    import flash.utils.setInterval;
+
     import org.flowplayer.controller.StreamProvider;
     import org.flowplayer.controller.TimeProvider;
     import org.flowplayer.model.Clip;
@@ -31,9 +34,19 @@ package org.flowplayer.slowmotion {
         public function FMSSlowMotion(model:PluginModel, playlist:Playlist, provider:StreamProvider, providerName:String) {
             super(model, playlist, provider, providerName);
             _playlist = playlist;
-            playlist.onStart(onStart);
-            playlist.onPause(onPause);
-            playlist.onResume(onResume);
+
+            playlist.onPause(onPause, slowMotionClipFilter);
+            playlist.onResume(onResume, slowMotionClipFilter);
+
+            playlist.onStop(onFinish, slowMotionClipFilter);
+            playlist.onFinish(onFinish, slowMotionClipFilter);
+        }
+
+        private function onFinish(clip:ClipEvent):void {
+            if (_info && _info.isTrickPlay) {
+                log.debug("stopping step timer");
+                _stepTimer.stop();
+            }
         }
 
         private function onPause(event:ClipEvent):void {
@@ -61,7 +74,7 @@ package org.flowplayer.slowmotion {
             log.debug("timer started with interval " + interval);
         }
 
-        private function onStart(event:ClipEvent):void {
+        override protected function onStart(event:ClipEvent):void {
             log.debug("onStart");
             var clip:Clip = Clip(event.target);
             _clipFPS = clip.metaData ? clip.metaData.framerate : 0;
@@ -73,10 +86,10 @@ package org.flowplayer.slowmotion {
             log.info("normalSpeed()");
             _stepTimer.stop();
             netStream.resume();
-            _info = new SlowMotionInfo(_playlist.current, false, true, 0, 0);
+            _info = SlowMotionInfo.createForNormalSpeed(_playlist.current);
         }
 
-        override protected function trickSpeed(multiplier:Number, fpsIgnored:Number, forward:Boolean):void {
+        override protected function trickSpeed(multiplier:Number, forward:Boolean):void {
             log.info("trickSpeed() multiplier == " + multiplier + ", " + (forward ? "forward" : "backward"));
             netStream.pause();
 
@@ -110,6 +123,7 @@ package org.flowplayer.slowmotion {
         }
 
         private function onStepTimer(event:TimerEvent):void {
+            if (! netStream) return;
             netStream.step(_frameStep);
         }
 

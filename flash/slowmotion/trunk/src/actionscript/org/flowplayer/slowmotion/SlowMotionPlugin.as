@@ -100,21 +100,23 @@ package org.flowplayer.slowmotion {
 			_player.playlist.onFinish(resetSpeed);
 			_player.playlist.onPlaylistReplace(resetSpeed);
 
-            _player.playlist.onStart(onStart);
+            _player.playlist.onBegin(onBegin);
             _player.playlist.onFinish(onFinish);
             _player.playlist.onStop(onFinish);
 
             lookupSpeedIndicator();
 
 			var controlbar:* = player.pluginRegistry.plugins['controls'];
-            _controlbar = controlbar.pluginObject;
-			_controlbar.addEventListener(WidgetContainerEvent.CONTAINER_READY, addButtons);
+            if (controlbar) {
+                _controlbar = controlbar.pluginObject;
+                _controlbar.addEventListener(WidgetContainerEvent.CONTAINER_READY, addButtons);
+            }
 			
 			
             _model.dispatchOnLoad();
         }
 
-        private function onStart(event:ClipEvent):void {
+        private function onBegin(event:ClipEvent):void {
             enableBackwardButtons(true);
             enableForwardButtons(true);
         }
@@ -126,11 +128,13 @@ package org.flowplayer.slowmotion {
 
         [External]
         public function enableForwardButtons(enabled:Boolean):void {
+            if (! _controlbar) return;
             _controlbar["setEnabled"]({ slowForward: enabled, fastForward: enabled });
         }
 
         [External]
         public function enableBackwardButtons(enabled:Boolean):void {
+            if (! _controlbar) return;
             _controlbar["setEnabled"]({ slowBackward: enabled, fastBackward: enabled });
         }
 
@@ -196,7 +200,7 @@ package org.flowplayer.slowmotion {
 		}
 
         [External]
-        public function forward(multiplier:Number = 4, fps:Number = -1):void {
+        public function forward(multiplier:Number = 4):void {
             log.debug("forward()");
             if (_player.isPaused()) {
                 _player.resume();
@@ -208,18 +212,18 @@ package org.flowplayer.slowmotion {
             }
 
 			_requestedSpeed = multiplier;
-            setFastPlay(multiplier, fps, true);
+            setFastPlay(multiplier, true);
         }
 
         [External]
-        public function backward(multiplier:Number = 4, fps:Number = -1):void {
+        public function backward(multiplier:Number = 4):void {
             log.debug("backward()");
             if (_player.isPaused()) {
                 _player.resume();
             }
 
 			_requestedSpeed = -multiplier;
-            setFastPlay(multiplier, fps, false);
+            setFastPlay(multiplier, false);
         }
 
         [External]
@@ -236,12 +240,12 @@ package org.flowplayer.slowmotion {
 
         [External]
         public function get info():SlowMotionInfo {
-            return _controller.info();
+            return _controller.info;
         }
 
-        private function setFastPlay(multiplier:Number, fps:Number, forward:Boolean):void {
+        private function setFastPlay(multiplier:Number, forward:Boolean):void {
 			showSpeedIndicator(multiplier, forward);
-            _controller.trickPlay(multiplier, fps, forward);
+            _controller.trickPlay(multiplier, forward);
         }
 
         private function setProvider(model:PluginModel):void {

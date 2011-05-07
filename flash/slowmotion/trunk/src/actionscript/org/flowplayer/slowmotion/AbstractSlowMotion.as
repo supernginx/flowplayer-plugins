@@ -44,18 +44,22 @@ package org.flowplayer.slowmotion {
     public class AbstractSlowMotion implements TimeProvider {
         protected var log:Log = new Log(this);
         private var _provider:StreamProvider;
-        private var _info:SlowMotionInfo;
+        private var _currentInfo:SlowMotionInfo;
         private var _model:PluginModel;
         private var _playlist:Playlist;
+        private var _providerName:String;
 
         public function AbstractSlowMotion(model:PluginModel, playlist:Playlist, provider:StreamProvider, providerName:String) {
             _model = model;
             _playlist = playlist;
             _provider = provider;
+            _providerName = providerName;
 
-            playlist.onStart(onStart, function(clip:Clip):Boolean { return clip.provider == providerName; });
+            playlist.onStart(_onStart, slowMotionClipFilter);
             reset();
         }
+
+        protected function slowMotionClipFilter(clip:Clip):Boolean { return clip.provider == _providerName; };
 
         public function getTimeProvider():TimeProvider {
             return null;
@@ -69,11 +73,11 @@ package org.flowplayer.slowmotion {
             // should be overridden in subclasses
         }
 
-        public final function trickPlay(multiplier:Number, fps:Number, forward:Boolean):void {
-            trickSpeed(multiplier, fps, forward);
+        public final function trickPlay(multiplier:Number, forward:Boolean):void {
+            trickSpeed(multiplier, forward);
         }
 
-        protected function trickSpeed(multiplier:Number, fps:Number, forward:Boolean):void {
+        protected function trickSpeed(multiplier:Number, forward:Boolean):void {
             // should be overridden in subclasses
         }
 
@@ -96,27 +100,42 @@ package org.flowplayer.slowmotion {
 
         public function getTime(netStream:NetStream):Number {
             var time:Number = _provider.netStream.time;
-            if (! _info) return time;
-            if (_info.isTrickPlay) {
-                return _info.adjustedTime(time);
+            if (! _currentInfo) return time;
+            if (_currentInfo.isTrickPlay) {
+                return _currentInfo.adjustedTime(time);
             }
 
             return time;
         }
 
-        public function info():SlowMotionInfo {
-            return _info;
+        public function get info():SlowMotionInfo {
+            return _currentInfo;
         }
 
 		private function reset():void {
             log.debug("reset()");
-			_info = new SlowMotionInfo(_playlist.current, false, true, 0, 1);
+			_currentInfo = new SlowMotionInfo(_playlist.current, false, true, 0, 1);
 		}
 
-        private function onStart(event:ClipEvent):void {
-            log.warn("onStart(), netStream: " + netStream);
+        private function _onStart(event:ClipEvent):void {
+            onStart(event);
+            log.debug("AbstractSlowMotion._onStart(), netStream: " + netStream);
 //			reset(event);
             netStream.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
+
+            if (_currentInfo && _currentInfo.isTrickPlay) {
+                // previous clip was ended in trickPlay. start this one in trickPlay too
+                log.debug("AbstractSlowMotion._onStart(), starting trick play");
+                trickSpeed(_currentInfo.speedMultiplier, _currentInfo.forwardDirection);
+            }
+        }
+
+        /**
+         * Called at the beginning of handling the onStart event.
+         * @param event
+         */
+        protected function onStart(event:ClipEvent):void {
+            // can be overridden in subclasses
         }
 
         private function onNetStatus(event:NetStatusEvent):void {
@@ -124,17 +143,14 @@ package org.flowplayer.slowmotion {
 
             var info:SlowMotionInfo = getInfo(event);
 
-            log.debug("previous info: " + _info);
-            log.debug("new info: " + info);
-
             if (info) {
-                if (info.equals(_info)) {
-                    log.debug("onNetStatus(), status did not change, will not dispatch 'onTrickPlay'");
+                if (info.equals(_currentInfo)) {
+//                    log.debug("onNetStatus(), status did not change, will not dispatch 'onTrickPlay'");
                     return;
                 }
-                _info = info;
+                _currentInfo = info;
                 log.info("dispatching PluginEvent 'onTrickPlay', trickPlay == " + info.isTrickPlay);
-                _model.dispatch(PluginEventType.PLUGIN_EVENT, "onTrickPlay", _info);
+                _model.dispatch(PluginEventType.PLUGIN_EVENT, "onTrickPlay", _currentInfo);
 
             }
         }
@@ -148,6 +164,10 @@ package org.flowplayer.slowmotion {
 
         protected function get playlist():Playlist {
             return _playlist;
+        }
+
+        protected function isTrickPlay():Boolean {
+            return _currentInfo && _currentInfo.isTrickPlay;
         }
     }
 }
