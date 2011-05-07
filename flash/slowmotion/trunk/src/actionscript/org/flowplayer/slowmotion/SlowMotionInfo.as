@@ -17,7 +17,6 @@ package org.flowplayer.slowmotion {
         private var _timeOffset:Number;
         private var _speedMultiplier:Number;
         private var _clip:Clip;
-        private var _adjustedTime:Number;
 
         public function SlowMotionInfo(clip:Clip, isTrickPlay:Boolean, forwardDirection:Boolean, timeOffset:Number, speedMultiplier:Number) {
             _clip = clip;
@@ -27,10 +26,14 @@ package org.flowplayer.slowmotion {
             _speedMultiplier = speedMultiplier;
         }
 
+        public static function createForNormalSpeed(clip:Clip):SlowMotionInfo {
+            return new SlowMotionInfo(clip, false, true, 0, 0);
+        }
+
         public function adjustedTime(time:Number):Number {
             if (_isTrickPlay) {
                 var inc:Number = ((time*1000)-_timeOffset) * _speedMultiplier;
-                return (_timeOffset + (_forwardDirection ? inc : -inc))/1000;
+                return Math.max(0, (_timeOffset + (_forwardDirection ? inc : -inc))/1000);
             }
             return time;
         }
