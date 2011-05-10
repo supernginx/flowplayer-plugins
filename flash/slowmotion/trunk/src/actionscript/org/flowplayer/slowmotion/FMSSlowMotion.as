@@ -84,8 +84,12 @@ package org.flowplayer.slowmotion {
 
         override protected function normalSpeed():void {
             log.info("normalSpeed()");
-            _stepTimer.stop();
-            netStream.resume();
+            if (_stepTimer) {
+                _stepTimer.stop();
+            }
+            if (netStream) {
+                netStream.resume();
+            }
             _info = SlowMotionInfo.createForNormalSpeed(_playlist.current);
         }
 
