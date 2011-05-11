@@ -61,6 +61,7 @@ package org.flowplayer.sharing {
                 _embedCode = null;
                 return;
             }
+            new PropertyBinder(_embedCode).copyProperties(config);
             new PropertyBinder(_embedCode.config).copyProperties(config);
         }
 
