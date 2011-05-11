@@ -1,7 +1,7 @@
 /*    
  *    Author: Anssi Piirainen, <api@iki.fi>
  *
- *    Copyright (c) 2009 Flowplayer Oy
+ *    Copyright (c) 2009-2011 Flowplayer Oy
  *
  *    This file is part of Flowplayer.
  *
@@ -21,6 +21,7 @@ package org.flowplayer.sharing {
     public class EmbedCode extends AbstractCommand {
         private var _embed:PlayerEmbed;
         private var _config:EmbedConfig;
+        private var _notification:String = "Embed code copied to clipboard! You can now paste it to your site or blog.";
 
         public function EmbedCode(player:Flowplayer, pluginConfiguredName:String, stage:Stage) {
             super(player);
@@ -30,13 +31,21 @@ package org.flowplayer.sharing {
 
         override protected function process():void {
             System.setClipboard(_embed.getEmbedCode(true));
-            var notification:Notification = Notification.createTextNotification(player, "Embed code copied to clipboard! You can now paste it to your site or blog.");
+            var notification:Notification = Notification.createTextNotification(player, _notification);
             notification.setSize(Math.min(player.panel.width - 20, 240), 50);
             notification.show().autoHide();
         }
 
         public function get config():EmbedConfig {
             return _config;
+        }
+
+        public function set notification(value:String):void {
+            _notification = value;
+        }
+
+        public function get notification():String {
+            return _notification;
         }
     }
 }
