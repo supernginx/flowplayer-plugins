@@ -11,7 +11,8 @@
 	<property file="${devkit-dir}/plugin-build.properties" />
 	<import file="${devkit-dir}/plugin-build.xml"/>
 	
-	<property name="basename" value="flowplayer.httpstreaming" />
+	<property name="shortname" value="httpstreaming" />
+    <property name="basename" value="flowplayer.${shortname}" />
     <property name="releasedir" value="${basename}" />
 	<property name="plugin-binary" value="${basename}.swf" />
 	<property name="plugin-swc" value="${basename}.swc" />

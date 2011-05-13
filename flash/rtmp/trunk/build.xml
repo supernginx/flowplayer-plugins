@@ -9,7 +9,8 @@
 	<import file="${devkit-dir}/plugin-build.xml"/>
 	<property name="flowplayer_lib" value="${devkit-dir}/flowplayer.swc" />
 	
-	<property name="basename" value="flowplayer.rtmp" />
+	<property name="shortname" value="rtmp" />
+    <property name="basename" value="flowplayer.${shortname}" />
     <property name="releasedir" value="${basename}" />
 	<property name="plugin-binary" value="${basename}.swf" />
 	<property name="plugin-binary-versioned" value="${basename}-${version}.swf" />

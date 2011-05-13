@@ -5,7 +5,8 @@
 	<property file="build.properties" />
 
     <!-- filename for the plugin swf -->
-    <property name="basename" value="flowplayer.controls" />
+    <property name="shortname" value="controls" />
+    <property name="basename" value="flowplayer.${shortname}" />
     <property name="releasedir" value="flowplayer.controls" />
 
     <!-- location of the skin swd, anc swc -->
@@ -52,6 +53,7 @@
 				<include name="flowplayer.controls-air-${version}.swf" />
             </zipfileset>
         </zip>
+        <copy file="${dist-dir}/${basename}-${version}.zip" tofile="${dist-dir}/${basename}.zip" overwrite="true" />
     </target>
     
 </project>

@@ -9,8 +9,9 @@
 	<property name="extra-sources" value="../common/src/actionscript" />
     
 	
-	<property name="version" value="3.2.2-dev" />
-	<property name="basename" value="flowplayer.slowmotion" />
+	<property name="version" value="3.2.1" />
+	<property name="shortname" value="slowmotion" />
+    <property name="basename" value="flowplayer.${shortname}" />
     <property name="releasedir" value="${basename}" />
 	<property name="plugin-binary" value="${basename}.swf" />
 	<property name="plugin-binary-versioned" value="${basename}-${version}.swf" />

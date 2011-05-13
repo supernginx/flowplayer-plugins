@@ -134,6 +134,7 @@ package org.flowplayer.bwcheck.detect {
         }
         
         public function set currentIndex(value:Number):void {
+            log.debug("set currentIndex() setting to " + value);
             _currentIndex = value;
         }
 

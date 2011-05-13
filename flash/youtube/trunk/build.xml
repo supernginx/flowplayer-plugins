@@ -1,29 +1,13 @@
 <project name="Flowplayer youtube" default="deploy">
 
-	<property file="${user.home}/plugin.properties" />
+    <!--this is a 3rd party plugin that cannot be built-->
+    <property name="pluginproxy" value="true" />
+
 	<property file="build.properties" />
-	
-	<property name="devkit-dir" value="../flowplayer.devkit" />
-	
 	<property file="${devkit-dir}/plugin-build.properties" />
 	<import file="${devkit-dir}/plugin-build.xml"/>
-	<property name="flowplayer_lib" value="${devkit-dir}/flowplayer.swc" />
-	
-	<property name="basename" value="flowplayer.youtube" />
+
+    <property name="shortname" value="youtube" />
+    <property name="basename" value="flowplayer.${shortname}" />
     <property name="releasedir" value="${basename}" />
-	<property name="plugin-binary" value="${basename}.swf" />
-	<property name="plugin-binary-versioned" value="${basename}-${version}.swf" />
-
-	<property name="plugin-main-class" value="org/flowplayer/youtube/YouTubeStreaming.as" />
-
-	<target name="release" description="makes a release" depends="build">
-		<copyrelease targetdir="flowplayer.youtube">
-			<releasefiles>
-				<fileset dir="${build-dir}">
-				    <include name="${plugin-binary-versioned}"/>
-				</fileset>
-			</releasefiles>
-		</copyrelease>
-	</target>
-
 </project>

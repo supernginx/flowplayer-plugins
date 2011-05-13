@@ -10,7 +10,8 @@
 	<property name="library-path" value="src/flash ../common/src/flash"/>
     <property name="extra-sources" value="../common/src/actionscript" />
 
-	<property name="basename" value="flowplayer.viralvideos" />
+	<property name="shortname" value="viralvideos" />
+    <property name="basename" value="flowplayer.${shortname}" />
     <property name="releasedir" value="${basename}" />
 	<property name="plugin-binary" value="${basename}.swf" />
 	<property name="plugin-binary-versioned" value="${basename}-${version}.swf" />

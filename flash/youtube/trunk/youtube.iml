@@ -2,7 +2,7 @@
 <module type="Flex" version="4">
   <component name="Flex.Build.Configuration">
     <option name="DO_BUILD" value="true" />
-    <option name="MAIN_CLASS" value="org.flowplayer.viralvideos.ViralVideos" />
+    <option name="MAIN_CLASS" value="org.flowplayer.youtube.YouTubeStreaming" />
     <option name="OUTPUT_FILE_NAME" value="youtube.swf" />
     <option name="TARGET_PLAYER_VERSION" value="9" />
     <option name="VERSION" value="3" />
