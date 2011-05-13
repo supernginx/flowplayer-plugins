@@ -8,7 +8,9 @@
 	<property name="flowplayer_lib" value="${devkit-dir}/flowplayer.swc" />
 	
 	<property name="version" value="3.1.0-dev" />
-	<property name="basename" value="flowplayer.audiovisual" />
+	<property name="shortname" value="audiovisual" />
+    <property name="basename" value="flowplayer.${shortname}" />
+
     <property name="releasedir" value="flowplayer.audiovisual" />
 	<property name="plugin-binary" value="${basename}.swf" />
 	<property name="plugin-binary-versioned" value="${basename}-${version}.swf" />

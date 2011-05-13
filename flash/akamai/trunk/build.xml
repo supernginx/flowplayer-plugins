@@ -8,7 +8,8 @@
 	<property name="flowplayer_lib" value="${devkit-dir}/flowplayer.swc" />
 	
 	<property name="version" value="3.2.1-dev" />
-	<property name="basename" value="flowplayer.akamai" />
+	<property name="shortname" value="akamai" />
+    <property name="basename" value="flowplayer.${shortname}" />
     <property name="releasedir" value="flowplayer.akamai" />
 	<property name="plugin-binary" value="${basename}.swf" />
 	<property name="plugin-binary-versioned" value="${basename}-${version}.swf" />

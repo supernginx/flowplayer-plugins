@@ -5,7 +5,8 @@
 	<property file="build.properties" />
 
     <!-- filename for the plugin swf -->
-    <property name="basename" value="flowplayer.controls-tube" />
+    <property name="shortname" value="controls-tube" />
+    <property name="basename" value="flowplayer.${shortname}" />
     <property name="releasedir" value="flowplayer.controls" />
 
     <!-- location of the skin swd, anc swc -->

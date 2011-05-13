@@ -12,7 +12,8 @@
 	<property name="plugin-runtime-lib-swc1" value="lib/as3corelib.swc" />
 	<!--<property name="plugin-runtime-lib-swc2" value="lib/goasap.swc" />-->
 
-	<property name="basename" value="flowplayer.related" />
+	<property name="shortname" value="related" />
+    <property name="basename" value="flowplayer.${shortname}" />
 	<property name="plugin-binary" value="${basename}.swf" />
 	<property name="plugin-binary-versioned" value="${basename}-${version}.swf" />
 	<property name="plugin-main-class" value="org/flowplayer/related/RelatedVideo.as" />
