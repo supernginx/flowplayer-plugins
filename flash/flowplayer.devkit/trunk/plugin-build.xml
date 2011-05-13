@@ -15,8 +15,8 @@
 	<property name="flowplayer-js-version-info" value="3.1.4" />
 	<property name="src-flowplayer" value="../core" />
     <property name="plugin-swc" value="${basename}.swc" />
-	<property name="plugin-swc-versioned" value="${basename}-${version}.swc" />
- 
+    <property name="plugin-swc-versioned" value="${basename}-${version}.swc" />
+
 	<condition property="extra.libs" value="${plugin-libs}" else="">
         <isset property="plugin-libs" />
     </condition>
@@ -206,7 +206,7 @@
         </copy>
 	</target>
 
-	<target name="compile">
+	<target name="compile" unless="pluginproxy">
 		<mxmlc.compile src="${src-as}" libs="${extra.libs}" out="${plugin-binary}" plugin-main-class="${plugin-main-class}" />
 		<!--<antcall target="example" />-->
 	</target>
@@ -215,12 +215,12 @@
 		<prepare-example player-swf="flowplayer.swf" main-swf="${plugin-binary-versioned}"/>
 	</target>
 	
-	<target name="build" description="builds all">
+	<target name="build" description="builds all" unless="pluginproxy">
 		<build-plugin plugin-binary="${plugin-binary}" plugin-main-class="${plugin-main-class}" />
         <copy file="${build-dir}/${plugin-binary}" tofile="${build-dir}/${plugin-binary-versioned}" />
 	</target>
 
-	<target name="deploy" description="Deploys the plugin into the target dir" depends="build">
+	<target name="deploy" description="Deploys the plugin into the target dir" depends="build" unless="pluginproxy">
 		<available file="${deploy_dir}" property="deploy.dir.exists" />
 		<antcall target="_deploy" />
 	</target>
@@ -235,7 +235,7 @@
 	</target>
 
 
-	<target name="dist" description="Copies the distributaion packages into a target dir" depends="zip, source-zip">
+	<target name="dist" description="Copies the distributaion packages into a target dir" depends="zip, source-zip" unless="pluginproxy">
 		<echo message="Copying dist zip to ${deploy-dir}" />
 		<copy file="${dist-dir}/${basename}-${version}.zip" todir="${deploy_dir}/${dist-dir}" overwrite="true" />
 		<copy file="${dist-dir}/${basename}-${version}-src.zip" todir="${deploy_dir}/${dist-dir}" overwrite="true" />
@@ -243,7 +243,7 @@
 	</target>
 
 
-	<target name="prepare">
+	<target name="prepare" unless="pluginproxy">
 		<mkdir dir="${example-dir}" />
 		<mkdir dir="${build-dir}" />
 		<mkdir dir="${dist-dir}" />
@@ -254,7 +254,7 @@
 		</unzip>
 	</target>
 
-	<target name="zip" depends="prepare, build">
+	<target name="zip" depends="prepare, build" unless="pluginproxy">
 		<zip destfile="${dist-dir}/${basename}-${version}.zip">
 			<zipfileset prefix="${basename}" dir=".">
 				<include name="LICENSE.txt" />
@@ -302,7 +302,7 @@
     </target>
 
     <target name="write-version">
-        <echo file="${yaml-file}" append="true" message="        ${basename}: ${version}${line.separator}" />
+        <echo file="${yaml-file}" append="true" message="        ${shortname}: ${version}${line.separator}" />
     </target>
 
     <target name="write-filesize">
@@ -312,7 +312,7 @@
         <echo file="${yaml-file}" append="true" message="        ${basename}.zip: ${zip.filesize}${line.separator}" />
     </target>
 
-	<target name="source-zip" depends="prepare">
+	<target name="source-zip" depends="prepare" unless="pluginproxy">
 		<zip destfile="${dist-dir}/${basename}-${version}-src.zip">
 			<zipfileset prefix="${basename}" dir=".">
 				<include name="LICENSE.txt" />
