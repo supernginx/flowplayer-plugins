@@ -24,7 +24,7 @@ package org.flowplayer.slowmotion {
     import org.flowplayer.model.PluginModel;
 
     public class FMSSlowMotion extends AbstractSlowMotion {
-        private static var FASTPLAY_STEP_INTERVAL:int = 100; // == 10 FPS
+        private static var FASTPLAY_STEP_INTERVAL:int = 100;  // == 10 FPS
         private var _stepTimer:Timer;
         private var _frameStep:Number;
         private var _clipFPS:int;
@@ -38,8 +38,8 @@ package org.flowplayer.slowmotion {
             playlist.onPause(onPause, slowMotionClipFilter);
             playlist.onResume(onResume, slowMotionClipFilter);
 
-            playlist.onStop(onFinish, slowMotionClipFilter);
-            playlist.onFinish(onFinish, slowMotionClipFilter);
+            playlist.onBeforeStop(onFinish, slowMotionClipFilter);
+            playlist.onBeforeFinish(onFinish, slowMotionClipFilter);
         }
 
         private function onFinish(clip:ClipEvent):void {
