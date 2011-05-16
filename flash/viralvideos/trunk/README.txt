@@ -1,5 +1,9 @@
 Version history:
 
+3.2.6
+-----
+- The 'shareUrl' configuration option was removed and replaced by clip.pageUrl.
+
 3.2.5
 -----
 
