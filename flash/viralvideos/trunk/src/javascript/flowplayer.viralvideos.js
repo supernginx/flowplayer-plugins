@@ -3,7 +3,7 @@
  * 
  * This file is part of Flowplayer, http://flowplayer.org
  *
- * Author: TDan Rossi, <electroteque@gmail.com>
+ * Author: Dan Rossi, <electroteque@gmail.com>
  * Copyright (c) 2008-2010 Flowplayer Ltd
  *
  * Dual licensed under MIT and GPL 2+ licenses
