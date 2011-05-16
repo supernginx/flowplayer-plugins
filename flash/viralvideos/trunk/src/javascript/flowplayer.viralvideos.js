@@ -1,16 +1,16 @@
 /**
- * flowplayer.playlist 3.0.8. Flowplayer JavaScript plugin.
+ * flowplayer.viralvideos 3.2.6. Flowplayer JavaScript plugin.
  * 
  * This file is part of Flowplayer, http://flowplayer.org
  *
- * Author: Tero Piirainen, <info@flowplayer.org>
+ * Author: TDan Rossi, <electroteque@gmail.com>
  * Copyright (c) 2008-2010 Flowplayer Ltd
  *
  * Dual licensed under MIT and GPL 2+ licenses
  * SEE: http://www.opensource.org/licenses
  * 
- * Date: 2010-05-04 05:33:23 +0000 (Tue, 04 May 2010)
- * Revision: 3405 
+ *
+ *
  */ 
 (function($) {
 	
