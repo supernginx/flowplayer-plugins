@@ -89,7 +89,7 @@ package org.flowplayer.viralvideos {
                 model.dispatchError(PluginError.ERROR, "ExternalInterface not available, social site sharing not possible");
             }
 
-            _videoURL = encodeURIComponent(_config.shareUrl ? _config.shareUrl : ExternalInterface.call("self.location.href.toString"));
+            _videoURL = encodeURIComponent(pageUrl);
             log.debug("Page URL to share is " + _videoURL);
             _iconArray = new Array();
 //            _facebookIcon = new FacebookIcon() as Sprite;
@@ -107,6 +107,12 @@ package org.flowplayer.viralvideos {
             _diggIcon = initIcon(_config.digg, new DiggIcon(_config.icons, player.animationEngine), shareDigg);
             _orkutIcon = initIcon(_config.orkut, new OrkutIcon(_config.icons, player.animationEngine), shareOrkut);
             _stumbleUponIcon = initIcon(_config.stumbleupon, new StumbleuponIcon(_config.icons, player.animationEngine), shareStumbleUpon);
+        }
+
+        protected function get pageUrl():String {
+        	return player.currentClip.getCustomProperty("pageUrl")
+        	? String(player.currentClip.getCustomProperty("pageUrl"))
+        	: URLUtil.pageUrl;
         }
 
         private function shareFacebook(event:MouseEvent):void {
