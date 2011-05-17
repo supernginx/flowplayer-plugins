@@ -263,6 +263,16 @@ package org.flowplayer.viralvideos {
             return _playerEmbed.getEmbedCode(escaped);
         }
 
+        [External]
+        public function getPlayerConfig(escaped:Boolean = false):String {
+            return _playerEmbed.getPlayerConfig(escaped);
+        }
+
+        [External]
+        public function getPlayerSwfUrl():String {
+            return _player.config.playerSwfUrl;
+        }
+
         private function hideViews():void {
             if (_emailView) _emailView.visible = false;
             if (_embedView) _embedView.visible = false;
