@@ -29,29 +29,33 @@
 		wrap = $(wrap);		
 		var manual = self.getPlaylist().length <= 1 || opts.manual; 
 		var els = null;
+        var hasLoaded = false;
 
 	
 		self.onBeforeBegin(function(clip) {
-			var url = self.getPlugin(opts.pluginName).getPlayerSwfUrl() + "?config=" + self.getPlugin(opts.pluginName).getEmbedConfig(true);
-			var videoSrc = "<link rel=\"video_src\" href=\"" + url + "\"/>";
-			$('head').append("<meta name=\"video_type\" content=\"application/x-shockwave-flash\" />");
-			$('head').append("<meta name=\"video_weight\" content=\""+self.getClip().weight+"\" />");
-			$('head').append("<meta name=\"video_height\" content=\""+self.getClip().height+"\" />");
-			$('head').append("<meta name=\"video_type\" content=\"application/x-shockwave-flash\" />");
-			
-			$('head').append(videoSrc);
-			
-			
-			
+            //check if loaded once, cannot use onLoad as it won't get access to the methods yet
+            if (hasLoaded) return;
+
+            hasLoaded = true;
+
+			var url = self.getPlugin(opts.pluginName).getPlayerSwfUrl() + "?config=" + self.getPlugin(opts.pluginName).getPlayerConfig(true);
+			$('head').append("<meta name=\"video_type\" content=\"application/x-shockwave-flash\" />\n");
+			$('head').append("<meta name=\"video_weight\" content=\""+self.getClip().weight+"\" />\n");
+			$('head').append("<meta name=\"video_height\" content=\""+self.getClip().height+"\" />\n");
+			$('head').append("<meta name=\"video_type\" content=\"application/x-shockwave-flash\" />\n");
+            $('head').append("<meta property=\"og:type\" content=\"movie\" />\n");
+            $('head').append("<meta property=\"og:video:type\" content=\"application/x-shockwave-flash\" />\n");
+            $('head').append("<meta property=\"og:video:height\" content=\"384\" />\n");
+            $('head').append("<meta property=\"og:video:width\" content=\"512\" />\n");
+            $('head').append("<meta property=\"og:video\" content=\"" + url + "\" />\n");
+			$('head').append("<link rel=\"video_src\" href=\"" + url + "\"/>\n");
+
 			if (opts.splashImage) {
-				var imageSrc = "<link rel=\"image_src\" href=\"" + opts.splashImage + "\"/>";
-			}
-	
-		
+				$('head').append("<link rel=\"image_src\" href=\"" + opts.splashImage + "\"/>\n");
+                $('head').append("<meta property=\"og:image\" content=\"" + opts.splashImage + "\" />\n");
+            }
 		});	
-		
-		
-		
+
 		return self;
 		
 	});

@@ -3,6 +3,8 @@ Version history:
 3.2.6
 -----
 - The 'shareUrl' configuration option was removed and replaced by clip.pageUrl.
+- added javascript plugin to manipulate meta headers required for sharing videos to some sites like facebook. #265
+- added new api methods required by the javascript plugin.
 
 3.2.5
 -----

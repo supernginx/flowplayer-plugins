@@ -228,14 +228,19 @@ package org.flowplayer.viralvideos {
             return _player.playlist.current;
         }
 
-
-
-        public function getEmbedCode(escaped:Boolean = false):String {
+        public function getPlayerConfig(escaped:Boolean = false):String {
             var configStr:String = _embedConfig.configUrl;
             if (! configStr) {
                 var conf:Object = updateConfig(_playerConfig);
                 configStr = escaped ? escape(JSON.encode(conf)) : JSON.encode(conf);
             }
+
+            return configStr;
+        }
+
+        public function getEmbedCode(escaped:Boolean = false):String {
+
+            var configStr:String = getPlayerConfig(escaped);
 
             var code:String =
                     '<object id="' + _player.id + '" width="' + width + '" height="' + height + '" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"> ' +
