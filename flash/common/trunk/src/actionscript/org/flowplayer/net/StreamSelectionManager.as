@@ -28,6 +28,7 @@ package org.flowplayer.net {
         private var _player:Flowplayer;
         private var _resolver:ClipURLResolver;
         private var _previousStreamName:String;
+        private var _currentBitrateItem:BitrateItem;
 
         public function StreamSelectionManager(streamItems:Vector.<DynamicStreamingItem>, player:Flowplayer, resolver:ClipURLResolver) {
             _streamItems = streamItems;
@@ -76,9 +77,17 @@ package org.flowplayer.net {
         public function get currentIndex():Number {
             return _currentIndex;
         }
-        
+
         public function set currentIndex(value:Number):void {
             _currentIndex = value;
+        }
+
+        public function get currentBitrateItem():BitrateItem {
+            return _currentBitrateItem;
+        }
+
+        public function set currentBitrateItem(value:BitrateItem):void {
+            _currentBitrateItem = value;
         }
 
         public function get streamItems():Vector.<DynamicStreamingItem> {
@@ -99,6 +108,7 @@ package org.flowplayer.net {
             var url:String = mappedBitrate.url;
 
             _previousStreamName = _previousStreamName ? _player.currentClip.url : url;
+            currentBitrateItem = mappedBitrate;
             currentIndex = mappedBitrate.index;
 
             _player.currentClip.setResolvedUrl(_resolver, url);
@@ -106,5 +116,6 @@ package org.flowplayer.net {
             _player.currentClip.setCustomProperty("mappedBitrate", mappedBitrate);
             log.debug("mappedUrl " + url + ", clip.url now " + _player.currentClip.url);
         }
+
     }
 }

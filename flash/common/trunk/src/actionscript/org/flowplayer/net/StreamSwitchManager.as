@@ -8,13 +8,13 @@
 package org.flowplayer.net {
 
     import flash.net.NetStream;
-    import flash.events.NetStatusEvent;
     import flash.net.NetStreamPlayOptions;
     import flash.net.NetStreamPlayTransitions;
 
+    import flash.events.NetStatusEvent;
+
+    import org.flowplayer.model.ClipEvent;
     import org.flowplayer.view.Flowplayer;
-
-
     import org.flowplayer.util.Log;
 
 
@@ -25,6 +25,7 @@ package org.flowplayer.net {
         private var _player:Flowplayer;
         private var _previousStreamName:String;
         private var _dynamicOldStreamName:String;
+        private var _currentBitrateItem:BitrateItem;
 
         private var log:Log = new Log("org.flowplayer.net.StreamSwitchManager");
 
@@ -32,9 +33,18 @@ package org.flowplayer.net {
             _netStream = netStream;
             _streamSelectionManager = streamSelectionManager;
             _player = player;
+
+            _player.playlist.current.onNetStreamEvent(netStreamEvent);
+
+            netStream.addEventListener(NetStatusEvent.NET_STATUS, onNetStreamStatus);
+        }
+
+        private function netStreamEvent(event:ClipEvent):void {
+            log.debug(event.info.toString());
         }
 
         public function switchStream(mappedBitrate:BitrateItem):void {
+            _currentBitrateItem = _streamSelectionManager.currentBitrateItem;
             _streamSelectionManager.changeStreamNames(mappedBitrate);
             if (_netStream && _netStream.hasOwnProperty("play2")) {
                 switchStreamDynamic(mappedBitrate);
@@ -47,22 +57,37 @@ package org.flowplayer.net {
             _player.switchStream(_player.currentClip);
         }
 
-        private function switchStreamDynamic(bitrate:BitrateItem):void {
+        private function switchStreamDynamic(bitrateItem:BitrateItem):void {
             log.debug("switchStreamDynamic()");
-            //_netStream.addEventListener(NetStatusEvent.NET_STATUS, onNetStreamStatus);
+
             var options:NetStreamPlayOptions = new NetStreamPlayOptions();
-            if (_previousStreamName) {
-                options.oldStreamName = _previousStreamName;
+            if (_currentBitrateItem) {
+                options.oldStreamName = _currentBitrateItem.url;
                 options.transition = NetStreamPlayTransitions.SWITCH;
             } else {
                 options.transition = NetStreamPlayTransitions.RESET;
             }
-            options.streamName = _player.currentClip.url;
+            options.streamName = bitrateItem.url;
 
-            _dynamicOldStreamName = options.oldStreamName;
             log.debug("calling switchStream with Dynamic Switch Streaming, stream name is " + options.streamName);
-            //_player.switchStream(_player.currentClip, options);
-            _netStream.play2(options);
+            _player.switchStream(_player.currentClip, options);
         }
+
+        private function onNetStreamStatus(event:NetStatusEvent):void {
+            log.info("onNetStreamStatus() -- " + event.info.code);
+            switch (event.info.code) {
+                case "NetStream.Play.Transition":
+                    var newItem:* = _streamSelectionManager.fromName(event.info.details);
+                    log.debug("new item is " + newItem + ", (" + event.info.details + "), current " + _currentBitrateItem);
+
+                    break;
+                case "NetStream.Play.Failed":
+                case "NetStream.Failed":
+                    log.debug("Transition failed with error " + event.info.description);
+                    switchStreamNative(_streamSelectionManager.currentBitrateItem);
+                    break;
+            }
+        }
+
     }
 }
