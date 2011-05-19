@@ -16,6 +16,7 @@ package org.flowplayer.net {
     import org.flowplayer.model.DisplayProperties;
     import org.flowplayer.util.Arrange;
     import org.flowplayer.util.Log;
+    import org.flowplayer.controller.ClipURLResolver;
     import org.flowplayer.view.Flowplayer;
     
     import org.osmf.net.DynamicStreamingItem;
@@ -23,11 +24,15 @@ package org.flowplayer.net {
     public class StreamSelectionManager {
         private static var log:Log = new Log("org.flowplayer.net.StreamSelectionManager");
         private var _streamItems:Vector.<DynamicStreamingItem>;
-        private var _player:Flowplayer;
         private var _currentIndex:Number = -1;
+        private var _player:Flowplayer;
+        private var _resolver:ClipURLResolver;
+        private var _previousStreamName:String;
 
-        public function StreamSelectionManager(streamItems:Vector.<DynamicStreamingItem>) {
+        public function StreamSelectionManager(streamItems:Vector.<DynamicStreamingItem>, player:Flowplayer, resolver:ClipURLResolver) {
             _streamItems = streamItems;
+            _player = player;
+            _resolver = resolver;
         }
 
         public function get bitrates():Vector.<DynamicStreamingItem> {
@@ -88,6 +93,18 @@ package org.flowplayer.net {
                 }
             }
             return null;
+        }
+
+        public function changeStreamNames(mappedBitrate:BitrateItem):void {
+            var url:String = mappedBitrate.url;
+
+            _previousStreamName = _previousStreamName ? _player.currentClip.url : url;
+            currentIndex = mappedBitrate.index;
+
+            _player.currentClip.setResolvedUrl(_resolver, url);
+            _player.currentClip.setCustomProperty("bwcheckResolvedUrl", url);
+            _player.currentClip.setCustomProperty("mappedBitrate", mappedBitrate);
+            log.debug("mappedUrl " + url + ", clip.url now " + _player.currentClip.url);
         }
     }
 }
