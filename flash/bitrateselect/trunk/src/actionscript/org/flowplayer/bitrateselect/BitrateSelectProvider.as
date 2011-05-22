@@ -10,6 +10,7 @@ package org.flowplayer.bitrateselect {
     import org.flowplayer.model.Plugin;
     import org.flowplayer.model.PluginModel;
     import org.flowplayer.model.PlayerEvent;
+    import org.flowplayer.model.PluginEventType;
     import org.flowplayer.util.PropertyBinder;
     import org.flowplayer.view.AbstractSprite;
     import org.flowplayer.view.Flowplayer;
@@ -57,6 +58,7 @@ package org.flowplayer.bitrateselect {
             _config = new PropertyBinder(new Config(), null).copyProperties(model.config) as Config;
         }
 
+
         private function applyForClip(clip:Clip):Boolean {
             log.debug("applyForClip(), clip.urlResolvers == " + clip.urlResolvers);
             if (clip.urlResolvers == null) return false;
@@ -69,6 +71,20 @@ package org.flowplayer.bitrateselect {
             log.info("onLoad()");
 
             _player = player;
+
+            _player.playlist.onSwitch(function(event:ClipEvent):void {
+                log.debug("new item is " + _streamSelectionManager.currentBitrateItem + ", current " + _streamSwitchManager.previousBitrateItem);
+                _model.dispatch(PluginEventType.PLUGIN_EVENT, "onStreamSwitchBegin", _streamSelectionManager.currentBitrateItem, _streamSwitchManager.previousBitrateItem);
+            });
+
+            _player.playlist.onSwitchFailed(function(event:ClipEvent):void {
+                log.debug("Transition failed with error " + event.info2.toString());
+                _model.dispatch(PluginEventType.PLUGIN_EVENT, "onStreamSwitchFailed", "Transition failed with error " + event.info2.toString());
+            });
+
+            _player.playlist.onSwitchComplete(function(event:ClipEvent):void {
+                _model.dispatch(PluginEventType.PLUGIN_EVENT, "onStreamSwitch", _streamSelectionManager.currentBitrateItem);
+            });
 
             _player.playlist.onStart(function(event:ClipEvent):void {
 
@@ -178,6 +194,7 @@ package org.flowplayer.bitrateselect {
                 successListener(clip);
                 return;
             }
+
 
             _provider = provider;
             _resolving = true;
