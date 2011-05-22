@@ -6,6 +6,7 @@ Version history:
   There is a new clip property backBufferLength, that can be used to control the buffer size for backward seeking and rewind.
 - p2p multicast support, added property p2pGroupSpec
 - Fixes for #247, native switching on transition failures requires live stream check.
+- Added stream switching event handlers to be used with the switchStream api method.
 
 3.2.3
 -----
