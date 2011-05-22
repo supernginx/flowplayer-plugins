@@ -25,7 +25,7 @@ package org.flowplayer.net {
         private var _player:Flowplayer;
         private var _previousStreamName:String;
         private var _dynamicOldStreamName:String;
-        private var _currentBitrateItem:BitrateItem;
+        private var _previousBitrateItem:BitrateItem;
 
         private var log:Log = new Log("org.flowplayer.net.StreamSwitchManager");
 
@@ -33,18 +33,14 @@ package org.flowplayer.net {
             _netStream = netStream;
             _streamSelectionManager = streamSelectionManager;
             _player = player;
-
-            _player.playlist.current.onNetStreamEvent(netStreamEvent);
-
-            netStream.addEventListener(NetStatusEvent.NET_STATUS, onNetStreamStatus);
         }
 
-        private function netStreamEvent(event:ClipEvent):void {
-            log.debug(event.info.toString());
+        public function get previousBitrateItem():BitrateItem {
+            return _previousBitrateItem;
         }
 
         public function switchStream(mappedBitrate:BitrateItem):void {
-            _currentBitrateItem = _streamSelectionManager.currentBitrateItem;
+            _previousBitrateItem = _streamSelectionManager.currentBitrateItem;
             _streamSelectionManager.changeStreamNames(mappedBitrate);
             if (_netStream && _netStream.hasOwnProperty("play2")) {
                 switchStreamDynamic(mappedBitrate);
@@ -61,8 +57,8 @@ package org.flowplayer.net {
             log.debug("switchStreamDynamic()");
 
             var options:NetStreamPlayOptions = new NetStreamPlayOptions();
-            if (_currentBitrateItem) {
-                options.oldStreamName = _currentBitrateItem.url;
+            if (_previousBitrateItem) {
+                options.oldStreamName = _previousBitrateItem.url;
                 options.transition = NetStreamPlayTransitions.SWITCH;
             } else {
                 options.transition = NetStreamPlayTransitions.RESET;
@@ -72,22 +68,5 @@ package org.flowplayer.net {
             log.debug("calling switchStream with Dynamic Switch Streaming, stream name is " + options.streamName);
             _player.switchStream(_player.currentClip, options);
         }
-
-        private function onNetStreamStatus(event:NetStatusEvent):void {
-            log.info("onNetStreamStatus() -- " + event.info.code);
-            switch (event.info.code) {
-                case "NetStream.Play.Transition":
-                    var newItem:* = _streamSelectionManager.fromName(event.info.details);
-                    log.debug("new item is " + newItem + ", (" + event.info.details + "), current " + _currentBitrateItem);
-
-                    break;
-                case "NetStream.Play.Failed":
-                case "NetStream.Failed":
-                    log.debug("Transition failed with error " + event.info.description);
-                    switchStreamNative(_streamSelectionManager.currentBitrateItem);
-                    break;
-            }
-        }
-
     }
 }
