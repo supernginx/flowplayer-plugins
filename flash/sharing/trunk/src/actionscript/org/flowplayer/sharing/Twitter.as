@@ -12,7 +12,7 @@ package org.flowplayer.sharing {
     import org.flowplayer.view.Flowplayer;
 
     public class Twitter extends AbstractShareCommand {
-        private static const TWITTER_URL:String = "http://twitter.com/home?status={0}: {1}";
+        private static const TWITTER_URL:String = "http://twitter.com/intent/tweet?text={0}&url={1}";
 
         public function Twitter(player:Flowplayer) {
             super(player);

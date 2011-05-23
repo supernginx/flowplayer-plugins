@@ -5,6 +5,7 @@ Version history:
 - made it possible to configure the 'Embed code is copied to clipboard...' text, issue 262
 Fixes:
 - made it possible to disable embed and email
+- updated Twitter sharing URL according to their new sharing API
 
 3.2.1
 -----
