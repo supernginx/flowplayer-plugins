@@ -35,14 +35,14 @@ package org.flowplayer.viralvideos {
         private var _config:ShareConfig;
 
         private var _videoURL:String;
-        private var _facebookURL:String = "http://www.facebook.com/sharer.php?t={0}&u={1}";
-        private var _twitterURL:String = "http://twitter.com/home?status={0}: {1}";
-        private var _myspaceURL:String = "http://www.myspace.com/Modules/PostTo/Pages/?t={0}&c={1}&u={2}&l=1";
-        private var _beboURL:String = "http://www.bebo.com/c/share?Url={1}&Title={0}";
-        private var _orkutURL:String = "http://www.orkut.com/FavoriteVideos.aspx?u={0}";
-        private var _diggURL:String = "http://digg.com/submit?phase=2&url={1}&title={0}&bodytext={2}&topic={3}";
-        private var _stumbleUponURL:String = "http://www.stumbleupon.com/submit?url={1}&title={0}";
-        private var _liveSpacesURL:String = "http://spaces.live.com/BlogIt.aspx?Title={0}&SourceURL={1}&description={2}";
+        private static const  _facebookURL:String = "http://www.facebook.com/sharer.php?t={0}&u={1}";
+        private static const TWITTER_URL:String = "http://twitter.com/intent/tweet?text={0}&url={1}";
+        private static const  MYSPACE_URL:String = "http://www.myspace.com/Modules/PostTo/Pages/?t={0}&c={1}&u={2}&l=1";
+        private static const  BEBO_URL:String = "http://www.bebo.com/c/share?Url={1}&Title={0}";
+        private static const  ORKUT_URL:String = "http://www.orkut.com/FavoriteVideos.aspx?u={0}";
+        private static const  DIGG_URL:String = "http://digg.com/submit?phase=2&url={1}&title={0}&bodytext={2}&topic={3}";
+        private static const  STUMBLEUPON_URL:String = "http://www.stumbleupon.com/submit?url={1}&title={0}";
+        private static const  LIVESPACES_URL:String = "http://spaces.live.com/BlogIt.aspx?Title={0}&SourceURL={1}&description={2}";
 
         private var _facebookIcon:AbstractIcon;
         private var _myspaceIcon:AbstractButton;
@@ -121,37 +121,37 @@ package org.flowplayer.viralvideos {
         }
 
         private function shareMyspace(event:MouseEvent):void {
-            var url:String = formatString(_myspaceURL, encodeURIComponent(_config.description), _embedCode, _videoURL);
+            var url:String = formatString(MYSPACE_URL, encodeURIComponent(_config.description), _embedCode, _videoURL);
             launchURL(url, _config.popupDimensions.myspace);
         }
 
         private function shareDigg(event:MouseEvent):void {
-            var url:String = formatString(_diggURL, encodeURIComponent(_config.description), _videoURL, _config.body, _config.category);
+            var url:String = formatString(DIGG_URL, encodeURIComponent(_config.description), _videoURL, _config.body, _config.category);
             launchURL(url, _config.popupDimensions.digg);
         }
 
         private function shareBebo(event:MouseEvent):void {
-            var url:String = formatString(_beboURL, encodeURIComponent(_config.description), _videoURL);
+            var url:String = formatString(BEBO_URL, encodeURIComponent(_config.description), _videoURL);
             launchURL(url, _config.popupDimensions.bebo);
         }
 
         private function shareOrkut(event:MouseEvent):void {
-            var url:String = formatString(_orkutURL, _videoURL);
+            var url:String = formatString(ORKUT_URL, _videoURL);
             launchURL(url, _config.popupDimensions.orkut);
         }
 
         private function shareTwitter(event:MouseEvent):void {
-            var url:String = formatString(_twitterURL, encodeURIComponent(_config.description), _videoURL);
+            var url:String = formatString(TWITTER_URL, encodeURIComponent(_config.description), _videoURL);
             launchURL(url, _config.popupDimensions.twitter);
         }
 
         private function shareStumbleUpon(event:MouseEvent):void {
-            var url:String = formatString(_stumbleUponURL, encodeURIComponent(_config.description), _videoURL);
+            var url:String = formatString(STUMBLEUPON_URL, encodeURIComponent(_config.description), _videoURL);
             launchURL(url, _config.popupDimensions.stumbleupon);
         }
 
         private function shareLiveSpaces(event:MouseEvent):void {
-            var url:String = formatString(_liveSpacesURL, encodeURIComponent(_config.description), _videoURL, _embedCode);
+            var url:String = formatString(LIVESPACES_URL, encodeURIComponent(_config.description), _videoURL, _embedCode);
             launchURL(url, _config.popupDimensions.livespaces);
         }
 
