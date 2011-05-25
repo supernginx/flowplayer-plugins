@@ -18,7 +18,7 @@ package org.flowplayer.bwcheck.detect {
     import org.flowplayer.bwcheck.config.Config;
     import org.flowplayer.bwcheck.NullNetConnectionClient;
 
-    import org.flowplayer.cluster.RTMPCluster;
+    import org.flowplayer.cluster.Cluster;
     import org.flowplayer.model.ClipEvent;
     import org.flowplayer.model.Playlist;
     import org.flowplayer.model.PluginEventType;
@@ -42,7 +42,7 @@ package org.flowplayer.bwcheck.detect {
 
         private var _strategy:AbstractDetectionStrategy;
         private var _connection:NetConnection;
-        protected var _rtmpCluster:RTMPCluster;
+        protected var _rtmpCluster:Cluster;
         private var _config:Config;
         private var _model:PluginModel;
         private var _host:String;
@@ -65,7 +65,7 @@ package org.flowplayer.bwcheck.detect {
         }
 
         private function createCluster():void {
-            _rtmpCluster = new RTMPCluster(_config);
+            _rtmpCluster = new Cluster(_config);
             _rtmpCluster.onFailed(onClusterFailed);
         }
 
