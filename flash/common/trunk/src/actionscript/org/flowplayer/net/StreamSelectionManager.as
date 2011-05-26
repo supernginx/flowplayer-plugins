@@ -29,15 +29,21 @@ package org.flowplayer.net {
         private var _resolver:ClipURLResolver;
         private var _previousStreamName:String;
         private var _currentBitrateItem:BitrateItem;
+        private var _bitrateResource:BitrateResource;
 
-        public function StreamSelectionManager(streamItems:Vector.<DynamicStreamingItem>, player:Flowplayer, resolver:ClipURLResolver) {
-            _streamItems = streamItems;
+        public function StreamSelectionManager(bitrateResource:BitrateResource, player:Flowplayer, resolver:ClipURLResolver) {
+            _bitrateResource = bitrateResource;
+            _streamItems = _bitrateResource.addBitratesToClip(player.currentClip);
             _player = player;
             _resolver = resolver;
         }
 
         public function get bitrates():Vector.<DynamicStreamingItem> {
             return _streamItems;
+        }
+
+        public function get bitrateResource():BitrateResource {
+            return _bitrateResource;
         }
 
         public function getDefaultStream():DynamicStreamingItem {
