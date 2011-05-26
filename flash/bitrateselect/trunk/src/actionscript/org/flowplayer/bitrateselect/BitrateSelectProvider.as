@@ -38,7 +38,6 @@ package org.flowplayer.bitrateselect {
         private var _config:Config;
         private var _model:PluginModel;
         private var _hdButton:ToggleButton;
-        private var _hasHdButton:Boolean;
         private var _hdEnabled:Boolean = false;
         private var _player:Flowplayer;
         private var _iconDock:Dock;
@@ -49,7 +48,6 @@ package org.flowplayer.bitrateselect {
         private var _clip:Clip;
         private var _start:Number = 0;
         private var _failureListener:Function;
-        private var _bitrateResource:HDBitrateResource;
         private var _streamSelectionManager:StreamSelectionManager;
         private var _streamSwitchManager:StreamSwitchManager;
         
@@ -108,13 +106,11 @@ package org.flowplayer.bitrateselect {
             });
 
             if (_config.hdButton.docked) {
-                _hasHdButton = true;
                 createIconDock();	// we need to create the controller pretty early else it won't receive the HD_AVAILABILITY event
                 _player.onLoad(onPlayerLoad);
             }
 
             if (_config.hdButton.controls) {
-                _hasHdButton = true;
                 var controlbar:* = player.pluginRegistry.plugins['controls'];
                 controlbar.pluginObject.addEventListener(WidgetContainerEvent.CONTAINER_READY, addHDButton);
             }
@@ -145,7 +141,7 @@ package org.flowplayer.bitrateselect {
         }
 
         public function get hasHD():Boolean {
-            return (_player.playlist.current.getCustomProperty("hdBitrateItem") && _player.playlist.current.getCustomProperty("sdBitrateItem"));
+            return (HDBitrateResource(_streamSelectionManager.bitrateResource).hasHD);
         }
 
         public function set hd(enable:Boolean):void {
@@ -204,8 +200,10 @@ package org.flowplayer.bitrateselect {
 
             var mappedBitrate:BitrateItem = _streamSelectionManager.getMappedBitrate(-1);
             _streamSelectionManager.changeStreamNames(mappedBitrate);
+
             _resolveSuccessListener(_clip);
-            toggleDefaultToHD(mappedBitrate);
+
+            toggleSplashDefault(mappedBitrate);
         }
 
         private function init(netStream:NetStream, clip:Clip):void {
@@ -216,23 +214,24 @@ package org.flowplayer.bitrateselect {
             _start = netStream ? netStream.time : 0;
 
             if (!_clip.getCustomProperty("streamSelectionManager")) {
-                _bitrateResource = new HDBitrateResource();
-                _streamSelectionManager = new StreamSelectionManager(_bitrateResource.addBitratesToClip(clip), _player, this);
+                _streamSelectionManager = new StreamSelectionManager(new HDBitrateResource(), _player, this);
                 _clip.setCustomProperty("streamSelectionManager",_streamSelectionManager);
             }
-
         }
+
 
         private function initSwitchManager():void {
             _streamSwitchManager = new StreamSwitchManager(_netStream, _streamSelectionManager, _player);
         }
 
-        private function toggleDefaultToHD(mappedBitrate:BitrateItem):void {
-            if (mappedBitrate.isDefault) toggleToHD(mappedBitrate);
+        private function toggleSplashDefault(mappedBitrate:BitrateItem):void {
+            if (mappedBitrate.isDefault) toggleSplash(mappedBitrate);
         }
 
-        private function toggleToHD(mappedBitrate:BitrateItem):void {
-            if (mappedBitrate.hd) setHDNotification(true);
+        private function toggleSplash(mappedBitrate:BitrateItem):void {
+            if (hasHD) {
+                setHDNotification(mappedBitrate.hd);
+            }
         }
 
         public function set onFailure(listener:Function):void {

@@ -16,6 +16,7 @@ package org.flowplayer.bitrateselect {
     public class HDBitrateResource extends BitrateResource {
 
         private var log:Log = new Log(this);
+        private var _hasHD:Boolean = false;
 
         public function HDBitrateResource() {
 
@@ -38,10 +39,16 @@ package org.flowplayer.bitrateselect {
                 clip.setCustomProperty("hdBitrateItem", hdItem);
                 clip.setCustomProperty("sdBitrateItem", sdItem);
 
+                _hasHD = true;
+
                 log.debug("HD feature is set, SD Bitrate: " + sdItem.bitrate + " HD Bitrate: " + hdItem.bitrate);
             }
 
             return streamingItems;
+        }
+
+        public function get hasHD():Boolean {
+            return _hasHD;
         }
     }
 }
