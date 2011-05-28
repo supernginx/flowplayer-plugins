@@ -1,5 +1,6 @@
 package org.flowplayer.bitrateselect {
 
+    import flash.events.EventDispatcher;
     import flash.net.NetStream;
     import flash.events.NetStatusEvent;
 
@@ -11,6 +12,7 @@ package org.flowplayer.bitrateselect {
     import org.flowplayer.model.PluginModel;
     import org.flowplayer.model.PlayerEvent;
     import org.flowplayer.model.PluginEventType;
+    import org.flowplayer.util.Log;
     import org.flowplayer.util.PropertyBinder;
     import org.flowplayer.view.AbstractSprite;
     import org.flowplayer.view.Flowplayer;
@@ -34,7 +36,8 @@ package org.flowplayer.bitrateselect {
     import org.flowplayer.bitrateselect.config.Config;
 
 
-    public class BitrateSelectProvider extends AbstractSprite implements ClipURLResolver, Plugin, Styleable {
+    public class BitrateSelectProvider extends EventDispatcher implements ClipURLResolver, Plugin  {
+        private var log:Log = new Log(this);
         private var _config:Config;
         private var _model:PluginModel;
         private var _hdButton:ToggleButton;
@@ -43,7 +46,6 @@ package org.flowplayer.bitrateselect {
         private var _iconDock:Dock;
         private var _provider:StreamProvider;
         private var _resolveSuccessListener:Function;
-        private var _resolving:Boolean;
         private var _netStream:NetStream;
         private var _clip:Clip;
         private var _start:Number = 0;
@@ -55,7 +57,6 @@ package org.flowplayer.bitrateselect {
             _model = model;
             _config = new PropertyBinder(new Config(), null).copyProperties(model.config) as Config;
         }
-
 
         private function applyForClip(clip:Clip):Boolean {
             log.debug("applyForClip(), clip.urlResolvers == " + clip.urlResolvers);
@@ -86,14 +87,14 @@ package org.flowplayer.bitrateselect {
 
             _player.playlist.onStart(function(event:ClipEvent):void {
 
-                log.debug("onBegin()");
+                log.debug("onStart()");
                 log.debug("hd available? " + hasHD);
-
-                dispatchEvent(new HDEvent(HDEvent.HD_AVAILABILITY, hasHD));
 
                 var clip:Clip = event.target as Clip;
                 init(clip.getNetStream(), clip);
                 initSwitchManager();
+
+                dispatchEvent(new HDEvent(HDEvent.HD_AVAILABILITY, hasHD));
 
             });
 
@@ -191,9 +192,7 @@ package org.flowplayer.bitrateselect {
                 return;
             }
 
-
             _provider = provider;
-            _resolving = true;
             _resolveSuccessListener = successListener;
 
             init(provider.netStream, clip);
@@ -218,7 +217,6 @@ package org.flowplayer.bitrateselect {
                 _clip.setCustomProperty("streamSelectionManager",_streamSelectionManager);
             }
         }
-
 
         private function initSwitchManager():void {
             _streamSwitchManager = new StreamSwitchManager(_netStream, _streamSelectionManager, _player);

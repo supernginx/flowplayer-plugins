@@ -18,32 +18,22 @@ package org.flowplayer.bitrateselect {
         private var log:Log = new Log(this);
         private var _hasHD:Boolean = false;
 
-        public function HDBitrateResource() {
-
-        }
-
         override public function addBitratesToClip(clip:Clip):Vector.<DynamicStreamingItem> {
 
-            var streamingItems:Vector.<DynamicStreamingItem>;
+            var streamingItems:Vector.<DynamicStreamingItem> = super.addBitratesToClip(clip);
 
-            streamingItems = super.addBitratesToClip(clip);
+            //set this item to a hd clip
+            var hdItem:BitrateItem = streamingItems[streamingItems.length - 1] as BitrateItem;
+            hdItem.hd = true;
 
-            if (streamingItems.length == 2) {
-                //set this item to a hd clip
-                var hdItem:BitrateItem = streamingItems[streamingItems.length - 1] as BitrateItem;
-                hdItem.hd = true;
+            //set this item to a sd clip
+            var sdItem:BitrateItem = streamingItems[0] as BitrateItem;
+            sdItem.sd = true;
+            clip.setCustomProperty("hdBitrateItem", hdItem);
+            clip.setCustomProperty("sdBitrateItem", sdItem);
 
-                //set this item to a sd clip
-                var sdItem:BitrateItem = streamingItems[0] as BitrateItem;
-                sdItem.sd = true;
-                clip.setCustomProperty("hdBitrateItem", hdItem);
-                clip.setCustomProperty("sdBitrateItem", sdItem);
-
-                _hasHD = true;
-
-                log.debug("HD feature is set, SD Bitrate: " + sdItem.bitrate + " HD Bitrate: " + hdItem.bitrate);
-            }
-
+            _hasHD = true;
+            log.debug("HD feature is set, SD Bitrate: " + sdItem.bitrate + " HD Bitrate: " + hdItem.bitrate);
             return streamingItems;
         }
 
