@@ -12,8 +12,10 @@
 package org.flowplayer.net {
     import flash.display.Stage;
     import flash.display.StageDisplayState;
-    
-    import org.flowplayer.model.DisplayProperties;
+
+import mx.utils.object_proxy;
+
+import org.flowplayer.model.DisplayProperties;
     import org.flowplayer.util.Arrange;
     import org.flowplayer.util.Log;
     import org.flowplayer.controller.ClipURLResolver;
@@ -67,8 +69,22 @@ package org.flowplayer.net {
             return item;
         }
 
-        public function getStream(bandwidth:Number):DynamicStreamingItem {
-            return getDefaultStream();
+        public function getStreamIndex(bitrate:Number):Number {
+            for (var i:Number = _streamItems.length - 1; i >= 0; i--) {
+                var item:DynamicStreamingItem = _streamItems[i];
+
+                if (item.bitrate == bitrate) {
+                    return i;
+                    break;
+                }
+            }
+            return -1;
+        }
+
+        public function getStream(bitrate:Number):DynamicStreamingItem {
+            var index:Number = getStreamIndex(bitrate);
+            if (index == -1) return getDefaultStream();
+            return _streamItems[index] as BitrateItem;
         }
 
         public function getMappedBitrate(bandwidth:Number = -1):BitrateItem {
