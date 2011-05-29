@@ -78,6 +78,7 @@ package org.flowplayer.controls.time {
 			_durationReached = true;
 		}
 
+        // cannot push this to the superclass because it prevents the buffer bar moving in paused state
         override protected function onPlayPaused(event:ClipEvent):void {
             super.onPlayPaused(event);
             stopUpdateTimer();
