@@ -236,16 +236,37 @@ package org.flowplayer.bitrateselect {
             }
         }
 
+        public function get hd():Boolean {
+            return _hdEnabled;
+        }
+
+        private function checkCurrentClip():Boolean {
+            var clip:Clip = _player.playlist.current;
+            if (_clip == clip) return true;
+
+            if (clip.urlResolvers && clip.urlResolvers.indexOf(_model.name) < 0) {
+                return false;
+            }
+            _clip = clip;
+            return true;
+        }
+
+        [External]
+        public function setBitrate(bitrate:Number):void {
+            log.debug("set bitrate()");
+            if (! checkCurrentClip()) return;
+
+            if (_player.isPlaying() || _player.isPaused()) {
+                _streamSwitchManager.switchStream(_streamSelectionManager.getStream(bitrate) as BitrateItem);
+            }
+        }
+
         public function set onFailure(listener:Function):void {
             _failureListener = listener;
         }
 
         public function handeNetStatusEvent(event:NetStatusEvent):Boolean {
             return true;
-        }
-
-        public function get hd():Boolean {
-            return _hdEnabled;
         }
 
         public function getDefaultConfig():Object {
