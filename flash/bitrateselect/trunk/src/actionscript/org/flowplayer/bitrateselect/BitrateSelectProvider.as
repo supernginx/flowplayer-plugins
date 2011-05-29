@@ -90,11 +90,14 @@ package org.flowplayer.bitrateselect {
                 log.debug("onStart()");
                 log.debug("hd available? " + hasHD);
 
+
+
                 var clip:Clip = event.target as Clip;
                 init(clip.getNetStream(), clip);
                 initSwitchManager();
 
                 dispatchEvent(new HDEvent(HDEvent.HD_AVAILABILITY, hasHD));
+                toggleSplashDefault(_streamSelectionManager.currentBitrateItem);
 
             });
 
@@ -158,10 +161,11 @@ package org.flowplayer.bitrateselect {
 
         private function setHDNotification(enable:Boolean):void {
             _hdEnabled = enable;
+            dispatchEvent(new HDEvent(HDEvent.HD_SWITCHED, _hdEnabled));
             if (_config.hdButton.splash) {
                 displayHDNotification(enable);
             }
-            dispatchEvent(new HDEvent(HDEvent.HD_SWITCHED, _hdEnabled));
+
         }
 
         private function displayHDNotification(enable:Boolean):void {
@@ -201,8 +205,6 @@ package org.flowplayer.bitrateselect {
             _streamSelectionManager.changeStreamNames(mappedBitrate);
 
             _resolveSuccessListener(_clip);
-
-            toggleSplashDefault(mappedBitrate);
         }
 
         private function init(netStream:NetStream, clip:Clip):void {
@@ -216,6 +218,8 @@ package org.flowplayer.bitrateselect {
                 _streamSelectionManager = new StreamSelectionManager(new HDBitrateResource(), _player, this);
                 _clip.setCustomProperty("streamSelectionManager",_streamSelectionManager);
             }
+
+
         }
 
         private function initSwitchManager():void {
