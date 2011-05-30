@@ -34,7 +34,6 @@ package org.flowplayer.viralvideos {
 
         private var _config:ShareConfig;
 
-        private var _videoURL:String;
         private static const  _facebookURL:String = "http://www.facebook.com/sharer.php?t={0}&u={1}";
         private static const TWITTER_URL:String = "http://twitter.com/intent/tweet?text={0}&url={1}";
         private static const  MYSPACE_URL:String = "http://www.myspace.com/Modules/PostTo/Pages/?t={0}&c={1}&u={2}&l=1";
@@ -89,8 +88,6 @@ package org.flowplayer.viralvideos {
                 model.dispatchError(PluginError.ERROR, "ExternalInterface not available, social site sharing not possible");
             }
 
-            _videoURL = encodeURIComponent(pageUrl);
-            log.debug("Page URL to share is " + _videoURL);
             _iconArray = new Array();
 //            _facebookIcon = new FacebookIcon() as Sprite;
 
@@ -109,6 +106,10 @@ package org.flowplayer.viralvideos {
             _stumbleUponIcon = initIcon(_config.stumbleupon, new StumbleuponIcon(_config.icons, player.animationEngine), shareStumbleUpon);
         }
 
+        private function get sharedUrl():String {
+            return encodeURIComponent(pageUrl);
+        }
+
         protected function get pageUrl():String {
         	return player.currentClip.getCustomProperty("pageUrl")
         	? String(player.currentClip.getCustomProperty("pageUrl"))
@@ -116,42 +117,42 @@ package org.flowplayer.viralvideos {
         }
 
         private function shareFacebook(event:MouseEvent):void {
-            var url:String = formatString(_facebookURL, encodeURIComponent(_config.description), _videoURL);
+            var url:String = formatString(_facebookURL, encodeURIComponent(_config.description), sharedUrl);
             launchURL(url, _config.popupDimensions.facebook);
         }
 
         private function shareMyspace(event:MouseEvent):void {
-            var url:String = formatString(MYSPACE_URL, encodeURIComponent(_config.description), _embedCode, _videoURL);
+            var url:String = formatString(MYSPACE_URL, encodeURIComponent(_config.description), _embedCode, sharedUrl);
             launchURL(url, _config.popupDimensions.myspace);
         }
 
         private function shareDigg(event:MouseEvent):void {
-            var url:String = formatString(DIGG_URL, encodeURIComponent(_config.description), _videoURL, _config.body, _config.category);
+            var url:String = formatString(DIGG_URL, encodeURIComponent(_config.description), sharedUrl, _config.body, _config.category);
             launchURL(url, _config.popupDimensions.digg);
         }
 
         private function shareBebo(event:MouseEvent):void {
-            var url:String = formatString(BEBO_URL, encodeURIComponent(_config.description), _videoURL);
+            var url:String = formatString(BEBO_URL, encodeURIComponent(_config.description), sharedUrl);
             launchURL(url, _config.popupDimensions.bebo);
         }
 
         private function shareOrkut(event:MouseEvent):void {
-            var url:String = formatString(ORKUT_URL, _videoURL);
+            var url:String = formatString(ORKUT_URL, sharedUrl);
             launchURL(url, _config.popupDimensions.orkut);
         }
 
         private function shareTwitter(event:MouseEvent):void {
-            var url:String = formatString(TWITTER_URL, encodeURIComponent(_config.description), _videoURL);
+            var url:String = formatString(TWITTER_URL, encodeURIComponent(_config.description), sharedUrl);
             launchURL(url, _config.popupDimensions.twitter);
         }
 
         private function shareStumbleUpon(event:MouseEvent):void {
-            var url:String = formatString(STUMBLEUPON_URL, encodeURIComponent(_config.description), _videoURL);
+            var url:String = formatString(STUMBLEUPON_URL, encodeURIComponent(_config.description), sharedUrl);
             launchURL(url, _config.popupDimensions.stumbleupon);
         }
 
         private function shareLiveSpaces(event:MouseEvent):void {
-            var url:String = formatString(LIVESPACES_URL, encodeURIComponent(_config.description), _videoURL, _embedCode);
+            var url:String = formatString(LIVESPACES_URL, encodeURIComponent(_config.description), sharedUrl, _embedCode);
             launchURL(url, _config.popupDimensions.livespaces);
         }
 

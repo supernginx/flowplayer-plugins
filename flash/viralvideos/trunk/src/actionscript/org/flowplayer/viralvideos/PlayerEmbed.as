@@ -146,27 +146,14 @@ package org.flowplayer.viralvideos {
             }
         }
 
-        private function fixShareUrl(updatedConfig:Object):void {
-            log.debug("fixShareUrl(), share enabled? " + _shareEnabled);
-            if (! _shareEnabled) return;
-
-            var viralConfig:Object = updatedConfig.plugins[_viralPluginConfiguredName];
-            if (! viralConfig.hasOwnProperty("share")) {
-                viralConfig.share = {};
-            }
-            if (! viralConfig.share.shareUrl) {
-                viralConfig.share.shareUrl = URLUtil.pageUrl;
-            }
-        }
-
-        private function updateConfig(_playerConfig:Object):Object {
-            _playerConfig.plugins[_viralPluginConfiguredName].emailScriptURL = null;
-            _playerConfig.plugins[_viralPluginConfiguredName].emailScriptTokenURL = null;
-            _playerConfig.plugins[_viralPluginConfiguredName].emailScriptToken = null;
-            _playerConfig.playerId = null;
+        private function updateConfig(config:Object):Object {
+            config.plugins[_viralPluginConfiguredName].emailScriptURL = null;
+            config.plugins[_viralPluginConfiguredName].emailScriptTokenURL = null;
+            config.plugins[_viralPluginConfiguredName].emailScriptToken = null;
+            config.playerId = null;
 
             var copier:ByteArray = new ByteArray();
-            copier.writeObject(_playerConfig);
+            copier.writeObject(config);
             copier.position = 0;
             var updatedConfig:Object = (copier.readObject());
 
@@ -181,11 +168,18 @@ package org.flowplayer.viralvideos {
             }
 
             fixPluginsURLs(updatedConfig);
-            fixShareUrl(updatedConfig);
+            fixPageUrl(updatedConfig);
 
             var clip:Object = getSharedClip(updatedConfig);
             if (! clip) return updatedConfig;
 
+            /*
+             * Following clip updates only affect the 1st clip in playlist, or the current clip
+             * if _embedConfig.shareCurrentPlaylistItem == true
+             */
+            if (! clip.hasOwnProperty("pageUrl")) {
+                clip.pageUrl = URLUtil.pageUrl;
+            }
             if (_embedConfig.isAutoPlayOverriden) {
                 clip.autoPlay = _embedConfig.autoPlay;
             }
@@ -199,33 +193,35 @@ package org.flowplayer.viralvideos {
             return updatedConfig;
         }
 
-        private function getSharedClip(updatedConfig:Object):Object {
-            if (updatedConfig.playlist is String) {
+        private function fixPageUrl(config:Object):void {
+            if (! config.clip) {
+                config.clip = {};
+            }
+            if (! config.clip.pageUrl) {
+                config.clip.pageUrl = URLUtil.pageUrl;
+            }
+        }
+
+        private function getSharedClip(config:Object):Object {
+            if (config.playlist is String) {
                 // RSS or SMIL playlist
                 return null;
             }
 
             if (_embedConfig.shareCurrentPlaylistItem) {
                 log.debug("Sharing just current playlist item");
-                delete updatedConfig.playlist;
+                delete config.playlist;
 
-                if (! updatedConfig.clip) {
-                    updatedConfig.clip = {};
+                if (! config.clip) {
+                    config.clip = {};
                 }
-                var clip:Object = updatedConfig.clip;
+                var clip:Object = config.clip;
                 clip.url = _player.currentClip.url;
                 return clip;
             }
 
-            if (! updatedConfig.playlist && ! updatedConfig.clip) {
-                updatedConfig.clip = { url: _player.currentClip.url };
-                return updatedConfig.clip;
-            }
-
-            if (updatedConfig.playlist) {
-                return updatedConfig.playlist[0];
-            }
-            return _player.playlist.current;
+            // there is always a playlist in the configuration, flowplayer.js inserts it
+            return config.playlist[0];
         }
 
         public function getPlayerConfig(escaped:Boolean = false):String {
