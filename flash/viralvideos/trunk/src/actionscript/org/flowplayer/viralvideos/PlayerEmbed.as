@@ -177,9 +177,6 @@ package org.flowplayer.viralvideos {
              * Following clip updates only affect the 1st clip in playlist, or the current clip
              * if _embedConfig.shareCurrentPlaylistItem == true
              */
-            if (! clip.hasOwnProperty("pageUrl")) {
-                clip.pageUrl = URLUtil.pageUrl;
-            }
             if (_embedConfig.isAutoPlayOverriden) {
                 clip.autoPlay = _embedConfig.autoPlay;
             }
