@@ -24,6 +24,7 @@
 			playingClass: 'playing',
 			pausedClass: 'paused',
 			progressClass:'progress',
+			stoppedClass:'stopped',
 			template: '<a href="${url}">${title}</a>',
 			loop: false,
 			playOnClick: true,
@@ -32,7 +33,7 @@
 		
 		$.extend(opts, options);
 		wrap = $(wrap);		
-		var manual = self.getPlaylist().length <= 1 || opts.manual; 
+		var manual = (self.getPlaylist().length <= 1) || opts.manual;
 		var els = null;
 		
 		
@@ -68,10 +69,8 @@
 
 		
 		function play(el, clip)  {
-		
 			if (el.hasClass(opts.playingClass) || el.hasClass(opts.pausedClass)) {
 				self.toggle();
-				
 			} else {
 				el.addClass(opts.progressClass);
 				self.play(clip); 							
@@ -85,7 +84,8 @@
 			if (manual) { els = getEls(); }
 			els.removeClass(opts.playingClass);
 			els.removeClass(opts.pausedClass);
-			els.removeClass(opts.progressClass);			
+			els.removeClass(opts.progressClass);
+			els.removeClass(opts.stoppedClass);		
 		}
 		
 		function getEl(clip) {
@@ -102,7 +102,7 @@
 		
 		// internal playlist
 		if (!manual) {
-			
+
 			var template = wrap.is(":empty") ? opts.template : wrap.html(); 
 			buildPlaylist();			
 			
@@ -158,6 +158,8 @@
 			
 			// stop the playback exept on the last clip, which is stopped by default
 			self.onBeforeFinish(function(clip) {
+				getEl(clip).removeClass(opts.playingClass);
+				getEl(clip).addClass(opts.stoppedClass);
 				if (!clip.isInStream && clip.index < els.length -1) {
 					return false;
 				}
@@ -165,7 +167,7 @@
 		}
 		
 		// on manual setups perform looping here
-		if (manual && opts.loop) {
+		if (opts.loop) {
 			self.onBeforeFinish(function(clip) {
 				var el = getEl(clip);
 				if (el.next().length) {
