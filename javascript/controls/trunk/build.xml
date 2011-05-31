@@ -4,10 +4,10 @@
     <property file="build.properties" />
 
 	<!-- required property -->
-	<property name="BUILDER_HOME" value="../../../../builder"/>
+	<property name="DEVKIT_HOME" value="../../../../builder"/>
 	
 	<!-- import javascript-tasks (min, pack, lint, gzip, dist) -->
-	<import file="${BUILDER_HOME}/js.xml"/>
+	<import file="${DEVKIT_HOME}/js.xml"/>
  
 	<!-- write custom tasks here -->
 	

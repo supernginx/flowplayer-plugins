@@ -4,6 +4,6 @@
     <property file="build.properties" />
 
 	<!-- import javascript-tasks (min, pack, lint, gzip, dist) -->
-	<import file="${BUILDER_HOME}/js.xml"/>
+	<import file="${DEVKIT_HOME}/js.xml"/>
 
 </project>
