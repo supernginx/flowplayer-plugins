@@ -4,25 +4,10 @@
  * Copyright 2010, 2011 Flowplayer Oy
  * By Thomas Dubois <thomas@flowplayer.org>
  *
- * This file is part of Flowplayer.
+ * Dual licensed under MIT and GPL 2+ licenses
+ * SEE: http://www.opensource.org/licenses
  *
- * Flowplayer is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Flowplayer is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Flowplayer.  If not, see <http://www.gnu.org/licenses/>.
- *
- * Date: @DATE
- * Revision: @REVISION
  */
-
 
 $f.addPlugin("ipad", function(options) {
 	var STATE_UNLOADED = -1;
