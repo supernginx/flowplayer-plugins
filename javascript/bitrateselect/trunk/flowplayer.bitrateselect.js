@@ -1,5 +1,5 @@
 /**
- * flowplayer.embed.js Flowplayer JavaScript plugin.
+ * flowplayer.bitrateselect.js Flowplayer JavaScript plugin.
  *
  * This file is part of Flowplayer, http://flowplayer.org
  *
