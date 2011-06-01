@@ -256,7 +256,7 @@ package org.flowplayer.bitrateselect {
             log.debug("set bitrate()");
             if (! checkCurrentClip()) return;
 
-            if (_player.isPlaying() || _player.isPaused()) {
+            if (_player.isPlaying() || _player.isPaused() && _streamSwitchManager) {
                 _streamSwitchManager.switchStream(_streamSelectionManager.getStream(bitrate) as BitrateItem);
             }
         }
