@@ -1,7 +1,4 @@
-<!--
-	http://code.google.com/p/jqueryjs/source/browse/trunk/jquery/build.xml
--->
-<project name="build.xml" default="min">
+<project name="Common build file used by JS plugins" default="min">
 
 	<!-- additional tasks -->
 	<taskdef resource="net/sf/antcontrib/antlib.xml"/>
