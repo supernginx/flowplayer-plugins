@@ -1,5 +1,5 @@
 /**
- * flowplayer.embed.js [3.0.2]. Flowplayer JavaScript plugin.
+ * flowplayer.embed.js Flowplayer JavaScript plugin.
  * 
  * This file is part of Flowplayer, http://flowplayer.org
  *
@@ -10,7 +10,7 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
- function() {
+(function() {
 
 	// converts paths to absolute URL's as required in external sites 
 	function toAbsolute(url, base) {
