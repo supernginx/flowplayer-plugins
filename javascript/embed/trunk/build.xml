@@ -5,7 +5,7 @@
 
 	<!-- import javascript-tasks (min, pack, lint, gzip, dist) -->
 	<import file="${DEVKIT_HOME}/js.xml"/>
- 
+
 	<!-- write custom tasks here -->
 	
 </project>
