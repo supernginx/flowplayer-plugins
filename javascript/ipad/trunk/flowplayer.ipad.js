@@ -4,9 +4,9 @@
  * Copyright 2010, 2011 Flowplayer Oy
  * By Thomas Dubois <thomas@flowplayer.org>
  *
- * Dual licensed under MIT and GPL 2+ licenses
- * SEE: http://www.opensource.org/licenses
- *
+ * Released under the MIT License:
+ * http://www.opensource.org/licenses/mit-license.php
+ */
  */
 
 $f.addPlugin("ipad", function(options) {

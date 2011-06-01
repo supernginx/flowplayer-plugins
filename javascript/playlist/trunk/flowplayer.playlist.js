@@ -1,4 +1,4 @@
-/*!
+/*
  * flowplayer.playlist @VERSION. Flowplayer JavaScript plugin.
  * 
  * This file is part of Flowplayer, http://flowplayer.org
@@ -6,13 +6,12 @@
  * Author: Tero Piirainen, <info@flowplayer.org>
  * Copyright (c) 2008-2011 Flowplayer Ltd
  *
- * Dual licensed under MIT and GPL 2+ licenses
- * SEE: http://www.opensource.org/licenses
- * 
- * Date: @DATE
- * Revision: @REVISION 
- */ 
-(function($) {
+ * Released under the MIT License:
+ * http://www.opensource.org/licenses/mit-license.php
+ *
+ */
+
+ (function($) {
 	
 	$f.addPlugin("playlist", function(wrap, options) {
 

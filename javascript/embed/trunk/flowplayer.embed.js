@@ -6,12 +6,11 @@
  * Author: Tero Piirainen, <support@flowplayer.org>
  * Copyright (c) 2008 -2011 Flowplayer Ltd
  *
- * Dual licensed under MIT and GPL 2+ licenses
- * SEE: http://www.opensource.org/licenses
- * 
- * Version: @VERSION - $Date
+ * Released under the MIT License:
+ * http://www.opensource.org/licenses/mit-license.php
  */
-(function() {
+
+ function() {
 
 	// converts paths to absolute URL's as required in external sites 
 	function toAbsolute(url, base) {
