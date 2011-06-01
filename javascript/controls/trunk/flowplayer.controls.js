@@ -10,7 +10,7 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
- f.addPlugin("controls", function(wrap, options) {
+ $f.addPlugin("controls", function(wrap, options) {
 	
 		
 //{{{ private functions
