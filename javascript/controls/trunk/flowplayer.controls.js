@@ -6,12 +6,11 @@
  * Author: Tero Piirainen, <support@flowplayer.org>
  * Copyright (c) 2008-2011 Flowplayer Ltd
  *
- * Dual licensed under MIT and GPL 2+ licenses
- * SEE: http://www.opensource.org/licenses
- * 
- * Version: @VERSION - $Date
- */
-$f.addPlugin("controls", function(wrap, options) {
+  * Released under the MIT License:
+  * http://www.opensource.org/licenses/mit-license.php
+  */
+
+ f.addPlugin("controls", function(wrap, options) {
 	
 		
 //{{{ private functions
