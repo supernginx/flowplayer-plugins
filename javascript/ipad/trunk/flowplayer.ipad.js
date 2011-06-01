@@ -1,4 +1,4 @@
-/*!
+/*
  * ipad.js @VERSION. The Flowplayer ipad/iphone fallback.
  *
  * Copyright 2010, 2011 Flowplayer Oy
@@ -6,7 +6,6 @@
  *
  * Released under the MIT License:
  * http://www.opensource.org/licenses/mit-license.php
- */
  */
 
 $f.addPlugin("ipad", function(options) {
