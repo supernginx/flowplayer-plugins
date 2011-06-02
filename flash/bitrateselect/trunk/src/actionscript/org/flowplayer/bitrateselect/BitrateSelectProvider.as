@@ -73,6 +73,7 @@ package org.flowplayer.bitrateselect {
 
             _player.playlist.onSwitch(function(event:ClipEvent):void {
                 log.debug("new item is " + _streamSelectionManager.currentBitrateItem + ", current " + _streamSwitchManager.previousBitrateItem);
+                Clip(event.target).setCustomProperty("bitrate", _streamSelectionManager.currentBitrateItem.bitrate);
                 _model.dispatch(PluginEventType.PLUGIN_EVENT, "onStreamSwitchBegin", _streamSelectionManager.currentBitrateItem, _streamSwitchManager.previousBitrateItem);
             });
 
@@ -86,11 +87,8 @@ package org.flowplayer.bitrateselect {
             });
 
             _player.playlist.onStart(function(event:ClipEvent):void {
-
                 log.debug("onStart()");
                 log.debug("hd available? " + hasHD);
-
-
 
                 var clip:Clip = event.target as Clip;
                 init(clip.getNetStream(), clip);
@@ -98,7 +96,7 @@ package org.flowplayer.bitrateselect {
 
                 dispatchEvent(new HDEvent(HDEvent.HD_AVAILABILITY, hasHD));
                 toggleSplashDefault(_streamSelectionManager.currentBitrateItem);
-
+                Clip(event.target).setCustomProperty("bitrate", _streamSelectionManager.currentBitrateItem.bitrate);
             });
 
             _player.playlist.onBeforeBegin(function(event:ClipEvent):void {
