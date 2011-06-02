@@ -55,6 +55,12 @@
             return false;
         }
 
+        function setActiveOption(el) {
+            el.removeClass(opts.activeClass);
+            wrap.children(":not([class="+opts.disabledClass+"])").removeClass(opts.selectedBitrateClass).addClass(opts.activeClass);
+            el.addClass(opts.selectedBitrateClass);
+        }
+
 		function buildBitrateList() {
 			wrap.fadeOut(opts.fadeTime).empty();
 			var containerWidth = $("#" + self.id()).width();
@@ -68,10 +74,7 @@
                 el.attr("index", this.bitrate);
                 el.addClass(opts.activeClass);
                 el.click(function() {
-                    el.removeClass(opts.activeClass);
-
-                    wrap.children(":not([class="+opts.disabledClass+"])").removeClass(opts.selectedBitrateClass).addClass(opts.activeClass);
-                    el.addClass(opts.selectedBitrateClass);
+                    setActiveOption(el);
                     play($(this).attr("index"));
                     if ($(this).is('a')) return false;
                 });
@@ -101,16 +104,16 @@
 			if (self.getClip().bitrates.length > 0) {
 				if (!template) template = wrap.is(":empty") ? opts.template : wrap.html();
 				wrap.empty();
-
 				buildBitrateList();
 			}
 		}
 
-		self.onStart(function(clip) {
-			 showBitrateList();
+        self.onStart(function(clip) {
+            showBitrateList();
+            setActiveOption($('[index = "'+ clip.bitrate + '"]', $(wrap)));
 		});
 
-		return self;
+        return self;
 	});
 
 })(jQuery);
