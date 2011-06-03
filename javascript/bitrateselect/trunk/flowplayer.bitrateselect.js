@@ -3,7 +3,9 @@
  *
  * This file is part of Flowplayer, http://flowplayer.org
  *
- * Author: Daniel Rossi, danielr@electroteque.org
+ * Authors:
+ *   Daniel Rossi, danielr@electroteque.org
+ *   Anssi Piirainen, api@iki.fi
  *
  * Copyright (c) 2011 Flowplayer Ltd
  *
@@ -19,22 +21,19 @@
 
 		var opts = {
 			selectedBitrateClass: 'bitrate-selected',
-			activeClass: 'bitrate-active',
-			bitrateInfoClass:'bitrate-info',
-			disabledClass: 'bitrate-disabled',
 			pluginName: 'bitrateselect',
-			template: '<a href="{bitrate}">{label}</a>',
-			disabledText: '(not valid with this player size )',
-			fadeTime: 500,
-			seperator: ""
+			templateId: null,
+			fadeTime: 500
 		};
 
 		$.extend(opts, options);
 
 		var wrap = container;
-		var template = null;
+
+        // use either the element with templateId or the contents of wrap
+		var template = opts.templateId ? $('<div>').append($(opts.templateId).clone()).remove().html() : $(wrap).html();
+
 		var plugin = self.getPlugin(opts.pluginName) || null;
-		var els = null;
 
 		function parseTemplate(values) {
 			var el = template;
@@ -45,7 +44,6 @@
 				}
 				el = el.replace("\{" +key+ "\}", val).replace("%7B" +key+ "%7D", val);
 			});
-
 			return el;
 		}
 
@@ -56,8 +54,7 @@
         }
 
         function setActiveOption(el) {
-            el.removeClass(opts.activeClass);
-            wrap.children(":not([class="+opts.disabledClass+"])").removeClass(opts.selectedBitrateClass).addClass(opts.activeClass);
+            wrap.children().removeClass(opts.selectedBitrateClass);
             el.addClass(opts.selectedBitrateClass);
         }
 
@@ -72,38 +69,30 @@
 				
                 el = $(el);
                 el.attr("index", this.bitrate);
-                el.addClass(opts.activeClass);
+                el.show();
                 el.click(function() {
                     setActiveOption(el);
                     play($(this).attr("index"));
                     if ($(this).is('a')) return false;
                 });
                 wrap.append(el);
-
-                if (index < self.getClip().bitrates.length - 1) wrap.append(opts.seperator);
                 index++;
             });
 
 			//if the parent div wrapper is set to display:none fade in the parent
 			if (wrap.parent().css('display') == "none") {
 				wrap.show();
+                // shop the parent div
 				wrap.parent('div').fadeIn(opts.fadeTime);
 			} else {
 				wrap.fadeIn(opts.fadeTime);
 			}
 		}
 
-		function clearCSS() {
-			els.removeClass(opts.bitrateClass);
-			els.removeClass(opts.selectedBitrateClass);
-			els.removeClass(opts.bitrateInfoClass);
-		}
-
 		function showBitrateList() {
-			wrap = $(wrap);
 			if (self.getClip().bitrates.length > 0) {
-				if (!template) template = wrap.is(":empty") ? opts.template : wrap.html();
-				wrap.empty();
+                wrap = $(wrap);
+                wrap.empty();
 				buildBitrateList();
 			}
 		}
