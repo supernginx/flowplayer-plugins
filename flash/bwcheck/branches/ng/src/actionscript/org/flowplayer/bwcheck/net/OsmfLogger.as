@@ -8,7 +8,7 @@
  *    Flowplayer is licensed under the GPL v3 license with an
  *    Additional Term, see http://flowplayer.org/license_gpl.html
  */
-package org.flowplayer.bwcheck {
+package org.flowplayer.bwcheck.net {
     import org.flowplayer.util.Log;
     import org.osmf.logging.Logger;
 

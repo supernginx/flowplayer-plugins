@@ -16,7 +16,7 @@ package org.flowplayer.bwcheck.detect {
     import flash.utils.setTimeout;
 
     import org.flowplayer.bwcheck.config.Config;
-    import org.flowplayer.bwcheck.NullNetConnectionClient;
+    import org.flowplayer.bwcheck.net.NullNetConnectionClient;
 
     import org.flowplayer.cluster.Cluster;
     import org.flowplayer.model.ClipEvent;
@@ -59,7 +59,7 @@ package org.flowplayer.bwcheck.detect {
             if (_strategy == null) _strategy = new BandwidthDetectorHttp();
 
             if (_config.hosts.length > 0 || config.netConnectionUrl) {
-                log.debug("Using netConnectionUrls configured for the plugin");
+                log.error("Using netConnectionUrls configured for the plugin");
                 createCluster();
             }
         }
@@ -78,7 +78,7 @@ package org.flowplayer.bwcheck.detect {
         }
 
         public function detect(host:String = null):void {
-            log.debug("detect()");
+            log.error("detect()");
             if (_rtmpCluster) {
                 _host = _rtmpCluster.nextHost;
             } else {

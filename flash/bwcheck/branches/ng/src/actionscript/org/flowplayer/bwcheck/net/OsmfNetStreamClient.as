@@ -8,7 +8,7 @@
  *    Flowplayer is licensed under the GPL v3 license with an
  *    Additional Term, see http://flowplayer.org/license_gpl.html
  */
-package org.flowplayer.bwcheck {
+package org.flowplayer.bwcheck.net {
     import org.flowplayer.controller.NetStreamCallbacks;
     import org.flowplayer.controller.NetStreamClient;
     import org.flowplayer.util.Log;
@@ -21,11 +21,10 @@ package org.flowplayer.bwcheck {
     public class OsmfNetStreamClient extends NetClient implements NetStreamCallbacks {
         protected var log:Log = new Log(this);
         private var _fpClient:NetStreamClient;
-        private var _onTransitionComplete:Function;
 
         public function OsmfNetStreamClient(flowplayerNetStreamClient:NetStreamClient) {
             _fpClient = flowplayerNetStreamClient;
-            addHandler(NetStreamCodes.ON_PLAY_STATUS, playStatusHandler);
+            addHandler(NetStreamCodes.ON_PLAY_STATUS, onPlayStatus);
         }
 
         public function onMetaData(infoObject:Object):void {
@@ -57,18 +56,8 @@ package org.flowplayer.bwcheck {
             _fpClient.onTextData(obj);
         }
 
-        public function set onTransitionComplete(onTransitionComplete:Function):void {
-            _onTransitionComplete = onTransitionComplete;
-        }
-        
-        //fix for wowza sending random arguments     
-        public function playStatusHandler(...rest):void {
-        	var info:Object = rest.length > 1 ? rest[2] : rest[0];
-            log.debug("playStatusHandler() -- " + info.code, info);
-            if (info.code == "NetStream.Play.TransitionComplete" && _onTransitionComplete != null) {
-                _onTransitionComplete();
-                return;
-            }
+        public function onPlayStatus(...rest):void {
+            _fpClient.onPlayStatus(rest);
         }
     }
 }
