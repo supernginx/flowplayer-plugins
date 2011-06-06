@@ -63,11 +63,17 @@ package org.flowplayer.cluster
         private function initHosts(hosts:Array, fallback:String):void {
             log.debug("initHosts()");
             var myHosts:Array = [];
-            if (! hosts || hosts.length == 0) return;
-
-            for (var i:int = 0; i < hosts.length; i++) {
-                myHosts.push(hosts[i] is String ? { 'host': hosts[i] } : hosts[i]);
+            if (! hosts || hosts.length == 0) {
+                if (! fallback) {
+                    throw new Error("A hosts array or a netConnectionUrl must be configured");
+                }
+                myHosts.push({ 'host': fallback});
+            } else {
+                for (var i:int = 0; i < hosts.length; i++) {
+                    myHosts.push(hosts[i] is String ? { 'host': hosts[i] } : hosts[i]);
+                }
             }
+
             _hosts = myHosts;
             _liveHosts = _hosts;
             log.debug("initHosts(), we have " + _liveHosts.length + " live hosts initially");
