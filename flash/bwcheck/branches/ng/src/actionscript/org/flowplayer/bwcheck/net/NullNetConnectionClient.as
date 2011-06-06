@@ -7,7 +7,7 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
-package org.flowplayer.bwcheck {
+package org.flowplayer.bwcheck.net {
     public dynamic class NullNetConnectionClient {
         public function NullNetConnectionClient() {
         }
