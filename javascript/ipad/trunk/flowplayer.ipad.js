@@ -1,12 +1,28 @@
-/*
- * ipad.js @VERSION. The Flowplayer ipad/iphone fallback.
+/**
+ * ipad.js 3.2.2. The Flowplayer ipad/iphone fallback.
  *
  * Copyright 2010, 2011 Flowplayer Oy
  * By Thomas Dubois <thomas@flowplayer.org>
  *
- * Released under the MIT License:
- * http://www.opensource.org/licenses/mit-license.php
+ * This file is part of Flowplayer.
+ *
+ * Flowplayer is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Flowplayer is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Flowplayer.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Date: 2011-01-10 07:50:57 -0500 (Mon, 10 Jan 2011)
+ * Revision: 4901
  */
+
 
 $f.addPlugin("ipad", function(options) {
 	var STATE_UNLOADED = -1;
@@ -26,6 +42,7 @@ $f.addPlugin("ipad", function(options) {
 
 	var activeIndex = 0;
 	var activePlaylist = [];
+	var lastSecondTimer;
 	var clipDefaults = {
 		accelerated: 	false,		// unused
 		autoBuffering: 	false,
@@ -227,7 +244,7 @@ $f.addPlugin("ipad", function(options) {
                 url = extendedClip.ipadBaseUrl + '/' + url;
             else if ( url && url.indexOf('://') == -1 && extendedClip.baseUrl )
                 url = extendedClip.baseUrl + '/' + url;
-
+				
 			extendedClip.originalUrl = extendedClip.url;
 			extendedClip.completeUrl = url;
 			extendedClip.extension = extendedClip.completeUrl.substr(extendedClip.completeUrl.lastIndexOf('.'));
@@ -275,13 +292,15 @@ $f.addPlugin("ipad", function(options) {
 					video.fp_setPlaylist(clip.length !== undefined ? clip : [clip]);
 				}
 				
-				if ( !opts.validExtensions.test(activePlaylist[activeIndex].extension) ) {
-					if ( activePlaylist.length > 1 && activeIndex < activePlaylist.length) {
-						// not the last clip in the playlist
-						log("Not last clip in the playlist, moving to next one");
-						video.fp_play(activeIndex, false, true);
-					}
-					return;
+				
+				var validExtensions = new RegExp(opts.validExtensions.source);
+				if (! validExtensions.test(activePlaylist[activeIndex].extension) ) {
+    				if ( activePlaylist.length > 1 && activeIndex < activePlaylist.length - 1) {
+        				// not the last clip in the playlist
+        				console.log("Not last clip in the playlist, moving to next one");
+        				video.fp_play(++activeIndex, false, true);
+    				}
+    				return;
 				}
 				
 				clip = activePlaylist[activeIndex];
@@ -300,8 +319,9 @@ $f.addPlugin("ipad", function(options) {
 				log("clip was not given, simply calling video.play, if not already buffering");
 
 				// clip was not given, simply calling play
-				if ( currentState != STATE_BUFFERING )
+				if ( currentState != STATE_BUFFERING ) {
 					video.play();
+				}
 
 				return;
 			}
@@ -571,7 +591,6 @@ $f.addPlugin("ipad", function(options) {
 		$f.each(("toggleFullscreen,stopBuffering,reset,playFeed,setKeyboardShortcutsEnabled,isKeyboardShortcutsEnabled,css,animate,showPlugin,hidePlugin,togglePlugin,fadeTo,invoke,loadPlugin").split(","),
 			function() {
 				var name = this;
-
 				video["fp_"+name] = function() {
 				log("ERROR: unsupported API on iDevices "+ name);
 					return false;
@@ -667,6 +686,11 @@ $f.addPlugin("ipad", function(options) {
 			}
 		};
 		video.addEventListener('playing', onStart, false);
+		
+		var onPlay = function(e) {
+			startLastSecondTimer();
+		}
+		video.addEventListener('play', onPlay, false);
 
 		var onFinish = function(e) {
 			if ( ! actionAllowed('Finish') ) {
@@ -726,6 +750,7 @@ $f.addPlugin("ipad", function(options) {
 				return stopEvent(e);
 			}
 
+			stopLastSecondTimer();
 			setState(STATE_PAUSED);
 			$f.fireEvent(self.id(), 'onPause', activeIndex);
 		}
@@ -761,8 +786,20 @@ $f.addPlugin("ipad", function(options) {
 			$f.fireEvent(self.id(), 'onVolume', video.fp_getVolume());
 		};
 		video.addEventListener('volumechange', onVolumeChange, false);
-		
+
+	}
 	
+	function startLastSecondTimer() {
+		lastSecondTimer = setInterval(function() {
+			if(video.fp_getTime() >= video.duration - 1) {
+				$f.fireEvent(self.id(), 'onLastSecond', activeIndex);
+				stopLastSecondTimer();
+			}
+		}, 100);
+	}
+
+	function stopLastSecondTimer() {
+		clearInterval(lastSecondTimer);
 	}
 
 	// this is called only on iDevices
@@ -796,19 +833,16 @@ $f.addPlugin("ipad", function(options) {
 		*/
 	}
 
-
-
-
 	// Here we are getting serious. If we're on an iDevice, we don't care about Flash embed.
 	// replace it by ours so we can install a video html5 tag instead when FP's init will be called.
 	if ( isiDevice || opts.simulateiDevice ) {
 
 		if ( ! window.flashembed.__replaced ) {
-
+			
 			var realFlashembed = window.flashembed;
 			window.flashembed = function(root, opts, conf) {
-				// DON'T, I mean, DON'T use self here as we are in a global func
 
+				// DON'T, I mean, DON'T use self here as we are in a global func
 				if (typeof root == 'string') {
 					root = document.getElementById(root.replace("#", ""));
 				}
@@ -867,7 +901,7 @@ $f.addPlugin("ipad", function(options) {
 			flashembed.isSupported = function() {return true;}
 			flashembed.__replaced = true;
 		}
-
+	
 
 		// hack so we get the onload event before everybody and we can set the api
 		var __fireEvent = self._fireEvent;
@@ -876,7 +910,6 @@ $f.addPlugin("ipad", function(options) {
 		self._fireEvent = function(a) {
 			if ( a[0] == 'onLoad' && a[1] == 'player' ) {
 				video = self.getParent().querySelector('video');
-				
 				if ( opts.controls )
 					video.controls="controls";
 				
