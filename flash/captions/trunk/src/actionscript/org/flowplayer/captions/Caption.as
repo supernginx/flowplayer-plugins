@@ -143,7 +143,9 @@ package org.flowplayer.captions {
                 throw Error("No captionTarget defined in the configuration");
             }
             _viewModel = _player.pluginRegistry.getPlugin(_config.captionTarget) as DisplayPluginModel;
-            _captionView = _viewModel.getDisplayObject();
+			if (_viewModel != null) {
+            	_captionView = _viewModel.getDisplayObject();
+			}
 			
             _player.onLoad(onPlayerInitialized);
 
@@ -378,20 +380,20 @@ package org.flowplayer.captions {
         }
 
         private function createParser(captionData:Object):CaptionParser {
-            	var parser:CaptionParser;
+            var parser:CaptionParser;
             	
-            	if (new XML(captionData).localName() == "tt") {
-                    log.debug("parsing Timed Text captions");
-                    parser = new TTXTParser();
-                    TTXTParser(parser).simpleFormatting = _config.simpleFormatting;
-                } else if (String(captionData).charAt(0) == "1") {
-                    log.debug("parsing SubRip captions");
-                    parser = new SRTParser();
-            	} else if (captionData is Array || captionData.toString().indexOf('[')) {
-                	parser = new JSONParser();
-                } else {
-                    throw new Error("Unrecognized captions file extension");
-                }
+			if (String(captionData).charAt(0) == "1") {
+				log.debug("parsing SubRip captions");
+				parser = new SRTParser();            	
+			} else if (captionData is Array || captionData.toString().indexOf('[')) {
+				parser = new JSONParser();
+			} else if (new XML(captionData).localName() == "tt") {
+				log.debug("parsing Timed Text captions");
+				parser = new TTXTParser();
+				TTXTParser(parser).simpleFormatting = _config.simpleFormatting;
+			} else {
+				throw new Error("Unrecognized captions file extension");
+			}
             parser.styles = _captionView.style;
             return parser;
         }
