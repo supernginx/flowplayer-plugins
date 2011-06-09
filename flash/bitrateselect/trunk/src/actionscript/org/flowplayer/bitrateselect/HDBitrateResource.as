@@ -1,26 +1,25 @@
-/**
- * Created by IntelliJ IDEA.
- * User: danielr
- * Date: 17/05/11
- * Time: 5:55 PM
- * To change this template use File | Settings | File Templates.
+/*
+ * This file is part of Flowplayer, http://flowplayer.org
+ *
+ * By: Daniel Rossi <electroteque@gmail.com>, Anssi Piirainen <api@iki.fi> Flowplayer Oy
+ * Copyright (c) 2009, 2010 Electroteque Multimedia, Flowplayer Oy
+ *
+ * Released under the MIT License:
+ * http://www.opensource.org/licenses/mit-license.php
  */
 package org.flowplayer.bitrateselect {
 
     import org.flowplayer.net.BitrateResource;
     import org.flowplayer.net.BitrateItem;
     import org.flowplayer.model.Clip;
-    import org.osmf.net.DynamicStreamingItem;
-    import org.flowplayer.util.Log;
 
     public class HDBitrateResource extends BitrateResource {
 
-        private var log:Log = new Log(this);
         private var _hasHD:Boolean = false;
 
-        override public function addBitratesToClip(clip:Clip):Vector.<DynamicStreamingItem> {
+        override public function addBitratesToClip(clip:Clip):Vector.<BitrateItem> {
 
-            var streamingItems:Vector.<DynamicStreamingItem> = super.addBitratesToClip(clip);
+            var streamingItems:Vector.<BitrateItem> = super.addBitratesToClip(clip);
 
             //set this item to a hd clip
             var hdItem:BitrateItem = streamingItems[streamingItems.length - 1] as BitrateItem;
