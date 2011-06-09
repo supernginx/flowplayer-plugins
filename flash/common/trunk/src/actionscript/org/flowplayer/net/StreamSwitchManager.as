@@ -1,9 +1,11 @@
-/**
- * Created by IntelliJ IDEA.
- * User: danielr
- * Date: 18/05/11
- * Time: 11:19 PM
- * To change this template use File | Settings | File Templates.
+/*
+ * This file is part of Flowplayer, http://flowplayer.org
+ *
+ * By: Daniel Rossi <electroteque@gmail.com>, Anssi Piirainen <api@iki.fi> Flowplayer Oy
+ * Copyright (c) 2009, 2010 Electroteque Multimedia, Flowplayer Oy
+ *
+ * Released under the MIT License:
+ * http://www.opensource.org/licenses/mit-license.php
  */
 package org.flowplayer.net {
 
@@ -21,15 +23,13 @@ package org.flowplayer.net {
     public class StreamSwitchManager {
 
         private var _netStream:NetStream;
-        private var _streamSelectionManager:StreamSelectionManager;
+        private var _streamSelectionManager:IStreamSelectionManager;
         private var _player:Flowplayer;
-        private var _previousStreamName:String;
-        private var _dynamicOldStreamName:String;
         private var _previousBitrateItem:BitrateItem;
 
-        private var log:Log = new Log("org.flowplayer.net.StreamSwitchManager");
+        protected var log:Log = new Log(this);
 
-        public function StreamSwitchManager(netStream:NetStream, streamSelectionManager:StreamSelectionManager, player:Flowplayer) {
+        public function StreamSwitchManager(netStream:NetStream, streamSelectionManager:IStreamSelectionManager, player:Flowplayer) {
             _netStream = netStream;
             _streamSelectionManager = streamSelectionManager;
             _player = player;

@@ -1,37 +1,30 @@
-/*    
- *    Author: Anssi Piirainen, <api@iki.fi>
+/*
+ * This file is part of Flowplayer, http://flowplayer.org
  *
- *    Copyright (c) 2009-2011 Flowplayer Oy
+ * By: Daniel Rossi <electroteque@gmail.com>, Anssi Piirainen <api@iki.fi> Flowplayer Oy
+ * Copyright (c) 2009, 2010 Electroteque Multimedia, Flowplayer Oy
  *
- *    This file is part of Flowplayer.
- *
- *    Flowplayer is licensed under the GPL v3 license with an
- *    Additional Term, see http://flowplayer.org/license_gpl.html
+ * Released under the MIT License:
+ * http://www.opensource.org/licenses/mit-license.php
  */
 
 package org.flowplayer.net {
-    import flash.display.Stage;
-    import flash.display.StageDisplayState;
 
-import mx.utils.object_proxy;
-
-import org.flowplayer.model.DisplayProperties;
-    import org.flowplayer.util.Arrange;
     import org.flowplayer.util.Log;
     import org.flowplayer.controller.ClipURLResolver;
     import org.flowplayer.view.Flowplayer;
-    
     import org.osmf.net.DynamicStreamingItem;
 
-    public class StreamSelectionManager {
-        private static var log:Log = new Log("org.flowplayer.net.StreamSelectionManager");
-        private var _streamItems:Vector.<DynamicStreamingItem>;
-        private var _currentIndex:Number = -1;
-        private var _player:Flowplayer;
-        private var _resolver:ClipURLResolver;
-        private var _previousStreamName:String;
-        private var _currentBitrateItem:BitrateItem;
-        private var _bitrateResource:BitrateResource;
+    public class StreamSelectionManager implements IStreamSelectionManager {
+
+        protected var log:Log = new Log(this);
+        protected var _streamItems:Vector.<BitrateItem>;
+        protected var _currentIndex:Number = -1;
+        protected var _player:Flowplayer;
+        protected var _resolver:ClipURLResolver;
+        protected var _previousStreamName:String;
+        protected var _currentBitrateItem:BitrateItem;
+        protected var _bitrateResource:BitrateResource;
 
         public function StreamSelectionManager(bitrateResource:BitrateResource, player:Flowplayer, resolver:ClipURLResolver) {
             _bitrateResource = bitrateResource;
@@ -40,7 +33,7 @@ import org.flowplayer.model.DisplayProperties;
             _resolver = resolver;
         }
 
-        public function get bitrates():Vector.<DynamicStreamingItem> {
+        public function get bitrates():Vector.<BitrateItem> {
             return _streamItems;
         }
 
@@ -48,9 +41,9 @@ import org.flowplayer.model.DisplayProperties;
             return _bitrateResource;
         }
 
-        public function getDefaultStream():DynamicStreamingItem {
+        public function getDefaultStream():BitrateItem {
             log.debug("getDefaultStream()");
-            var item:DynamicStreamingItem;
+            var item:BitrateItem;
             for (var i:Number = 0; i < _streamItems.length; i++) {
                 if (_streamItems[i]["isDefault"]) {
                     item = _streamItems[i];
@@ -71,7 +64,7 @@ import org.flowplayer.model.DisplayProperties;
 
         public function getStreamIndex(bitrate:Number):Number {
             for (var i:Number = _streamItems.length - 1; i >= 0; i--) {
-                var item:DynamicStreamingItem = _streamItems[i];
+                var item:BitrateItem = _streamItems[i];
 
                 if (item.bitrate == bitrate) {
                     return i;
@@ -81,7 +74,7 @@ import org.flowplayer.model.DisplayProperties;
             return -1;
         }
 
-        public function getStream(bitrate:Number):DynamicStreamingItem {
+        public function getStream(bitrate:Number):BitrateItem {
             var index:Number = getStreamIndex(bitrate);
             if (index == -1) return getDefaultStream();
             return _streamItems[index] as BitrateItem;
@@ -92,7 +85,7 @@ import org.flowplayer.model.DisplayProperties;
             return getStream(bandwidth) as BitrateItem;
         }
 
-        public function getItem(index:uint):DynamicStreamingItem {
+        public function getItem(index:uint):BitrateItem {
             return _streamItems[index];
         }
 
@@ -112,11 +105,11 @@ import org.flowplayer.model.DisplayProperties;
             _currentBitrateItem = value;
         }
 
-        public function get streamItems():Vector.<DynamicStreamingItem> {
+        public function get streamItems():Vector.<BitrateItem> {
             return _streamItems;
         }
 
-        public function fromName(name:String):DynamicStreamingItem {
+        public function fromName(name:String):BitrateItem {
             for (var i:Number = 0; i < _streamItems.length; i++) {
                 if (_streamItems[i].streamName.indexOf(name) == 0 ||
                     _streamItems[i].streamName.indexOf("mp4:" + name) == 0) {  

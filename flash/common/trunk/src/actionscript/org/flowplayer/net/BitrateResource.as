@@ -1,28 +1,29 @@
-/**
- * Created by IntelliJ IDEA.
- * User: danielr
- * Date: 5/05/11
- * Time: 9:26 PM
- * To change this template use File | Settings | File Templates.
+/*
+ * This file is part of Flowplayer, http://flowplayer.org
+ *
+ * By: Daniel Rossi, <electroteque@gmail.com>
+ * Copyright (c) 2009 Electroteque Multimedia
+ *
+ * Released under the MIT License:
+ * http://www.opensource.org/licenses/mit-license.php
  */
 package org.flowplayer.net {
 
     import org.flowplayer.model.Clip;
-    import org.osmf.net.DynamicStreamingItem;
     import org.flowplayer.util.Log;
     import org.flowplayer.util.PropertyBinder;
 
     public class BitrateResource {
 
-        private static var log:Log = new Log("org.flowplayer.net.BitrateResource");
+        protected var log:Log = new Log(this);
 
         public function BitrateResource() {
 
 
         }
 
-        private function sort(bitrates:Vector.<DynamicStreamingItem>):Vector.<DynamicStreamingItem> {
-            var sorter:Function = function (a:DynamicStreamingItem, b:DynamicStreamingItem):Number {
+        protected function sort(bitrates:Vector.<BitrateItem>):Vector.<BitrateItem> {
+            var sorter:Function = function (a:BitrateItem, b:BitrateItem):Number {
                 // increasing bitrate order
                 if (a.bitrate == b.bitrate) {
                     // decreasing width inside the same bitrate
@@ -42,13 +43,13 @@ package org.flowplayer.net {
             return bitrates.concat().sort(sorter);
         }
 
-        public function addBitratesToClip(clip:Clip):Vector.<DynamicStreamingItem> {
+        public function addBitratesToClip(clip:Clip):Vector.<BitrateItem> {
             log.debug("addBitratesToClip()");
 
-            var streamingItems:Vector.<DynamicStreamingItem>;
+            var streamingItems:Vector.<BitrateItem>;
 
-            if (!clip.getCustomProperty("dynamicStreamingItems")) {
-                streamingItems = new Vector.<DynamicStreamingItem>();
+            if (!clip.getCustomProperty("BitrateItems")) {
+                streamingItems = new Vector.<BitrateItem>();
 
                 var i:int = 0;
 
@@ -60,18 +61,14 @@ package org.flowplayer.net {
                     i++;
                 }
 
-                //set the DynamicStreamingItem to the clip to be reused later in the streamselector
-                clip.setCustomProperty("dynamicStreamingItems", sort(streamingItems));
+                //set the BitrateItem to the clip to be reused later in the streamselector
+                clip.setCustomProperty("BitrateItems", sort(streamingItems));
             } else {
-                //we have a dynamicStreamingItems list configured in another plugin
-                streamingItems = sort(clip.getCustomProperty("dynamicStreamingItems") as Vector.<DynamicStreamingItem>);
+                //we have a BitrateItems list configured in another plugin
+                streamingItems = sort(clip.getCustomProperty("BitrateItems") as Vector.<BitrateItem>);
             }
-            //_streamSelector = new StreamSelector(streamingItems, _player, _config);
 
             return streamingItems;
-
-
-            //clip.setCustomProperty("streamSelector", _streamSelector);
         }
     }
 

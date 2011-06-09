@@ -9,12 +9,14 @@
  */
 
 package org.flowplayer.net {
-import org.osmf.net.DynamicStreamingItem;
 
 /**
  * @author danielr
  */
-public class BitrateItem extends DynamicStreamingItem {
+public class BitrateItem {
+    public var bitrate:Number;
+    public var width:Number;
+    public var height:Number;
     public var url:String;
     public var isDefault:Boolean;
     public var index:int;
@@ -23,14 +25,14 @@ public class BitrateItem extends DynamicStreamingItem {
     public var sd:Boolean;
 
     public function BitrateItem():void {
-        super(null, 0);
+
     }
 
     public function toString():String {
         return url + ", " + bitrate;
     }
 
-    override public function get streamName():String {
+    public function get streamName():String {
         return url;
     }
 }
