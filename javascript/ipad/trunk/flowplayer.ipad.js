@@ -4,23 +4,11 @@
  * Copyright 2010, 2011 Flowplayer Oy
  * By Thomas Dubois <thomas@flowplayer.org>
  *
- * This file is part of Flowplayer.
+ * Released under the MIT License:
+ * http://www.opensource.org/licenses/mit-license.php
  *
- * Flowplayer is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Flowplayer is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Flowplayer.  If not, see <http://www.gnu.org/licenses/>.
- *
- * Date: 2011-01-10 07:50:57 -0500 (Mon, 10 Jan 2011)
- * Revision: 4901
+ * Date: 2011-01-10 07:50:57 -0500 (Mon, 13 Jun 2011)
+ * Revision: 1559
  */
 
 
