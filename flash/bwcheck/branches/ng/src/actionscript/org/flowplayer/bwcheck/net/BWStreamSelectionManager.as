@@ -9,13 +9,16 @@
  */
 package org.flowplayer.bwcheck.net {
 
+    import org.flowplayer.net.BitrateItem;
     import org.flowplayer.net.StreamSelectionManager;
     import org.flowplayer.net.BitrateResource;
 
     import org.flowplayer.view.Flowplayer;
     import org.flowplayer.controller.ClipURLResolver;
+    import org.flowplayer.util.Log;
+    import org.flowplayer.util.PropertyBinder;
 
-    import org.osmf.net.DynamicStreamingItem;
+
 
     import org.flowplayer.model.DisplayProperties;
 
@@ -24,9 +27,13 @@ package org.flowplayer.bwcheck.net {
 
     import org.flowplayer.bwcheck.config.Config;
 
-    public class BWStreamSelectionManager extends StreamSelectionManager {
+    import org.osmf.net.DynamicStreamingItem;
+
+public class BWStreamSelectionManager extends StreamSelectionManager {
 
         private var _config:Config;
+        private static var bwSelectLog:Log = new Log("org.flowplayer.bwcheck.net::BWStreamSelectionManager");
+        private var dynamicStreamingItems:Vector.<DynamicStreamingItem>;
 
         public function BWStreamSelectionManager(bitrateResource:BitrateResource, player:Flowplayer, resolver:ClipURLResolver, config:Config) {
             super(bitrateResource, player, resolver);
@@ -37,16 +44,16 @@ package org.flowplayer.bwcheck.net {
         override public function getStreamIndex(bandwidth:Number):Number {
             for (var i:Number = streamItems.length - 1; i >= 0; i--) {
 
-                var item:DynamicStreamingItem = streamItems[i];
+                var item:BitrateItem = streamItems[i];
 
-                log.debug("candidate '" + item.streamName + "' has width " + item.width + ", bitrate " + item.bitrate);
+                bwSelectLog.debug("candidate '" + item.streamName + "' has width " + item.width + ", bitrate " + item.bitrate);
 
                 var enoughBw:Boolean = bandwidth >= item.bitrate;
                 var bitrateSpecified:Boolean = item.bitrate > 0;
-                log.info("fits screen? " + fitsScreen(item, _player, _config) + ", enough BW? " + enoughBw + ", bitrate specified? " + bitrateSpecified);
+                bwSelectLog.info("fits screen? " + fitsScreen(item, _player, _config) + ", enough BW? " + enoughBw + ", bitrate specified? " + bitrateSpecified);
 
                 if (fitsScreen(item, _player, _config) && enoughBw && bitrateSpecified) {
-                    log.debug("selecting bitrate with width " + item.width + " and bitrate " + item.bitrate);
+                    bwSelectLog.debug("selecting bitrate with width " + item.width + " and bitrate " + item.bitrate);
                     currentIndex = i;
                     return i;
                     break;
@@ -55,7 +62,7 @@ package org.flowplayer.bwcheck.net {
             return -1;
         }
 
-        internal static function fitsScreen(item:DynamicStreamingItem, player:Flowplayer, config:Config):Boolean {
+        internal static function fitsScreen(item:BitrateItem, player:Flowplayer, config:Config):Boolean {
             if (! item.width) return true;
 
             var screen:DisplayProperties = player.screen;
@@ -63,7 +70,7 @@ package org.flowplayer.bwcheck.net {
             // take the size from screen when the screen width is 100% --> by default works on HW scaled mode also
             var screenWidth:Number = stage.displayState == StageDisplayState.FULL_SCREEN && screen.widthPct == 100 ? stage.fullScreenWidth : screen.getDisplayObject().width;
 
-            log.debug("screen width is " + screenWidth);
+            bwSelectLog.debug("screen width is " + screenWidth);
 
             // max container width specified --> allows for resizing the player or for going above the current screen width
             if (config.maxWidth > 0 && ! player.isFullscreen()) {
