@@ -1,5 +1,12 @@
 Version history:
 
+3.2.7
+-----
+- Refactored HD button feature to bitrateselect plugin.
+- Refactored bwcheck with common bitrate selection and switching #292
+- Make generated bitrate list work with dynamic stream switching functions.
+- Provide integration with bitrateselect plugin.
+
 3.2.6
 -----
 - Refactored HD button feature to be only available with a combination of two bitrates. hd and normal properties not required.
