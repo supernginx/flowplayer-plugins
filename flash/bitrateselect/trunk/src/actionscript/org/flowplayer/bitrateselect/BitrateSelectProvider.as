@@ -185,7 +185,7 @@ package org.flowplayer.bitrateselect {
         }
 
         private function alreadyResolved(clip:Clip):Boolean {
-            return clip.getCustomProperty("bwcheckResolvedUrl") != null;
+            return clip.getCustomProperty("bitrateResolvedUrl") != null;
         }
 
         public function resolve(provider:StreamProvider, clip:Clip, successListener:Function):void {
@@ -197,7 +197,7 @@ package org.flowplayer.bitrateselect {
             }
 
             if (alreadyResolved(clip)) {
-                log.debug("resolve(): bandwidth already resolved for clip " + clip + ", will not detect again");
+                log.debug("resolve(): bitrate already resolved for clip " + clip + ", will not detect again");
                 successListener(clip);
                 return;
             }
