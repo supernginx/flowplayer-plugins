@@ -78,5 +78,11 @@ public class BWStreamSelectionManager extends StreamSelectionManager {
             }
             return screenWidth >= item.width;
         }
+
+        override public function changeStreamNames(mappedBitrate:BitrateItem):void {
+            super.changeStreamNames(mappedBitrate);
+            var url:String = mappedBitrate.url;
+            _player.currentClip.setCustomProperty("bwcheckResolvedUrl", url);
+        }
     }
 }
