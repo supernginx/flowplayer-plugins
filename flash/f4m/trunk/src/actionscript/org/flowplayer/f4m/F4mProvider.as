@@ -28,7 +28,7 @@ package org.flowplayer.f4m {
 
         import org.flowplayer.view.Flowplayer;
 
-        import org.flowplayer.bwcheck.BitrateItem;
+        import org.flowplayer.net.BitrateItem;
 
         import org.flowplayer.f4m.config.Config;
 
@@ -110,20 +110,27 @@ package org.flowplayer.f4m {
                     bitrateItem.bitrate = item.bitrate;
                     bitrateItem.index = index;
 
-                    bitrateItem.width = item.width ?
-                        item.width :
-                        manifest.media[index].metadata.width;
-                    bitrateItem.height = item.height ?
-                        item.height :
-                        manifest.media[index].metadata.height;
+                    if (item.width) {
+                        bitrateItem.width = item.width;
+                    } else if (manifest.media[index].metadata && manifest.media[index].metadata.width) {
+                        bitrateItem.width = manifest.media[index].metadata.width;
+                    }
+
+                    if (item.height) {
+                        bitrateItem.height = item.height;
+                    } else if (manifest.media[index].metadata && manifest.media[index].metadata.height) {
+                        bitrateItem.height = manifest.media[index].metadata.height;
+                    }
+
+                    bitrateItem.index = index;
 
                     //if we have custom bitrates property set on the bitrates clip property
                     //set the custom bitrate label, sd, hd properties
-                    if (bitrateOptions[index])  {
+                    if (bitrateOptions[index] && bitrateOptions)  {
                         var itemConfig:Object = bitrateOptions[index];
                         if (itemConfig.hasOwnProperty("label")) bitrateItem.label = itemConfig.label;
-                        if (itemConfig.hasOwnProperty("sd")) bitrateItem.sd = itemConfig.sd;
-                        if (itemConfig.hasOwnProperty("hd")) bitrateItem.hd = itemConfig.hd;
+                        //if (itemConfig.hasOwnProperty("sd")) bitrateItem.sd = itemConfig.sd;
+                        //if (itemConfig.hasOwnProperty("hd")) bitrateItem.hd = itemConfig.hd;
                     }
 
                     bitrateItems.push(bitrateItem);
@@ -150,25 +157,28 @@ package org.flowplayer.f4m {
 
                     } else {
                         streamResource = netResource as StreamingURLResource;
-                        _clip.setResolvedUrl(this, streamResource.url);
+                        log.debug("Manifest parsed with a single stream " + manifest.media[0].url);
+                        _clip.setResolvedUrl(this, manifest.media[0].url);
                         _clip.setCustomProperty("urlResource", streamResource);
                     }
+
 
                     if (manifest.baseURL && URLUtil.isRtmpUrl(manifest.baseURL)) {
                         _clip.setCustomProperty("netConnectionUrl", manifest.baseURL);
                     }
 
+
                     _clip.setCustomProperty("manifestInfo",manifest);
 
 
                     if (_successListener != null) {
-                        _successListener(_clip);
+                       _successListener(_clip);
                     }
 
                 }
                 catch (error:Error)
                 {
-                    log.error(error.message);
+                    log.error(error.getStackTrace());
                 }
             }
 
@@ -183,7 +193,8 @@ package org.flowplayer.f4m {
                 }
                 catch (parseError:Error)
                 {
-                    log.error(parseError.errorID + " " + parseError.message);
+
+                    log.error(parseError.errorID + " " + parseError.getStackTrace());
                 }
 
                 if (manifest != null)
