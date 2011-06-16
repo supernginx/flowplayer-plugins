@@ -238,18 +238,14 @@ package org.flowplayer.viralvideos {
         public function getEmbedCode(escaped:Boolean = false):String {
 
             var configStr:String = getPlayerConfig(escaped);
-
             var code:String =
                     '<object name="player" id="_fp_' + Math.random() + '" width="' + width + '" height="' + height + '"' +
                             '    data="' + _player.config.playerSwfUrl + '"  type="application/x-shockwave-flash">' +
                             '    <param value="true" name="allowfullscreen"/>' +
                             '    <param value="always" name="allowscriptaccess"/>' +
                             '    <param value="high" name="quality"/>' +
-                            '    <param value="true" name="cachebusting"/>' +
-                            '    <param value="#000000" name="bgcolor"/>' +
                             '    <param name="movie" value="' + _player.config.playerSwfUrl + '" />' +
                             '    <param value="config=' + configStr + '" name="flashvars"/>';
-//                            '    <embed src="' + _player.config.playerSwfUrl + '" type="application/x-shockwave-flash" width="' + width + '" height="' + height + '" allowfullscreen="true" allowscriptaccess="always" cachebusting="true" flashvars="config=' + configStr + '" bgcolor="#000000" quality="true">';
 
             if (_embedConfig.fallbackUrls.length > 0) {
                 code += '     <video controls width="' + width + '" height="' + height + '"';
