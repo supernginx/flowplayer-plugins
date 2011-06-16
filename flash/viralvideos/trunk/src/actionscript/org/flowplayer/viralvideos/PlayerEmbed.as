@@ -127,23 +127,27 @@ package org.flowplayer.viralvideos {
                 if (pluginObj && pluginObj is PluginModel) {
                     var pluginModel:PluginModel = PluginModel(pluginObj);
                     log.debug("fixPluginsURL(), plugin's original URL is " + pluginModel.url);
-                    if (pluginModel && pluginModel.url &&
-                            (pluginModel.url.indexOf("file:") == 0
-                                    || pluginModel.url.indexOf("http:") == 0
-                                    || pluginModel.url.indexOf("https:") == 0)) {
-                        return;
-                    }
-                    var plugin:Object = pluginModel.pluginObject;
-                    if (! pluginModel.isBuiltIn && plugin.hasOwnProperty("loaderInfo")) {
-                        var pluginUrl:String = plugin ? plugin.loaderInfo.url : "";
-                        if (pluginUrl) {
-                            config.plugins[pluginName]["url"] = pluginUrl;
+                    if (! hasCompleteUrl(pluginModel) && pluginModel.url) {
+
+                        var plugin:Object = pluginModel.pluginObject;
+                        if (! pluginModel.isBuiltIn && plugin.hasOwnProperty("loaderInfo")) {
+                            var pluginUrl:String = plugin.loaderInfo.url;
+                            if (pluginUrl) {
+                                config.plugins[pluginName]["url"] = pluginUrl;
+                            }
+                        } else if (pluginModel.isBuiltIn) {
+                            delete config.plugins[pluginName]["url"];
                         }
-                    } else if (pluginModel.isBuiltIn) {
-                        delete config.plugins[pluginName]["url"];
                     }
                 }
             }
+        }
+
+        private function hasCompleteUrl(pluginModel:PluginModel):Boolean {
+            return pluginModel && pluginModel.url &&
+                    (pluginModel.url.indexOf("file:") == 0
+                            || pluginModel.url.indexOf("http:") == 0
+                            || pluginModel.url.indexOf("https:") == 0);
         }
 
         private function updateConfig(config:Object):Object {
@@ -236,15 +240,16 @@ package org.flowplayer.viralvideos {
             var configStr:String = getPlayerConfig(escaped);
 
             var code:String =
-                    '<object id="' + _player.id + '" width="' + width + '" height="' + height + '" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"> ' +
+                    '<object name="player" id="_fp_' + Math.random() + '" width="' + width + '" height="' + height + '"' +
+                            '    data="' + _player.config.playerSwfUrl + '"  type="application/x-shockwave-flash">' +
                             '    <param value="true" name="allowfullscreen"/>' +
                             '    <param value="always" name="allowscriptaccess"/>' +
                             '    <param value="high" name="quality"/>' +
                             '    <param value="true" name="cachebusting"/>' +
                             '    <param value="#000000" name="bgcolor"/>' +
                             '    <param name="movie" value="' + _player.config.playerSwfUrl + '" />' +
-                            '    <param value="config=' + configStr + '" name="flashvars"/>' +
-                            '    <embed src="' + _player.config.playerSwfUrl + '" type="application/x-shockwave-flash" width="' + width + '" height="' + height + '" allowfullscreen="true" allowscriptaccess="always" cachebusting="true" flashvars="config=' + configStr + '" bgcolor="#000000" quality="true">';
+                            '    <param value="config=' + configStr + '" name="flashvars"/>';
+//                            '    <embed src="' + _player.config.playerSwfUrl + '" type="application/x-shockwave-flash" width="' + width + '" height="' + height + '" allowfullscreen="true" allowscriptaccess="always" cachebusting="true" flashvars="config=' + configStr + '" bgcolor="#000000" quality="true">';
 
             if (_embedConfig.fallbackUrls.length > 0) {
                 code += '     <video controls width="' + width + '" height="' + height + '"';
@@ -258,8 +263,7 @@ package org.flowplayer.viralvideos {
                 code += '     </video>' + "\n";
             }
 
-            code += '    </embed>' + "\n" +
-                    '</object>';
+            code += '</object>';
             return code;
         }
 
