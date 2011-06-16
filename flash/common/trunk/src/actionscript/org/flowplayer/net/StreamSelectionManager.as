@@ -127,7 +127,7 @@ package org.flowplayer.net {
             currentIndex = mappedBitrate.index;
 
             _player.currentClip.setResolvedUrl(_resolver, url);
-            _player.currentClip.setCustomProperty("bwcheckResolvedUrl", url);
+            _player.currentClip.setCustomProperty("bitrateResolvedUrl", url);
             _player.currentClip.setCustomProperty("mappedBitrate", mappedBitrate);
             log.debug("mappedUrl " + url + ", clip.url now " + _player.currentClip.url);
         }
