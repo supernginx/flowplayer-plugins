@@ -9,32 +9,29 @@
  */
 
 package org.flowplayer.net {
+    import org.osmf.net.DynamicStreamingItem;
 
-/**
- * @author danielr
- */
-public class BitrateItem {
-    public var bitrate:Number;
-    public var width:Number;
-    public var height:Number;
-    public var url:String;
-    public var isDefault:Boolean;
-    public var index:int;
-    public var label:String;
-    public var hd:Boolean;
-    public var sd:Boolean;
+    /**
+     * @author danielr
+     */
+    public class BitrateItem extends DynamicStreamingItem {
+        public var url:String;
+        public var isDefault:Boolean;
+        public var index:int;
+        public var label:String;
+        public var hd:Boolean;
+        public var sd:Boolean;
 
-    public function BitrateItem():void {
+        public function BitrateItem():void {
+            super(null, 0);
+        }
 
-    }
+        public function toString():String {
+            return url + ", " + bitrate;
+        }
 
-    public function toString():String {
-        return url + ", " + bitrate;
-    }
-
-    public function get streamName():String {
-        return url;
+        override public function get streamName():String {
+            return url;
+        }
     }
 }
-}
-
