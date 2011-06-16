@@ -6,6 +6,7 @@ Version history:
 Fixes:
 - made it possible to disable embed and email
 - updated Twitter sharing URL according to their new sharing API
+- embed code now just uses the OBJECT tag, issue #301
 
 3.2.1
 -----
