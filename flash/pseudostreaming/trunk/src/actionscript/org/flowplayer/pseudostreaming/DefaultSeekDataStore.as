@@ -86,7 +86,7 @@ public class DefaultSeekDataStore {
     }
 
     public function inBufferSeekTarget(target:Number):Number {
-        return target - _prevSeekTime;
+        return Math.max(target - _prevSeekTime, 0);
     }
 
     public function currentPlayheadTime(time:Number, start:Number):Number {
