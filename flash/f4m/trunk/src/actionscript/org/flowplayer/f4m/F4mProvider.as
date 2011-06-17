@@ -152,7 +152,7 @@ package org.flowplayer.f4m {
                         //formats the stream items to be ready for the bwcheck plugin
                         dynResource.streamItems = formatStreamItems(dynResource.streamItems);
 
-                        _clip.setCustomProperty("dynamicStreamingItems", dynResource.streamItems);
+                        _clip.setCustomProperty("bitrateItems", dynResource.streamItems);
                         _clip.setCustomProperty("urlResource", dynResource);
 
                     } else {
