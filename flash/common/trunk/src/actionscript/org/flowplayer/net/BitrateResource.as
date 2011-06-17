@@ -48,7 +48,7 @@ package org.flowplayer.net {
 
             var streamingItems:Vector.<BitrateItem>;
 
-            if (!clip.getCustomProperty("BitrateItems")) {
+            if (!clip.getCustomProperty("bitrateItems")) {
                 streamingItems = new Vector.<BitrateItem>();
 
                 var i:int = 0;
@@ -62,10 +62,10 @@ package org.flowplayer.net {
                 }
 
                 //set the BitrateItem to the clip to be reused later in the streamselector
-                clip.setCustomProperty("BitrateItems", sort(streamingItems));
+                clip.setCustomProperty("bitrateItems", sort(streamingItems));
             } else {
                 //we have a BitrateItems list configured in another plugin
-                streamingItems = sort(clip.getCustomProperty("BitrateItems") as Vector.<BitrateItem>);
+                streamingItems = sort(clip.getCustomProperty("bitrateItems") as Vector.<BitrateItem>);
             }
 
             return streamingItems;
