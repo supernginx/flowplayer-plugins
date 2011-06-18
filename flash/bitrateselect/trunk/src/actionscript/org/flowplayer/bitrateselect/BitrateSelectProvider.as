@@ -190,7 +190,7 @@ package org.flowplayer.bitrateselect {
 
         public function resolve(provider:StreamProvider, clip:Clip, successListener:Function):void {
 
-            if (!clip.getCustomProperty("bitrates") && !clip.getCustomProperty("dynamicStreamingItems")) {
+            if (!clip.getCustomProperty("bitrates") && !clip.getCustomProperty("bitrateItems")) {
                 log.debug("Bitrates configuration not enabled for this clip");
                 successListener(clip);
                 return;
@@ -214,7 +214,7 @@ package org.flowplayer.bitrateselect {
         }
 
         private function init(netStream:NetStream, clip:Clip):void {
-            log.error("init(), netStream == " + netStream);
+            log.debug("init(), netStream == " + netStream);
 
             _netStream = netStream;
             _clip = clip;
