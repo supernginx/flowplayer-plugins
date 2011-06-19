@@ -23,11 +23,13 @@ package org.flowplayer.captions {
     import org.flowplayer.model.ClipEvent;
     import org.flowplayer.model.ClipEventType;
     import org.flowplayer.model.DisplayPluginModel;
+    import org.flowplayer.model.ErrorCode;
     import org.flowplayer.model.PlayerEvent;
     import org.flowplayer.model.Plugin;
     import org.flowplayer.model.PluginModel;
     import org.flowplayer.util.PropertyBinder;
     import org.flowplayer.view.AbstractSprite;
+    import org.flowplayer.view.ErrorHandler;
     import org.flowplayer.view.FlowStyleSheet;
     import org.flowplayer.view.Flowplayer;
     import org.flowplayer.view.Styleable;
@@ -81,7 +83,7 @@ package org.flowplayer.captions {
      *
      * @author danielr, Anssi Piirainen (api@iki.fi)
      */
-    public class Caption extends AbstractSprite implements Plugin, Styleable {
+    public class Caption extends AbstractSprite implements Plugin, Styleable, ErrorHandler {
         private var _player:Flowplayer;
         private var _model:PluginModel;
         private var _captionView:*;
@@ -341,6 +343,7 @@ package org.flowplayer.captions {
          */
         protected function loadCaptionFile(clip:Clip, captionFile:String = null):void {
             var loader:ResourceLoader = _player.createLoader();
+            loader.errorHandler = this;
 
             if (captionFile) {
                 log.info("loading captions from file " + captionFile);
@@ -349,15 +352,24 @@ package org.flowplayer.captions {
 
             loader.load(null, function(loader:ResourceLoader):void {
                 parseCuePoints(clip, loader.getContent(captionFile));
-
-                _numCaptionsLoaded++;
-                log.debug(_numCaptionsLoaded + " captions files out of " + _totalCaptions + " loaded");
-                if (_numCaptionsLoaded == _totalCaptions && ! _initialized) {
-                    log.debug("all captions loaded, dispatching onLoad()");
-                    _initialized = true;
-                    _model.dispatchOnLoad();
-                }
+                initIfAllLoaded();
             });
+        }
+
+        private function initIfAllLoaded():void {
+            _numCaptionsLoaded++;
+            log.debug(_numCaptionsLoaded + " captions files out of " + _totalCaptions + " loaded");
+            if (_numCaptionsLoaded == _totalCaptions && ! _initialized) {
+                log.debug("all captions loaded, dispatching onLoad()");
+                _initialized = true;
+                _model.dispatchOnLoad();
+            }
+        }
+
+        // called when caption file load fails
+        public function handleError(error:ErrorCode, info:Object = null, throwError:Boolean = true):void {
+            log.warn("failed to load captions file: " + info);
+            initIfAllLoaded();
         }
 
         protected function parseCuePoints(clip:Clip, captionData:*):void
@@ -534,6 +546,9 @@ package org.flowplayer.captions {
         }
 
         public function onBeforeAnimate(styleProps:Object):void {
+        }
+
+        public function showError(message:String):void {
         }
     }
 }
