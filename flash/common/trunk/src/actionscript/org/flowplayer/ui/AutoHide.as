@@ -370,7 +370,7 @@ package org.flowplayer.ui {
         }
 
         private function doShow():void {
-            if (_model && ! _model.dispatchBeforeEvent(PluginEventType.PLUGIN_EVENT, "onBeforeShowed")) {
+if (_model && ! _model.dispatchBeforeEvent(PluginEventType.PLUGIN_EVENT, "onBeforeShowed")) {
                 log.debug("doShow() onShowed event was prevented, not showing");
                 return;
             }

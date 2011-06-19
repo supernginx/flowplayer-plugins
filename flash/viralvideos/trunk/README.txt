@@ -6,6 +6,7 @@ Version history:
 - updated Twitter sharing URL according to their new sharing API
 Fixes:
 - embed code now just uses the OBJECT tag, issue #301
+- added new configuration option 'gap' to the dock. Defines the gap between buttons. Default is 5.
 
 3.2.5
 -----

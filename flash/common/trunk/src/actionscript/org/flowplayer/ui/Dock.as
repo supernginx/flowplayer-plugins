@@ -96,7 +96,15 @@ package org.flowplayer.ui {
         private function resizeIcons():void {
             _icons.forEach(function(iconObj:Object, index:int, array:Array):void {
                 var icon:DisplayObject = iconObj as DisplayObject;
-                icon.height = icon.width = _config.horizontal ? height : width;
+                var scaleFactor:Number = icon.height/icon.width;
+                if (_config.horizontal) {
+                    icon.height = height;
+                    icon.width  = height * scaleFactor;
+                }
+                else {
+                    icon.width  = width;
+                    icon.height = width / scaleFactor;
+                }
             }, this);
         }
 
@@ -107,11 +115,11 @@ package org.flowplayer.ui {
                 if (_config.horizontal) {
                     icon.x = nextPos;
                     icon.y = 0;
-                    nextPos += icon.width + 5;
+                    nextPos += icon.width + _config.gap;
                 } else {
                     icon.y = nextPos;
                     icon.x = 0;
-                    nextPos += icon.height + 5;
+                    nextPos += icon.height + _config.gap;
                 }
             }, this);
         }
