@@ -19,6 +19,7 @@ package org.flowplayer.ui {
         private var _model:DisplayPluginModel;
         private var _autoHide:AutoHideConfig;
         private var _horizontal:Boolean = false;
+        private var _gap:Number = 5;
 
         public function DockConfig():void {
             _autoHide = new AutoHideConfig();
@@ -66,5 +67,14 @@ package org.flowplayer.ui {
         public function set horizontal(value:Boolean):void {
             _horizontal = value;
         }
+
+        public function get gap():Number {
+            return _gap;
+        }
+
+        public function set gap(value:Number):void {
+            _gap = value;
+        }
+
     }
 }
