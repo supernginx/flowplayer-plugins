@@ -151,9 +151,6 @@ package org.flowplayer.viralvideos {
         }
 
         private function updateConfig(config:Object):Object {
-            config.plugins[_viralPluginConfiguredName].emailScriptURL = null;
-            config.plugins[_viralPluginConfiguredName].emailScriptTokenURL = null;
-            config.plugins[_viralPluginConfiguredName].emailScriptToken = null;
             config.playerId = null;
 
             var copier:ByteArray = new ByteArray();
@@ -170,6 +167,7 @@ package org.flowplayer.viralvideos {
                     }
                 }
             }
+            updatedConfig.plugins[_viralPluginConfiguredName].share = false;
 
             fixPluginsURLs(updatedConfig);
             fixPageUrl(updatedConfig);
@@ -221,8 +219,10 @@ package org.flowplayer.viralvideos {
                 return clip;
             }
 
-            // there is always a playlist in the configuration, flowplayer.js inserts it
-            return config.playlist[0];
+            if (config.playlist) {
+                return config.playlist[0];
+            }
+            return _player.playlist.current;
         }
 
         public function getPlayerConfig(escaped:Boolean = false):String {
