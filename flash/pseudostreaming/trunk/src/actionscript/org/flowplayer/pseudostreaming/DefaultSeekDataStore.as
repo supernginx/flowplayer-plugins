@@ -64,17 +64,18 @@ public class DefaultSeekDataStore {
         if (!rangeEnd) {
             rangeEnd = _keyFrameTimes.length - 1;
         }
-//        if (rangeBegin == rangeEnd) return queryParamValue(rangeBegin);
-        if (rangeBegin == rangeEnd) { 
+        if (rangeBegin == rangeEnd || rangeEnd - rangeBegin == 1) {
              _prevSeekTime =_keyFrameTimes[rangeBegin];
              return queryParamValue(rangeBegin);
         }
 
         var rangeMid:Number = Math.floor((rangeEnd + rangeBegin)/2);
-        if (_keyFrameTimes[rangeMid] >= seekPosition)
+        if (_keyFrameTimes[rangeMid] >= seekPosition) {
             return getQueryStringStartValue(seekPosition, rangeBegin, rangeMid);
-        else
-            return getQueryStringStartValue(seekPosition, rangeMid+1, rangeEnd);
+        } else {
+            var offset:Number = (rangeEnd - rangeMid) == 1 ? 0 : 1;
+            return getQueryStringStartValue(seekPosition, rangeMid + offset, rangeEnd);
+        }
     }
 
     protected function queryParamValue(pos:Number):Number {
