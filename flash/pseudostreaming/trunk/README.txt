@@ -6,6 +6,7 @@ Version history:
 of the standard version that does not have the byte range request powered seeking support.
 Fixes:
 - #214 , need to reset the datastore on completion or else time won't reset when seeking mp4 clips
+- #314, inconsistent seeking behavior between in-buffer seeks and server seeks
 
 3.2.6
 -----
