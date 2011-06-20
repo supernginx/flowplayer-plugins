@@ -5,6 +5,7 @@ Version history:
 - addCaptions() takes in a JSON array of caption objects. The format of these JSON caption objects is now:
   { text: 'this is a caption text', time: 10, duration: 3 }. The time and duration are given as seconds.
 - The plugin initializes and playback now starts even if the captions file cannot be loaded. Issue #310.
+- SubRip files with HTML content in them failed to parse: Issue #294
 
 3.2.3
 -----
