@@ -42,6 +42,9 @@ package org.flowplayer.net {
         public function switchStream(mappedBitrate:BitrateItem):void {
             _previousBitrateItem = _streamSelectionManager.currentBitrateItem;
             _streamSelectionManager.changeStreamNames(mappedBitrate);
+
+            if (_player.isPaused()) _player.resume();
+
             if (_netStream && _netStream.hasOwnProperty("play2")) {
                 switchStreamDynamic(mappedBitrate);
             } else {
