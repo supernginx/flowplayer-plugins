@@ -23,7 +23,8 @@
 			selectedBitrateClass: 'bitrate-selected',
 			pluginName: 'bitrateselect',
 			templateId: null,
-			fadeTime: 500
+			fadeTime: 500,
+            seperator: " "
 		};
 
 		$.extend(opts, options);
@@ -31,13 +32,14 @@
 		var wrap = container;
 
         // use either the element with templateId or the contents of wrap
-		var template = opts.templateId ? $('<div>').append($(opts.templateId).clone()).remove().html() : $(wrap).html();
+        var template = null;
 
 		var plugin = self.getPlugin(opts.pluginName) || null;
 
+        var bitrateItems = null;
+
 		function parseTemplate(values) {
 			var el = template;
-
 			$.each(values, function(key, val) {
 				if (key=="bitrate" && !values.label) {
 					el = el.replace("\{label\}", val + " k").replace("%7B" +key+ "%7D", val + " k");
@@ -64,9 +66,8 @@
 			var index = 0;
 			var clip = self.getClip();
 
-            $.each(clip.bitrates, function() {
+            $.each(bitrateItems, function() {
                 var el = parseTemplate(this);
-				
                 el = $(el);
                 el.attr("index", this.bitrate);
                 el.show();
@@ -75,9 +76,14 @@
                     play($(this).attr("index"));
                     if ($(this).is('a')) return false;
                 });
+
                 wrap.append(el);
+                //added seperator option back in
+                if (index < bitrateItems.length - 1) wrap.append(opts.seperator);
                 index++;
             });
+
+
 
 			//if the parent div wrapper is set to display:none fade in the parent
 			if (wrap.parent().css('display') == "none") {
@@ -90,8 +96,14 @@
 		}
 
 		function showBitrateList() {
-			if (self.getClip().bitrates.length > 0) {
+            bitrateItems = self.getClip().bitrateItems ? self.getClip().bitrateItems :  self.getClip().bitrates;
+
+			if (bitrateItems.length > 0) {
                 wrap = $(wrap);
+
+                //fix for #322 containers only obtainable at this point
+                template = opts.templateId ? $('<div>').append($(opts.templateId).clone()).remove().html() : wrap.html();
+
                 wrap.empty();
 				buildBitrateList();
 			}
