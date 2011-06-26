@@ -41,8 +41,9 @@
 		function parseTemplate(values) {
 			var el = template;
 			$.each(values, function(key, val) {
-				if (key=="bitrate" && !values.label) {
-					el = el.replace("\{label\}", val + " k").replace("%7B" +key+ "%7D", val + " k");
+                //replace label with the bitrate if not set
+				if (key=="bitrate" || key=="label" && !values.label) {
+					el = el.replace("\{label\}", values.bitrate + " k").replace("%7B" +key+ "%7D", values.bitrate + " k");
 				}
 				el = el.replace("\{" +key+ "\}", val).replace("%7B" +key+ "%7D", val);
 			});
