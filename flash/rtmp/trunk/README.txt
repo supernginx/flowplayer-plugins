@@ -5,8 +5,10 @@ Version history:
 - FMS smart seeking (in buffer seeking): http://blogs.adobe.com/actionscriptdocs/2010/06/flash_media_server_stream_reco.html
   There is a new clip property backBufferLength, that can be used to control the buffer size for backward seeking and rewind.
 - p2p multicast support, added property p2pGroupSpec
-- Fixes for #247, native switching on transition failures requires live stream check.
 - Added stream switching event handlers to be used with the switchStream api method.
+Fixes:
+- Fixes for #247, native switching on transition failures requires live stream check.
+- Issue #327, onStart was not dispatched for mp3 streams
 
 3.2.3
 -----
