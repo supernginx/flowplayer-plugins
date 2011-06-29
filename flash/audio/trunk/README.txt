@@ -1,5 +1,11 @@
 Version history:
 
+3.2.4
+-----
+Fixes:
+- fixed to dispatch onStart only once
+- the duration is now available in the clip when onStart is dispatched
+
 3.2.3
 -----
 Fixes:
