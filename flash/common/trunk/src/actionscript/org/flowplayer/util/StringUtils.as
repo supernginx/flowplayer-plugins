@@ -58,6 +58,14 @@ package org.flowplayer.util {
 			}
 			return args.join("&");
 		}
+
+        public static function endsWith(input:String, suffix:String):Boolean {
+            return (suffix == input.substring(input.length - suffix.length));
+        }
+
+        public static function startsWith(input:String, prefix:String):Boolean {
+            return (prefix == input.substring(0, prefix.length));
+        }
     }
 
 }
