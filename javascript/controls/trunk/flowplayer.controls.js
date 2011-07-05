@@ -244,7 +244,7 @@
 		clearInterval(timer);
 		 
 		// begin timer		
-        console.log("creating new timer, duration == " + clip.duration);
+//        console.log("creating new timer, duration == " + clip.duration);
 		timer = setInterval(function()  {
 			var status = self.getStatus();
 
@@ -272,7 +272,7 @@
 				ball.style.left = (x -ballWidth / 2) + "px";
 			}
 			
-		}, 500);
+		}, 100);
 	});
 	
 	self.onBegin(function() {

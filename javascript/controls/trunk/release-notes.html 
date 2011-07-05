@@ -1,3 +1,6 @@
+3.0.3
+        * controlbar movement is smoother, it is now updated in 100 millisecond intervals instead of the old 500 ms
+
 3.0.2
 	* time display
 	* mute / unmute
