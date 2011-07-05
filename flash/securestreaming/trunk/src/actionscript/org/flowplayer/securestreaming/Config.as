@@ -15,6 +15,7 @@ package org.flowplayer.securestreaming {
         private var _timestampUrl:String;
         private var plugin:String;
         private var _token:String = "sn983pjcnhupclavsnda";
+        private var _domains:Array = [];
 
         public function get timestampUrl():String {
             return _timestampUrl;
@@ -50,6 +51,14 @@ package org.flowplayer.securestreaming {
 
         public function set clusterPlugin(value:String):void {
             plugin = value;
+        }
+
+        public function get domains():Array {
+            return _domains;
+        }
+
+        public function set domains(value:Array):void {
+            _domains = value;
         }
     }
 }

@@ -16,9 +16,13 @@ package org.flowplayer.securestreaming {
     import org.flowplayer.controller.StreamProvider;
     import org.flowplayer.model.Clip;
     import org.flowplayer.model.Plugin;
+    import org.flowplayer.model.PluginError;
     import org.flowplayer.model.PluginModel;
+    import org.flowplayer.util.DomainUtil;
+    import org.flowplayer.util.DomainUtil;
     import org.flowplayer.util.Log;
     import org.flowplayer.util.PropertyBinder;
+    import org.flowplayer.util.URLUtil;
     import org.flowplayer.view.Flowplayer;
 
     public class SecureStreaming implements ClipURLResolver, ConnectionProvider, Plugin {
@@ -65,6 +69,10 @@ package org.flowplayer.securestreaming {
         }
 
         public function onLoad(player:Flowplayer):void {
+            if (! isIn(_config.domains)) {
+                _model.dispatchError(PluginError.ERROR);
+                return;
+            }
             _player = player;
             _httpResolver = new SecureHttpUrlResolver(this, player, _config, _failureListener);
 
@@ -75,6 +83,19 @@ package org.flowplayer.securestreaming {
             _model.dispatchOnLoad();
         }
 
+
+        private static function isIn(acceptedDomains:Array):Boolean {
+//            log.debug("acceptedDomains", acceptedDomains);
+            if (! acceptedDomains || acceptedDomains.length == 0) return true;
+
+            return checkDomain(URLUtil.pageUrl, acceptedDomains);
+        }
+
+        private static function checkDomain(url:String, acceptedDomains:Array):Boolean {
+            var domain:String = DomainUtil.parseDomain(url, true);
+//            log.debug("domain is '" + domain + "'");
+            return acceptedDomains.indexOf(domain) >= 0;
+        }
 
         public function getDefaultConfig():Object {
             return null;
