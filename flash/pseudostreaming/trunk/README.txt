@@ -7,6 +7,7 @@ of the standard version that does not have the byte range request powered seekin
 Fixes:
 - #214 , need to reset the datastore on completion or else time won't reset when seeking mp4 clips
 - #314, inconsistent seeking behavior between in-buffer seeks and server seeks
+- #315, server seek to position zero was failing
 
 3.2.6
 -----
