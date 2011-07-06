@@ -6,6 +6,10 @@ Version history:
   { text: 'this is a caption text', time: 10, duration: 3 }. The time and duration are given as seconds.
 - The plugin initializes and playback now starts even if the captions file cannot be loaded. Issue #310.
 - SubRip files with HTML content in them failed to parse: Issue #294
+- added new clip specific property 'captionFormat' with possible values 'subrip' | 'tt' | 'json'
+  Can be used to explicitly set the format of the caption data. If not specified the plugin tries to infer the format
+  based on the caption data.
+- fixed issue #330
 
 3.2.3
 -----
