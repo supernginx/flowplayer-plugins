@@ -6,6 +6,7 @@ Fixes:
 - fixed to dispatch onStart only once
 - the duration is now available in the clip when onStart is dispatched
 - audio duration was estimated to be too long, issue #323
+- duration not available in the onMetaData event, issue #278
 
 3.2.3
 -----
