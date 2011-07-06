@@ -248,23 +248,18 @@
 		timer = setInterval(function()  {
 			var status = self.getStatus();
 
-			// time display
-			if (status.time)  {				
-				time.innerHTML = getTime(status.time, clip.duration);	
-			} 
-			
 			if (status.time === undefined) {
 				clearInterval(timer);
 				return;
 			}
-			
+
+            time.innerHTML = getTime(status.time, clip.duration);
+
 			// buffer width
 			var x = getMax(status.bufferEnd, duration);
 			bufferBar.style.width = x + "px";
 			head.setMax(x);	
-		
-			
-			
+
 			// progress width
 			if (!self.isPaused() && !head.isDragging()) {
 				x = getMax(status.time, duration);
