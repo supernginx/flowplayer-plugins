@@ -1,5 +1,6 @@
 3.0.3
         * controlbar movement is smoother, it is now updated in 100 millisecond intervals instead of the old 500 ms
+        * shows duration initially when { autoPlay: false, autoBuffering: true }
 
 3.0.2
 	* time display
