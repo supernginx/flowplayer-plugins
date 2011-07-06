@@ -109,10 +109,8 @@ package org.flowplayer.captions {
          * @param plugin
          */
         public function onConfig(plugin:PluginModel):void {
-
             _model = plugin;
             _config = new PropertyBinder(new Config(), null).copyProperties(plugin.config) as Config;
-           
         }
 
         
@@ -125,7 +123,6 @@ package org.flowplayer.captions {
                 }
             }
             return false;
-
         }
 
         /**
@@ -278,7 +275,7 @@ package org.flowplayer.captions {
             // load files
             iterateCaptions(function(clip:Clip):void {
             	if (clip.getCustomProperty("captions")) {
-            		loadCaption(clip, clip.getCustomProperty("captions") as Array);
+            		doAddCaptions(clip, clip.getCustomProperty("captions") as Array);
             	} else {
             		loadCaptionFile(clip, clip.getCustomProperty("captionUrl") as String);
             	}
@@ -315,7 +312,7 @@ package org.flowplayer.captions {
         public function addCaptions(clipIndex:int, captions:Array):void {
             if (! captions) return;
             log.info("loading captions from " + captions);
-            loadCaption(_player.playlist.clips[clipIndex], captions);
+            doAddCaptions(_player.playlist.clips[clipIndex], captions);
         }
 
         /**
@@ -326,8 +323,8 @@ package org.flowplayer.captions {
             return result;
         }
         
-        protected function loadCaption(clip:Clip, captions:Array):void {
-        	parseCuePoints(clip, captions);
+        protected function doAddCaptions(clip:Clip, captions:Array):void {
+        	parseCuePoints(clip, captions, true);
             _numCaptionsLoaded++;
             log.debug(_numCaptionsLoaded + " clip captions out of " + _totalCaptions + " loaded");
             if (_numCaptionsLoaded == _totalCaptions && ! _initialized) {
@@ -351,7 +348,7 @@ package org.flowplayer.captions {
             }
 
             loader.load(null, function(loader:ResourceLoader):void {
-                parseCuePoints(clip, loader.getContent(captionFile));
+                parseCuePoints(clip, loader.getContent(captionFile), true);
                 initIfAllLoaded();
             });
         }
@@ -372,10 +369,10 @@ package org.flowplayer.captions {
             initIfAllLoaded();
         }
 
-        protected function parseCuePoints(clip:Clip, captionData:*):void
+        protected function parseCuePoints(clip:Clip, captionData:*, loadedFromFile:Boolean):void
         {
             log.debug("captions file loaded, parsing cuepoints");
-            var parser:CaptionParser = createParser(captionData);
+            var parser:CaptionParser = createParser(clip, captionData, loadedFromFile);
 
             // remove all existing cuepoints
             clip.removeCuepoints(function(cue:Object):Boolean {
@@ -391,23 +388,37 @@ package org.flowplayer.captions {
             _captionView.style = parser.styles;
         }
 
-        private function createParser(captionData:Object):CaptionParser {
+        internal function createParser(clip:Clip,  captionData:Object, loadedFromFile:Boolean):CaptionParser {
             var parser:CaptionParser;
+            var parserType:String = getParserType(clip,  captionData);
+            log.debug("createParser(), parser type is '" + parserType + "'");
             	
-			if (String(captionData).charAt(0) == "1") {
-				log.debug("parsing SubRip captions");
-				parser = new SRTParser();            	
-			} else if (captionData is Array || captionData.toString().indexOf('[')) {
-				parser = new JSONParser();
-			} else if (new XML(captionData).localName() == "tt") {
-				log.debug("parsing Timed Text captions");
+			if (parserType == "subrip") {
+				parser = new SRTParser();
+
+			} else if (parserType == "json") {
+				parser = new JSONParser(loadedFromFile);
+
+			} else if (parserType == "tt") {
 				parser = new TTXTParser();
 				TTXTParser(parser).simpleFormatting = _config.simpleFormatting;
+
 			} else {
 				throw new Error("Unrecognized captions file extension");
 			}
-            parser.styles = _captionView.style;
+
+            parser.styles = _captionView ? _captionView.style : null;
             return parser;
+        }
+
+        private function getParserType(clip:Clip, captionData:Object):String {
+            var type:Object = clip.getCustomProperty("captionFormat");
+            if (type) return String(type);
+
+            if (String(captionData).charAt(0) == "1") return "subrip";
+            if (captionData is Array || captionData.toString().indexOf('[') == 0) return "json";
+            if (new XML(captionData).localName() == "tt") return "tt";
+            return null;
         }
 
 
@@ -549,6 +560,11 @@ package org.flowplayer.captions {
         }
 
         public function showError(message:String):void {
+        }
+
+        // for testing (see the test folder)
+        internal function set config(value:Config):void {
+            _config = value;
         }
     }
 }
