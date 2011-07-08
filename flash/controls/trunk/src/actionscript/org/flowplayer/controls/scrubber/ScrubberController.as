@@ -8,28 +8,19 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 package org.flowplayer.controls.scrubber {
-    
-	import org.flowplayer.view.Flowplayer;
-	import org.flowplayer.view.AbstractSprite;
-	import org.flowplayer.model.Clip;
-	import org.flowplayer.model.ClipEvent;
-	import org.flowplayer.model.Status;
-	
-	import flash.utils.Timer;
-	import flash.events.TimerEvent;
-	import flash.events.Event;
 
-	import org.flowplayer.util.Log;
-	import flash.display.DisplayObjectContainer;
-	
-	import org.flowplayer.ui.buttons.WidgetDecorator;
-	
-	import org.flowplayer.controls.Controlbar;
-	import org.flowplayer.controls.SkinClasses;
-	import org.flowplayer.controls.time.TimeUtil;
-	import org.flowplayer.controls.controllers.AbstractTimedWidgetController;
+    import flash.events.Event;
+    import flash.events.TimerEvent;
 
-	public class ScrubberController extends AbstractTimedWidgetController {
+    import org.flowplayer.controls.SkinClasses;
+    import org.flowplayer.controls.controllers.AbstractTimedWidgetController;
+    import org.flowplayer.model.Clip;
+    import org.flowplayer.model.ClipEvent;
+    import org.flowplayer.model.Status;
+    import org.flowplayer.ui.buttons.WidgetDecorator;
+    import org.flowplayer.util.TimeUtil;
+
+    public class ScrubberController extends AbstractTimedWidgetController {
         private var _enableOnStart:Boolean;
 
 		public function ScrubberController() {
