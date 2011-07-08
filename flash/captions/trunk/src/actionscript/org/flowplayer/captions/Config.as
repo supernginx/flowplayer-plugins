@@ -14,7 +14,7 @@ package org.flowplayer.captions
     import org.flowplayer.model.DisplayPropertiesImpl;
     import org.flowplayer.util.Arrange;
 
-    public class Config {
+    internal class Config {
         private var _autoLayout:Boolean = true;
         private var _simpleFormatting:Boolean = false;
         private var _captionTarget:String;

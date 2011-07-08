@@ -15,7 +15,7 @@ package org.flowplayer.captions {
     import org.flowplayer.view.AbstractSprite;
     import org.flowplayer.view.Flowplayer;
 
-    public class CCButton extends AbstractSprite {
+    internal class CCButton extends AbstractSprite {
         private var _text:TextField;
         private var _background:Sprite;
         private var _textColor:Number;
