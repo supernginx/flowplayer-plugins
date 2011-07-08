@@ -10,23 +10,21 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
-package org.flowplayer.captions.parsers
-{
-    import org.flowplayer.captions.NumberFormatter;
-    import org.flowplayer.model.Cuepoint;
+package org.flowplayer.captions.parsers {
     import org.flowplayer.util.Log;
-    import org.flowplayer.view.FlowStyleSheet;
-    import org.flowplayer.view.FlowStyleSheet;
+    import org.flowplayer.util.TimeUtil;
 
-    public class SRTParser extends AbstractCaptionParser
-    {
+    public class SRTParser extends AbstractCaptionParser {
 
         protected var log:Log = new Log(this);
         private var _arr:Array = new Array();
         private var cueRow:int = 0;
 
-        private function parseRows(item:*, index:int, array:Array):void
-        {
+        public function SRTParser(textTemplate:String) {
+            super(textTemplate);
+        }
+
+        private function parseRows(item:*, index:int, array:Array):void {
             if (!item) return;
             log.debug("parsing " + item);
             var rows:Array = item.split(/\r?\n/);
@@ -40,23 +38,12 @@ package org.flowplayer.captions.parsers
 
             var time:Array = time_pattern.exec(rows[1]);
             var text:String = rows.slice(2, rows.length).join("\n");
-            var begin:Number = NumberFormatter.seconds(time[1]);
-            var duration:Number = (NumberFormatter.seconds(time[2]) - begin);
+            var begin:Number = TimeUtil.seconds(time[1]);
+            var duration:Number = (TimeUtil.seconds(time[2]) - begin);
             log.debug("" + duration);
             var name:String = (rows[0] ? rows[0] : "cue" + cueRow);
-            var parameters:Object = new Object();
 
-            var cue:Object = Cuepoint.createDynamic(begin, "embedded"); // creates a dynamic
-            cue.captionType = "external";
-            cue.time = begin;
-            cue.name = name;
-            cue.type = "event";
-            parameters.begin = begin;
-            parameters.duration = duration;
-            parameters.style = styles.rootStyleName;
-            parameters.text = text;
-            cue.parameters = parameters;
-            _arr.push(cue);
+            _arr.push(createCuepoint(begin, duration, text, name));
             cueRow++;
         }
 
@@ -67,5 +54,7 @@ package org.flowplayer.captions.parsers
             subtitles.forEach(parseRows);
             return _arr;
         }
+
+        override protected function get timesInMillis():Boolean {return false;}
     }
 }

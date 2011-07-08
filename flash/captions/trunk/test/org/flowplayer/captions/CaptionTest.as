@@ -11,36 +11,16 @@
 package org.flowplayer.captions {
     import flexunit.framework.TestCase;
 
-    import org.flowplayer.captions.parsers.JSONParser;
-
-    import org.flowplayer.captions.parsers.SRTParser;
-    import org.flowplayer.captions.parsers.TTXTParser;
-
-    import org.flowplayer.model.Clip;
+    import org.flowplayer.model.Cuepoint;
 
     public class CaptionTest extends TestCase {
-        private var _caption:Caption;
-        private var _clip:Clip;
 
-        override public function setUp():void {
-            _caption = new Caption();
-            _caption.config = new Config();
-            _clip = new Clip();
-        }
+        public function testParseTemplate():void {
+            var cap:Caption = new Caption("{text}, {time}",  1, 3, "haloo", null);
+            var cuepoint:Cuepoint = Cuepoint.createDynamic(10, "embedded");
+            cuepoint.parameters = cap;
 
-        public function testCreateSubRipParser():void {
-            _clip.setCustomProperty("captionFormat", "subrip");
-            assertTrue(_caption.createParser(_clip,  {}, false) is SRTParser);
-        }
-
-        public function testCreateJSONParser():void {
-            _clip.setCustomProperty("captionFormat", "json");
-            assertTrue(_caption.createParser(_clip,  {}, false) is JSONParser);
-        }
-
-        public function testCreateTimedTextParser():void {
-            _clip.setCustomProperty("captionFormat", "tt");
-            assertTrue(_caption.createParser(_clip,  {}, false) is TTXTParser);
+            trace(cap.getHtml(cuepoint));
         }
     }
 }
