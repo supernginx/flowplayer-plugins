@@ -9,6 +9,7 @@ Version history:
 Fixes:
 - Fixes for #247, native switching on transition failures requires live stream check.
 - Issue #327, onStart was not dispatched for mp3 streams
+- Issue #338 don't set clip currentTime when dynamic stream switching.
 
 3.2.3
 -----
