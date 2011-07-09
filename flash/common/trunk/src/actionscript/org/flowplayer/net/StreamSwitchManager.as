@@ -27,6 +27,7 @@ package org.flowplayer.net {
         private var _player:Flowplayer;
         private var _previousBitrateItem:BitrateItem;
 
+
         protected var log:Log = new Log(this);
 
         public function StreamSwitchManager(netStream:NetStream, streamSelectionManager:IStreamSelectionManager, player:Flowplayer) {
@@ -39,37 +40,31 @@ package org.flowplayer.net {
             return _previousBitrateItem;
         }
 
-        public function switchStream(mappedBitrate:BitrateItem):void {
+
+        public function switchStream(bitrateItem:BitrateItem):void {
             _previousBitrateItem = _streamSelectionManager.currentBitrateItem;
-            _streamSelectionManager.changeStreamNames(mappedBitrate);
+            _streamSelectionManager.changeStreamNames(bitrateItem);
 
-            if (_player.isPaused()) _player.resume();
+            //fixes for #279 now switches correctly when in a paused state for http streams
+            //keep check here for rtmp and httpstreaming provider as play2 method is enabled for http streams
+            if (_netStream && _netStream.hasOwnProperty("play2") && (_player.streamProvider.type == "rtmp" || _player.streamProvider.type == "httpstreaming")) {
+                var netStreamPlayOptions:NetStreamPlayOptions = new NetStreamPlayOptions();
+                if (_previousBitrateItem) {
+                    netStreamPlayOptions.oldStreamName = _previousBitrateItem.url;
+                    netStreamPlayOptions.transition = NetStreamPlayTransitions.SWITCH;
+                } else {
+                    netStreamPlayOptions.transition = NetStreamPlayTransitions.RESET;
+                }
+                netStreamPlayOptions.streamName = bitrateItem.url;
 
-            if (_netStream && _netStream.hasOwnProperty("play2")) {
-                switchStreamDynamic(mappedBitrate);
+                log.debug("calling switchStream with dynamic stream switch support, stream name is " + netStreamPlayOptions.streamName);
+
+                _player.switchStream(_player.currentClip, netStreamPlayOptions);
             } else {
-                switchStreamNative(mappedBitrate);
+                log.debug("calling switchStream, stream name is " + bitrateItem.url);
+                _player.switchStream(_player.currentClip);
             }
-        }
 
-        private function switchStreamNative(mappedBitrate:BitrateItem):void {
-            _player.switchStream(_player.currentClip);
-        }
-
-        private function switchStreamDynamic(bitrateItem:BitrateItem):void {
-            log.debug("switchStreamDynamic()");
-
-            var options:NetStreamPlayOptions = new NetStreamPlayOptions();
-            if (_previousBitrateItem) {
-                options.oldStreamName = _previousBitrateItem.url;
-                options.transition = NetStreamPlayTransitions.SWITCH;
-            } else {
-                options.transition = NetStreamPlayTransitions.RESET;
-            }
-            options.streamName = bitrateItem.url;
-
-            log.debug("calling switchStream with Dynamic Switch Streaming, stream name is " + options.streamName);
-            _player.switchStream(_player.currentClip, options);
         }
     }
 }
