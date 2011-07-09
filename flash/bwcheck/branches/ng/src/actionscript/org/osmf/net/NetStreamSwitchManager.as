@@ -308,9 +308,13 @@ package org.osmf.net {
          */
 		private function checkRules(event:TimerEvent):void
 		{
+            CONFIG::LOGGING
+            {
             if (switching) {
-                logger.debug("checkRules() , switch in progress, returning");
+                    logger.debug("checkRules() , switch in progress, returning");
             }
+            }
+
             if (switchingRules == null || switching) {
                 return;
             }
@@ -345,6 +349,8 @@ package org.osmf.net {
                 }
                 executeSwitch(newIndex);
             }
+
+
         }
 
         private function onNetStatus(event:NetStatusEvent):void {

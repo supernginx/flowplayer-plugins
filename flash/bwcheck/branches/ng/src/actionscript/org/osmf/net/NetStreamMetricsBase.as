@@ -78,7 +78,10 @@ package org.osmf.net {
 
         // flowplayer addition
         public function startMeasurements():void {
-            logger.debug("startMeasurements()");
+            CONFIG::LOGGING
+            {
+                logger.debug("startMeasurements()");
+            }
             _timer.start();
         }
 

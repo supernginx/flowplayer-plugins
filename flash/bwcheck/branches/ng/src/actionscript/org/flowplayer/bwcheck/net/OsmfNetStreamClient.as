@@ -24,7 +24,7 @@ package org.flowplayer.bwcheck.net {
 
         public function OsmfNetStreamClient(flowplayerNetStreamClient:NetStreamClient) {
             _fpClient = flowplayerNetStreamClient;
-            addHandler(NetStreamCodes.ON_PLAY_STATUS, onPlayStatus);
+            //addHandler(NetStreamCodes.ON_PLAY_STATUS, onPlayStatus);
         }
 
         public function onMetaData(infoObject:Object):void {
@@ -56,8 +56,10 @@ package org.flowplayer.bwcheck.net {
             _fpClient.onTextData(obj);
         }
 
+        //fix for #336, send the correct playStatus object
         public function onPlayStatus(...rest):void {
-            _fpClient.onPlayStatus(rest);
+             var info:Object = rest.length > 1 ? rest[2] : rest[0];
+            _fpClient.onPlayStatus(info);
         }
     }
 }

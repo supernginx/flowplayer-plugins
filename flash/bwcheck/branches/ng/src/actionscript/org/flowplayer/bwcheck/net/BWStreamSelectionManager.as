@@ -28,16 +28,17 @@ package org.flowplayer.bwcheck.net {
     import org.flowplayer.bwcheck.config.Config;
 
     import org.osmf.net.DynamicStreamingItem;
+    import org.osmf.net.NetStreamMetricsBase;
 
 public class BWStreamSelectionManager extends StreamSelectionManager {
 
         private var _config:Config;
         private static var bwSelectLog:Log = new Log("org.flowplayer.bwcheck.net::BWStreamSelectionManager");
         private var dynamicStreamingItems:Vector.<DynamicStreamingItem>;
+        private var _netStreamMetrics:NetStreamMetricsBase;
 
         public function BWStreamSelectionManager(bitrateResource:BitrateResource, player:Flowplayer, resolver:ClipURLResolver, config:Config) {
             super(bitrateResource, player, resolver);
-
             _config = config;
         }
 
@@ -50,7 +51,7 @@ public class BWStreamSelectionManager extends StreamSelectionManager {
 
                 var enoughBw:Boolean = bandwidth >= item.bitrate;
                 var bitrateSpecified:Boolean = item.bitrate > 0;
-                bwSelectLog.info("fits screen? " + fitsScreen(item, _player, _config) + ", enough BW? " + enoughBw + ", bitrate specified? " + bitrateSpecified);
+                bwSelectLog.debug("fits screen? " + fitsScreen(item, _player, _config) + ", enough BW? " + enoughBw + ", bitrate specified? " + bitrateSpecified);
 
                 if (fitsScreen(item, _player, _config) && enoughBw && bitrateSpecified) {
                     bwSelectLog.debug("selecting bitrate with width " + item.width + " and bitrate " + item.bitrate);
@@ -83,6 +84,27 @@ public class BWStreamSelectionManager extends StreamSelectionManager {
             super.changeStreamNames(mappedBitrate);
             var url:String = mappedBitrate.url;
             _player.currentClip.setCustomProperty("bwcheckResolvedUrl", url);
+        }
+
+        override public function get currentBitrateItem():BitrateItem {
+            return _netStreamMetrics ? super.getItem(_netStreamMetrics.currentIndex) : super.currentBitrateItem;
+        }
+
+        override public function get currentIndex():Number {
+            return _netStreamMetrics ? _netStreamMetrics.currentIndex : super.currentIndex;
+        }
+
+        override public function set currentIndex(value:Number):void {
+            _netStreamMetrics ? _netStreamMetrics.currentIndex = value : super.currentIndex = value;
+        }
+
+        override public function set currentBitrateItem(value:BitrateItem):void {
+            super.currentBitrateItem = value;
+            if (_netStreamMetrics) _netStreamMetrics.currentIndex = value.index;
+        }
+
+        public function set metrics(value:NetStreamMetricsBase):void {
+            _netStreamMetrics = value;
         }
     }
 }
