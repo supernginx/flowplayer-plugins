@@ -45,7 +45,7 @@ package org.flowplayer.bwcheck.net {
                 log.debug("candidate '" + item.streamName + "' has width " + item.width);
 
                 var fitsScreen:Boolean = BWStreamSelectionManager.fitsScreen(item, _player, _config);
-                log.info("fits screen? " + fitsScreen);
+                log.debug("fits screen? " + fitsScreen);
 
                 if (fitsScreen) {
                     log.debug("selecting bitrate with width " + item.width + ", index " + i);
