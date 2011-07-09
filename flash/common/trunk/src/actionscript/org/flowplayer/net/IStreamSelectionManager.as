@@ -14,6 +14,7 @@ package org.flowplayer.net {
         function set currentBitrateItem(value:BitrateItem):void;
         function get streamItems():Vector.<BitrateItem>;
         function changeStreamNames(mappedBitrate:BitrateItem):void;
+        function fromName(name:String):BitrateItem;
 
     }
 }
