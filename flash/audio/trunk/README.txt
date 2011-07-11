@@ -7,6 +7,7 @@ Fixes:
 - the duration is now available in the clip when onStart is dispatched
 - audio duration was estimated to be too long, issue #323
 - duration not available in the onMetaData event, issue #278
+- now dispatches error 200 when the mp3 URL does not respond, issue #334
 
 3.2.3
 -----
