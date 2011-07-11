@@ -65,7 +65,8 @@ package org.flowplayer.net {
                 clip.setCustomProperty("bitrateItems", sort(streamingItems));
             } else {
                 //we have a BitrateItems list configured in another plugin
-                streamingItems = sort(clip.getCustomProperty("bitrateItems") as Vector.<BitrateItem>);
+                //Fixed casting issue if a DynamicStreamingItem resource #339
+                streamingItems = sort(Vector.<BitrateItem>(clip.getCustomProperty("bitrateItems")));
             }
 
             return streamingItems;
