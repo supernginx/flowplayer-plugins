@@ -177,8 +177,8 @@ flowplayer("player", "@PLAYER_SWF@", {
 
 </div>
 
-<a name="anchor"></a>
-<h2><em>Example</em> with a multiple bitrate</h2>
+
+<h2>Dynamic Stream Switching Example</h2>
 
 
 <p>
@@ -196,7 +196,7 @@ flowplayer("player", "@PLAYER_SWF@", {
 <a
     href="skyandice"
     style="display:block;width:425x;height:300px;"
-    id="multirate">
+    id="dynamicplayer">
 
     <!-- splash image inside the container -->
     <img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" width="320" height="205" />
@@ -205,30 +205,46 @@ flowplayer("player", "@PLAYER_SWF@", {
 
 <!-- Flowplayer installation and configuration -->
 <script type="text/javascript" >
-flowplayer("multirate", "@PLAYER_SWF@", {
+flowplayer("dynamicplayer", "@PLAYER_SWF@", {
     // configure the required plugins
     plugins:  {
         f4m: {
-            url: '../flowplayer.f4m.swf',
-            bitrates: {
-                hd: '1500',
-                normal: '500',
-                defaultItem: '500'
-            }
+            url: '../flowplayer.f4m.swf'
         },
         httpstreaming: {
             url: '@MAIN_PLAYER_SWF@'
         },
         bwcheck: {
-            url: '../flowplayer.bwcheck.swf',
-            netConnectionUrl: 'http://releases.flowplayer.org/swf/flowplayer-3.1.5.swf',
-			bitrateProfileName: 'HTTPBitrateProfile',
+            url: '../flowplayer.bwcheck-httpstreaming.swf',
             dynamic: true,
-			//onStreamSwitch: switchStreamInfo,
-			//onStreamSwitchBegin: switchStreamInfoBegin,
-			// this method is called when the bandwidth check is done
-		//	onBwDone: bwDoneInfo,
-			hdButton: { place: "dock" }
+			// show the selected file in the content box. This is not used in real installations.
+            onStreamSwitchBegin: function (newItem, currentItem) {
+                $f().getPlugin('content').setHtml("Will switch to: " + newItem.streamName +
+                " from " + currentItem.streamName);
+            },
+            onStreamSwitch: function (newItem) {
+                $f().getPlugin('content').setHtml("Switched to: " + newItem.streamName);
+            },
+
+            onBwDone: function(mappedBitrate, detectedBitrate) {
+                var content = $f().getPlugin('content');
+                var info = "Your speed is: " + detectedBitrate + "<br/> Your chosen bitrate: " + mappedBitrate.bitrate + "<br/>Video file served: " + mappedBitrate.url;
+                content.setHtml(info);
+            }
+        },
+        content: {
+            url: '../flowplayer.content.swf',
+            bottom: 30, left: 0, width: 250, height: 150,
+            backgroundColor: 'transparent', backgroundGradient: 'none', border: 0,
+            textDecoration: 'outline',
+            style: {
+                body: {
+                    fontSize: 14,
+                    fontFamily: 'Arial',
+                    textAlign: 'center',
+                    color: '#ffffff'
+                }
+            }
         }
 
 
@@ -239,7 +255,112 @@ flowplayer("multirate", "@PLAYER_SWF@", {
         url: "sample1.f4m",
         urlResolvers: ['f4m','bwcheck'],
         provider: 'httpstreaming',
-        baseUrl: "http://httpstreaming.electroteque.org/videos/vod/"
+        baseUrl: "http://httpstreaming.electroteque.org/videos/vod/",
+        bitrates: [
+            {bitrate: 150, label: '150k'},
+            {bitrate: 500, label: '500k'},
+            {bitrate: 700, label: '700k'},
+            {bitrate: 1000, label: '1000k'},
+            {bitrate: 1500, label: '1500k'}
+        ]
+
+    },
+    log: {
+        level: 'debug',
+        filter: 'org.flowplayer.httpstreaming.*, org.flowplayer.f4m.*, org.flowplayer.bwcheck.*, org.flowplayer.httpstreaming.*, org.flowplayer.controller.*, org.flowplayer.view.Screen'
+    }
+
+});
+
+</script>
+</div>
+
+<h2>HD Button Feature Example</h2>
+
+
+<p>
+    Blurb here soon.
+</p>
+
+
+<div style="width:425px;height:300px;margin:30px auto">
+
+
+
+<!-- player container-->
+
+
+<a
+    href="skyandice"
+    style="display:block;width:425x;height:300px;"
+    id="hdplayer">
+
+    <!-- splash image inside the container -->
+    <img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" width="320" height="205" />
+
+</a>
+
+<!-- Flowplayer installation and configuration -->
+<script type="text/javascript" >
+flowplayer("hdplayer", "@PLAYER_SWF@", {
+    // configure the required plugins
+    plugins:  {
+        f4m: {
+            url: '../flowplayer.f4m.swf'
+        },
+        httpstreaming: {
+            url: '@MAIN_PLAYER_SWF@'
+        },
+        bwcheck: {
+            url: '../flowplayer.bwcheck-httpstreaming.swf',
+
+            hdButton: { place: "both" },
+			// show the selected file in the content box. This is not used in real installations.
+            onStreamSwitchBegin: function (newItem, currentItem) {
+                $f().getPlugin('content').setHtml("Will switch to: " + newItem.streamName +
+                " from " + currentItem.streamName);
+            },
+            onStreamSwitch: function (newItem) {
+                $f().getPlugin('content').setHtml("Switched to: " + newItem.streamName);
+            },
+
+            onBwDone: function(mappedBitrate, detectedBitrate) {
+                var content = $f().getPlugin('content');
+                var info = "Your speed is: " + detectedBitrate + "<br/> Your chosen bitrate: " + mappedBitrate.bitrate + "<br/>Video file served: " + mappedBitrate.url;
+                content.setHtml(info);
+            }
+        },
+        content: {
+            url: '../flowplayer.content.swf',
+            bottom: 30, left: 0, width: 250, height: 150,
+            backgroundColor: 'transparent', backgroundGradient: 'none', border: 0,
+            textDecoration: 'outline',
+            style: {
+                body: {
+                    fontSize: 14,
+                    fontFamily: 'Arial',
+                    textAlign: 'center',
+                    color: '#ffffff'
+                }
+            }
+        }
+
+
+    },
+
+
+    clip: {
+        url: "sample2.f4m",
+        urlResolvers: ['f4m','bwcheck'],
+        provider: 'httpstreaming',
+        baseUrl: "http://httpstreaming.electroteque.org/videos/vod/",
+        bitrates: [
+            {bitrate: 150, label: '150k'},
+            {bitrate: 500, label: '500k'},
+            {bitrate: 700, label: '700k'},
+            {bitrate: 1000, label: '1000k'},
+            {bitrate: 1500, label: '1500k'}
+        ]
 
     },
     log: {

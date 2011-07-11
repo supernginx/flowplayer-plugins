@@ -18,6 +18,7 @@ package org.flowplayer.httpstreaming {
 
     import org.flowplayer.model.Clip;
     import org.flowplayer.model.ClipEvent;
+    import org.flowplayer.model.ClipEventType;
     import org.flowplayer.controller.NetStreamControllingStreamProvider;
     import org.flowplayer.controller.NetStreamClient;
     import org.flowplayer.model.ClipType;
@@ -36,8 +37,10 @@ package org.flowplayer.httpstreaming {
 
     import org.osmf.media.URLResource;
 
-    import org.flowplayer.bwcheck.OsmfLoggerFactory;
-    import org.flowplayer.bwcheck.OsmfLogger;
+    import org.flowplayer.bwcheck.net.OsmfLoggerFactory;
+    import org.flowplayer.bwcheck.net.OsmfLogger;
+
+    import org.flowplayer.httpstreaming.Config;
 
     public class HttpStreamingProvider extends NetStreamControllingStreamProvider implements Plugin {
         private var _bufferStart:Number;
@@ -52,7 +55,10 @@ package org.flowplayer.httpstreaming {
         override public function onConfig(model:PluginModel):void {
             _model = model;
             _config = new PropertyBinder(new Config(), null).copyProperties(model.config) as Config;
-            Log.loggerFactory = new OsmfLoggerFactory();
+
+            CONFIG::LOGGING {
+                Log.loggerFactory = new OsmfLoggerFactory();
+            }
         }
     
         override public function onLoad(player:Flowplayer):void {
@@ -69,6 +75,8 @@ package org.flowplayer.httpstreaming {
         override protected function doLoad(event:ClipEvent, netStream:NetStream, clip:Clip):void {
             if (!netResource) return;
 
+            clip.onPlayStatus(onPlayStatus);
+
             log.debug("Playing F4F Stream With Resource " + netResource);
             _bufferStart = clip.currentTime;
             _startSeekDone = false;
@@ -76,17 +84,43 @@ package org.flowplayer.httpstreaming {
             netStream.play(netResource, clip.start);
         }
 
+        private function onPlayStatus(event:ClipEvent) : void {
+            log.debug("onPlayStatus() -- " + event.info.code);
+            if (event.info.code == "NetStream.Play.TransitionComplete"){
+                dispatchEvent(new ClipEvent(ClipEventType.SWITCH_COMPLETE));
+            }
+            return;
+        }
+
+        override protected function onNetStatus(event:NetStatusEvent) : void {
+            log.info("onNetStatus(), code: " + event.info.code + ", paused? " + paused + ", seeking? " + seeking);
+            switch(event.info.code){
+                case "NetStream.Play.Transition":
+                    log.debug("Stream Transition -- " + event.info.details);
+                    dispatchEvent(new ClipEvent(ClipEventType.SWITCH, event.info.details));
+                    break;
+            }
+            return;
+        }
+
         override protected function doSwitchStream(event:ClipEvent, netStream:NetStream, clip:Clip, netStreamPlayOptions:Object = null):void {      
             log.debug("doSwitchStream()");
-            clip.currentTime = time;
-            _bufferStart = clip.currentTime;
-            _currentClip = clip;
-    
-            
-    
-            log.debug("Switching stream with current time: " + clip.currentTime);
-    
-            load(event, clip);
+
+			_previousClip = clip;
+
+            if (netStream.hasOwnProperty("play2") && netStreamPlayOptions) {
+                import flash.net.NetStreamPlayOptions;
+                if (netStreamPlayOptions is NetStreamPlayOptions) {
+					log.debug("doSwitchStream() calling play2()")
+					netStream.play2(netStreamPlayOptions as NetStreamPlayOptions);
+				}
+			} else {
+                //fix for #338, don't set the currentTime when dynamic stream switching
+                _bufferStart = clip.currentTime;
+                clip.currentTime = Math.floor(_previousClip.currentTime + netStream.time);
+				load(event, clip);
+                dispatchEvent(event);
+			}
         }
 
         override public function get allowRandomSeek():Boolean {
@@ -99,11 +133,6 @@ package org.flowplayer.httpstreaming {
 
         override protected function canDispatchStreamNotFound():Boolean {
             return false;
-        }
-    
-        override protected function onNetStatus(event:NetStatusEvent):void {
-            log.info("onNetStatus: " + event.info.code);
-            
         }
     
         public function getDefaultConfig():Object {
