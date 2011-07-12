@@ -33,7 +33,7 @@ package org.flowplayer.bitrateselect {
                 clip.setCustomProperty("sdBitrateItem", sdItem);
 
                 _hasHD = true;
-                log.error("HD feature is set, SD Bitrate: " + sdItem.bitrate + " HD Bitrate: " + hdItem.bitrate);
+                log.debug("HD feature is set, SD Bitrate: " + sdItem.bitrate + " HD Bitrate: " + hdItem.bitrate);
             }
 
             return streamingItems;

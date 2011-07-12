@@ -73,6 +73,7 @@ package org.flowplayer.bitrateselect {
             log.debug("applyForClip? " + apply);
             return apply;
         }
+
     
         public function onLoad(player:Flowplayer):void {
             log.info("onLoad()");
@@ -124,6 +125,7 @@ package org.flowplayer.bitrateselect {
                 var controlbar:* = player.pluginRegistry.plugins['controls'];
                 controlbar.pluginObject.addEventListener(WidgetContainerEvent.CONTAINER_READY, addHDButton);
             }
+
 
             _model.dispatchOnLoad();
         }
@@ -210,6 +212,7 @@ package org.flowplayer.bitrateselect {
             var mappedBitrate:BitrateItem = _streamSelectionManager.getMappedBitrate(-1);
             _streamSelectionManager.changeStreamNames(mappedBitrate);
 
+
             _resolveSuccessListener(_clip);
         }
 
@@ -244,6 +247,7 @@ package org.flowplayer.bitrateselect {
             }
         }
 
+        [External]
         public function get hd():Boolean {
             return _hdEnabled;
         }
