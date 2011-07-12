@@ -8,6 +8,7 @@ Fixes:
 - #214 , need to reset the datastore on completion or else time won't reset when seeking mp4 clips
 - #314, inconsistent seeking behavior between in-buffer seeks and server seeks
 - #315, server seek to position zero was failing
+- #339, possible fixes for switching and seeking failures due to datastore. does not reload, just a direct seek.
 
 3.2.6
 -----

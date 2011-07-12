@@ -336,6 +336,71 @@ $f("range", "@PLAYER_SWF@", {
 });</code></pre>
 </div>
 
+<h2>Pseudo Streaming with HD Button Example</h2>
+
+<p>
+    Pseudo streaming with HD button feature example.
+</p>
+
+<div style="width:425px;margin:30px auto">
+
+
+    <!-- player container-->
+
+
+    <a
+            href="bbb_320x180"
+            style="display:block;width:480px;height:270px"
+            id="pseudoplayer">
+        <!-- splash image inside the container -->
+        <img src="http://www.flowplayer.org/img/home/flow_eye.jpg" alt="Search engine friendly content" width="320"
+             height="205"/>
+    </a>
+
+    <!-- Flowplayer installation and configuration -->
+    <script language="JavaScript">
+
+        flowplayer("pseudoplayer", "@PLAYER_SWF@", {
+        clip: {
+
+            urlResolvers: 'bitrateselect',
+            provider: 'pseudo',
+            autoPlay: false,
+            scaling: 'fit',
+            baseUrl: 'http://pseudo01.hddn.com/vod/demo.flowplayervod/',
+
+            bitrates: [
+                {url: "bbb-400.mp4", width: 480, height: 270, bitrate: 400, label: "270k"},
+                {url: "bbb-800.mp4", width: 640, height: 360, bitrate: 800, label: "360k"}
+            ]
+        },
+
+
+        plugins: {
+            pseudo: {
+                url: '../flowplayer.pseudostreaming.swf'
+            },
+            // bandwidth check plugin
+            bitrateselect: {
+                url: '../flowplayer.bitrateselect.swf',
+
+                hdButton: { place: "both" }
+
+
+            }
+
+
+        },
+        log: {
+            level: 'debug',
+            filter: 'org.flowplayer.pseudostreaming.*, org.flowplayer.bwcheck.*,org.flowplayer.controller.*'
+        }
+     });
+    </script>
+
+</div>
+
+
 		
 		</div>  
 		<div class="clear"></div> 
