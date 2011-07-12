@@ -39,6 +39,7 @@ import org.flowplayer.view.AnimationEngine;
 			};
 			
 			createBars();
+            enableDragging(true);
 		}
 		
 		private function createBars():void {
