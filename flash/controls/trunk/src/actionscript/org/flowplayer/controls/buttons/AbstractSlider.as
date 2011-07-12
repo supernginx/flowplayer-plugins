@@ -81,7 +81,6 @@ package org.flowplayer.controls.buttons {
 
         private function onMouseMove(event:MouseEvent):void {
             if (! _mouseOver) return;
-            var text:String = tooltipText;
             _tooltip.text = tooltipText;
         }
 
@@ -147,11 +146,9 @@ package org.flowplayer.controls.buttons {
 
 		override public function set enabled(value:Boolean) :void {
 		//	log.error("setting enabled to " + value);
-            _dragTimer.addEventListener(TimerEvent.TIMER, dragging);
 			var func:String = value ? "addEventListener" : "removeEventListener";
 
 			this[func](MouseEvent.MOUSE_UP, _onMouseUp);
-			
 			_dragger[func](MouseEvent.MOUSE_DOWN, _onMouseDown);
 			_dragger[func](MouseEvent.MOUSE_UP, _onMouseUp);
 			
@@ -167,6 +164,11 @@ package org.flowplayer.controls.buttons {
 			
 			_dragger.buttonMode = value;			
 		}
+
+        protected function enableDragging(value:Boolean):void {
+            var func:String = value ? "addEventListener" : "removeEventListener";
+            _dragTimer[func](TimerEvent.TIMER, dragging);
+        }
 
         override public function get enabled():Boolean {
             return _dragger.buttonMode;

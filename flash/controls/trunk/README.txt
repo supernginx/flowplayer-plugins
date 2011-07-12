@@ -13,6 +13,7 @@ Fixes:
 - The buffer bar now moves also in paused state if the player keeps buffering: http://code.google.com/p/flowplayer-core/issues/detail?id=249
 - Time display showed the second value truncated. For example if the clip's duration was 3.8 it was showing a 3 second duration
   instead of the correct rounded value of 4 seconds.
+- Fixed: Set autoPlay: false, move the scrub bar, its boundless and will keep moving past the player dimensions. Issue #332
 
 3.2.5
 -----

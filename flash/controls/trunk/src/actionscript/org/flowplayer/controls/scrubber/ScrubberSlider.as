@@ -205,6 +205,7 @@ package org.flowplayer.controls.scrubber {
 			_currentClip = (event.target as Clip);
             log.debug("start() " + _currentClip);
             if (_currentClip.duration == 0 && _currentClip.type == ClipType.IMAGE) return;
+            enableDragging(true);
 			stop(null);
             doStart(_currentClip);
         }

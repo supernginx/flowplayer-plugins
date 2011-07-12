@@ -42,7 +42,7 @@ package org.flowplayer.controls.scrubber {
 		override protected function createWidget():void {
 			log.debug("Creating scrubber with ", _config)
 			_widget = new ScrubberSlider(_config as ScrubberConfig, _player, _controlbar);
-            enableScrubber(true);
+//            enableScrubber(true);
         }
 
 		override protected function createDecorator():void {
