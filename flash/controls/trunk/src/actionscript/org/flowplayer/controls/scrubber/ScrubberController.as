@@ -117,6 +117,9 @@ package org.flowplayer.controls.scrubber {
 			}
         }
 
+        override protected function onSeek(event:ClipEvent):void {
+            _player.silent = false;
+        }
 
 		private function enableScrubber(enabled:Boolean):void {
             log.debug("enableScrubber() setting scrubber enabled " + enabled);
