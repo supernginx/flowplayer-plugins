@@ -286,8 +286,6 @@ package org.flowplayer.controls.buttons {
         protected function onDragging():void {
         }
 
-        protected function onDraggingComplete(event:TimerEvent):void {}
-
 		private function dispatchDragEvent():void {
 			log.debug("dispatching drag event");
 			onDispatchDrag();
