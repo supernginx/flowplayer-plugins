@@ -114,14 +114,9 @@ package org.flowplayer.ui.controllers {
             _player.playlist.onStop(onPlayStopped);
             _player.playlist.onBufferStop(onPlayStopped);
             _player.playlist.onFinish(onPlayStopped);
-            _player.playlist.onSeek(onSeek);
         }
 
 		// This is some handy functions you can override to handle your buttons' state.
-
-        protected function onSeek(event:ClipEvent):void {
-
-        }
 
         protected function onPlayStarted(event:ClipEvent):void {
 
