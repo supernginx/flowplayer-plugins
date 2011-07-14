@@ -9,6 +9,7 @@ Fixes:
 - #314, inconsistent seeking behavior between in-buffer seeks and server seeks
 - #315, server seek to position zero was failing
 - #339, possible fixes for switching and seeking failures due to datastore. does not reload, just a direct seek.
+- #321. previous seek time gets cleared on replay seek before time gets updated. Store previous end seek time until playback begins to provide correct replay times.
 
 3.2.6
 -----
