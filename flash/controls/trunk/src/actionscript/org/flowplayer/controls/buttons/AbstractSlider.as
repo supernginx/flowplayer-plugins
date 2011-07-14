@@ -221,14 +221,14 @@ package org.flowplayer.controls.buttons {
 		}
 		
 		private function _onMouseUp(event:MouseEvent = null):void {
+            _dragTimer.stop();
             onMouseUp(event);
 //			_tooltip.hide();
 			if (event && event.target != this) return;
 			
 			if (! canDragTo(mouseX) /*&& _dragger.x >= 0*/) return;
 						
-			_dragTimer.stop();
-			dragging();
+//			dragging();
 			updateCurrentPosFromDragger();
 
 			if (! dispatchOnDrag) {
@@ -285,6 +285,8 @@ package org.flowplayer.controls.buttons {
 
         protected function onDragging():void {
         }
+
+        protected function onDraggingComplete(event:TimerEvent):void {}
 
 		private function dispatchDragEvent():void {
 			log.debug("dispatching drag event");
@@ -431,5 +433,9 @@ package org.flowplayer.controls.buttons {
 		public function set tooltipTextFunc(tooltipTextFunc:Function):void {
 			_tooltipTextFunc=tooltipTextFunc;
 		}
+
+        protected function get mouseDown():Boolean {
+            return _mouseDown;
+        }
     }
 }

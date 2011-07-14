@@ -206,7 +206,7 @@ package org.flowplayer.controls.scrubber {
             log.debug("start() " + _currentClip);
             if (_currentClip.duration == 0 && _currentClip.type == ClipType.IMAGE) return;
             enableDragging(true);
-			stop(null);
+//			stop(null);
             doStart(_currentClip);
         }
 
@@ -227,6 +227,11 @@ package org.flowplayer.controls.scrubber {
             var status:Status = _player.status;
             var time:Number = startTime > 0 ? startTime : status.time;
 
+            if (_seekInProgress) {
+                log.debug("doStart(), seek in progress, returning");
+                return;
+            }
+
             if (! _player.isPlaying()) {
                 log.debug("doStart(), not playing, returning");
                 return;
@@ -244,7 +249,7 @@ package org.flowplayer.controls.scrubber {
             _startDetectTimer.addEventListener(TimerEvent.TIMER,
                     function(event:TimerEvent):void {
                         var currentTime:Number = _player.status.time;
-                        log.debug("on startDetectTimer()");
+                        log.debug("on startDetectTimer() currentTime " + currentTime + ", time " + time);
 
                         if (Math.abs(currentTime - time) > 0.2) {
                             _startDetectTimer.stop();
@@ -396,24 +401,28 @@ package org.flowplayer.controls.scrubber {
         override protected function onMouseDown(event:MouseEvent):void {
             log.debug("onMouseDown()");
             if (_player.isPlaying()) {
-                _player.silent = true;
-                _player.pause();
-                _player.silent = false;
+                _player.pause(true);
                 _isSeekPaused = true;
             }
         }
 
 		override protected function onMouseUp(event:MouseEvent):void {
             log.debug("onMouseUp()");
-        	if (! canDragTo(mouseX)/* && _dragger.x > 0*/) {
-				doStart(_currentClip);
-			}
+//            if (! canDragTo(mouseX)/* && _dragger.x > 0*/) {
+//                return;
+//            }
+
             if (_isSeekPaused) {
-                _player.silent = true;
-                _player.resume();
+                _player.resume(true);
                 _isSeekPaused = false;
             }
-            _player.silent = false;
+            seekPlayerToScrubberValue(false);
+//            doStart(_currentClip);
+        }
+
+        private function seekPlayerToScrubberValue(silent:Boolean):void {
+            log.debug("seekPlayerToScrubberValue(), silent == " + silent);
+            _player.seekRelative(valueFromScrubberPos, silent);
         }
 
 		override protected function onDispatchDrag():void {
@@ -454,14 +463,19 @@ package org.flowplayer.controls.scrubber {
 			drawBar(_bufferBar, (_config as ScrubberConfig).bufferColor, (_config as ScrubberConfig).bufferAlpha, (_config as ScrubberConfig).bufferGradient, _bufferBar.x, _bufferBar.width);
 		}
 
+        override protected function onDraggingComplete(event:TimerEvent):void {
+            log.debug("onDraggingComplete()");
+            _player.seekRelative(valueFromScrubberPos);
+        }
 //
         override protected function onDragging():void {
             log.debug("onDragging()");
             stop(null);
             drawProgressBar(_bufferStart * width);
 
-            _player.silent = true;
-            _player.seekRelative(valueFromScrubberPos);
+            if (mouseDown) {
+                seekPlayerToScrubberValue(true);
+            }
         }
 	}
 }

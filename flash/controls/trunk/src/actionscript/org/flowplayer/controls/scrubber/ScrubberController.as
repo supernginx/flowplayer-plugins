@@ -117,10 +117,6 @@ package org.flowplayer.controls.scrubber {
 			}
         }
 
-        override protected function onSeek(event:ClipEvent):void {
-            _player.silent = false;
-        }
-
 		private function enableScrubber(enabled:Boolean):void {
             log.debug("enableScrubber() setting scrubber enabled " + enabled);
             if (!_widget) return;
@@ -139,7 +135,6 @@ package org.flowplayer.controls.scrubber {
 
 		private function onScrubbed(event:Event):void {
             log.debug("onScrubbed() " + ScrubberSlider(event.target).value);
-            _player.silent = false;
 			_player.seekRelative(ScrubberSlider(event.target).value);
 		}
 
