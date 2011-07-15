@@ -8,26 +8,23 @@
  */
 
 package org.flowplayer.controls.scrubber {
-    import org.flowplayer.controller.StreamProvider;
-    import org.flowplayer.controls.buttons.AbstractSlider;
-	import org.flowplayer.controls.buttons.SliderConfig;
-	
     import flash.display.DisplayObject;
     import flash.display.Sprite;
     import flash.events.MouseEvent;
     import flash.events.TimerEvent;
     import flash.utils.*;
 
-    import org.flowplayer.controls.config.Config;
+    import org.flowplayer.controller.StreamProvider;
+    import org.flowplayer.controls.buttons.AbstractSlider;
     import org.flowplayer.model.Clip;
     import org.flowplayer.model.ClipEvent;
+    import org.flowplayer.model.ClipEventType;
     import org.flowplayer.model.ClipType;
     import org.flowplayer.model.Playlist;
     import org.flowplayer.model.PluginEvent;
     import org.flowplayer.model.PluginModel;
     import org.flowplayer.model.Status;
     import org.flowplayer.util.GraphicsUtil;
-    import org.flowplayer.view.AnimationEngine;
     import org.flowplayer.view.Flowplayer;
 
     /**
@@ -173,15 +170,22 @@ package org.flowplayer.controls.scrubber {
 
         private function onBeforeSeek(event:ClipEvent):void {
             log.debug("onBeforeSeek()");
+
             if (event.isDefaultPrevented() ) {
-				log.debug("Default prevented ")
-				stop(null);
-				updateDraggerPos(_player.status.time, event.target as Clip);
-				doStart(event.target as Clip, _player.status.time);
-				return;
+				log.debug("Default prevented ");
+                if (_isSeekPaused) {
+                    enableDragging(false);
+                }
+                stop(null);
+                updateDraggerPos(_player.status.time, event.target as Clip);
+                doStart(event.target as Clip, _player.status.time);
+                return;
 			}
+
+            if (! isDragging) {
+                updateDraggerPos(event.info as Number, event.target as Clip);
+            }
             _seekInProgress = true;
-            updateDraggerPos(event.info as Number, event.target as Clip);
             stop(null);
         }
 
@@ -191,7 +195,6 @@ package org.flowplayer.controls.scrubber {
 
             _seekInProgress = false;
             stop();
-//            updateDraggerPos(_player.status.time, event.target as Clip);
 			drawBufferBar();
 			
             if (! _player.isPlaying()) return;
@@ -205,7 +208,6 @@ package org.flowplayer.controls.scrubber {
             log.debug("start() " + _currentClip);
             if (_currentClip.duration == 0 && _currentClip.type == ClipType.IMAGE) return;
             enableDragging(true);
-//			stop(null);
             doStart(_currentClip);
         }
 
@@ -259,7 +261,6 @@ package org.flowplayer.controls.scrubber {
                             updateDraggerPos(currentTime, clip);
                             log.debug("doStart(), starting an animation to x pos " + endPos + ", the duration is " + duration + ", current pos is " + _dragger.x + ", time is "+ currentTime);
 
-//                            animationEngine.cancel(_dragger);
                             animationEngine.animateProperty(_dragger, "x", endPos, duration, null,
                                     function():void {
                                         drawProgressBar(_bufferStart * width);
@@ -315,9 +316,7 @@ package org.flowplayer.controls.scrubber {
                 log.debug("midroll stopped, not rewinding to beginning");
                 return;
             }
-
             _dragger.x = 0;
-
             clearBar(_progressBar);
         }
 
@@ -326,13 +325,11 @@ package org.flowplayer.controls.scrubber {
 		}
 
 		override protected function getClickTargets(enabled:Boolean):Array {
-			//log.error("getClickTargets", enabled);
 			_enabled = enabled;
 			var targets:Array = [_bufferBar, _progressBar];
 			if (! enabled || _allowRandomSeek) {
 				targets.push(this);
 			}
-						
 			return targets;
 		}
 		
@@ -341,7 +338,6 @@ package org.flowplayer.controls.scrubber {
 		}
 
 		private function doDrawBufferBar(leftEdge:Number, rightEdge:Number):void {
-		//	log.error("doDrawBufferBar("+ leftEdge +", "+ rightEdge +")");
 			drawBar(_bufferBar, (_config as ScrubberConfig).bufferColor, (_config as ScrubberConfig).bufferAlpha, (_config as ScrubberConfig).bufferGradient, leftEdge, rightEdge);
 		}
 		
@@ -380,7 +376,6 @@ package org.flowplayer.controls.scrubber {
 
 		override protected function get maxDrag():Number {
 			if (_allowRandomSeek) return width - _dragger.width;
-			
 			//log.debug("maxDrag = "+ _bufferEnd + " * ("+ width + " - "+ _dragger.width +")  = "+ (_bufferEnd * (width - _dragger.width)));
 			return _bufferEnd * (width - _dragger.width);
 		}
@@ -407,21 +402,23 @@ package org.flowplayer.controls.scrubber {
 
 		override protected function onMouseUp(event:MouseEvent):void {
             log.debug("onMouseUp()");
-//            if (! canDragTo(mouseX)/* && _dragger.x > 0*/) {
-//                return;
-//            }
-
+            if (! canDragTo(mouseX)/* && _dragger.x > 0*/) {
+                doStart(_currentClip);
+            }
             if (_isSeekPaused) {
                 _player.resume(true);
+                seekToScrubberValue(false);
                 _isSeekPaused = false;
             }
-            seekPlayerToScrubberValue(false);
-//            doStart(_currentClip);
         }
 
-        private function seekPlayerToScrubberValue(silent:Boolean):void {
-            log.debug("seekPlayerToScrubberValue(), silent == " + silent);
-            _player.seekRelative(valueFromScrubberPos, silent);
+        private function seekToScrubberValue(silent:Boolean):void {
+            log.debug("seekToScrubberValue(), silent == " + silent);
+            var value:Number = valueFromScrubberPos;
+            if (silent && ! _currentClip.dispatchBeforeEvent(new ClipEvent(ClipEventType.SEEK, value))) {
+                return;
+            }
+            _player.seekRelative(value, silent);
         }
 
 		override protected function onDispatchDrag():void {
@@ -442,23 +439,19 @@ package org.flowplayer.controls.scrubber {
             GraphicsUtil.removeGradient(bar);
         }
 
-		override protected function get allowSetValue():Boolean {
-			return ! _seekInProgress;
-		}
-		
 		override public function configure(config:Object):void {
 			super.configure(config);
 			drawBar(_progressBar, _config.color, _config.alpha, _config.gradient, _progressBar.x, _progressBar.width);
 			drawBar(_bufferBar, (_config as ScrubberConfig).bufferColor, (_config as ScrubberConfig).bufferAlpha, (_config as ScrubberConfig).bufferGradient, _bufferBar.x, _bufferBar.width);
 		}
-//
+
         override protected function onDragging():void {
             log.debug("onDragging()");
             stop(null);
             drawProgressBar(_bufferStart * width);
 
             if (mouseDown) {
-                seekPlayerToScrubberValue(true);
+                seekToScrubberValue(true);
             }
         }
 	}

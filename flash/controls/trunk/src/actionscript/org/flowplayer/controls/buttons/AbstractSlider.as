@@ -9,26 +9,20 @@
 
 package org.flowplayer.controls.buttons {
     import flash.display.DisplayObject;
+    import flash.display.Sprite;
     import flash.events.Event;
     import flash.events.EventDispatcher;
     import flash.events.MouseEvent;
     import flash.events.TimerEvent;
     import flash.utils.Timer;
-	import flash.display.Sprite;
 
-    import org.flowplayer.ui.buttons.ButtonConfig;
+    import org.flowplayer.ui.buttons.ConfigurableWidget;
     import org.flowplayer.ui.tooltips.DefaultToolTip;
     import org.flowplayer.ui.tooltips.NullToolTip;
     import org.flowplayer.ui.tooltips.ToolTip;
-	import org.flowplayer.ui.buttons.ConfigurableWidget;
-	
-    import org.flowplayer.controls.buttons.DraggerButton;
     import org.flowplayer.util.GraphicsUtil;
-    import org.flowplayer.view.AbstractSprite;
     import org.flowplayer.view.AnimationEngine;
-	import org.flowplayer.view.Flowplayer;
-
-	import org.flowplayer.controls.buttons.SliderConfig;
+    import org.flowplayer.view.Flowplayer;
 
     /**
 	 * @author api
@@ -149,9 +143,10 @@ package org.flowplayer.controls.buttons {
 			var func:String = value ? "addEventListener" : "removeEventListener";
 
 			this[func](MouseEvent.MOUSE_UP, _onMouseUp);
-			_dragger[func](MouseEvent.MOUSE_DOWN, _onMouseDown);
-			_dragger[func](MouseEvent.MOUSE_UP, _onMouseUp);
-			
+            _dragger[func](MouseEvent.MOUSE_UP, _onMouseUp);
+
+            _dragger[func](MouseEvent.MOUSE_DOWN, _onMouseDown);
+
 			// we might not already been added to stage when this is called
 			if ( stage ) {
 				stage[func](MouseEvent.MOUSE_UP, onMouseUpStage);
@@ -159,10 +154,8 @@ package org.flowplayer.controls.buttons {
 			}
 			
 			toggleClickListeners(value);
-
 			alpha = value ? 1 : 0.5;
-			
-			_dragger.buttonMode = value;			
+			_dragger.buttonMode = value;
 		}
 
         protected function enableDragging(value:Boolean):void {
@@ -223,12 +216,10 @@ package org.flowplayer.controls.buttons {
 		private function _onMouseUp(event:MouseEvent = null):void {
             _dragTimer.stop();
             onMouseUp(event);
-//			_tooltip.hide();
 			if (event && event.target != this) return;
 			
 			if (! canDragTo(mouseX) /*&& _dragger.x >= 0*/) return;
 						
-//			dragging();
 			updateCurrentPosFromDragger();
 
 			if (! dispatchOnDrag) {
@@ -322,12 +313,6 @@ package org.flowplayer.controls.buttons {
 			}
 			_currentPos = value;
             onSetValue();
-//			if (_dragTimer && _dragTimer.running || ! allowSetValue) {
-//				log.debug("drag in progress");
-//				return;
-//			}
-//			var pos:Number = value/100 * (width - _dragger.width);
-//            _animationEngine.animateProperty(_dragger, "x", pos, 200, function():void { onSetValue() });
 		}
 
         protected function onSetValue():void {
@@ -342,11 +327,9 @@ package org.flowplayer.controls.buttons {
 			super.onResize();
 			
 			_dragger.setSize(height, height);	// TODO : calculate real width
-            //_dragger.scaleX = _dragger.scaleY;
-            
+
 			drawBackground();
 			drawBorder();
-			
 			onSetValue();
         }
 
