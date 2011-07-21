@@ -207,7 +207,8 @@
                     },
                     onStreamSwitch: function (newItem) {
                         $f().getPlugin('content').setHtml("Switched to: " + newItem.streamName);
-                    }
+                    },
+                    qos: ["bwUp", "bwDown", "buffer"]
                 },
 
                 // RTMP streaming plugin
@@ -520,12 +521,14 @@
                     {
                         url: "mp4:bbb-400", width: 320, height: 180, bitrate: 400
                     },
-                    { url: "mp4:bbb-1200", width: 720, bitrate: 1200 }
+                    { url: "mp4:bbb-800", width: 480, bitrate: 800 }
+                    //{ url: "mp4:bbb-1200", width: 720, bitrate: 1200 }
             ]
         },
         plugins: {
             bitrateselect: {
-                url: '../flowplayer.bitrateselect.swf'
+                url: '../flowplayer.bitrateselect.swf',
+                hdButton: { place: "both" }
             },
             // bandwidth check plugin
             bwcheck: {
@@ -540,7 +543,6 @@
                 //detect bandwidth on startup
                 checkOnStart: true,
 
-                hdButton: { place: "both" },
 
                 maxWidth: 720,
 
@@ -709,7 +711,7 @@
         flowplayer("httpplayer", "@PLAYER_SWF@", {
         clip: {
 
-            urlResolvers: 'bwcheck',
+            urlResolvers: ['bitrateselect','bwcheck'],
             autoPlay: false,
             scaling: 'fit',
             baseUrl: 'http://vod01.netdna.com/vod/demo.flowplayer/',
@@ -720,7 +722,10 @@
             ]
         },
         plugins: {
-
+            bitrateselect: {
+                url: '../flowplayer.bitrateselect.swf',
+                hdButton: { place: "both" }
+            },
             // bandwidth check plugin
             bwcheck: {
                 url: '@MAIN_PLAYER_SWF@',
@@ -731,7 +736,7 @@
                 netConnectionUrl: 'http://releases.flowplayer.org/swf/flowplayer-3.1.5.swf',
                 bitrateProfileName: 'HTTPBitrateProfile',
 
-                hdButton: { place: "both" },
+                //hdButton: { place: "both" },
 
                 //detect bandwidth on startup
                 checkOnStart: true,
