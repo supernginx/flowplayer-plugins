@@ -27,10 +27,64 @@ package org.flowplayer.bwcheck.config {
 
 		private var _values:Object = new Object();
 		private var _properties:Array = ["bwUp", "bwDown", "frames", "buffer", "screen","ratio"];
+        private var _minBufferLength:Number = 2;
+        private var _minDroppedFrames:Number = 2;
+        private var _bitrateSafety:Number = 1.15;
+        private var _framesToLow:Number = 24;
+        private var _framesToTwo:Number = 20;
+        private var _framesToOne:Number = 10;
 
 		public function reset():void {
 			_values = new Object();
 		}
+
+        public function get minBufferLength():Number {
+            return _minBufferLength;
+        }
+
+        public function set minBufferLength(value:Number):void {
+            _minBufferLength = value;
+        }
+
+        public function get minDroppedFrames():Number {
+            return _minDroppedFrames;
+        }
+
+        public function set minDroppedFrames(value:Number):void {
+            _minDroppedFrames = value;
+        }
+
+        public function get framesToLow():Number {
+            return _framesToLow;
+        }
+
+        public function set framesToLow(value:Number):void {
+            _framesToLow = value;
+        }
+
+        public function get framesToTwo():Number {
+            return _framesToTwo;
+        }
+
+        public function set framesToTwo(value:Number):void {
+            _framesToTwo = value;
+        }
+
+        public function get framesToOne():Number {
+            return _framesToLow;
+        }
+
+        public function set framesToOne(value:Number):void {
+            _framesToOne = value;
+        }
+
+        public function get bitrateSafety():Number {
+            return _bitrateSafety;
+        }
+
+        public function set bitrateSafety(value:Number):void {
+            _bitrateSafety = value;
+        }
 
 		public function get bwUp():Boolean {
 			return value("bwUp");

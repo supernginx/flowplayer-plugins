@@ -6,6 +6,9 @@ Version history:
 - Refactored bwcheck with common bitrate selection and switching #292
 - Make generated bitrate list work with dynamic stream switching functions.
 - Provide integration with bitrateselect plugin.
+- fix for #347 create custom playstatus handler or else it breaks dynamic events
+- #347 overriding osmf switching rules to be able to configure options.
+- Added ability to obtain netstreammetrics from the clip required for the qosmonitor plugin.
 
 3.2.6
 -----
