@@ -53,20 +53,27 @@ package org.flowplayer.net {
 
                 var i:int = 0;
 
-                for each(var props:Object in clip.getCustomProperty("bitrates")) {
+                // sort the bitrateitems in ascording order before generating the list.
+                var bitrates:Array = (clip.getCustomProperty("bitrates") as Array).sortOn(["bitrate"], Array.NUMERIC);
+
+
+                for each(var props:Object in bitrates) {
                     var bitrateItem:BitrateItem = new PropertyBinder(new BitrateItem()).copyProperties(props) as BitrateItem;
 
                     bitrateItem.index = i;
+
                     streamingItems.push(bitrateItem);
                     i++;
                 }
 
                 //set the BitrateItem to the clip to be reused later in the streamselector
-                clip.setCustomProperty("bitrateItems", sort(streamingItems));
+                //clip.setCustomProperty("bitrateItems", sort(streamingItems));
+                 clip.setCustomProperty("bitrateItems", streamingItems);
             } else {
                 //we have a BitrateItems list configured in another plugin
                 //Fixed casting issue if a DynamicStreamingItem resource #339
-                streamingItems = sort(Vector.<BitrateItem>(clip.getCustomProperty("bitrateItems")));
+                //streamingItems = sort(Vector.<BitrateItem>(clip.getCustomProperty("bitrateItems")));
+                streamingItems = Vector.<BitrateItem>(clip.getCustomProperty("bitrateItems"));
             }
 
             return streamingItems;
