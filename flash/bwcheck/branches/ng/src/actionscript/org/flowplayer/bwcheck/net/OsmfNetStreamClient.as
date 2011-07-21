@@ -58,9 +58,10 @@ package org.flowplayer.bwcheck.net {
 
         //fix for #336, send the correct playStatus object
         //fix for #347 create custom playstatus handler or else it breaks dynamic events
+        //fix for #347 send rest arguments directly netstreamclient will handle arguments for wowza
         public function onCustomPlayStatus(...rest):void {
-             var info:Object = rest.length > 1 ? rest[2] : rest[0];
-            _fpClient.onPlayStatus(info);
+             //var info:Object = rest.length > 1 ? rest[2] : rest[0];
+            _fpClient.onPlayStatus(rest);
 
         }
     }
