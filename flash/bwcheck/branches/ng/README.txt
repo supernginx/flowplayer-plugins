@@ -9,6 +9,9 @@ Version history:
 - fix for #347 create custom playstatus handler or else it breaks dynamic events
 - #347 overriding osmf switching rules to be able to configure options.
 - Added ability to obtain netstreammetrics from the clip required for the qosmonitor plugin.
+- #347 Fixed issue with returning onPlayStatus correctly in custom osmf netclient.
+- #347 use netstreamswitchmanager instead to obtain index instead of metrics which returns -1 at times.
+
 
 3.2.6
 -----
