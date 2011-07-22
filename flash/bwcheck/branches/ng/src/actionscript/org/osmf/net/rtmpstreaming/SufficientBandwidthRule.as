@@ -72,13 +72,13 @@ package org.osmf.net.rtmpstreaming
 				for (var i:int = rtmpMetrics.resource.streamItems.length - 1; i >= 0; i--)
 				{
 
-                    debug("bandwidth: " + rtmpMetrics.averageMaxBytesPerSecond * 8 / 1024 + " multiplied: " + (rtmpMetrics.resource.streamItems[i].bitrate * _bandwidthSafetyMultiplier) + " bitrate: " + rtmpMetrics.resource.streamItems[i].bitrate);
+                    //debug("bandwidth: " + rtmpMetrics.averageMaxBytesPerSecond * 8 / 1024 + " multiplied: " + (rtmpMetrics.resource.streamItems[i].bitrate * _bandwidthSafetyMultiplier) + " bitrate: " + rtmpMetrics.resource.streamItems[i].bitrate);
 
                     if (rtmpMetrics.averageMaxBytesPerSecond * 8 / 1024 > (rtmpMetrics.resource.streamItems[i].bitrate * _bandwidthSafetyMultiplier))
 					{
 
                         newIndex = i;
-                        debug("bandwidth is greater than bitrate index " + newIndex);
+                        //debug("bandwidth is greater than bitrate index " + newIndex);
 
 						break;
 					}

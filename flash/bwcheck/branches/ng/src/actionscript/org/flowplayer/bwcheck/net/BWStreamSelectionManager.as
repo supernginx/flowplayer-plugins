@@ -29,13 +29,15 @@ package org.flowplayer.bwcheck.net {
 
     import org.osmf.net.DynamicStreamingItem;
     import org.osmf.net.NetStreamMetricsBase;
+import org.osmf.net.NetStreamSwitchManager;
 
 public class BWStreamSelectionManager extends StreamSelectionManager {
 
         private var _config:Config;
         private static var bwSelectLog:Log = new Log("org.flowplayer.bwcheck.net::BWStreamSelectionManager");
         private var dynamicStreamingItems:Vector.<DynamicStreamingItem>;
-        private var _netStreamMetrics:NetStreamMetricsBase;
+        //private var _netStreamMetrics:NetStreamMetricsBase;
+        private var _netStreamSwitchManager:NetStreamSwitchManager;
 
         public function BWStreamSelectionManager(bitrateResource:BitrateResource, player:Flowplayer, resolver:ClipURLResolver, config:Config) {
             super(bitrateResource, player, resolver);
@@ -83,28 +85,29 @@ public class BWStreamSelectionManager extends StreamSelectionManager {
         override public function changeStreamNames(mappedBitrate:BitrateItem):void {
             super.changeStreamNames(mappedBitrate);
             var url:String = mappedBitrate.url;
+            currentIndex = mappedBitrate.index;
             _player.currentClip.setCustomProperty("bwcheckResolvedUrl", url);
         }
 
         override public function get currentBitrateItem():BitrateItem {
-            return _netStreamMetrics ? super.getItem(_netStreamMetrics.currentIndex) : super.currentBitrateItem;
+            return _netStreamSwitchManager ? super.getItem(_netStreamSwitchManager.currentIndex) : super.currentBitrateItem;
         }
 
         override public function get currentIndex():Number {
-            return _netStreamMetrics ? _netStreamMetrics.currentIndex : super.currentIndex;
+            return _netStreamSwitchManager ? _netStreamSwitchManager.currentIndex : super.currentIndex;
         }
 
         override public function set currentIndex(value:Number):void {
-            _netStreamMetrics ? _netStreamMetrics.currentIndex = value : super.currentIndex = value;
+            _netStreamSwitchManager ? _netStreamSwitchManager.currentIndex = value : super.currentIndex = value;
         }
 
         override public function set currentBitrateItem(value:BitrateItem):void {
             super.currentBitrateItem = value;
-            if (_netStreamMetrics) _netStreamMetrics.currentIndex = value.index;
+            if (_netStreamSwitchManager) _netStreamSwitchManager.currentIndex = value.index;
         }
 
-        public function set metrics(value:NetStreamMetricsBase):void {
-            _netStreamMetrics = value;
+        public function set qosSwitchManager(value:NetStreamSwitchManager):void {
+            _netStreamSwitchManager = value;
         }
     }
 }
