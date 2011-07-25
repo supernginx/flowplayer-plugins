@@ -14,6 +14,10 @@ Fixes:
 - Time display showed the second value truncated. For example if the clip's duration was 3.8 it was showing a 3 second duration
   instead of the correct rounded value of 4 seconds.
 - Fixed: Set autoPlay: false, move the scrub bar, its boundless and will keep moving past the player dimensions. Issue #332
+- #349 if we click or drag to seek to zero the calculation includes dragger dimensions so is negative, and the same for the end position, bound position between 0 and 100
+- #349 updating dragger position was extending the stage when dragging past the end edge, set a boundary around max drag to prevent this.
+
+
 
 3.2.5
 -----

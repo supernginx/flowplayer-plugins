@@ -83,8 +83,14 @@ package org.flowplayer.controls.buttons {
             return _tooltipTextFunc(valueFromScrubberPos);
         }
 
+        private function clampPos(val:Number, min:Number = 0, max:Number = 100):Number {
+            return Math.max(min, Math.min(max, val))
+        }
+
         protected function get valueFromScrubberPos():Number {
-            return ((mouseX - _dragger.width / 2) / (width - _dragger.width)) * 100;
+            //#349 if we click to seek to zero the calculation includes dragger dimensions so is negative, correct this to zero
+            //bound position between 0 and 100
+            return clampPos(((mouseX - _dragger.width / 2) / (width - _dragger.width)) * 100);
         }
 
         protected function onMouseOut(event:MouseEvent = null):void {
@@ -206,7 +212,6 @@ package org.flowplayer.controls.buttons {
 		
 		private function onMouseLeaveStage(event:Event):void {
 			_tooltip.hide();
-			
 			if (_dragTimer.running) {
 				_onMouseUp();
 			}
