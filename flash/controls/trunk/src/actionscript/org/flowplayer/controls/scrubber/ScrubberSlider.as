@@ -165,7 +165,8 @@ package org.flowplayer.controls.scrubber {
         }
 
         private function updateDraggerPos(time:Number, clip:Clip):void {
-           	_dragger.x = (time / clip.duration) * (width - _dragger.width);
+            //#349 minimize dragging area or else dragger extends stage
+           	_dragger.x = Math.min((time / clip.duration) * maxDrag, maxDrag);
         }
 
         private function onBeforeSeek(event:ClipEvent):void {
@@ -257,7 +258,8 @@ package org.flowplayer.controls.scrubber {
                             var endPos:Number = width - _dragger.width;
 							log.debug("animation duration is " + clip.duration + " - "+ time + " * 1000");
 							// var duration:Number = (clip.duration - time) * 1000;  
-                            var duration:Number = (clip.duration - currentTime) * 1000;  
+                            var duration:Number = (clip.duration - currentTime) * 1000;
+
                             updateDraggerPos(currentTime, clip);
                             log.debug("doStart(), starting an animation to x pos " + endPos + ", the duration is " + duration + ", current pos is " + _dragger.x + ", time is "+ currentTime);
 
@@ -418,7 +420,7 @@ package org.flowplayer.controls.scrubber {
             if (silent && ! _currentClip.dispatchBeforeEvent(new ClipEvent(ClipEventType.SEEK, value))) {
                 return;
             }
-            _player.seekRelative(value, silent);
+            _player.seekRelative(value , silent);
         }
 
 		override protected function onDispatchDrag():void {
