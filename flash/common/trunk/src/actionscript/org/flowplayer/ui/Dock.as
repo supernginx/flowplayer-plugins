@@ -14,6 +14,7 @@ package org.flowplayer.ui {
     import flash.display.StageDisplayState;
 
     import org.flowplayer.model.DisplayProperties;
+    import org.flowplayer.util.Arrange;
     import org.flowplayer.util.Log;
     import org.flowplayer.util.PropertyBinder;
     import org.flowplayer.view.AbstractSprite;
@@ -27,9 +28,26 @@ package org.flowplayer.ui {
         private var _config:DockConfig;
         private var _autoHide:AutoHide;
 
-        public function Dock(config:DockConfig) {
-            _config = config;;
+        /**
+         * Creates a new dock.
+         * @param player
+         * @param config
+         * @param pluginName the name used when binding the dock to the plugin registry
+         */
+        public function Dock(player:Flowplayer, config:DockConfig, pluginName:String) {
+            _player = player;
+
+            if (player.config.configObject.hasOwnProperty("plugins") && player.config.configObject["plugins"].hasOwnProperty(pluginName)) {
+                var dockConfigObj:Object = player.config.configObject["plugins"][pluginName];
+                _config = new PropertyBinder(config || new DockConfig()).copyProperties(dockConfigObj, true) as DockConfig;
+                new PropertyBinder(_config.model).copyProperties(dockConfigObj);
+            } else {
+                _config = config || new DockConfig();
+            }
             _config.model.setDisplayObject(this);
+            _config.model.name = pluginName;
+
+            player.pluginRegistry.registerDisplayPlugin(_config.model, this);
         }
 
         /**
@@ -43,15 +61,21 @@ package org.flowplayer.ui {
             var plugin:DisplayProperties = player.pluginRegistry.getPlugin(DOCK_PLUGIN_NAME) as DisplayProperties;
             if (! plugin) {
                 log.debug("getInstance(), creating new instance");
-                return createDock(player, config);
+                return new Dock(player, config, DOCK_PLUGIN_NAME);
             }
             log.debug("getInstance(), returning existing instance");
             return plugin.getDisplayObject() as Dock;
         }
 
+        /**
+         * Adds an icon to the dock.
+         * @param icon
+         * @param id
+         */
         public function addIcon(icon:DisplayObject, id:String = null):void {
             _icons.push(icon);
             addChild(icon);
+            onResize();
         }
 
         public function addToPanel():void {
@@ -61,14 +85,22 @@ package org.flowplayer.ui {
             if (_autoHide || ! _config.autoHide.enabled) return;
 
             log.debug("addToPanel(), creating autoHide with config", _config.autoHide);
-            _autoHide = new AutoHide(_config.model, _config.autoHide, _player, stage, this);
+            createAutoHide();
         }
 
         public function startAutoHide():void {
+            createAutoHide();
             _autoHide.start();
         }
 
+        private function createAutoHide():void {
+            if (! _autoHide) {
+                _autoHide = new AutoHide(_config.model, _config.autoHide, _player, stage, this);
+            }
+        }
+
         public function stopAutoHide(leaveVisible:Boolean = true):void {
+            createAutoHide();
             _autoHide.stop(leaveVisible);
         }
 
@@ -76,34 +108,17 @@ package org.flowplayer.ui {
             _autoHide.cancelAnimation();
         }
 
-        private static function createDock(player:Flowplayer, config:DockConfig):Dock {
-            log.debug("createDock()");
-            var config:DockConfig;
-            if (player.config.configObject.hasOwnProperty("plugins") && player.config.configObject["plugins"].hasOwnProperty(DOCK_PLUGIN_NAME)) {
-                var dockConfigObj:Object = player.config.configObject["plugins"][DOCK_PLUGIN_NAME];
-                config = new PropertyBinder(config || new DockConfig()).copyProperties(dockConfigObj, true) as DockConfig;
-                new PropertyBinder(config.model).copyProperties(dockConfigObj);
-            } else {
-                config = config || new DockConfig();
-            }
-
-            var dock:Dock = new Dock(config);
-            player.pluginRegistry.registerDisplayPlugin(config.model, dock);
-            _player = player;
-            return dock;
-        }
-
         private function resizeIcons():void {
             _icons.forEach(function(iconObj:Object, index:int, array:Array):void {
                 var icon:DisplayObject = iconObj as DisplayObject;
-                var scaleFactor:Number = icon.height/icon.width;
+//                var scaleFactor:Number = icon.height/icon.width;
                 if (_config.horizontal) {
                     icon.height = height;
-                    icon.width  = height * scaleFactor;
+//                    icon.width  = height * scaleFactor;
                 }
                 else {
                     icon.width  = width;
-                    icon.height = width / scaleFactor;
+//                    icon.height = width / scaleFactor;
                 }
             }, this);
         }
@@ -112,6 +127,7 @@ package org.flowplayer.ui {
             var nextPos:Number = 0;
             _icons.forEach(function(iconObj:Object, index:int, array:Array):void {
                 var icon:DisplayObject = iconObj as DisplayObject;
+                log.debug("icon " + index + ": " + Arrange.describeBounds(icon));
                 if (_config.horizontal) {
                     icon.x = nextPos;
                     icon.y = 0;
@@ -125,13 +141,20 @@ package org.flowplayer.ui {
         }
 
         override protected function onResize():void {
-            log.debug("onResize() " + width + " x " + height + ", is fullscreen? " + (stage.displayState == StageDisplayState.FULL_SCREEN));
-
-            var props:DisplayProperties = _player.pluginRegistry.getPluginByDisplay(this);
-            log.debug("onResize() current dimensions " + props.dimensions);
             resizeIcons();
             arrangeIcons();
 
+            // set the managed size based on the last icon's position and size
+            var lastIcon:DisplayObject = _icons[_icons.length - 1];
+            if (_config.horizontal) {
+                _width = lastIcon.x + lastIcon.width;
+                _config.model.width = _width;
+            } else {
+                _height = lastIcon.y + lastIcon.height;
+                _config.model.height = _height;
+                log.debug("setting height to " + _height)
+            }
+            _player.pluginRegistry.update(_config.model);
         }
 
         public function onShow(callback:Function):void {
@@ -139,7 +162,12 @@ package org.flowplayer.ui {
         }
 
         public function onHide(callback:Function):void {
+            if (! _autoHide) return;
             _autoHide.onHide(callback);
+        }
+
+        public function get config():DockConfig {
+            return _config;
         }
     }
 }
