@@ -414,9 +414,15 @@ package org.flowplayer.controls.scrubber {
             }
         }
 
+        //#321 set an maximum end seek limit or else playback completion may fail
+        private function endSeekLimit(value:Number):Number {
+            return Math.min(value, 99);
+        }
+
         private function seekToScrubberValue(silent:Boolean):void {
             log.debug("seekToScrubberValue(), silent == " + silent);
-            var value:Number = valueFromScrubberPos;
+            var value:Number = endSeekLimit(valueFromScrubberPos);
+
             if (silent && ! _currentClip.dispatchBeforeEvent(new ClipEvent(ClipEventType.SEEK, value))) {
                 return;
             }
