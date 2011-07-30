@@ -33,6 +33,10 @@ package org.flowplayer.bwcheck.config {
         private var _framesToLow:Number = 24;
         private var _framesToTwo:Number = 20;
         private var _framesToOne:Number = 10;
+        private var _ruleCheckInterval:Number = 500;
+        private var _maxUpSwitchesPerStream:int = 3;
+        private var _waitDurationAfterDownSwitch:int = 30000;
+        private var _clearFailedCountInterval:Number = 300000;
 
 		public function reset():void {
 			_values = new Object();
@@ -146,5 +150,37 @@ package org.flowplayer.bwcheck.config {
 				}
 			}
 		}
+
+        public function get ruleCheckInterval():Number {
+            return _ruleCheckInterval;
+        }
+
+        public function set ruleCheckInterval(value:Number):void {
+            _ruleCheckInterval = value;
+        }
+
+        public function get clearFailedCountInterval():Number {
+            return _clearFailedCountInterval;
+        }
+
+        public function set clearFailedCountInterval(value:Number):void {
+            _clearFailedCountInterval = value;
+        }
+
+        public function get waitDurationAfterDownSwitch():int {
+            return _waitDurationAfterDownSwitch;
+        }
+
+        public function set waitDurationAfterDownSwitch(value:int):void {
+            _waitDurationAfterDownSwitch = value;
+        }
+
+        public function get maxUpSwitchesPerStream():int {
+            return _maxUpSwitchesPerStream;
+        }
+
+        public function set maxUpSwitchesPerStream(value:int):void {
+            _maxUpSwitchesPerStream = value;
+        }
 	}
 }

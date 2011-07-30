@@ -11,6 +11,9 @@ Version history:
 - Added ability to obtain netstreammetrics from the clip required for the qosmonitor plugin.
 - #347 Fixed issue with returning onPlayStatus correctly in custom osmf netclient.
 - #347 use netstreamswitchmanager instead to obtain index instead of metrics which returns -1 at times.
+- fixes for #352 for wowza streams with secure names that return the real name from the server, return the item from the metrics index instead.
+- #352 made required modifications to netstreamswitchmanager to provide correct index to the metrics class for secure streams.
+- #352 made configurable options in netstreamswitchmanager for all timer and rule settings for quality of service monitoring to be customisable.
 
 
 3.2.6

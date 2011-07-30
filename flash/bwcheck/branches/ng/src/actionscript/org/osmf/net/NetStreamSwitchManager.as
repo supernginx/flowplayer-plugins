@@ -82,7 +82,7 @@ package org.osmf.net {
 
             _currentIndex = Math.max(0, Math.min(maxAllowedIndex, dsResource.initialIndex));
 
-            checkRulesTimer = new Timer(RULE_CHECK_INTERVAL);
+            checkRulesTimer = new Timer(_ruleCheckInterval);
             checkRulesTimer.addEventListener(TimerEvent.TIMER, checkRules);
 
             failedDSI = new Dictionary();
@@ -90,7 +90,8 @@ package org.osmf.net {
             // We set the bandwidth in both directions based on a multiplier applied to the bitrate level.
             _bandwidthLimit = 1.4 * resource.streamItems[resource.streamItems.length - 1].bitrate * 1000 / 8;
 
-            netStream.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
+            //set a max priority here so the transition event is called first
+            netStream.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus, false, int.MAX_VALUE);
 
             // Make sure we get onPlayStatus first (by setting a higher priority)
             // so that we can expose a consistent state to clients.
@@ -114,6 +115,9 @@ package org.osmf.net {
                     debug("autoSwitch() - starting check rules timer.");
                 }
                 prepareForSwitching();  // flowplayer addition
+
+                //set the rule timer interval
+                checkRulesTimer.delay = _ruleCheckInterval;
                 checkRulesTimer.start();
             }
             else {
@@ -123,6 +127,48 @@ package org.osmf.net {
                 }
                 checkRulesTimer.stop();
             }
+        }
+
+        /**
+         * Rule check timer interval
+         * @param value
+         */
+        public function set ruleCheckInterval(value:Number):void {
+            _ruleCheckInterval = value;
+        }
+
+        /**
+         * Interval to clear items from the failure list
+         * @param value
+         */
+        public function set clearFailedCountInterval(value:Number):void {
+            _clearFailedCountInterval = value;
+        }
+
+        /**
+         * set the wait interval for items switching back up
+         * @param value
+         */
+
+        public function set waitDurationAfterDownSwitch(value:int):void {
+            _waitDurationAfterDownSwitch = value;
+        }
+
+        /**
+         * Set the max up switch per stream item boundary
+         * @param value
+         */
+        public function set maxUpSwitchesPerStream(value:int):void {
+            _maxUpSwitchesPerStream = value;
+        }
+
+        /**
+         * Get the netstream metrics to obtain it's index before switch completion if needed
+         *
+         * @return NetStreamMetricsBase
+         */
+        public function get netStreamMetrics():NetStreamMetricsBase {
+            return metrics;
         }
 
         /**
@@ -207,7 +253,7 @@ package org.osmf.net {
             // the wait period has elapsed
             if (dsiFailedCounts[newIndex] >= 1) {
                 var current:int = getTimer();
-                if (current - failedDSI[newIndex] < DEFAULT_WAIT_DURATION_AFTER_DOWN_SWITCH) {
+                if (current - failedDSI[newIndex] < _waitDurationAfterDownSwitch) {
                     CONFIG::LOGGING
                     {
 						debug("canAutoSwitchNow() - ignoring switch request because index has " + dsiFailedCounts[newIndex]+" failure(s) and only "+ (current - failedDSI[newIndex])/1000 + " seconds have passed since the last failure.");
@@ -217,7 +263,7 @@ package org.osmf.net {
             }
             // If the requested index is currently locked out, then we don't
             // allow the switch.
-            else if (dsiFailedCounts[newIndex] > DEFAULT_MAX_UP_SWITCHES_PER_STREAM_ITEM) {
+            else if (dsiFailedCounts[newIndex] > _maxUpSwitchesPerStream) {
                 return false;
             }
 
@@ -280,9 +326,14 @@ package org.osmf.net {
 
             switching = true;
 
+            //set the target index to be used after the transition
+            _targetIndex = targetIndex;
+
             netStream.play2(nso);
 
             oldStreamName = dsResource.streamItems[targetIndex].streamName;
+
+
 
             if (targetIndex < actualIndex && autoSwitch) {
                 // This is a failure for the current stream, so let's tag it as such.
@@ -370,7 +421,11 @@ package org.osmf.net {
                     break;
                 case NetStreamCodes.NETSTREAM_PLAY_TRANSITION:
                     switching = false;
-                    actualIndex = dsResource.indexFromName(event.info.details);
+
+                    //#352 for setups where the configured secure name is different to the file returned from the server use the configured targetIndex
+                    var indexFromName:int = dsResource.indexFromName(event.info.details);
+                    actualIndex = indexFromName > -1 ? indexFromName : _targetIndex;
+
                     metrics.currentIndex = actualIndex;
                     lastTransitionIndex = actualIndex;
                     break;
@@ -417,6 +472,7 @@ package org.osmf.net {
         }
 
         protected function transitionComplete():void {
+            //switching = false;
             if (lastTransitionIndex >= 0) {
                 _currentIndex = lastTransitionIndex;
                 lastTransitionIndex = -1;
@@ -476,9 +532,9 @@ package org.osmf.net {
 
             // Start the timer that clears the failed counts if one of them
             // just went over the max failed count
-            if (dsiFailedCounts[index] > DEFAULT_MAX_UP_SWITCHES_PER_STREAM_ITEM) {
+            if (dsiFailedCounts[index] > _maxUpSwitchesPerStream) {
                 if (clearFailedCountsTimer == null) {
-                    clearFailedCountsTimer = new Timer(DEFAULT_CLEAR_FAILED_COUNTS_INTERVAL, 1);
+                    clearFailedCountsTimer = new Timer(_clearFailedCountInterval, 1);
                     clearFailedCountsTimer.addEventListener(TimerEvent.TIMER, clearFailedCounts);
                 }
 
@@ -512,6 +568,7 @@ package org.osmf.net {
         private var checkRulesTimer:Timer;
         private var clearFailedCountsTimer:Timer;
         private var actualIndex:int = -1;
+        private var _targetIndex:int = -1;
         private var oldStreamName:String;
         private var switching:Boolean;
         private var _currentIndex:int;
@@ -523,10 +580,14 @@ package org.osmf.net {
         private var _bandwidthLimit:Number = 0;
         private var prepared:Boolean;
 
-        private static const RULE_CHECK_INTERVAL:Number = 500;	// Switching rule check interval in milliseconds
-        private static const DEFAULT_MAX_UP_SWITCHES_PER_STREAM_ITEM:int = 3;
-		private static const DEFAULT_WAIT_DURATION_AFTER_DOWN_SWITCH:int = 30000;
-		private static const DEFAULT_CLEAR_FAILED_COUNTS_INTERVAL:Number = 300000;	// default of 5 minutes for clearing failed counts on stream items
+        //private static const RULE_CHECK_INTERVAL:Number = 500;	// Switching rule check interval in milliseconds
+        private var _ruleCheckInterval:Number = 500;
+        //private static const DEFAULT_MAX_UP_SWITCHES_PER_STREAM_ITEM:int = 3;
+        private var _maxUpSwitchesPerStream:int = 3;
+        //private static const DEFAULT_WAIT_DURATION_AFTER_DOWN_SWITCH:int = 30000;
+		private var _waitDurationAfterDownSwitch:int = 30000;
+        //private static const DEFAULT_CLEAR_FAILED_COUNTS_INTERVAL:Number = 300000;	// default of 5 minutes for clearing failed counts on stream items
+        private var _clearFailedCountInterval:Number = 300000;
 
         CONFIG::LOGGING
         {
