@@ -89,6 +89,17 @@ public class BWStreamSelectionManager extends StreamSelectionManager {
             _player.currentClip.setCustomProperty("bwcheckResolvedUrl", url);
         }
 
+        //#352 if using secure names filenames will not be returned so use metric index instead
+        override public function fromName(name:String):BitrateItem {
+            var item:BitrateItem = super.fromName(name);
+
+            if (_netStreamSwitchManager) {
+                return item ? item : getItem(_netStreamSwitchManager.netStreamMetrics.currentIndex);
+            }
+
+            return item;
+        }
+
         override public function get currentBitrateItem():BitrateItem {
             return _netStreamSwitchManager ? super.getItem(_netStreamSwitchManager.currentIndex) : super.currentBitrateItem;
         }

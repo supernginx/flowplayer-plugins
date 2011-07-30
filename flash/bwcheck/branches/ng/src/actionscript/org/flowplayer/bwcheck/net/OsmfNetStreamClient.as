@@ -24,7 +24,8 @@ package org.flowplayer.bwcheck.net {
 
         public function OsmfNetStreamClient(flowplayerNetStreamClient:NetStreamClient) {
             _fpClient = flowplayerNetStreamClient;
-            addHandler(NetStreamCodes.ON_PLAY_STATUS, onCustomPlayStatus);
+            //set a low priority here
+            addHandler(NetStreamCodes.ON_PLAY_STATUS, onCustomPlayStatus, -1);
         }
 
         public function onMetaData(infoObject:Object):void {
