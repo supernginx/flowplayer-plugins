@@ -36,7 +36,7 @@ package org.flowplayer.bwcheck.config {
         private var _ruleCheckInterval:Number = 500;
         private var _maxUpSwitchesPerStream:int = 3;
         private var _waitDurationAfterDownSwitch:int = 30000;
-        private var _clearFailedCountInterval:Number = 300000;
+        private var _clearFailedCountInterval:Number = 1;
 
 		public function reset():void {
 			_values = new Object();

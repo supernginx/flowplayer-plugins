@@ -14,6 +14,7 @@ Version history:
 - fixes for #352 for wowza streams with secure names that return the real name from the server, return the item from the metrics index instead.
 - #352 made required modifications to netstreamswitchmanager to provide correct index to the metrics class for secure streams.
 - #352 made configurable options in netstreamswitchmanager for all timer and rule settings for quality of service monitoring to be customisable.
+- #352 set the clear failed count interval to the clip duration in milliseconds times a prescision value
 
 
 3.2.6
