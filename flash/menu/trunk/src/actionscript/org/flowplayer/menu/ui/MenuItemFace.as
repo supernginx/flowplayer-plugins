@@ -13,10 +13,10 @@ package org.flowplayer.menu.ui {
 
     import org.flowplayer.view.AbstractSprite;
 
-    public class ItemViewFace extends AbstractSprite {
+    public class MenuItemFace extends AbstractSprite {
         private var _bg:Sprite;
 
-        public function ItemViewFace() {
+        public function MenuItemFace() {
             createChildren();
         }
 

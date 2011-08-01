@@ -11,6 +11,8 @@
 package org.flowplayer.menu {
     import flash.display.Sprite;
 
+    import org.flowplayer.menu.ui.Menu;
+
     import org.flowplayer.model.PluginFactory;
 
     public class MenuPluginFactory extends Sprite implements PluginFactory {
