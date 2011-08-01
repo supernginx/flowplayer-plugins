@@ -192,7 +192,8 @@ package org.flowplayer.controls.config {
 			config.setGradient(decodeGradient(_style['progressGradient']));
 			config.setBufferGradient(decodeGradient(_style['bufferGradient']))
 			config.setBarHeightRatio(_style['scrubberBarHeightRatio']);
-			
+            config.setDisabledColor(_style['disabledWidgetColor']);
+
 			var draggerConfig:TooltipButtonConfig = buttonConfig;
 			draggerConfig.setTooltipEnabled(tooltips.scrubber);	
 			config.setDraggerButtonConfig(draggerConfig);
@@ -216,6 +217,7 @@ package org.flowplayer.controls.config {
 			
 			config.setBackgroundColor(_style['volumeSliderColor']);
 			config.setBackgroundGradient(decodeGradient(_style['volumeSliderGradient']));
+            config.setDisabledColor(_style['disabledWidgetColor']);
 
  			config.setColor(_style['volumeColor'] || _style['volumeSliderColor']);
 			config.setGradient(decodeGradient(_style['sliderGradient'] || _style['volumeSliderGradient'] ));
@@ -223,14 +225,13 @@ package org.flowplayer.controls.config {
 			config.setBorder(fixBorder('volumeBorder'));
 			config.setBorderRadius(_style['volumeBorderRadius']);
 			config.setHeightRatio(_style['volumeSliderHeightRatio']);
-
-
 			return config;
 		}
 
 		public function get buttonConfig():TooltipButtonConfig {
 			var config:TooltipButtonConfig = new TooltipButtonConfig();
-			config.setColor(_style['buttonColor']);
+            config.setColor(_style['buttonColor']);
+            config.setDisabledColor(_style['disabledWidgetColor']);
             config.setOverColor(_style['buttonOverColor']);
 
             config.setOffColor(_style['buttonOffColor']);

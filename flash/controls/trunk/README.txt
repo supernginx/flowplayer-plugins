@@ -6,6 +6,7 @@ Version history:
   dragger position in the screen. Note that this is the closest keyframe corresponding to the dragger position.
   When the mouse is released and the dragging stops the player resumes playback.
 - Does not show the progress bar any more with RTMP. Only the size of the back buffer and forward buffer are shown with bars.
+- added 'disabledWidgetColor' option. Used for all widgets in disabled state. Defaults to #555555
 Fixes:
 - fixed a problem in the skinless version, a border was drawn around controls: http://flowplayer.org/forum/8/60060
 - support of background images was broken: http://flowplayer.org/forum/8/60403

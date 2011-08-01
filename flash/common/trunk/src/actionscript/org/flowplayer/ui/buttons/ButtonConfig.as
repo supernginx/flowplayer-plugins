@@ -19,7 +19,7 @@ package org.flowplayer.ui.buttons {
 		private var _enabled:Boolean = true;
         private var _offColor:String;
         private var _onColor:String;
-
+        private var _disabledColor:String;
 
 		public static function get defaultConfig():ButtonConfig {
 			var config:ButtonConfig = new ButtonConfig;
@@ -29,6 +29,7 @@ package org.flowplayer.ui.buttons {
 			config.setLineColor("transparent");
             config.setOffColor("#aaaaaa");
             config.setOnColor("#ffffff");
+            config.setDisabledColor("#555555");
 			config.setEnabled(true);
 			
 			return config;
@@ -126,6 +127,20 @@ package org.flowplayer.ui.buttons {
             _fontColor = color;
         }
 
+        public function get fontAlpha():Number {
+            return StyleSheetUtil.colorAlpha(_fontColor);
+        }
+
+        public function get fontColorRGB():Array {
+            return StyleSheetUtil.rgbValue(fontColor);
+        }
+
+        public function get fontColorRGBA():Array {
+            var rgba:Array = fontColorRGB;
+            rgba.push(fontAlpha);
+            return rgba;
+        }
+
         /*
          * Icon color.
          */
@@ -137,13 +152,17 @@ package org.flowplayer.ui.buttons {
             return StyleSheetUtil.colorValue(_offColor);
         }
 
+        public function get offAlpha():Number {
+            return StyleSheetUtil.colorAlpha(_offColor);
+        }
+
         public function get offRGB():Array {
             return StyleSheetUtil.rgbValue(offColor);
         }
 
         public function get offRGBA():Array {
             var rgba:Array = offRGB;
-            rgba.push(lineAlpha);
+            rgba.push(offAlpha);
             return rgba;
         }
 
@@ -158,13 +177,42 @@ package org.flowplayer.ui.buttons {
             return StyleSheetUtil.colorValue(_onColor);
         }
 
+        public function get onAlpha():Number {
+            return StyleSheetUtil.colorAlpha(_onColor);
+        }
+
         public function get onRGB():Array {
             return StyleSheetUtil.rgbValue(onColor);
         }
 
         public function get onRGBA():Array {
             var rgba:Array = onRGB;
-            rgba.push(lineAlpha);
+            rgba.push(onAlpha);
+            return rgba;
+        }
+
+        /*
+         * Disabled icon color.
+         */
+        public function setDisabledColor(color:String):void {
+            _disabledColor = color;
+        }
+
+        public function get disabledColor():Number {
+            return StyleSheetUtil.colorValue(_disabledColor);
+        }
+
+        public function get disabledAlpha():Number {
+            return StyleSheetUtil.colorAlpha(_disabledColor);
+        }
+
+        public function get disabledRGB():Array {
+            return StyleSheetUtil.rgbValue(disabledColor);
+        }
+
+        public function get disabledRGBA():Array {
+            var rgba:Array = disabledRGB;
+            rgba.push(disabledAlpha);
             return rgba;
         }
 

@@ -9,8 +9,12 @@
  */
 
 package org.flowplayer.ui.buttons {
-	
-	import org.flowplayer.view.AbstractSprite;
+
+    import flash.display.DisplayObject;
+
+    import org.flowplayer.util.GraphicsUtil;
+
+    import org.flowplayer.view.AbstractSprite;
 
 	public class ToggleButton extends ConfigurableWidget {
 
