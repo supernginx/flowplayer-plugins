@@ -160,7 +160,12 @@ package org.flowplayer.controls.buttons {
 			}
 			
 			toggleClickListeners(value);
+
+            var colors:Array = value ? _config.colorRGBA : _config.disabledRGBA;
+            GraphicsUtil.transformColor(this, colors);
+
 			alpha = value ? 1 : 0.5;
+
 			_dragger.buttonMode = value;
 		}
 

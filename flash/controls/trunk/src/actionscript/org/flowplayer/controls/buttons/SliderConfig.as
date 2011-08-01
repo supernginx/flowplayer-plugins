@@ -15,6 +15,7 @@ package org.flowplayer.controls.buttons {
 	
     public class SliderConfig extends BorderedWidgetConfig {
         private var _color:String;
+        private var _disabledColor:String;
 		private var _gradient:Array;
 
 		private var _barHeightRatio:Number;
@@ -36,6 +37,38 @@ package org.flowplayer.controls.buttons {
 
         public function setColor(color:String):void {
             _color = color;
+        }
+
+        public function get colorRGB():Array {
+            return StyleSheetUtil.rgbValue(color);
+        }
+
+        public function get colorRGBA():Array {
+            var rgba:Array = colorRGB;
+            rgba.push(alpha);
+            return rgba;
+        }
+
+        public function get disabledColor():Number {
+            return StyleSheetUtil.colorValue(_disabledColor);
+        }
+
+        public function get disabledAlpha():Number {
+            return StyleSheetUtil.colorAlpha(_disabledColor);
+        }
+
+        public function setDisabledColor(color:String):void {
+            _disabledColor = color;
+        }
+
+        public function get disabledRGB():Array {
+            return StyleSheetUtil.rgbValue(disabledColor);
+        }
+
+        public function get disabledRGBA():Array {
+            var rgba:Array = disabledRGB;
+            rgba.push(disabledAlpha);
+            return rgba;
         }
 
 		public function get gradient():Array {

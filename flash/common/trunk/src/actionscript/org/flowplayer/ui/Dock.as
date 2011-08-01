@@ -78,6 +78,13 @@ package org.flowplayer.ui {
             onResize();
         }
 
+        /**
+         * Gets the icons that have been added to this dock.
+         */
+        public function get icons():Array {
+            return _icons;
+        }
+
         public function addToPanel():void {
             log.debug("addToPanel()");
             _player.panel.addView(this, null, _config.model);
