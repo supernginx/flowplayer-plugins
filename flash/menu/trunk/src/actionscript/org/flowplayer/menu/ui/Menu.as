@@ -9,6 +9,8 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 package org.flowplayer.menu.ui {
+    import flash.filters.DropShadowFilter;
+
     import org.flowplayer.menu.*;
     import flash.display.DisplayObject;
     import flash.events.Event;
@@ -177,6 +179,10 @@ package org.flowplayer.menu.ui {
                 _dock.alpha = 0;
             }
             createItems();
+
+            // distance, angle, color, alpha, blurX, blurY, strength,quality,inner,knockout ) all as type Number accept 'inner','knockout' and 'hideObject' (as Boolean).
+            _dock.filters = [new DropShadowFilter(3, 270, 0x777777, 0.8, 15, 15, 2, 3)];
+
         }
 
         private function createItems():void {
