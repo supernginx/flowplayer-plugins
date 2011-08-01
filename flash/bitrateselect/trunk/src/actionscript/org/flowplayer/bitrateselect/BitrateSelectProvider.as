@@ -12,12 +12,14 @@ package org.flowplayer.bitrateselect {
     import flash.events.EventDispatcher;
     import flash.net.NetStream;
     import flash.events.NetStatusEvent;
+    import flash.utils.Dictionary;
 
     import org.flowplayer.controller.ClipURLResolver;
     import org.flowplayer.controller.StreamProvider;
     import org.flowplayer.model.Clip;
     import org.flowplayer.model.ClipEvent;
     import org.flowplayer.model.Plugin;
+    import org.flowplayer.model.PluginError;
     import org.flowplayer.model.PluginModel;
     import org.flowplayer.model.PlayerEvent;
     import org.flowplayer.model.PluginEventType;
@@ -43,7 +45,6 @@ package org.flowplayer.bitrateselect {
     import org.flowplayer.bitrateselect.event.HDEvent;
     import org.flowplayer.bitrateselect.config.Config;
 
-
     public class BitrateSelectProvider extends EventDispatcher implements ClipURLResolver, Plugin  {
         private var log:Log = new Log(this);
         private var _config:Config;
@@ -60,6 +61,8 @@ package org.flowplayer.bitrateselect {
         private var _failureListener:Function;
         private var _streamSelectionManager:IStreamSelectionManager;
         private var _streamSwitchManager:StreamSwitchManager;
+        private var _menuPlugin:Object;
+        private var _menuItems:Array;
         
         public function onConfig(model:PluginModel):void {
             _model = model;
@@ -96,8 +99,6 @@ package org.flowplayer.bitrateselect {
             });
 
             _player.playlist.onStart(function(event:ClipEvent):void {
-
-
                 var clip:Clip = event.target as Clip;
                 init(clip.getNetStream(), clip);
                 initSwitchManager();
@@ -108,31 +109,36 @@ package org.flowplayer.bitrateselect {
                 dispatchEvent(new HDEvent(HDEvent.HD_AVAILABILITY, hasHD));
                 toggleSplashDefault(_streamSelectionManager.currentBitrateItem);
                 Clip(event.target).setCustomProperty("bitrate", _streamSelectionManager.currentBitrateItem.bitrate);
-            });
 
-            _player.playlist.onBeforeBegin(function(event:ClipEvent):void {
-                var clip:Clip = event.target as Clip;
-
+                if (_config.menu) {
+                    initBitrateMenu(clip);
+                    if (_menuPlugin) {
+                        _menuPlugin.enableItems(true, _menuItems);
+                    }
+                }
 
             });
 
             if (_config.hdButton.docked) {
                 createIconDock();	// we need to create the controller pretty early else it won't receive the HD_AVAILABILITY event
-                _player.onLoad(onPlayerLoad);
+                _player.onLoad(function(event:PlayerEvent):void {
+                    _iconDock.addToPanel();
+                });
             }
+            _player.onLoad(function(event:PlayerEvent):void {
+                var firstClip:Clip = _player.playlist.getClip(0);
+                if (firstClip) {
+                    initStreamSelectionManager(firstClip);
+                    initBitrateMenu(firstClip);
+                }
+            });
 
             if (_config.hdButton.controls) {
                 var controlbar:* = player.pluginRegistry.plugins['controls'];
                 controlbar.pluginObject.addEventListener(WidgetContainerEvent.CONTAINER_READY, addHDButton);
             }
 
-
             _model.dispatchOnLoad();
-        }
-
-        private function onPlayerLoad(event:PlayerEvent):void {
-            log.debug("onPlayerLoad() ");
-            _iconDock.addToPanel();
         }
 
         private function addHDButton(event:WidgetContainerEvent):void {
@@ -150,6 +156,42 @@ package org.flowplayer.bitrateselect {
             _hdButton = controller.init(_player, _iconDock, new ToggleButtonConfig(_config.iconConfig, _config.iconConfig)) as ToggleButton;
             _iconDock.addIcon(_hdButton);
             _iconDock.addToPanel();
+        }
+
+        private function initBitrateMenu(clip:Clip):void {
+            if (_menuPlugin) return;
+            var items:Vector.<BitrateItem> = Vector.<BitrateItem>(clip.getCustomProperty("bitrateItems"));
+            if (! items) {
+                log.debug("initBitrateMenu(), no bitrateItems available in clip, cannot initialize the menu");
+            }
+            _menuPlugin = lookupMenu();
+            if (! _menuPlugin) return;
+
+            _menuItems = new Array();
+            for each (var item:BitrateItem in items) {
+                _menuItems.push(_menuPlugin["addItem"](
+                        {
+                            selectedCallback: function():void {
+                                log.debug("switching to bitrate " + item.bitrate);
+                                _streamSwitchManager.switchStream(item);
+                            },
+                            label: item.label,
+                            enabled: false,
+                            toggle: true,
+                            selected: item.isDefault,
+                            group: "bitrate"
+                        }));
+            }
+        }
+
+        private function lookupMenu():Object {
+            log.debug("lookupMenu()");
+            var model:PluginModel = _player.pluginRegistry.getPlugin(_config.menuPluginName) as PluginModel;
+            if (! model) {
+                _model.dispatchError(PluginError.INIT_FAILED, "cannot find menu plugin with name '" + _config.menuPluginName + "'");
+                return null;
+            }
+            return model.pluginObject;
         }
 
         public function get hasHD():Boolean {
@@ -222,15 +264,16 @@ package org.flowplayer.bitrateselect {
             _netStream = netStream;
             _clip = clip;
             _start = netStream ? netStream.time : 0;
+            initStreamSelectionManager(clip);
+        }
 
-            if (!_clip.getCustomProperty("streamSelectionManager")) {
+        private function initStreamSelectionManager(clip:Clip):void {
+            if (! clip.getCustomProperty("streamSelectionManager")) {
                 _streamSelectionManager = new StreamSelectionManager(new HDBitrateResource(), _player, this);
-                _clip.setCustomProperty("streamSelectionManager",_streamSelectionManager);
+                clip.setCustomProperty("streamSelectionManager", _streamSelectionManager);
             } else {
-                _streamSelectionManager = _clip.getCustomProperty("streamSelectionManager") as IStreamSelectionManager;
+                _streamSelectionManager = clip.getCustomProperty("streamSelectionManager") as IStreamSelectionManager;
             }
-
-
         }
 
         private function initSwitchManager():void {
