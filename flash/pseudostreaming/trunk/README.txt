@@ -4,6 +4,8 @@ Version history:
 -----
 - The plugin now comes with two versions, the byte-range enabled version is now in a different SWF to reduce the size
 of the standard version that does not have the byte range request powered seeking support.
+- The queryString config option value by default is now "?start=${start}". Contains the ? character there again, so
+  that it can be changed by users.
 Fixes:
 - #214 , need to reset the datastore on completion or else time won't reset when seeking mp4 clips
 - #314, inconsistent seeking behavior between in-buffer seeks and server seeks
