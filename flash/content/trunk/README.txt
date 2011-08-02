@@ -1,5 +1,9 @@
 Version history:
 
+3.2.1
+-----
+- Added a drop shadow, can be enabled by setting dropShadow: true in the configuration
+
 3.2.0
 -----
 - Added new added onBeforeCss() and onBeforeAnimate() callback functions, that are now part of the Styleable interface.
