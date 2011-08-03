@@ -43,7 +43,6 @@ package org.flowplayer.menu.ui {
         private var _dock:Dock;
         private var _player:Flowplayer;
         private var _model:PluginModel;
-        private var _positionConfigured:Boolean;
         private var _menuButtonController:MenuButtonController;
         private var _menuButtonContainer:WidgetContainer;
 
@@ -85,21 +84,12 @@ package org.flowplayer.menu.ui {
         public function onConfig(model:PluginModel):void {
             _model = model;
             _config = new PropertyBinder(new MenuConfig()).copyProperties(model.config) as MenuConfig;
+            new PropertyBinder(_config.displayProps).copyProperties(model.config) as MenuConfig;
             log.debug("config", _config.items);
         }
 
         public function onLoad(player:Flowplayer):void {
             _player = player;
-
-            var dockConfObj:Object = player.config.configObject.dock;
-            log.debug("onLoad(), dock conf", dockConfObj);
-            _positionConfigured = dockConfObj && (
-                    dockConfObj.hasOwnProperty("left") ||
-                    dockConfObj.hasOwnProperty("right") ||
-                    dockConfObj.hasOwnProperty("top") ||
-                    dockConfObj.hasOwnProperty("bottom"));
-
-
             createDock();
             createMenuButton(player);
 
@@ -111,6 +101,16 @@ package org.flowplayer.menu.ui {
             }
 
             _model.dispatchOnLoad();
+        }
+
+        private function get horizontalPosConfigured():Boolean {
+            var confObj:Object = _model.config;
+            return confObj && (confObj.hasOwnProperty("left") || confObj.hasOwnProperty("right"));
+        }
+
+        private function get verticalPosConfigured():Boolean {
+            var confObj:Object = _model.config;
+            return confObj && (confObj.hasOwnProperty("top") || confObj.hasOwnProperty("bottom"));
         }
 
         public function getDefaultConfig():Object {
@@ -150,9 +150,14 @@ package org.flowplayer.menu.ui {
         }
 
         private function adjustDockPosition():void {
-            if (_positionConfigured) return;
-            _dock.config.model.position.leftValue = _menuButtonController.view.x;
-            _dock.config.model.position.topValue = DisplayObject(_menuButtonContainer).y - _dock.height;
+            if (horizontalPosConfigured && verticalPosConfigured) return;
+
+            if (! horizontalPosConfigured) {
+                _dock.config.model.position.leftValue = _menuButtonController.view.x;
+            }
+            if (! verticalPosConfigured) {
+                _dock.config.model.position.topValue = DisplayObject(_menuButtonContainer).y - _dock.height;
+            }
             log.debug("addControlsMenuButton(), menu position adjusted to " + _dock.config.model.position);
             _player.pluginRegistry.updateDisplayProperties(_dock.config.model, true);
         }
@@ -160,12 +165,7 @@ package org.flowplayer.menu.ui {
         private function createDock():void {
             log.debug("createDock()");
             var config:DockConfig = new DockConfig();
-            var model:DisplayPluginModel = new DisplayPluginModelImpl(null, Dock.DOCK_PLUGIN_NAME, false);
-
-            model.left =  15;
-            model.top =  15;
-
-            config.model = model;
+            config.model = _config.displayProps;
             config.gap = 0;
 
             if (_config.button.dockedOrControls) {
@@ -195,7 +195,7 @@ package org.flowplayer.menu.ui {
         private function createItem(itemConfig:ItemConfig, tabIndex:uint = 0):void {
             log.debug("createItem(), label == " + itemConfig.label);
 
-            var item:MenuItem = new MenuItem(itemConfig, _player.animationEngine, _dock.icons.length == 0);
+            var item:MenuItem = new MenuItem(_player.createLoader(), itemConfig, _player.animationEngine, _dock.icons.length == 0);
             itemConfig.view = item;
             item.tabEnabled = true;
             item.tabIndex = tabIndex;

@@ -15,11 +15,15 @@ package org.flowplayer.menu.ui {
     import flash.display.Graphics;
     import flash.display.Sprite;
     import flash.events.MouseEvent;
+    import flash.text.AntiAliasType;
     import flash.text.TextField;
+    import flash.text.TextFieldAutoSize;
     import flash.text.TextFieldType;
     import flash.text.TextFormatAlign;
 
     import fp.TickMark;
+
+    import org.flowplayer.controller.ResourceLoader;
 
     import org.flowplayer.menu.*;
     import org.flowplayer.ui.buttons.AbstractButton;
@@ -34,8 +38,11 @@ package org.flowplayer.menu.ui {
         private var _roundedTop:Boolean;
         private var _roundedBottom:Boolean;
         private var _mask:Sprite;
+        private var _loader:ResourceLoader;
+        private var _image:DisplayObject;
 
-        public function MenuItem(config:ItemConfig, animationEngine:AnimationEngine, roundedTop:Boolean = false) {
+        public function MenuItem(loader:ResourceLoader, config:ItemConfig, animationEngine:AnimationEngine, roundedTop:Boolean = false) {
+            _loader = loader;
             _roundedTop = roundedTop;
             super(config, animationEngine);
         }
@@ -82,10 +89,29 @@ package org.flowplayer.menu.ui {
             _text.selectable = false;
             _text.type = TextFieldType.DYNAMIC;
             _text.textColor = config.fontColor;
-            _text.defaultTextFormat.align = TextFormatAlign.CENTER;
+            _text.blendMode = BlendMode.LAYER;
+            _text.autoSize = TextFieldAutoSize.CENTER;
+            _text.wordWrap = true;
+            _text.multiline = true;
+            _text.antiAliasType = AntiAliasType.ADVANCED;
+            _text.condenseWhite = true;
+            _text.defaultTextFormat.bold = false;
+
+            _text.htmlText = itemConfig.label;
             addChild(_text);
-            _text.text = itemConfig.label;
-            _text = _text;
+
+            if (config.imageUrl) {
+                loadImage();
+            }
+        }
+
+        private function loadImage():void {
+            _loader.addBinaryResourceUrl(config.imageUrl);
+            _loader.load(null, function(loader:ResourceLoader):void {
+                log.debug("image loaded from " + config.imageUrl);
+                _image = addChild(loader.getContent() as DisplayObject) as DisplayObject;
+                onResize();
+            });
         }
 
         private function addMask():void {
@@ -95,22 +121,34 @@ package org.flowplayer.menu.ui {
         }
 
         override protected function onResize():void {
+            log.debug("onResize() " + width + " x " + height);
             face.width = width;
             face.height = height;
             _text.width = _text.textWidth + 10;
             _text.height = _text.textHeight + 6;
+
+            if (_image) {
+                _image.x = 10;
+                _image.y = 5;
+                _image.height = height - 10;
+                _image.scaleX = _image.scaleY;
+            }
 
             if (itemConfig.toggle) {
                 _tickMark.height = 12;
                 _tickMark.scaleX = _tickMark.scaleY;
                 Arrange.center(_tickMark, 0, height);
                 _tickMark.y = _tickMark.y - 2; // adjust it a bit
-                _tickMark.x = 10;
+                _tickMark.x = _image ? (_image.x + _image.width) : 10;
                 _text.x = _tickMark.x + _tickMark.width + 7;
                 Arrange.center(_text, 0, height);
             } else {
-                Arrange.center(_text, width, height);
+
+                _text.x = _image ? (_image.x + _image.width + 10) : 10;
+                Arrange.center(_text,  0, height);
+//                Arrange.center(_text, _image ? (width - _image.x - _image.width) : width, height);
             }
+
             redrawMask();
         }
 

@@ -24,6 +24,7 @@ package org.flowplayer.menu {
         private var _height:Number = 30;
         private var _width:Number = 70;
         private var _selectedCallback:Function;
+        private var _imageUrl:String;
 
         private var _toggle:Boolean;
         private var _selected:Boolean; // is this initially selected. For toggle items.
@@ -123,6 +124,14 @@ package org.flowplayer.menu {
 
         public function set view(value:MenuItem):void {
             _view = value;
+        }
+
+        public function get imageUrl():String {
+            return _imageUrl;
+        }
+
+        public function set imageUrl(value:String):void {
+            _imageUrl = value;
         }
     }
 }

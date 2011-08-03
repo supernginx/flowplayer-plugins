@@ -9,15 +9,21 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 package org.flowplayer.menu {
+    import org.flowplayer.model.DisplayPluginModel;
+    import org.flowplayer.model.DisplayPluginModelImpl;
+    import org.flowplayer.model.DisplayProperties;
+    import org.flowplayer.model.DisplayPropertiesImpl;
     import org.flowplayer.util.PropertyBinder;
 
     public class MenuConfig {
+        private var _displayProps:DisplayPluginModel;
         private var _button:MenuButtonConfig = new MenuButtonConfig();
         private var _items:Array;
         private var _defaultItemConfig:Object;
 
         public function MenuConfig() {
             _items = new Array();
+            _displayProps = new DisplayPluginModelImpl(null, "menudock");
 
             _defaultItemConfig = {
 //                color: "rgba(140,142,140,1)",
@@ -106,6 +112,10 @@ package org.flowplayer.menu {
 
         public function setButton(value:Object):void {
             new PropertyBinder(_button).copyProperties(value);
+        }
+
+        public function get displayProps():DisplayPluginModel {
+            return _displayProps;
         }
     }
 }
