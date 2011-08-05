@@ -151,17 +151,20 @@ package org.flowplayer.controls.scrubber {
 
 		protected override function onResize():void {
 			super.onResize();
-					
+
+            //#353 if player has ended or in a waiting state do not resize progress bars when going in/out of fullscreen
+            if (_player.state.code == 1) return;
+
 			doDrawBufferBar(0, 0);
 			drawProgressBar(0, 0);
-			
+
 			if ( _currentClip )
 			{
 				stop(null);
 				updateDraggerPos(_player.status.time, _currentClip);
 				doStart(_currentClip, _player.status.time);
 			}
-			
+
         }
 
         private function updateDraggerPos(time:Number, clip:Clip):void {
