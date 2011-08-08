@@ -8,18 +8,25 @@
  *    Flowplayer is licensed under the GPL v3 license with an
  *    Additional Term, see http://flowplayer.org/license_gpl.html
  */
-package org.flowplayer.ui {
+package org.flowplayer.ui.dock {
+    import org.flowplayer.ui.*;
     import org.flowplayer.model.DisplayPluginModel;
     import org.flowplayer.model.DisplayPluginModelImpl;
     import org.flowplayer.model.DisplayProperties;
     import org.flowplayer.model.DisplayPropertiesImpl;
+    import org.flowplayer.ui.buttons.ButtonConfig;
     import org.flowplayer.util.PropertyBinder;
+    import org.flowplayer.view.FlowStyleSheet;
+
+    import spark.components.Button;
 
     public class DockConfig {
         private var _model:DisplayPluginModel;
         private var _autoHide:AutoHideConfig;
         private var _horizontal:Boolean = false;
+        private var _scrollable:Boolean = false;
         private var _gap:Number = 5;
+        private var _buttons:Object;
 
         public function DockConfig():void {
             _autoHide = new AutoHideConfig();
@@ -33,6 +40,13 @@ package org.flowplayer.ui {
             _model.right = "7%";
             _model.width = "10%";
             _model.height = "30%";
+
+            _buttons = {
+                border: "0px",
+                backgroundColor: "transparent",
+                borderRadius: "0",
+                disabledColor: "#bbbbbb"
+            };
         }
 
         public function get model():DisplayPluginModel {
@@ -76,5 +90,44 @@ package org.flowplayer.ui {
             _gap = value;
         }
 
+        public function get scrollable():Boolean {
+            return _scrollable;
+        }
+
+        public function set scrollable(value:Boolean):void {
+            _scrollable = value;
+        }
+
+        public function setButtons(value:Object):void {
+            for (var prop:String in value) {
+                _buttons[prop] = value[prop];
+            }
+        }
+
+        public function get downButtonStyle():FlowStyleSheet {
+            var sheet:FlowStyleSheet = new FlowStyleSheet("#downbutton");
+            sheet.rootStyle = _buttons;
+            if (! _buttons.backgroundGradient) {
+                sheet.addToRootStyle({backgroundGradient: [.6, .21, .10]});
+            }
+            return sheet;
+        }
+
+        public function get upButtonStyle():FlowStyleSheet {
+            var sheet:FlowStyleSheet = new FlowStyleSheet("#upbutton");
+            sheet.rootStyle = _buttons;
+            if (! _buttons.backgroundGradient) {
+                sheet.addToRootStyle({backgroundGradient: [.10, .21, .6]});
+            }
+            return sheet;
+        }
+
+        public function get upButtonConfig():ButtonConfig {
+            return new PropertyBinder(new ButtonConfig()).copyProperties(_buttons) as ButtonConfig;
+        }
+
+        public function get downButtonConfig():ButtonConfig {
+            return new PropertyBinder(new ButtonConfig()).copyProperties(_buttons) as ButtonConfig;
+        }
     }
 }
