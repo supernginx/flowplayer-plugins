@@ -19,18 +19,17 @@ package org.flowplayer.menu.ui {
     import flash.text.TextField;
     import flash.text.TextFieldAutoSize;
     import flash.text.TextFieldType;
-    import flash.text.TextFormatAlign;
 
     import fp.TickMark;
 
     import org.flowplayer.controller.ResourceLoader;
-
     import org.flowplayer.menu.*;
     import org.flowplayer.ui.buttons.AbstractButton;
     import org.flowplayer.util.Arrange;
     import org.flowplayer.util.GraphicsUtil;
     import org.flowplayer.util.TextUtil;
     import org.flowplayer.view.AnimationEngine;
+    import org.flowplayer.view.Flowplayer;
 
     public class MenuItem extends AbstractButton {
         private var _text:TextField;
@@ -38,18 +37,18 @@ package org.flowplayer.menu.ui {
         private var _roundedTop:Boolean;
         private var _roundedBottom:Boolean;
         private var _mask:Sprite;
-        private var _loader:ResourceLoader;
         private var _image:DisplayObject;
+        private var _player:Flowplayer;
 
-        public function MenuItem(loader:ResourceLoader, config:ItemConfig, animationEngine:AnimationEngine, roundedTop:Boolean = false) {
-            _loader = loader;
+        public function MenuItem(player:Flowplayer, config:MenuItemConfig, animationEngine:AnimationEngine, roundedTop:Boolean = false) {
+            _player = player;
             _roundedTop = roundedTop;
             super(config, animationEngine);
         }
 
         public function set roundBottom(enable:Boolean):void {
             _roundedBottom = enable;
-            redrawMask();
+//            redrawMask();
         }
 
         override protected function onClicked(event:MouseEvent):void {
@@ -75,7 +74,7 @@ package org.flowplayer.menu.ui {
         }
 
         override protected function createFace():DisplayObjectContainer {
-            return new MenuItemFace();
+            return new MenuItemFace(itemConfig.color, itemConfig.alpha);
         }
 
         override protected function childrenCreated():void {
@@ -106,8 +105,9 @@ package org.flowplayer.menu.ui {
         }
 
         private function loadImage():void {
-            _loader.addBinaryResourceUrl(config.imageUrl);
-            _loader.load(null, function(loader:ResourceLoader):void {
+            var loader:ResourceLoader = _player.createLoader();
+            loader.addBinaryResourceUrl(config.imageUrl);
+            loader.load(null, function(loader:ResourceLoader):void {
                 log.debug("image loaded from " + config.imageUrl);
                 _image = addChild(loader.getContent() as DisplayObject) as DisplayObject;
                 onResize();
@@ -148,8 +148,7 @@ package org.flowplayer.menu.ui {
                 Arrange.center(_text,  0, height);
 //                Arrange.center(_text, _image ? (width - _image.x - _image.width) : width, height);
             }
-
-            redrawMask();
+//            redrawMask();
         }
 
         private function redrawMask():void {
@@ -214,7 +213,7 @@ package org.flowplayer.menu.ui {
             return null;
         }
 
-        private function get itemConfig():ItemConfig {return _config as ItemConfig;}
+        private function get itemConfig():MenuItemConfig {return _config as MenuItemConfig;}
 
     }
 }

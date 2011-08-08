@@ -9,40 +9,31 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 package org.flowplayer.menu.ui {
+    import flash.display.DisplayObject;
+    import flash.events.MouseEvent;
     import flash.filters.DropShadowFilter;
 
     import org.flowplayer.menu.*;
-    import flash.display.DisplayObject;
-    import flash.events.Event;
-    import flash.events.MouseEvent;
-    import flash.utils.Timer;
-
-    import org.flowplayer.menu.ui.MenuItem;
-    import org.flowplayer.menu.ui.MenuButtonController;
-
     import org.flowplayer.model.DisplayPluginModel;
-    import org.flowplayer.model.DisplayPluginModelImpl;
-    import org.flowplayer.model.PlayerEvent;
     import org.flowplayer.model.Plugin;
     import org.flowplayer.model.PluginEvent;
     import org.flowplayer.model.PluginModel;
-    import org.flowplayer.ui.Dock;
-    import org.flowplayer.ui.DockConfig;
-    import org.flowplayer.ui.buttons.LabelButton;
     import org.flowplayer.ui.containers.WidgetContainer;
     import org.flowplayer.ui.containers.WidgetContainerEvent;
-    import org.flowplayer.util.Log;
+    import org.flowplayer.ui.dock.Dock;
+    import org.flowplayer.ui.dock.DockConfig;
     import org.flowplayer.util.PropertyBinder;
+    import org.flowplayer.view.AbstractSprite;
     import org.flowplayer.view.Flowplayer;
+    import org.flowplayer.view.Styleable;
 
-    public class Menu implements Plugin {
-        private static const MENU_PLUGIN_NAME:String = "menudock";
+    public class Menu extends AbstractSprite implements Plugin, Styleable {
+//        private static const MENU_PLUGIN_NAME:String = "menudock";
 
-        private var log:Log = new Log(this);
         private var _config:MenuConfig;
         private var _dock:Dock;
         private var _player:Flowplayer;
-        private var _model:PluginModel;
+        private var _model:DisplayPluginModel;
         private var _menuButtonController:MenuButtonController;
         private var _menuButtonContainer:WidgetContainer;
 
@@ -53,6 +44,7 @@ package org.flowplayer.menu.ui {
         public function addItems(items:Array):void {
             _config.items = items;
             createItems();
+            updateModelHeight();
         }
 
         /**
@@ -61,12 +53,13 @@ package org.flowplayer.menu.ui {
          * @return the index of the item the item in the menu, zero based
          */
         public function addItem(itemConf:Object):int {
-            var itemConfig:ItemConfig = _config.addItem(itemConf);
+            var itemConfig:MenuItemConfig = _config.addItem(itemConf);
             log.debug("addItem(), color == " + itemConfig.color + ", overColor == " + itemConfig.overColor);
             createItem(itemConfig);
             if (_menuButtonContainer) {
                 adjustDockPosition();
             }
+            updateModelHeight();
             return _config.items.indexOf(itemConfig);
         }
 
@@ -82,39 +75,47 @@ package org.flowplayer.menu.ui {
         }
 
         public function onConfig(model:PluginModel):void {
-            _model = model;
+            _model = model as DisplayPluginModel;
             _config = new PropertyBinder(new MenuConfig()).copyProperties(model.config) as MenuConfig;
-            new PropertyBinder(_config.displayProps).copyProperties(model.config) as MenuConfig;
             log.debug("config", _config.items);
         }
 
         public function onLoad(player:Flowplayer):void {
             _player = player;
             createDock();
+            updateModelHeight();
             createMenuButton(player);
-
-            if (! _config.button.dockedOrControls) {
-                log.debug("onLoad(), will add dock to panel");
-                _player.onLoad(function(event:PlayerEvent):void {
-                    _dock.addToPanel();
-                });
-            }
-
             _model.dispatchOnLoad();
         }
 
+        override protected function onResize():void {
+            _dock.setSize(width, height);
+            updateModelHeight();
+        }
+
+        private function updateModelHeight():void {
+            // in scrollable mode the height is set by the plugin configuration
+            if (_config.scrollable) return;
+
+            // the dock's height is actually determined on the heights of the menu items, update our model to reflect the real values
+            _model.height = _dock.height;
+            _player.pluginRegistry.updateDisplayProperties(_model);
+        }
+
         private function get horizontalPosConfigured():Boolean {
-            var confObj:Object = _model.config;
+            var confObj:Object = _player.config.getObject("plugins")[_model.name];
+            log.debug("verticalPosConfigured", confObj);
             return confObj && (confObj.hasOwnProperty("left") || confObj.hasOwnProperty("right"));
         }
 
         private function get verticalPosConfigured():Boolean {
-            var confObj:Object = _model.config;
+            var confObj:Object = _player.config.getObject("plugins")[_model.name];
+            log.debug("verticalPosConfigured", confObj);
             return confObj && (confObj.hasOwnProperty("top") || confObj.hasOwnProperty("bottom"));
         }
 
         public function getDefaultConfig():Object {
-            return null;
+            return { width: 150, height: 100 };
         }
 
         private function createMenuButton(player:Flowplayer):void {
@@ -144,7 +145,7 @@ package org.flowplayer.menu.ui {
         private function addControlsMenuButton(event:WidgetContainerEvent):void {
             log.debug("addControlsMenuButton()");
             _menuButtonContainer = event.container;
-            _menuButtonController = new MenuButtonController(_dock);
+            _menuButtonController = new MenuButtonController(_player,  _model);
             _menuButtonContainer.addWidget(_menuButtonController, "time", false);
             adjustDockPosition();
         }
@@ -153,49 +154,53 @@ package org.flowplayer.menu.ui {
             if (horizontalPosConfigured && verticalPosConfigured) return;
 
             if (! horizontalPosConfigured) {
-                _dock.config.model.position.leftValue = _menuButtonController.view.x;
+                _model.position.leftValue = _menuButtonController.view.x;
+                log.debug("adjustDockPosition(), horizontal menu position adjusted to " + _dock.config.model.position);
             }
             if (! verticalPosConfigured) {
-                _dock.config.model.position.topValue = DisplayObject(_menuButtonContainer).y - _dock.height;
+                _model.position.bottomValue = DisplayObject(_menuButtonContainer).stage.height - DisplayObject(_menuButtonContainer).y;
+                log.debug("adjustDockPosition(), vertical menu position adjusted to " + _dock.config.model.position);
             }
-            log.debug("addControlsMenuButton(), menu position adjusted to " + _dock.config.model.position);
-            _player.pluginRegistry.updateDisplayProperties(_dock.config.model, true);
+            _player.animationEngine.animate(this, _model, 0);
+//            _player.pluginRegistry.updateDisplayProperties(_model, true);
         }
 
         private function createDock():void {
             log.debug("createDock()");
-            var config:DockConfig = new DockConfig();
-            config.model = _config.displayProps;
-            config.gap = 0;
+            var dockConfig:DockConfig = new DockConfig();
+            dockConfig.model = DisplayPluginModel(_model.clone());
+            dockConfig.model.display = "block";
+            dockConfig.gap = 0;
+            dockConfig.setButtons(_config.buttons);
 
             if (_config.button.dockedOrControls) {
                 log.debug("createDock() using a menu button, disabling autoHide");
-//                config.autoHide.enabled = false;
-                config.model.display = "none";
+                _model.display = "none";
             }
+            dockConfig.scrollable = _config.scrollable;
 
-            _dock = new Dock(_player, config, MENU_PLUGIN_NAME);
-            if (_config.button.dockedOrControls) {
-                _dock.alpha = 0;
-            }
+            _dock = new Dock(_player, dockConfig);
+            addChild(_dock);
+
             createItems();
 
             // distance, angle, color, alpha, blurX, blurY, strength,quality,inner,knockout ) all as type Number accept 'inner','knockout' and 'hideObject' (as Boolean).
-            _dock.filters = [new DropShadowFilter(3, 270, 0x777777, 0.8, 15, 15, 2, 3)];
+            this.filters = [new DropShadowFilter(3, 270, 0x777777, 0.8, 15, 15, 2, 3)];
 
         }
 
         private function createItems():void {
             log.debug("createItems(), creating " + _config.items.length + " menu items");
             for (var i:uint = 0; i < _config.items.length; i++) {
-                createItem(_config.items[i] as ItemConfig, i);
+                createItem(_config.items[i] as MenuItemConfig, i);
             }
         }
 
-        private function createItem(itemConfig:ItemConfig, tabIndex:uint = 0):void {
+        private function createItem(itemConfig:MenuItemConfig, tabIndex:uint = 0):void {
             log.debug("createItem(), label == " + itemConfig.label);
 
-            var item:MenuItem = new MenuItem(_player.createLoader(), itemConfig, _player.animationEngine, _dock.icons.length == 0);
+            itemConfig.width = _model.widthPx;
+            var item:MenuItem = new MenuItem(_player, itemConfig, _player.animationEngine, _dock.icons.length == 0);
             itemConfig.view = item;
             item.tabEnabled = true;
             item.tabIndex = tabIndex;
@@ -205,25 +210,33 @@ package org.flowplayer.menu.ui {
                 itemConfig.fireCallback(_model);
                 deselectOtherItemsInGroup(itemConfig);
             });
-
-            if (_dock.config.horizontal) {
-                item.width = itemConfig.width;
-            } else {
-                item.height = itemConfig.height;
-            }
+            item.height = itemConfig.height;
 
             _dock.addIcon(item);
         }
 
-        private function deselectOtherItemsInGroup(itemConfig:ItemConfig):void {
+        private function deselectOtherItemsInGroup(itemConfig:MenuItemConfig):void {
             var itemsInGroup:Array = _config.itemsIn(itemConfig.group);
             for (var i:int; i < itemsInGroup.length; i++) {
-                var relatedItem:ItemConfig = itemsInGroup[i] as ItemConfig;
+                var relatedItem:MenuItemConfig = itemsInGroup[i] as MenuItemConfig;
                 if (relatedItem != itemConfig) {
                     relatedItem.view.selected = false;
                 }
             }
         }
 
+        public function onBeforeCss(styleProps:Object = null):void {
+        }
+
+        public function css(styleProps:Object = null):Object {
+            return null;
+        }
+
+        public function onBeforeAnimate(styleProps:Object):void {
+        }
+
+        public function animate(styleProps:Object):Object {
+            return null;
+        }
     }
 }

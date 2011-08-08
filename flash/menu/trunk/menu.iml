@@ -24,6 +24,7 @@
     </orderEntry>
     <orderEntry type="module" module-name="common" />
     <orderEntry type="module" module-name="core" />
+    <orderEntry type="module" module-name="content" />
   </component>
 </module>
 
