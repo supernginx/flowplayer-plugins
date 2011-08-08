@@ -96,6 +96,15 @@ package org.flowplayer.util {
             checkPublicSuffix('k12.ak.us', null);
             checkPublicSuffix('test.k12.ak.us', 'test.k12.ak.us');
             checkPublicSuffix('www.test.k12.ak.us', 'test.k12.ak.us');
+
+            // misc
+            checkPublicSuffix(' www.pss3.home.pl', 'home.pl');
+            checkPublicSuffix(' xxx.ais5.pl', 'ais5.pl');
+        }
+
+        public function testMisc():void {
+            checkPublicSuffix(' www.pss3.home.pl', 'home.pl');
+            checkPublicSuffix(' xxx.ais5.pl', 'ais5.pl');
         }
 
         private function checkPublicSuffix(domain:String, expected:String):void {
