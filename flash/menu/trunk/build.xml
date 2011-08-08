@@ -15,7 +15,7 @@
 	<property name="plugin-binary-versioned" value="${basename}-${version}.swf" />
 	<property name="plugin-main-class" value="org/flowplayer/menu/MenuPluginFactory.as" />
     <property name="extra-sources" value="../common/src/actionscript" />
-    <property name="library-path" value="src/flash ../common/src/flash"/>
+    <property name="library-path" value="src/flash ../common/src/flash ../content/src/actionscript"/>
 
 	<target name="release" description="makes a release" depends="build">
 		<copyrelease targetdir="flowplayer.menu">

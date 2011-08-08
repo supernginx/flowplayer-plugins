@@ -10,20 +10,17 @@
  */
 package org.flowplayer.menu {
     import org.flowplayer.model.DisplayPluginModel;
-    import org.flowplayer.model.DisplayPluginModelImpl;
-    import org.flowplayer.model.DisplayProperties;
-    import org.flowplayer.model.DisplayPropertiesImpl;
     import org.flowplayer.util.PropertyBinder;
 
     public class MenuConfig {
-        private var _displayProps:DisplayPluginModel;
         private var _button:MenuButtonConfig = new MenuButtonConfig();
         private var _items:Array;
         private var _defaultItemConfig:Object;
+        private var _scrollable:Boolean;
+        private var _buttons:Object;
 
         public function MenuConfig() {
             _items = new Array();
-            _displayProps = new DisplayPluginModelImpl(null, "menudock");
 
             _defaultItemConfig = {
 //                color: "rgba(140,142,140,1)",
@@ -40,14 +37,14 @@ package org.flowplayer.menu {
 
         public function set items(value:Array):void {
             for (var i:int; i < value.length; i++) {
-                var item:ItemConfig;
+                var item:MenuItemConfig;
 
                 // is the value and itemConfig object set from Flash?
-                if (value[i] is ItemConfig) {
+                if (value[i] is MenuItemConfig) {
                     item = value[i];
 
                 } else {
-                    item = new ItemConfig();
+                    item = new MenuItemConfig();
 
                     if (value[i] is String) {
                         item.label = value[i] as String;
@@ -60,12 +57,12 @@ package org.flowplayer.menu {
             }
         }
 
-        public function addItem(itemConf:Object):ItemConfig {
-            var item:ItemConfig;
-            if (itemConf is ItemConfig) {
-                item = itemConf as ItemConfig;
+        public function addItem(itemConf:Object):MenuItemConfig {
+            var item:MenuItemConfig;
+            if (itemConf is MenuItemConfig) {
+                item = itemConf as MenuItemConfig;
             } else {
-                item = new PropertyBinder(new ItemConfig()).copyProperties(itemConf) as ItemConfig;
+                item = new PropertyBinder(new MenuItemConfig()).copyProperties(itemConf) as MenuItemConfig;
             }
             setDefaultProps(item);
             _items.push(item);
@@ -80,11 +77,11 @@ package org.flowplayer.menu {
         public function itemsIn(group:String):Array {
             if (! group) return [];
             return _items.filter(function(item:*, index:int, array:Array):Boolean {
-                return (item as ItemConfig).group == group;
+                return (item as MenuItemConfig).group == group;
             });
         }
 
-        private function setDefaultProps(item:ItemConfig):void {
+        private function setDefaultProps(item:MenuItemConfig):void {
             new PropertyBinder(item, "customProperties").copyProperties(_defaultItemConfig);
         }
 
@@ -100,7 +97,7 @@ package org.flowplayer.menu {
             // apply the style to existing items
             if (_items) {
                 for (var i:int; i < _items.length; i++) {
-                    var item:ItemConfig = _items[i] as ItemConfig;
+                    var item:MenuItemConfig = _items[i] as MenuItemConfig;
                     setDefaultProps(item);
                 }
             }
@@ -114,8 +111,20 @@ package org.flowplayer.menu {
             new PropertyBinder(_button).copyProperties(value);
         }
 
-        public function get displayProps():DisplayPluginModel {
-            return _displayProps;
+        public function get scrollable():Boolean {
+            return _scrollable;
+        }
+
+        public function set scrollable(value:Boolean):void {
+            _scrollable = value;
+        }
+
+        public function get buttons():Object {
+            return _buttons;
+        }
+
+        public function set buttons(value:Object):void {
+            _buttons = value;
         }
     }
 }

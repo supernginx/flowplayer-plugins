@@ -17,7 +17,7 @@ package org.flowplayer.menu {
     import org.flowplayer.ui.buttons.ButtonConfig;
     import org.flowplayer.util.ObjectConverter;
 
-    public class ItemConfig extends ButtonConfig implements Extendable {
+    public class MenuItemConfig extends ButtonConfig implements Extendable {
         private var _view:MenuItem;
         private var _label:String;
         private var _extension:ExtendableHelper = new ExtendableHelper();

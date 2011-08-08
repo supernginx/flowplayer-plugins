@@ -15,8 +15,12 @@ package org.flowplayer.menu.ui {
 
     public class MenuItemFace extends AbstractSprite {
         private var _bg:Sprite;
+        private var _color:Number;
+        private var _alpha:Number;
 
-        public function MenuItemFace() {
+        public function MenuItemFace(color:Number,  alpha:Number) {
+            _color = color;
+            _alpha = alpha;
             createChildren();
         }
 
@@ -29,7 +33,7 @@ package org.flowplayer.menu.ui {
 
         private function redrawFill():void {
             _bg.graphics.clear();
-            _bg.graphics.beginFill(0, 1);
+            _bg.graphics.beginFill(_color, _alpha);
             _bg.graphics.drawRoundRect(0, 0, width, height, 0, 0);
             _bg.graphics.endFill();
         }

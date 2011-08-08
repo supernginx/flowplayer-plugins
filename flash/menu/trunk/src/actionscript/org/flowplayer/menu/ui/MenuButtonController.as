@@ -14,16 +14,22 @@ package org.flowplayer.menu.ui {
 
     import fp.MenuButton;
 
-    import org.flowplayer.ui.Dock;
+    import org.flowplayer.model.DisplayPluginModel;
+
+    import org.flowplayer.ui.dock.Dock;
 
     import org.flowplayer.ui.buttons.ButtonEvent;
     import org.flowplayer.ui.controllers.AbstractButtonController;
+    import org.flowplayer.view.Flowplayer;
 
     public class MenuButtonController extends AbstractButtonController {
-        private var _menu:Dock;
+        private var _menu:Menu;
+        private var _model:DisplayPluginModel;
 
-		public function MenuButtonController(menu:Dock) {
-            _menu = menu;
+		public function MenuButtonController(player:Flowplayer,  menuModel:DisplayPluginModel) {
+            _player = player;
+            _menu = menuModel.getDisplayObject() as Menu;
+            _model = menuModel;
 		}
 		
 		override public function get name():String {
@@ -45,12 +51,16 @@ package org.flowplayer.menu.ui {
 		}
 
 		override protected function onButtonClicked(event:ButtonEvent):void {
-            var show:Boolean = _menu.alpha == 0 || ! _menu.visible;
+            var model:DisplayPluginModel = DisplayPluginModel(_player.pluginRegistry.getPlugin(_model.name));
+
+            var show:Boolean = ! model.visible;
             if (show) {
                 log.debug("showing menu");
+                _menu.alpha = 0; // make sure the initial value before fade is sensible
                 _player.animationEngine.fadeIn(_menu);
             } else {
                 log.debug("hiding menu");
+                _menu.alpha = 1; // make sure the initial value before fade is sensible
                 _player.animationEngine.fadeOut(_menu);
             }
 //            setListeners(show);
