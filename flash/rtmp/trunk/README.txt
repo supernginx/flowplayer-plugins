@@ -10,6 +10,7 @@ Fixes:
 - Fixes for #247, native switching on transition failures requires live stream check.
 - Issue #327, onStart was not dispatched for mp3 streams
 - Issue #338 don't set clip currentTime when dynamic stream switching.
+- Issue #355, setup targeted options for Flash 10.1 to provide support for 10.0
 
 3.2.3
 -----

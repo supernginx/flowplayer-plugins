@@ -8,6 +8,7 @@
 	<property file="${devkit-dir}/plugin-build.properties" />
 	<import file="${devkit-dir}/plugin-build.xml"/>
 	<property name="flowplayer_lib" value="${devkit-dir}/flowplayer.swc" />
+    <property name="compiler-defines" value="-define+=CONFIG::FLASH_10_1,'true'"/>
 	
 	<property name="shortname" value="rtmp" />
     <property name="basename" value="flowplayer.${shortname}" />
