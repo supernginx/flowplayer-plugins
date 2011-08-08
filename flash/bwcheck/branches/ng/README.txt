@@ -15,6 +15,7 @@ Version history:
 - #352 made required modifications to netstreamswitchmanager to provide correct index to the metrics class for secure streams.
 - #352 made configurable options in netstreamswitchmanager for all timer and rule settings for quality of service monitoring to be customisable.
 - #352 set the clear failed count interval to the clip duration in milliseconds times a prescision value
+- Issue #355, disabled targeted Flash 10.1 in rtmp bwcheck to provide support for 10.0, required to be on for httpstreaming support
 
 
 3.2.6
