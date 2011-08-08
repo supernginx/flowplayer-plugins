@@ -97,7 +97,7 @@
 				<arg line="-keep-as3-metadata=Value,External" />
 				<arg line="'${src-as}/@{plugin-main-class}'" />
 				<arg line="-output '${build-dir}/@{out}'" />
-                <arg line="-target-player '10.2.0'" />
+                <arg line="-target-player '${flash.target.player}'" />
                 <arg line="-incremental=true"/>
 			</exec>
 		</sequential>
@@ -141,7 +141,7 @@
             		
                    
                     <exec executable="${compc_bin}" failonerror="true">
-                            <arg line="-source-path @{src}" />
+                            <arg line="-source-path @{src} ${compc-sources}" />
                             <arg line="${libs}" />
                     		<arg line="${compc-define}" />
 							<arg line="${compc-defines}" />
@@ -266,6 +266,7 @@
 		</zip>
         <echo message="copying to ${dist-dir}/${basename}.zip" />
         <copy file="${dist-dir}/${basename}-${version}.zip" tofile="${dist-dir}/${basename}.zip" overwrite="true" />
+        <copy file="${dist-dir}/${basename}-${version}.zip" tofile="${dist-dir}/${basename}-${version}-${flash.target.player}.zip" overwrite="true" />
 	</target>
 	
 	<target name="zip-swc" depends="prepare, library">
