@@ -7,3 +7,4 @@ Version history:
 - Migrated stream selection and switching code to common classes
 - Transition events are now handled in the rtmp plugin and new clip events added.
 - set hd getter to external method to provide feedback of the hd state ie $f().getPlugin('bitrateselect').getHd()
+- #355 fixes for hd button asset to provide toggle colour state correctly.
