@@ -166,7 +166,7 @@ package org.flowplayer.viralvideos.config
         }
 
         public function set icons(config:Object):void {
-            new PropertyBinder(_icons.buttons).copyProperties(config);
+            new PropertyBinder(_icons.buttons).copyProperties(config, true);
         }
 
         public function set playerEmbed(embed:PlayerEmbed):void {
