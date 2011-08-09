@@ -204,9 +204,11 @@ package org.flowplayer.menu.ui {
             itemConfig.view = item;
             item.tabEnabled = true;
             item.tabIndex = tabIndex;
+
+            var menu:Menu = this;
             item.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void {
                 if (! item.enabled) return;
-                _player.animationEngine.fadeOut(_dock);
+                _player.animationEngine.fadeOut(menu);
                 itemConfig.fireCallback(_model);
                 deselectOtherItemsInGroup(itemConfig);
             });
