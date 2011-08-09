@@ -17,7 +17,7 @@ package org.flowplayer.viralvideos {
     import org.flowplayer.model.Plugin;
     import org.flowplayer.model.PluginEventType;
     import org.flowplayer.model.PluginModel;
-    import org.flowplayer.ui.Dock;
+    import org.flowplayer.ui.dock.Dock;
     import org.flowplayer.ui.buttons.CloseButton;
     import org.flowplayer.util.PropertyBinder;
     import org.flowplayer.view.AbstractSprite;
@@ -100,6 +100,7 @@ package org.flowplayer.viralvideos {
         private function createIconDock():void {
             if (_iconDock) return;
             _iconDock = Dock.getInstance(_player);
+            _iconDock.config.scaleWidthAndHeight = true;
             var addIcon:Function = function(enabled:Boolean, iconClass:Class, clickCallback:Function):void {
                 if (! enabled) return;
                 var icon:DisplayObject = new iconClass(_config.iconButtons, _player.animationEngine);
