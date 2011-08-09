@@ -27,6 +27,7 @@ package org.flowplayer.ui.dock {
         private var _scrollable:Boolean = false;
         private var _gap:Number = 5;
         private var _buttons:Object;
+        private var _scaleWidthAndHeight:Boolean = false;
 
         public function DockConfig():void {
             _autoHide = new AutoHideConfig();
@@ -104,15 +105,9 @@ package org.flowplayer.ui.dock {
             }
         }
 
-        public function get downButtonStyle():FlowStyleSheet {
-            var sheet:FlowStyleSheet = new FlowStyleSheet("#downbutton");
-            sheet.rootStyle = _buttons;
-            if (! _buttons.backgroundGradient) {
-                sheet.addToRootStyle({backgroundGradient: [.6, .21, .10]});
-            }
-            return sheet;
-        }
-
+        /**
+         * style for the UP scroll button
+         */
         public function get upButtonStyle():FlowStyleSheet {
             var sheet:FlowStyleSheet = new FlowStyleSheet("#upbutton");
             sheet.rootStyle = _buttons;
@@ -122,12 +117,38 @@ package org.flowplayer.ui.dock {
             return sheet;
         }
 
+        /**
+         * style for the DOWN scroll button
+         */
+        public function get downButtonStyle():FlowStyleSheet {
+            var sheet:FlowStyleSheet = new FlowStyleSheet("#downbutton");
+            sheet.rootStyle = _buttons;
+            if (! _buttons.backgroundGradient) {
+                sheet.addToRootStyle({backgroundGradient: [.6, .21, .10]});
+            }
+            return sheet;
+        }
+
+        /**
+         * config for the UP scroll button
+         */
         public function get upButtonConfig():ButtonConfig {
             return new PropertyBinder(new ButtonConfig()).copyProperties(_buttons) as ButtonConfig;
         }
 
+        /**
+         * config for the DOWN scroll button
+         */
         public function get downButtonConfig():ButtonConfig {
             return new PropertyBinder(new ButtonConfig()).copyProperties(_buttons) as ButtonConfig;
+        }
+
+        public function get scaleWidthAndHeight():Boolean {
+            return _scaleWidthAndHeight;
+        }
+
+        public function set scaleWidthAndHeight(value:Boolean):void {
+            _scaleWidthAndHeight = value;
         }
     }
 }

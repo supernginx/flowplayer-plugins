@@ -25,7 +25,7 @@ package org.flowplayer.ui.dock {
 
     public class Dock extends AbstractSprite {
         private static const SCROLLBUTTON_HEIGHT:Number = 20;
-        private static var log:Log = new Log("org.flowplayer.ui::Dock");
+//        private static var log:Log = new Log("org.flowplayer.ui::Dock");
         public static const DOCK_PLUGIN_NAME:String = "dock";
         private var _icons:Array = [];
         private static var _player:Flowplayer;
@@ -64,8 +64,9 @@ package org.flowplayer.ui.dock {
             } else {
                 _config = config || new DockConfig();
             }
-
-            addMask();
+            if (_config.scrollable) {
+                addMask();
+            }
             if (_config.scrollable) {
                 createScrollButtons();
                 _iconStrip.y = SCROLLBUTTON_HEIGHT;
@@ -79,13 +80,10 @@ package org.flowplayer.ui.dock {
          * @param player
          */
         public static function getInstance(player:Flowplayer, config:DockConfig = null):Dock {
-            log.debug("getInstance()");
             var plugin:DisplayProperties = player.pluginRegistry.getPlugin(DOCK_PLUGIN_NAME) as DisplayProperties;
             if (! plugin) {
-                log.debug("getInstance(), creating new instance");
                 return new Dock(player, config, DOCK_PLUGIN_NAME);
             }
-            log.debug("getInstance(), returning existing instance");
             return plugin.getDisplayObject() as Dock;
         }
 
@@ -140,15 +138,20 @@ package org.flowplayer.ui.dock {
         private function resizeIcons():void {
             _icons.forEach(function(iconObj:Object, index:int, array:Array):void {
                 var icon:DisplayObject = iconObj as DisplayObject;
-//                var scaleFactor:Number = icon.height/icon.width;
+                var scaleFactor:Number = icon.height/icon.width;
                 if (_config.horizontal) {
                     icon.height = height;
-//                    icon.width  = height * scaleFactor;
+                    if (_config.scaleWidthAndHeight) {
+                        icon.width  = height * scaleFactor;
+                    }
                 }
                 else {
                     icon.width  = width;
-//                    icon.height = width / scaleFactor;
+                    if (_config.scaleWidthAndHeight) {
+                        icon.height = width / scaleFactor;
+                    }
                 }
+                log.debug("resizeIcons() icon " + index + ": " + Arrange.describeBounds(icon));
             }, this);
         }
 
@@ -156,7 +159,7 @@ package org.flowplayer.ui.dock {
             var nextPos:Number = 0;
             _icons.forEach(function(iconObj:Object, index:int, array:Array):void {
                 var icon:DisplayObject = iconObj as DisplayObject;
-                log.debug("icon " + index + ": " + Arrange.describeBounds(icon));
+                log.debug("arrangeIcons() icon " + index + ": " + Arrange.describeBounds(icon) + " gap " + _config.gap);
                 if (_config.horizontal) {
                     icon.x = nextPos;
                     icon.y = 0;
@@ -196,7 +199,9 @@ package org.flowplayer.ui.dock {
                     _player.pluginRegistry.update(_config.model);
                 }
             }
-            redrawMask();
+            if (_config.scrollable) {
+                redrawMask();
+            }
         }
 
         public function onShow(callback:Function):void {
