@@ -17,10 +17,11 @@ package org.flowplayer.sharing {
     import org.flowplayer.model.DisplayPluginModelImpl;
     import org.flowplayer.model.DisplayProperties;
     import org.flowplayer.model.DisplayPropertiesImpl;
+    import org.flowplayer.model.PlayerEvent;
     import org.flowplayer.model.Plugin;
     import org.flowplayer.model.PluginModel;
-    import org.flowplayer.ui.Dock;
-    import org.flowplayer.ui.DockConfig;
+    import org.flowplayer.ui.dock.Dock;
+    import org.flowplayer.ui.dock.DockConfig;
     import org.flowplayer.util.PropertyBinder;
     import org.flowplayer.view.AbstractSprite;
     import org.flowplayer.view.Flowplayer;
@@ -35,12 +36,6 @@ package org.flowplayer.sharing {
 
         public function Sharing() {
             log.debug("Sharing()");
-            addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
-        }
-
-        private function onAddedToStage(event:Event):void {
-            _config = new PropertyBinder(new Config(_player, _model.name, stage)).copyProperties(_model.config) as Config;
-            createDock(_player);
         }
 
         public function onConfig(model:PluginModel):void {
@@ -49,6 +44,10 @@ package org.flowplayer.sharing {
 
         public function onLoad(player:Flowplayer):void {
             _player = player;
+            _player.onLoad(function(e:PlayerEvent):void {
+                _config = new PropertyBinder(new Config(_player, _model.name, stage)).copyProperties(_model.config) as Config;
+                createDock(_player);
+            });
             _model.dispatchOnLoad();
         }
 
@@ -56,9 +55,10 @@ package org.flowplayer.sharing {
             log.debug("createDock()");
             var config:DockConfig = new DockConfig();
             config.horizontal = true;
+            config.scaleWidthAndHeight = true;
             var model:DisplayPluginModel = new DisplayPluginModelImpl(null, Dock.DOCK_PLUGIN_NAME, false);
 
-            model.height = new int(50/stage.height * 100) + "%";
+            model.height = new int(50/stage.stageHeight * 100) + "%";
             model.left =  15;
             model.top =  15;
 
