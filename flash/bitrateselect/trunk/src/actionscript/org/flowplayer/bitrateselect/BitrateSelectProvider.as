@@ -29,7 +29,7 @@ package org.flowplayer.bitrateselect {
     import org.flowplayer.util.Arrange;
 
     import org.flowplayer.ui.containers.*;
-    import org.flowplayer.ui.Dock;
+    import org.flowplayer.ui.dock.Dock;
     import org.flowplayer.ui.Notification;
     import org.flowplayer.ui.buttons.ToggleButton;
     import org.flowplayer.ui.buttons.ToggleButtonConfig;
@@ -63,6 +63,7 @@ package org.flowplayer.bitrateselect {
         private var _streamSwitchManager:StreamSwitchManager;
         private var _menuPlugin:Object;
         private var _menuItems:Array;
+        private var _menuShowsBitratesFor:Clip;
         
         public function onConfig(model:PluginModel):void {
             _model = model;
@@ -159,15 +160,28 @@ package org.flowplayer.bitrateselect {
         }
 
         private function initBitrateMenu(clip:Clip):void {
-            if (_menuPlugin) return;
+            // is the menu already showing the bitrates for this clip
+            if (_menuShowsBitratesFor == clip) {
+                return;
+            }
+
             var items:Vector.<BitrateItem> = Vector.<BitrateItem>(clip.getCustomProperty("bitrateItems"));
             if (! items) {
                 log.debug("initBitrateMenu(), no bitrateItems available in clip, cannot initialize the menu");
             }
-            _menuPlugin = lookupMenu();
-            if (! _menuPlugin) return;
 
-            _menuItems = new Array();
+            if (! _menuPlugin) {
+                _menuPlugin = lookupMenu();
+                if (! _menuPlugin) return;
+            }
+
+            // remove items corresponding to the previous clip
+            if (_menuItems) {
+                _menuPlugin["removeItems"](_menuItems, false);
+                log.debug("initBitrateMenu(), removed old items at indexes: " + _menuItems.toString() + ", items left in menu " + _menuPlugin["length"]);
+            }
+
+            _menuItems = [];
             for each (var item:BitrateItem in items) {
                 _menuItems.push(_menuPlugin["addItem"](
                         {
@@ -180,8 +194,10 @@ package org.flowplayer.bitrateselect {
                             toggle: true,
                             selected: item.isDefault,
                             group: "bitrate"
-                        }));
+                        }, items.indexOf(item) == items.length-1));
             }
+            log.debug("initBitrateMenu(), new menu item indexes: " + _menuItems.toString() + ", the menu has " + _menuPlugin["length"] + " items");
+            _menuShowsBitratesFor = clip;
         }
 
         private function lookupMenu():Object {
@@ -204,7 +220,6 @@ package org.flowplayer.bitrateselect {
 
             var newItem:BitrateItem = _player.playlist.current.getCustomProperty(enable ? "hdBitrateItem" : "sdBitrateItem") as BitrateItem;
             _streamSwitchManager.switchStream(newItem);
-
 
             setHDNotification(enable);
         }
@@ -254,7 +269,6 @@ package org.flowplayer.bitrateselect {
             var mappedBitrate:BitrateItem = _streamSelectionManager.getMappedBitrate(-1);
             _streamSelectionManager.changeStreamNames(mappedBitrate);
 
-
             _resolveSuccessListener(_clip);
         }
 
@@ -281,6 +295,7 @@ package org.flowplayer.bitrateselect {
         }
 
         private function toggleSplashDefault(mappedBitrate:BitrateItem):void {
+            log.debug("toggleSplashDefault(), mappedBitrate " + mappedBitrate.bitrate + ", is default? " + mappedBitrate.isDefault + ", is HD? " + mappedBitrate.hd);
             if (mappedBitrate.isDefault) toggleSplash(mappedBitrate);
         }
 

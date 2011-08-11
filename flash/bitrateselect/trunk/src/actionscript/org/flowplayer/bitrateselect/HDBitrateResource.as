@@ -22,21 +22,33 @@ package org.flowplayer.bitrateselect {
             var streamingItems:Vector.<BitrateItem> = super.addBitratesToClip(clip);
 
             if (streamingItems.length == 2) {
-                //set this item to a hd clip
-                var hdItem:BitrateItem = streamingItems[streamingItems.length - 1] as BitrateItem;
-                hdItem.hd = true;
 
-                //set this item to a sd clip
-                var sdItem:BitrateItem = streamingItems[0] as BitrateItem;
-                sdItem.sd = true;
-                clip.setCustomProperty("hdBitrateItem", hdItem);
-                clip.setCustomProperty("sdBitrateItem", sdItem);
+                var item1:BitrateItem = streamingItems[0] as BitrateItem;
+                var item2:BitrateItem = streamingItems[streamingItems.length - 1] as BitrateItem;
 
-                _hasHD = true;
-                log.debug("HD feature is set, SD Bitrate: " + sdItem.bitrate + " HD Bitrate: " + hdItem.bitrate);
+                setHdProperty(item1, item2, clip);
+
+                _hasHD = (item1.hd || item2.hd || item1.sd || item2.sd);
+                log.debug("HD feature enabled? " + _hasHD);
             }
 
             return streamingItems;
+        }
+
+        private function setHdProperty(item1:BitrateItem, item2:BitrateItem, clip:Clip):void {
+            if (item1.hd) {
+                clip.setCustomProperty("hdBitrateItem", item1);
+                clip.setCustomProperty("sdBitrateItem", item2);
+                item2.sd = true;
+                return;
+            }
+            if (item1.sd) {
+                clip.setCustomProperty("sdBitrateItem", item1);
+                clip.setCustomProperty("hdBitrateItem", item2);
+                item2.hd = true;
+                return;
+            }
+            setHdProperty(item2, item1, clip);
         }
 
         public function get hasHD():Boolean {
