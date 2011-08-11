@@ -24,6 +24,7 @@ package org.flowplayer.ui {
             super(player);
             _view = view;
             addChild(_view);
+//            sty
         }
 
         override protected function onResize():void {

@@ -14,13 +14,7 @@ package org.flowplayer.net {
     import org.flowplayer.util.PropertyBinder;
 
     public class BitrateResource {
-
         protected var log:Log = new Log(this);
-
-        public function BitrateResource() {
-
-
-        }
 
         protected function sort(bitrates:Vector.<BitrateItem>):Vector.<BitrateItem> {
             var sorter:Function = function (a:BitrateItem, b:BitrateItem):Number {
