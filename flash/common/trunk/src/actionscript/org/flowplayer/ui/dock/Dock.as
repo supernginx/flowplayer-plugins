@@ -99,6 +99,16 @@ package org.flowplayer.ui.dock {
         }
 
         /**
+         * Removes the specified icon from the dock.
+         * @param icon
+         */
+        public function removeIcon(icon:DisplayObject):void {
+            _icons.splice(_icons.indexOf(icon), 1);
+            _iconStrip.removeChild(icon);
+            onResize();
+        }
+
+        /**
          * Gets the icons that have been added to this dock.
          */
         public function get icons():Array {
@@ -173,6 +183,8 @@ package org.flowplayer.ui.dock {
         }
 
         override protected function onResize():void {
+            if (_icons.length == 0) return;
+
             resizeIcons();
             arrangeIcons();
 
