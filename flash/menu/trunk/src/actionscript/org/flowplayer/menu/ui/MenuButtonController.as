@@ -55,6 +55,7 @@ package org.flowplayer.menu.ui {
 
             var show:Boolean = ! model.visible;
             if (show) {
+                _menu.updateModelProp("display", "block");
                 log.debug("showing menu");
                 _menu.alpha = 0; // make sure the initial value before fade is sensible
                 _player.animationEngine.fadeIn(_menu);

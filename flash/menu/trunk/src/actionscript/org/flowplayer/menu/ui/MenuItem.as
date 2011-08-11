@@ -34,21 +34,13 @@ package org.flowplayer.menu.ui {
     public class MenuItem extends AbstractButton {
         private var _text:TextField;
         private var _tickMark:DisplayObject;
-        private var _roundedTop:Boolean;
-        private var _roundedBottom:Boolean;
         private var _mask:Sprite;
         private var _image:DisplayObject;
         private var _player:Flowplayer;
 
-        public function MenuItem(player:Flowplayer, config:MenuItemConfig, animationEngine:AnimationEngine, roundedTop:Boolean = false) {
+        public function MenuItem(player:Flowplayer, config:MenuItemConfig, animationEngine:AnimationEngine) {
             _player = player;
-            _roundedTop = roundedTop;
             super(config, animationEngine);
-        }
-
-        public function set roundBottom(enable:Boolean):void {
-            _roundedBottom = enable;
-//            redrawMask();
         }
 
         override protected function onClicked(event:MouseEvent):void {
@@ -146,59 +138,7 @@ package org.flowplayer.menu.ui {
 
                 _text.x = _image ? (_image.x + _image.width + 10) : 10;
                 Arrange.center(_text,  0, height);
-//                Arrange.center(_text, _image ? (width - _image.x - _image.width) : width, height);
             }
-//            redrawMask();
-        }
-
-        private function redrawMask():void {
-            if (maskNeeded && ! _mask) {
-                addMask();
-            }
-            if (! maskNeeded) {
-                if (_mask) {
-                    log.debug("removing mask");
-                    removeChild(_mask);
-                    mask = _mask = null;
-                }
-                return;
-            }
-
-            var graf:Graphics = _mask.graphics;
-            graf.clear();
-            graf.beginFill(0, 1);
-
-            if (_roundedTop) {
-                // top left corner
-                graf.moveTo(0, 0);
-                graf.lineTo(5, 0);
-                graf.curveTo(0, 0, 0, 5);
-                graf.lineTo(0, 0);
-
-                // top right corner
-                graf.moveTo(width - 5, 0);
-                graf.lineTo(width, 0);
-                graf.lineTo(width, 5);
-                graf.curveTo(width, 0, width - 5, 0);
-            }
-            if (_roundedBottom) {
-                // bottom left
-                graf.moveTo(0, height-5);
-                graf.lineTo(0, height);
-                graf.lineTo(5, height);
-                graf.curveTo(0, height, 0, height-5);
-
-                // bottom right
-                graf.moveTo(width-5, height);
-                graf.lineTo(width, height);
-                graf.lineTo(width, height-5);
-                graf.curveTo(width, height, width-5, height);
-            }
-            graf.endFill();
-        }
-
-        private function get maskNeeded():Boolean {
-            return _roundedTop || _roundedBottom;
         }
 
         override protected function doEnable(enabled:Boolean):void {

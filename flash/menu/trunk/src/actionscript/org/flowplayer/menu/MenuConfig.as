@@ -9,6 +9,7 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 package org.flowplayer.menu {
+    import org.flowplayer.menu.ui.MenuItem;
     import org.flowplayer.model.DisplayPluginModel;
     import org.flowplayer.util.PropertyBinder;
 
@@ -18,6 +19,7 @@ package org.flowplayer.menu {
         private var _defaultItemConfig:Object;
         private var _scrollable:Boolean;
         private var _buttons:Object;
+        private var _itemsUrl:String;
 
         public function MenuConfig() {
             _items = new Array();
@@ -35,26 +37,24 @@ package org.flowplayer.menu {
             return _items;
         }
 
-        public function set items(value:Array):void {
-            for (var i:int; i < value.length; i++) {
-                var item:MenuItemConfig;
-
-                // is the value and itemConfig object set from Flash?
-                if (value[i] is MenuItemConfig) {
-                    item = value[i];
-
-                } else {
-                    item = new MenuItemConfig();
-
-                    if (value[i] is String) {
-                        item.label = value[i] as String;
-                    } else {
-                        new PropertyBinder(item, "customProperties").copyProperties(value[i], true);
-                    }
-                }
-                setDefaultProps(item);
-                _items.push(item);
+        /**
+         * Adds items.
+         *
+         * @param valueObj
+         * @return the new ItemConfig objects that were added
+         */
+        public function setItems(valueObj:Object):Array {
+            if (valueObj is String) {
+                _itemsUrl = valueObj as String;
+                return null;
             }
+
+            var itemArr:Array = valueObj as Array;
+            var newItems:Array = [];
+            for (var i:int; i < itemArr.length; i++) {
+                newItems.push(addItem(itemArr[i]));
+            }
+            return newItems;
         }
 
         public function addItem(itemConf:Object):MenuItemConfig {
@@ -62,11 +62,21 @@ package org.flowplayer.menu {
             if (itemConf is MenuItemConfig) {
                 item = itemConf as MenuItemConfig;
             } else {
-                item = new PropertyBinder(new MenuItemConfig()).copyProperties(itemConf) as MenuItemConfig;
+                item = new MenuItemConfig();
+
+                if (itemConf is String) {
+                    item.label = itemConf as String;
+                } else {
+                    new PropertyBinder(item, "customProperties").copyProperties(itemConf, true);
+                }
             }
             setDefaultProps(item);
             _items.push(item);
             return item;
+        }
+
+        public function removeItem(item:MenuItem):void {
+            _items.splice(_items.indexOf(item),  1);
         }
 
         /**
@@ -125,6 +135,10 @@ package org.flowplayer.menu {
 
         public function set buttons(value:Object):void {
             _buttons = value;
+        }
+
+        public function get itemsUrl():String {
+            return _itemsUrl;
         }
     }
 }
