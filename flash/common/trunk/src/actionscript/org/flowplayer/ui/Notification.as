@@ -66,7 +66,8 @@ package org.flowplayer.ui {
         public function show(displayProperties:Object = null):Notification {
             log.debug("show(), width: " + this.width);
             this.alpha = 0;
-            _player.addToPanel(this, displayProperties || { left: '50pct', top: '50pct' });
+            // set zIndex to a large value so that it displays on top of everything else
+            _player.addToPanel(this, displayProperties || { left: '50pct', top: '50pct', zIndex: 1000 });
             _player.animationEngine.fadeIn(this);
             return this;
         }
