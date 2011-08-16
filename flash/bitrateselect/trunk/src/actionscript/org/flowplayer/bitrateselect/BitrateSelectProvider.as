@@ -126,13 +126,16 @@ package org.flowplayer.bitrateselect {
                     _iconDock.addToPanel();
                 });
             }
-            _player.onLoad(function(event:PlayerEvent):void {
-                var firstClip:Clip = _player.playlist.getClip(0);
-                if (firstClip) {
-                    initStreamSelectionManager(firstClip);
-                    initBitrateMenu(firstClip);
-                }
-            });
+
+            var firstClip:Clip = _player.playlist.getClip(0);
+            if (_config.menu && firstClip) {
+                _player.onLoad(function(event:PlayerEvent):void {
+                    if (firstClip) {
+                        initStreamSelectionManager(firstClip);
+                        initBitrateMenu(firstClip);
+                    }
+                });
+            }
 
             if (_config.hdButton.controls) {
                 var controlbar:* = player.pluginRegistry.plugins['controls'];
@@ -151,6 +154,7 @@ package org.flowplayer.bitrateselect {
         private function createIconDock():void {
             if (_iconDock) return;
             _iconDock = Dock.getInstance(_player);
+            _iconDock.config.scaleWidthAndHeight = true;
             var controller:HDToggleController = new HDToggleController(true, this);
 
             // dock should do that, v3.2.7 maybe :)

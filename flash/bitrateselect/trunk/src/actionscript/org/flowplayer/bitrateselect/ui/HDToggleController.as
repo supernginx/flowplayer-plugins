@@ -56,7 +56,7 @@ package org.flowplayer.bitrateselect.ui {
 		override public function get downDefaults():Object {
 			return {
 				tooltipEnabled: ! _dockButton,
-				tooltipLabel: "SD is on",
+				tooltipLabel: "HD is on",
 				visible: true,
 				enabled: false
 			};
