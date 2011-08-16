@@ -28,7 +28,6 @@ package org.flowplayer.bitrateselect {
 
                 setHdProperty(item1, item2, clip);
 
-                _hasHD = (item1.hd || item2.hd || item1.sd || item2.sd);
                 log.debug("HD feature enabled? " + _hasHD);
             }
 
@@ -36,6 +35,9 @@ package org.flowplayer.bitrateselect {
         }
 
         private function setHdProperty(item1:BitrateItem, item2:BitrateItem, clip:Clip):void {
+            if (!(item1.hd || item2.hd || item1.sd || item2.sd)) return;
+            _hasHD = true;
+
             if (item1.hd) {
                 clip.setCustomProperty("hdBitrateItem", item1);
                 clip.setCustomProperty("sdBitrateItem", item2);
