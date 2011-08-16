@@ -25,23 +25,16 @@ package org.flowplayer.content {
     /**
      * @author api
      */
-    internal class ContentView extends StyleableSprite {
+    public class ContentView extends StyleableSprite {
 
         private var _text:TextField;
         private var _textMask:Sprite;
-        private var _closeButton:CloseButton;
         private var _htmlText:String;
         private var _player:Flowplayer;
-        private var _plugin:DisplayPluginModel;
-        private var _originalAlpha:Number;
 
-        public function ContentView(plugin:DisplayPluginModel, player:Flowplayer, closeButton:Boolean) {
+        public function ContentView(player:Flowplayer) {
             super(null, player, player.createLoader());
-            _plugin = plugin;
             _player = player;
-            if (closeButton) {
-                createCloseButton();
-            }
         }
 
         override protected function onSetStyle(style:FlowStyleSheet):void {
@@ -71,13 +64,6 @@ package org.flowplayer.content {
             html = _htmlText + htmlText;
             log.debug("appended html to " + _text.htmlText);
             return _htmlText;
-        }
-
-        public function set closeImage(image:DisplayObject):void {
-            if (_closeButton) {
-                removeChild(_closeButton);
-            }
-            createCloseButton(image);
         }
 
         private function createTextField(htmlText:String = null):void {
@@ -134,50 +120,12 @@ package org.flowplayer.content {
         }
 
         override protected function onResize():void {
-            arrangeCloseButton();
             if (_textMask) {
                 _textMask.width = width;
                 _textMask.height = height;
             }
-            this.x = 0;
-            this.y = 0;
-        }
-
-        override protected function onRedraw():void {
-            arrangeText();
-            arrangeCloseButton();
-        }
-
-        private function arrangeCloseButton():void {
-            if (_closeButton && style) {
-                _closeButton.x = width - _closeButton.width - 1 - style.borderRadius / 5;
-                _closeButton.y = 1 + style.borderRadius / 5;
-                setChildIndex(_closeButton, numChildren - 1);
-            }
-        }
-
-        private function createCloseButton(icon:DisplayObject = null):void {
-            _closeButton = new CloseButton(icon);
-            addChild(_closeButton);
-            _closeButton.addEventListener(MouseEvent.CLICK, onCloseClicked);
-        }
-
-        private function onCloseClicked(event:MouseEvent):void {
-            Content(_plugin.getDisplayObject()).removeListeners();
-            _originalAlpha = _plugin.getDisplayObject().alpha;
-            _player.animationEngine.fadeOut(_plugin.getDisplayObject(), 500, onFadeOut);
-        }
-
-        private function onFadeOut():void {
-            log.debug("faded out");
-            //
-            // restore original alpha value
-            _plugin.alpha = _originalAlpha;
-            _plugin.getDisplayObject().alpha = _originalAlpha;
-            // we need to update the properties to the registry, so that animations happen correctly after this
-            _player.pluginRegistry.updateDisplayProperties(_plugin);
-
-            Content(_plugin.getDisplayObject()).addListeners();
+//            this.x = 0;
+//            this.y = 0;
         }
 
         override public function set alpha(value:Number):void {
