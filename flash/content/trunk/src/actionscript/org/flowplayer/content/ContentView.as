@@ -119,13 +119,15 @@ package org.flowplayer.content {
             }
         }
 
+        override protected function onRedraw():void {
+              arrangeText();
+        }
+
         override protected function onResize():void {
             if (_textMask) {
                 _textMask.width = width;
                 _textMask.height = height;
             }
-//            this.x = 0;
-//            this.y = 0;
         }
 
         override public function set alpha(value:Number):void {
