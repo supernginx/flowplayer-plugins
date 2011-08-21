@@ -88,7 +88,8 @@
 		}
 		
 		function getEl(clip) {
-			return (manual) ? els.filter("[href=" + clip.originalUrl + "]") : els.eq(clip.index);	
+            //fix for #366 need double quotes for selector
+			return (manual) ? els.filter("[href=\"" + clip.originalUrl + "\"]") : els.eq(clip.index);
 		}
 		
 		function getEls() {
