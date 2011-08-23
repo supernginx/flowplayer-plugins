@@ -19,7 +19,7 @@ Fixes:
 - #349 updating dragger position was extending the stage when dragging past the end edge, set a boundary around max drag to prevent this.
 - #321 set an maximum end seek limit or else playback completion may fail.
 - #353 if player has ended or in a waiting state do not resize progress bars when going in/out of fullscreen
-
+- fixed #215
 
 3.2.5
 -----
