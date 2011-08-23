@@ -414,6 +414,10 @@ package org.flowplayer.controls.scrubber {
                 _player.resume(true);
                 seekToScrubberValue(false);
                 _isSeekPaused = false;
+                return;
+            }
+            if (_player.isPaused()) {
+                _currentClip.dispatchEvent(new ClipEvent(ClipEventType.SEEK, value));
             }
         }
 
