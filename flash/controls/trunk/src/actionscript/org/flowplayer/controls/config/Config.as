@@ -107,9 +107,9 @@ package org.flowplayer.controls.config {
 
 			for ( var name:String in newProps ) {
                 if (! needsRecursing(newProps[name])) {
-					log.debug("copying in "+ newProps[name] + " in " + name);
-					dest[name] = newProps[name];	
-				}
+					dest[name] = newProps[name] == null ? false : newProps[name];
+                    log.debug("copying in "+ newProps[name] + " in " + name + ", new value is now " + dest[name]);
+                }
 				else {
 					log.debug("recursing in "+ name);
 					dest[name] = oldProps[name] != undefined ? _setNewProps(newProps[name], oldProps[name]) : newProps[name];
@@ -120,7 +120,7 @@ package org.flowplayer.controls.config {
 		}
 
         private function needsRecursing(newVal:*):Boolean {
-            return ! (newVal is Number || newVal is String || newVal is Boolean);
+            return ! (newVal == null || newVal is Number || newVal is String || newVal is Boolean);
         }
 			
 		public function completeStyleProps(styleProps:Object):Object {
