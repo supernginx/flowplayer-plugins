@@ -35,9 +35,12 @@ package org.flowplayer.f4m {
         import org.osmf.elements.f4mClasses.DRMAdditionalHeader;
         import org.osmf.elements.f4mClasses.Manifest;
         import org.osmf.elements.f4mClasses.ManifestParser;
+        import org.osmf.elements.f4mClasses.MultiLevelManifestParser;
 
         import org.osmf.media.MediaResourceBase;
         import org.osmf.media.URLResource;
+
+        import org.osmf.events.ParseEvent;
 
         import org.osmf.net.DynamicStreamingResource;
         import org.osmf.net.DynamicStreamingItem;
@@ -129,8 +132,8 @@ package org.flowplayer.f4m {
                     if (bitrateOptions[index] && bitrateOptions)  {
                         var itemConfig:Object = bitrateOptions[index];
                         if (itemConfig.hasOwnProperty("label")) bitrateItem.label = itemConfig.label;
-                        //if (itemConfig.hasOwnProperty("sd")) bitrateItem.sd = itemConfig.sd;
-                        //if (itemConfig.hasOwnProperty("hd")) bitrateItem.hd = itemConfig.hd;
+                        if (itemConfig.hasOwnProperty("sd")) bitrateItem.sd = itemConfig.sd;
+                        if (itemConfig.hasOwnProperty("hd")) bitrateItem.hd = itemConfig.hd;
                     }
 
                     bitrateItems.push(bitrateItem);
@@ -148,7 +151,6 @@ package org.flowplayer.f4m {
 
                     if (netResource is DynamicStreamingResource) {
                         dynResource = netResource as DynamicStreamingResource;
-
                         //formats the stream items to be ready for the bwcheck plugin
                         dynResource.streamItems = formatStreamItems(dynResource.streamItems);
 
@@ -185,61 +187,46 @@ package org.flowplayer.f4m {
             private function parseF4MManifest(f4mContent:String):void {
                // log.debug("F4M Content: " + f4mContent);
                 log.debug("Parsing F4M Manifest");
-                parser = new ManifestParser();
+                parser = getParser();
+
+                parser.addEventListener(ParseEvent.PARSE_COMPLETE, onParserLoadComplete);
+				parser.addEventListener(ParseEvent.PARSE_ERROR, onParserLoadError);
 
                 try
                 {
-                    manifest = parser.parse(f4mContent, URLUtil.baseUrl(_clip.url));
+                    parser.parse(f4mContent, _clip.url.lastIndexOf("/") > 0  ? URLUtil.baseUrl(_clip.url) : "");
                 }
                 catch (parseError:Error)
                 {
 
                     log.error(parseError.errorID + " " + parseError.getStackTrace());
                 }
-
-                if (manifest != null)
-                {
-                      if (manifest.drmAdditionalHeaders.length > 0) {
-                       parseDrmAddtionalHeaders();
-                    }  else {
-                       onF4MFinished();
-                    }
-                }
             }
 
-            private function onDRMHeaderLoad():void
+            private function onParserLoadComplete(event:ParseEvent):void
             {
-                unfinishedDRMHeaders--;
+                parser.removeEventListener(ParseEvent.PARSE_COMPLETE, onParserLoadComplete);
+                parser.removeEventListener(ParseEvent.PARSE_ERROR, onParserLoadError);
 
-                if (unfinishedDRMHeaders == 0)
-                {
-                    onF4MFinished();
-                }
+                manifest = event.data as Manifest;
+                onF4MFinished();
             }
 
-            private function parseDrmAddtionalHeaders():void {
-                log.error("Parsing DRM Headers");
-                for each (var item:DRMAdditionalHeader in manifest.drmAdditionalHeaders)
-                {
-                        // DRM Metadata  - we may make this load on demand in the future.
-                        if (item.url != null)
-                        {
-                            unfinishedDRMHeaders++;
-                            loadAdditionalDRMHeader(item, onDRMHeaderLoad);
-                        }
-                }
-
-            }
-
-            private function loadAdditionalDRMHeader(item:DRMAdditionalHeader, loadedCallback:Function):void
+            private function onParserLoadError(event:ParseEvent):void
             {
-                log.error("Loading DRM Header");
-                var loader:ResourceLoader = _player.createLoader();
-                loader.load(item.url, function(loader:ResourceLoader):void {
-                    log.debug("F4M DRM Header received");
-                    item.data = ByteArray(loader.getContent());
-                    loadedCallback();
-                }, true);
+                parser.removeEventListener(ParseEvent.PARSE_COMPLETE, onParserLoadComplete);
+                parser.removeEventListener(ParseEvent.PARSE_ERROR, onParserLoadError);
+                log.error("Error parsing manifest");
+            }
+
+            private function getParser():ManifestParser
+            {
+                if (_config.version == 2)
+                {
+                    return new MultiLevelManifestParser();
+                }
+
+                return new ManifestParser();
             }
 
             public function set onFailure(listener:Function):void {

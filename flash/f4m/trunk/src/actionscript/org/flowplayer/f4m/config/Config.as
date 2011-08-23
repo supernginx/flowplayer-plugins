@@ -13,6 +13,15 @@ package org.flowplayer.f4m.config {
 
     public class Config {
 
+        private var _version:Number = 1;
+
+        public function get version():Number {
+            return _version;
+        }
+
+        public function set version(value:Number):void {
+            _version = value;
+        }
 
         
     }
