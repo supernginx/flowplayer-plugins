@@ -28,17 +28,15 @@ package org.flowplayer.httpstreaming {
     import org.flowplayer.view.Flowplayer;
 
     import org.osmf.logging.Log;
+
     import org.osmf.net.httpstreaming.HTTPNetStream;
-	import org.osmf.net.httpstreaming.f4f.HTTPStreamingF4FFileHandler;
-	import org.osmf.net.httpstreaming.f4f.HTTPStreamingF4FIndexHandler;
-    import org.osmf.net.httpstreaming.HTTPStreamingIndexHandlerBase;
-    import org.osmf.net.httpstreaming.HTTPStreamingFileHandlerBase;
-    import org.osmf.net.httpstreaming.HTTPStreamingUtils;
+    import org.osmf.net.httpstreaming.f4f.HTTPStreamingF4FFactory;
+
+
 
     import org.osmf.media.URLResource;
 
     import org.flowplayer.bwcheck.net.OsmfLoggerFactory;
-    import org.flowplayer.bwcheck.net.OsmfLogger;
 
     import org.flowplayer.httpstreaming.Config;
 
@@ -145,18 +143,14 @@ package org.flowplayer.httpstreaming {
         
         override protected function createNetStream(connection:NetConnection):NetStream {
 
+
             if (!clip.getCustomProperty("urlResource")) return super.createNetStream(connection);
 
             clip.type = ClipType.VIDEO;
 
             netResource = clip.getCustomProperty("urlResource") as URLResource;
 
-            var fileHandler:HTTPStreamingFileHandlerBase = new HTTPStreamingF4FFileHandler();
-			var indexHandler:HTTPStreamingIndexHandlerBase = new HTTPStreamingF4FIndexHandler(fileHandler);
-			var httpNetStream:HTTPNetStream = new HTTPNetStream(connection, indexHandler, fileHandler);
-			httpNetStream.manualSwitchMode = true;
-            httpNetStream.enhancedSeek = true;
-			httpNetStream.indexInfo = HTTPStreamingUtils.createF4FIndexInfo(netResource);
+            var httpNetStream:HTTPNetStream = new HTTPNetStream(connection, new HTTPStreamingF4FFactory(), netResource);
             return httpNetStream;
         }
     }
