@@ -87,7 +87,7 @@ package org.flowplayer.bitrateselect {
             _player.playlist.onSwitch(function(event:ClipEvent):void {
                 //#367 new httpstreaming logic switches automatically on startup, need to check for existence of the manual switch manager.
                 if (!_streamSwitchManager) return;
-                log.error("new item is " + _streamSelectionManager.currentBitrateItem + ", current " + _streamSwitchManager.previousBitrateItem);
+                log.debug("new item is " + _streamSelectionManager.currentBitrateItem + ", current " + _streamSwitchManager.previousBitrateItem);
                 Clip(event.target).setCustomProperty("bitrate", _streamSelectionManager.currentBitrateItem.bitrate);
                 _model.dispatch(PluginEventType.PLUGIN_EVENT, "onStreamSwitchBegin", _streamSelectionManager.currentBitrateItem, _streamSwitchManager.previousBitrateItem);
             });
@@ -106,7 +106,7 @@ package org.flowplayer.bitrateselect {
                 init(clip.getNetStream(), clip);
                 initSwitchManager();
 
-                log.debug("onStart()");
+                log.error("onStart()");
                 log.debug("hd available? " + hasHD);
 
                 dispatchEvent(new HDEvent(HDEvent.HD_AVAILABILITY, hasHD));
@@ -130,7 +130,8 @@ package org.flowplayer.bitrateselect {
             }
 
             var firstClip:Clip = _player.playlist.getClip(0);
-            if (_config.menu && firstClip) {
+            //don't initialize the menu if the bitrates list has not been resolved / generated on load.
+            if (_config.menu && firstClip && firstClip.getCustomProperty("bitrates")) {
                 _player.onLoad(function(event:PlayerEvent):void {
                     if (firstClip) {
                         initStreamSelectionManager(firstClip);
