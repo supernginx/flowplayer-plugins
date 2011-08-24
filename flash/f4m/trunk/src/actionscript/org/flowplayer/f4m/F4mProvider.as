@@ -146,8 +146,8 @@ package org.flowplayer.f4m {
                 log.debug("F4M Manifest Finished");
                 try
                 {
-
                     netResource = parser.createResource(manifest, new URLResource(_clip.completeUrl));
+
 
                     if (netResource is DynamicStreamingResource) {
                         dynResource = netResource as DynamicStreamingResource;
@@ -159,8 +159,9 @@ package org.flowplayer.f4m {
 
                     } else {
                         streamResource = netResource as StreamingURLResource;
+
                         log.debug("Manifest parsed with a single stream " + manifest.media[0].url);
-                        _clip.setResolvedUrl(this, manifest.media[0].url);
+                        _clip.setResolvedUrl(this, streamResource.url);
                         _clip.setCustomProperty("urlResource", streamResource);
                     }
 
