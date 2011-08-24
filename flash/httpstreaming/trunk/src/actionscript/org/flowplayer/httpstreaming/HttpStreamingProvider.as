@@ -75,11 +75,10 @@ package org.flowplayer.httpstreaming {
 
             clip.onPlayStatus(onPlayStatus);
 
-            log.debug("Playing F4F Stream With Resource " + netResource);
             _bufferStart = clip.currentTime;
             _startSeekDone = false;
             netStream.client = new NetStreamClient(clip, _player.config, streamCallbacks);
-            netStream.play(netResource, clip.start);
+            netStream.play(clip.url, clip.start);
         }
 
         private function onPlayStatus(event:ClipEvent) : void {
@@ -94,7 +93,7 @@ package org.flowplayer.httpstreaming {
             log.info("onNetStatus(), code: " + event.info.code + ", paused? " + paused + ", seeking? " + seeking);
             switch(event.info.code){
                 case "NetStream.Play.Transition":
-                    log.debug("Stream Transition -- " + event.info.details);
+                    log.error("Stream Transition -- " + event.info.details);
                     dispatchEvent(new ClipEvent(ClipEventType.SWITCH, event.info.details));
                     break;
             }
