@@ -85,7 +85,9 @@ package org.flowplayer.bitrateselect {
             _player = player;
 
             _player.playlist.onSwitch(function(event:ClipEvent):void {
-                log.debug("new item is " + _streamSelectionManager.currentBitrateItem + ", current " + _streamSwitchManager.previousBitrateItem);
+                //#367 new httpstreaming logic switches automatically on startup, need to check for existence of the manual switch manager.
+                if (!_streamSwitchManager) return;
+                log.error("new item is " + _streamSelectionManager.currentBitrateItem + ", current " + _streamSwitchManager.previousBitrateItem);
                 Clip(event.target).setCustomProperty("bitrate", _streamSelectionManager.currentBitrateItem.bitrate);
                 _model.dispatch(PluginEventType.PLUGIN_EVENT, "onStreamSwitchBegin", _streamSelectionManager.currentBitrateItem, _streamSwitchManager.previousBitrateItem);
             });
