@@ -26,14 +26,22 @@
 			stoppedClass:'stopped',
 			template: '<a href="${url}">${title}</a>',
 			loop: false,
+            continuousPlay: false,
 			playOnClick: true,
 			manual: false
-		};		
+		};
 		
 		$.extend(opts, options);
+
+        //use continous play or loop option #361
+        opts.loop = opts.continuousPlay || opts.loop;
+
 		wrap = $(wrap);		
 		var manual = (self.getPlaylist().length <= 1) || opts.manual;
 		var els = null;
+
+
+
 		
 		
 //{{{ "private" functions
@@ -103,8 +111,8 @@
 		// internal playlist
 		if (!manual) {
 
-			var template = wrap.is(":empty") ? opts.template : wrap.html(); 
-			buildPlaylist();			
+			var template = wrap.is(":empty") ? opts.template : wrap.html();
+			buildPlaylist();
 			
 			
 		// manual playlist
