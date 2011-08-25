@@ -192,14 +192,15 @@ package org.flowplayer.bitrateselect {
             for each (var item:BitrateItem in items) {
                 _menuItems.push(_menuPlugin["addItem"](
                         {
-                            selectedCallback: function():void {
-                                log.debug("switching to bitrate " + item.bitrate);
-                                _streamSwitchManager.switchStream(item);
+                            selectedCallback: function(menuItem:Object):void {
+                                log.debug("switching to bitrate " + menuItem.getCustomProperty("bitrateItem").bitrate);
+                                _streamSwitchManager.switchStream(menuItem.getCustomProperty("bitrateItem"));
                             },
                             label: item.label,
                             enabled: false,
                             toggle: true,
                             selected: item.isDefault,
+                            bitrateItem: item,
                             group: "bitrate"
                         }, items.indexOf(item) == items.length-1));
             }
