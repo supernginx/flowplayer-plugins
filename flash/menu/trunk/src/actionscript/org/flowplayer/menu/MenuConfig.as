@@ -18,7 +18,7 @@ package org.flowplayer.menu {
         private var _items:Array;
         private var _defaultItemConfig:Object;
         private var _scrollable:Boolean;
-        private var _buttons:Object;
+        private var _scrollButtons:Object;
         private var _itemsUrl:String;
 
         public function MenuConfig() {
@@ -95,7 +95,7 @@ package org.flowplayer.menu {
             new PropertyBinder(item, "customProperties").copyProperties(_defaultItemConfig);
         }
 
-        public function setStyle(styleObj:Object):void {
+        public function setMenuItem(styleObj:Object):void {
             if (styleObj == null) {
                 _defaultItemConfig = null;
                 return;
@@ -129,12 +129,12 @@ package org.flowplayer.menu {
             _scrollable = value;
         }
 
-        public function get buttons():Object {
-            return _buttons;
+        public function get scrollButtons():Object {
+            return _scrollButtons;
         }
 
-        public function set buttons(value:Object):void {
-            _buttons = value;
+        public function set scrollButtons(value:Object):void {
+            _scrollButtons = value;
         }
 
         public function get itemsUrl():String {

@@ -254,10 +254,11 @@ package org.flowplayer.menu.ui {
             dockConfig.model = DisplayPluginModel(model.clone());
             dockConfig.model.display = "block";
             dockConfig.gap = 0;
-            dockConfig.setButtons(_config.buttons);
+            dockConfig.setButtons(_config.scrollButtons);
 
             if (_config.button.dockedOrControls) {
                 updateModelProp("display", "none");
+                updateModelProp("alpha", 0);
             }
             dockConfig.scrollable = _config.scrollable;
 
