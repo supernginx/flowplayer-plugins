@@ -33,6 +33,7 @@
 		
 		$.extend(opts, options);
 
+
         //use continous play or loop option #361
         opts.loop = opts.continuousPlay || opts.loop;
 
