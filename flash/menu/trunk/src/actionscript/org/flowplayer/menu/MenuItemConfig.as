@@ -84,10 +84,8 @@ package org.flowplayer.menu {
         public function fireCallback(model:PluginModel):void {
             if (_selectedCallback != null) {
                 _selectedCallback(this);
-            } else {
-                model.dispatch(PluginEventType.PLUGIN_EVENT, "onSelect", new ObjectConverter(this).convert());
             }
-
+            model.dispatch(PluginEventType.PLUGIN_EVENT, "onSelect", new ObjectConverter(this).convert());
         }
 
         public function set selectedCallback(value:Function):void {
