@@ -106,8 +106,7 @@ package org.flowplayer.bitrateselect {
                 init(clip.getNetStream(), clip);
                 initSwitchManager();
 
-                log.error("onStart()");
-                log.debug("hd available? " + hasHD);
+                log.debug("onStart() hd available? " + hasHD);
 
                 dispatchEvent(new HDEvent(HDEvent.HD_AVAILABILITY, hasHD));
                 toggleSplashDefault(_streamSelectionManager.currentBitrateItem);
