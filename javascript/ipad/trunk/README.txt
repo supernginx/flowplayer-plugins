@@ -3,6 +3,7 @@
   - Fixed play of first clip in a playlist (#227)
   - added ipadBaseUrl
   - added m3u8 to valid file extensions
+  - added mp3, m4a and aac to valid file extensions, possibly needs full audio tag support #360
 
 3.2.2
 -----
