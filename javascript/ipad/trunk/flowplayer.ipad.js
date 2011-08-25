@@ -92,7 +92,7 @@ $f.addPlugin("ipad", function(options) {
 		controlsSizeRatio: 1.5,
 		controls: true,
 		debug: false,
-		validExtensions: /m3u8|mov|m4v|mp4|avi/gi
+		validExtensions: /m3u8|mov|m4v|mp4|avi|mp3|m4a|aac/gi
 	};
 
 	extend(opts, options);
