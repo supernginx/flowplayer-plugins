@@ -180,7 +180,7 @@
 		if (opts.loop) {
 			self.onBeforeFinish(function(clip) {
 
-                //#368 if items are children of parent elements find the closet parent transvered up, iterate next and obtain the next a element to use.
+			    //#368 if items are children of parent elements find the closet parent transvered up, iterate next and obtain the next a element to use.
 				var el = getEl(clip);
 
                 var nextItem = (opts.itemWrap ? el.closest(opts.itemWrap).next().children("a") : el.next());
@@ -190,6 +190,7 @@
 				} else {
 					els.eq(0).click();
 				}
+
 
 				return false;				
 			}); 
