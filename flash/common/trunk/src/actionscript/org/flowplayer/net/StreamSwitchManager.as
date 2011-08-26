@@ -56,6 +56,10 @@ package org.flowplayer.net {
                 } else {
                     netStreamPlayOptions.transition = NetStreamPlayTransitions.RESET;
                 }
+
+                //#370 set the clip start time or else dynamic switching doesn't function correctly.
+                netStreamPlayOptions.start = _player.currentClip.start;
+
                 netStreamPlayOptions.streamName = bitrateItem.url;
 
                 log.debug("calling switchStream with dynamic stream switch support, stream name is " + netStreamPlayOptions.streamName);
