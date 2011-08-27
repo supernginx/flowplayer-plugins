@@ -28,8 +28,7 @@
 			loop: false,
             continuousPlay: false,
 			playOnClick: true,
-			manual: false,
-            itemWrap: ""
+			manual: false
 		};
 		
 		$.extend(opts, options);
@@ -41,7 +40,7 @@
 		wrap = $(wrap);		
 		var manual = (self.getPlaylist().length <= 1) || opts.manual;
 		var els = null;
-
+        var index = 0;
 
 
 		
@@ -179,19 +178,9 @@
 		// on manual setups perform looping here
 		if (opts.loop) {
 			self.onBeforeFinish(function(clip) {
-
-			    //#368 if items are children of parent elements find the closet parent transvered up, iterate next and obtain the next a element to use.
-				var el = getEl(clip);
-
-                var nextItem = (opts.itemWrap ? el.closest(opts.itemWrap).next().children("a") : el.next());
-
-                if (nextItem.length) {
-					nextItem.click();
-				} else {
-					els.eq(0).click();
-				}
-
-
+			    //#368 using indexing of elements instead when wrapped inside other elements.
+				index = (index < els.length -1 ? index + 1 : 0);
+                els.eq(index).click();
 				return false;				
 			}); 
 		}
