@@ -37,8 +37,8 @@ package org.flowplayer.ui.dock {
             _autoHide.duration = 1000;
 
             _model = new DisplayPluginModelImpl(null, Dock.DOCK_PLUGIN_NAME, false);
-            _model.top = "20%";
-            _model.right = "7%";
+            _model.top = "15";
+            _model.right = "15";
             _model.width = "10%";
             _model.height = "30%";
 
@@ -46,7 +46,7 @@ package org.flowplayer.ui.dock {
                 border: "0px",
                 backgroundColor: "transparent",
                 borderRadius: "0",
-                disabledColor: "#bbbbbb"
+                disabledColor: "#333333"
             };
         }
 
