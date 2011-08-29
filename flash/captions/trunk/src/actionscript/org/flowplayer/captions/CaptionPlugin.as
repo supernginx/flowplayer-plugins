@@ -163,11 +163,14 @@ package org.flowplayer.captions {
         }
 
         protected function onNetStreamCaption(event:ClipEvent):void {
+            log.debug("onNetStreamCaption()");
             if (event.info != "onTextData") return;
-            if (captionsDisabledForClip(clip)) return;
 
             var clip:Clip = event.target as Clip;
+            if (captionsDisabledForClip(clip)) return;
+
             var data:Object = event.info2;
+            log.debug("onNetStreamCaption() data: ", data);
 
             var text:String = data['text'];
 
