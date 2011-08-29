@@ -23,6 +23,7 @@ package org.flowplayer.bitrateselect.config {
             _buttons.setOnColor("rgba(255,255,255,1)");
             _buttons.setOffColor("rgba(130,130,130,1)");
             _buttons.setDisabledColor("rgba(33,33,33,1");
+            _buttons.setEnabled(false);
         }
 
         public function get buttons():TooltipButtonConfig {
