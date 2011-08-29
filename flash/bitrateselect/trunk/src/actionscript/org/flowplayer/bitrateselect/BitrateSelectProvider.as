@@ -130,10 +130,12 @@ package org.flowplayer.bitrateselect {
 
             var firstClip:Clip = _player.playlist.getClip(0);
             //don't initialize the menu if the bitrates list has not been resolved / generated on load.
-            if (_config.menu && firstClip && firstClip.getCustomProperty("bitrates")) {
+            if (firstClip && firstClip.getCustomProperty("bitrates")) {
                 _player.onLoad(function(event:PlayerEvent):void {
-                    if (firstClip) {
-                        initStreamSelectionManager(firstClip);
+                    if (! firstClip) return;
+                    initStreamSelectionManager(firstClip);
+
+                    if (_config.menu) {
                         initBitrateMenu(firstClip);
                     }
                 });
@@ -289,6 +291,7 @@ package org.flowplayer.bitrateselect {
         }
 
         private function initStreamSelectionManager(clip:Clip):void {
+            log.debug("initStreamSelectionManager()");
             if (! clip.getCustomProperty("streamSelectionManager")) {
                 _streamSelectionManager = new StreamSelectionManager(new HDBitrateResource(), _player, this);
                 clip.setCustomProperty("streamSelectionManager", _streamSelectionManager);
