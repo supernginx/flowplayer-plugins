@@ -80,7 +80,9 @@ package org.flowplayer.sharing {
             addIcon(_config.twitter, TwitterIcon, function():void { _config.twitter.execute(); });
             addIcon(_config.facebook, FacebookIcon, function():void { _config.facebook.execute(); });
 
-            _dock.addToPanel();
+            if (_dock.config.model.visible) {
+                _dock.addToPanel();
+            }
         }
 
         public function getDefaultConfig():Object {
