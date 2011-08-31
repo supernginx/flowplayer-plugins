@@ -26,13 +26,14 @@ package org.flowplayer.viralvideos {
 
     import org.flowplayer.model.DisplayPluginModel;
     import org.flowplayer.ui.buttons.LabelButton;
+    import org.flowplayer.ui.buttons.ButtonConfig;
     import org.flowplayer.util.URLUtil;
     import org.flowplayer.view.Flowplayer;
-    import org.flowplayer.viralvideos.config.Config;
+    import org.flowplayer.viralvideos.config.EmailConfig;
 
     internal class EmailView extends StyleableView {
 
-        private var _config:Config;
+        private var _config:EmailConfig;
         private var _formContainer:Sprite;
         private var _titleLabel:TextField;
         private var _emailToLabel:TextField;
@@ -46,10 +47,12 @@ package org.flowplayer.viralvideos {
         private var _statusLabel:TextField;
         private var _sendBtn:LabelButton;
         private var _videoURL:String;
+        private var _buttonConfig:ButtonConfig;
 
-        public function EmailView(plugin:DisplayPluginModel, player:Flowplayer, config:Config, style:Object) {
+        public function EmailView(plugin:DisplayPluginModel, player:Flowplayer, config:EmailConfig, buttonConfig:ButtonConfig,  style:Object) {
             super("viral-email", plugin, player, style);
             _config = config;
+            _buttonConfig = buttonConfig;
             createForm();
             this.addEventListener(Event.ADDED_TO_STAGE, setTextFocus);
         }
@@ -61,15 +64,15 @@ package org.flowplayer.viralvideos {
 
         private function titleLabel():TextField {
             var field:TextField = createLabelField();
-            field.htmlText = "<span class=\"title\">" + _config.email.texts.title + "</span>";
+            field.htmlText = "<span class=\"title\">" + _config.labels.title + "</span>";
             
             return field;
         }
 
         private function emailToLabel():TextField {
             var field:TextField = createLabelField();
-            field.htmlText = "<span class=\"label\">"+ _config.email.texts.to +" <span class=" +
-                             "\"small\">"+ _config.email.texts.toSmall +"</span></span>";
+            field.htmlText = "<span class=\"label\">"+ _config.labels.to +" <span class=" +
+                             "\"small\">"+ _config.labels.toSmall +"</span></span>";
             return field;
         }
 
@@ -81,13 +84,13 @@ package org.flowplayer.viralvideos {
         }
 
         private function optional(field:String):String {
-            if (_config.email.isRequired(field)) return "";
-            return " <span class=\"small\">" + _config.email.texts.optional + "</span></span>";
+            if (_config.isRequired(field)) return "";
+            return " <span class=\"small\">" + _config.labels.optional + "</span></span>";
         }
 
         private function messageLabel():TextField {
             var field:TextField = createLabelField();
-            field.htmlText = "<span class=\"label\">" + _config.email.texts.message + optional("message");
+            field.htmlText = "<span class=\"label\">" + _config.labels.message + optional("message");
             return field;
         }
 
@@ -102,7 +105,7 @@ package org.flowplayer.viralvideos {
 
         private function nameFromLabel():TextField {
             var field:TextField = createLabelField();
-            field.htmlText = "<span class=\"label\">" + _config.email.texts.from + optional("name");
+            field.htmlText = "<span class=\"label\">" + _config.labels.from + optional("name");
             return field;
         }
 
@@ -114,7 +117,7 @@ package org.flowplayer.viralvideos {
 
         private function emailFromLabel():TextField {
             var field:TextField = createLabelField();
-            field.htmlText = "<span class=\"label\">" + _config.email.texts.fromAddress + optional("email");
+            field.htmlText = "<span class=\"label\">" + _config.labels.fromAddress + optional("email");
             return field;
         }
 
@@ -162,7 +165,7 @@ package org.flowplayer.viralvideos {
             _emailFromInput = emailFromInput();
             _formContainer.addChild(_emailFromInput);
 
-            _sendBtn = new LabelButton(_config.email.texts.send, _config.buttons, player.animationEngine);
+            _sendBtn = new LabelButton(_config.labels.send, _buttonConfig, player.animationEngine);
             _sendBtn.tabEnabled = true;
             _sendBtn.tabIndex = 5;
             _sendBtn.addEventListener(MouseEvent.CLICK, onSubmit);
@@ -184,9 +187,9 @@ package org.flowplayer.viralvideos {
         }
 
         private function getEmailToken():void {
-            log.debug("Requesting " + _config.email.tokenUrl);
+            log.debug("Requesting " + _config.tokenUrl);
             var loader:URLLoader = new URLLoader();
-            var request:URLRequest = new URLRequest(_config.email.tokenUrl);
+            var request:URLRequest = new URLRequest(_config.tokenUrl);
             request.method = URLRequestMethod.GET;
 
             loader.load(request);
@@ -197,7 +200,7 @@ package org.flowplayer.viralvideos {
 
         private function sendServerEmail():void {
             var loader:URLLoader = new URLLoader();
-            var request:URLRequest = new URLRequest(_config.email.script);
+            var request:URLRequest = new URLRequest(_config.script);
             request.method = URLRequestMethod.POST;
 
             //set the post variables from the form elements
@@ -206,9 +209,9 @@ package org.flowplayer.viralvideos {
             param.email = _emailFromInput.text;
             param.to = _emailToInput.text;
             //format the message from the message template
-            param.message = formatString(_config.email.texts.template, _messageInput.text, _videoURL, _videoURL);
-            param.subject = _config.email.texts.subject;
-            param.token = _config.email.token;
+            param.message = formatString(_config.labels.template, _messageInput.text, _videoURL, _videoURL);
+            param.subject = _config.labels.subject;
+            param.token = _config.token;
 
             param.dataFormat = URLLoaderDataFormat.VARIABLES;
             request.data = param;
@@ -221,7 +224,7 @@ package org.flowplayer.viralvideos {
 
         private function sendLocalEmail():void {
             log.debug("sendLocalEmail(), videoURL " + _videoURL);
-            var request:URLRequest = new URLRequest(formatString("mailto:{0}?subject={1}&body={2}", _emailToInput.text, escape(_config.email.texts.subject), escape(formatString(_config.email.texts.template, _messageInput.text, _videoURL, _videoURL))));
+            var request:URLRequest = new URLRequest(formatString("mailto:{0}?subject={1}&body={2}", _emailToInput.text, escape(_config.labels.subject), escape(formatString(_config.labels.template, _messageInput.text, _videoURL, _videoURL))));
             navigateToURL(request, "_self");
             createCloseTimer();
         }
@@ -246,11 +249,11 @@ package org.flowplayer.viralvideos {
         }
 
         private function validateField(field:TextField, fieldName:String, missingFields:Array):void {
-            if (!field.text && _config.email.isRequired(fieldName)) missingFields.push(fieldName);
+            if (!field.text && _config.isRequired(fieldName)) missingFields.push(fieldName);
         }
 
         private function checkRequiredFields():Boolean {
-            var required:Array = _config.email.required;
+            var required:Array = _config.required;
             var missingFields:Array = [];
             if (required.length > 0) {
                 validateField(_nameFromInput, "name", missingFields);
@@ -267,13 +270,13 @@ package org.flowplayer.viralvideos {
                 return;
             }
 
-            if (_config.email.script) {
+            if (_config.script) {
                 //email token is already set , post the form
-                if (_config.email.token && !_config.email.tokenUrl)
+                if (_config.token && !_config.tokenUrl)
                 {
                     formSuccess("Sending email ..");
                     sendServerEmail();
-                } else if (_config.email.tokenUrl) {
+                } else if (_config.tokenUrl) {
                     //request the email script token to be able to post the form
                     formSuccess("Sending email ..");
                     getEmailToken();
@@ -369,7 +372,7 @@ package org.flowplayer.viralvideos {
                     formError(data.error);
                 } else {
                     //we have a token, set the email script token and post the form
-                    _config.email.token = data.token;
+                    _config.token = data.token;
                     sendServerEmail();
                 }
             }

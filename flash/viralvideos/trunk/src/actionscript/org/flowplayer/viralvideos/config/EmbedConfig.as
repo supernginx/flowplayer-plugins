@@ -10,6 +10,7 @@
  */
 package org.flowplayer.viralvideos.config {
     import org.flowplayer.viralvideos.PlayerEmbed;
+    import org.flowplayer.util.PropertyBinder;
 
     public class EmbedConfig {
         public static const DEFAULT:int = -1;
@@ -25,6 +26,7 @@ package org.flowplayer.viralvideos.config {
         private var _fallbackPoster:String = null;
         private var _anchorText:String = null;
         private var _shareCurrentPlaylistItem:Boolean;
+        private var _labels:EmbedViewLabels = new EmbedViewLabels();
 
         public function get shareCurrentPlaylistItem():Boolean {
             return _shareCurrentPlaylistItem;
@@ -111,6 +113,15 @@ package org.flowplayer.viralvideos.config {
 
         public function set fallbackPoster(value:String):void {
             _fallbackPoster = value;
+        }
+
+        public function get labels():EmbedViewLabels {
+            return _labels;
+        }
+
+        public function setLabels(value:Object):void {
+            if (! value) return;
+            new PropertyBinder(_labels).copyProperties(value);
         }
 
     }

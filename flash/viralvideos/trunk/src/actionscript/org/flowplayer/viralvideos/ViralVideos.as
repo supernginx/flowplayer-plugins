@@ -225,7 +225,7 @@ package org.flowplayer.viralvideos {
 
         private function createEmailView():void {
             _config.setEmail(true);
-            _emailView = new EmailView(_model as DisplayPluginModel, _player, _config, _config.canvas);
+            _emailView = new EmailView(_model as DisplayPluginModel, _player, _config.email, _config.buttons, _config.canvas);
             //_emailView.setSize(stage.width, stage.height);
             _panelContainer.addChild(_emailView);
         }
@@ -236,7 +236,7 @@ package org.flowplayer.viralvideos {
         }
 
         private function createEmbedView():void {
-            _embedView = new EmbedView(_model as DisplayPluginModel, _player, _config.embedViewTexts, _config.embed, _config.buttons, _config.canvas);
+            _embedView = new EmbedView(_model as DisplayPluginModel, _player, _config.embed, _config.buttons, _config.canvas);
             //_embedView.setSize(stage.width, stage.height);
             _panelContainer.addChild(_embedView);
             //get the embed code and return it to the embed code textfield

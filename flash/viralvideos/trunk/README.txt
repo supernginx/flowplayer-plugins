@@ -8,6 +8,7 @@ Fixes:
 - embed code now just uses the OBJECT tag, issue #301
 - added new configuration option 'gap' to the dock. Defines the gap between buttons. Default is 5.
 - the embed code now includes "wmode" with value "transparent". Issue #306
+- refactoring of configs, reconformed all window label text to labels config, changed share description configs to title config. #290
 
 3.2.5
 -----

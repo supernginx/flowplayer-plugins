@@ -18,7 +18,7 @@ package org.flowplayer.viralvideos.config
         private var _email:EmailConfig = new EmailConfig();
         private var _share:ShareConfig = new ShareConfig();
         private var _embed:EmbedConfig = new EmbedConfig();
-        private var _embedViewTexts:EmbedViewTexts = new EmbedViewTexts(); 
+        private var _embedViewTexts:EmbedViewLabels = new EmbedViewLabels();
         private var _canvas:Object;
         private var _buttonConfig:ButtonConfig;
         private var _closeButton:ButtonConfig;
@@ -174,7 +174,7 @@ package org.flowplayer.viralvideos.config
             _embed.playerEmbed = embed;
         }
 
-        public function get embedViewTexts():EmbedViewTexts {
+        public function get embedViewTexts():EmbedViewLabels {
             return _embedViewTexts;
         }
 

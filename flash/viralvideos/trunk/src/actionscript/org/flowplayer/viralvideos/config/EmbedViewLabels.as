@@ -9,7 +9,7 @@
  *    Additional Term, see http://flowplayer.org/license_gpl.html
  */
 package org.flowplayer.viralvideos.config {
-    public class EmbedViewTexts {
+    public class EmbedViewLabels {
         private var _title:String = "Copy and paste this code to your web page";
         private var _options:String = "Customize size and colors";
         private var _backgroundColor:String = "Background color";
@@ -17,7 +17,7 @@ package org.flowplayer.viralvideos.config {
         private var _size:String = "Size (pixels)";
         private var _copy:String = "Copy";
 
-        public function EmbedViewTexts() {
+        public function EmbedViewLabels() {
         }
 
         public function get title():String {

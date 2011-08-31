@@ -13,7 +13,7 @@ package org.flowplayer.viralvideos.config {
     import org.flowplayer.util.PropertyBinder;
 
     public class ShareConfig {
-        private var _title:String = "Click on an icon to share this video";
+        private var _title:String = "A cool video";
         private var _description:String = "A cool video";
 		private var _body:String = "";
         private var _category:String = "";
@@ -28,6 +28,7 @@ package org.flowplayer.viralvideos.config {
         private var _bebo:Boolean = true;
         private var _icons:ButtonConfig;
         private var _shareWindow:String = "_popup";
+        private var _labels:ShareViewLabels = new ShareViewLabels();
 
         private var _popupDimensions:Object = {
             facebook: [620,440],
@@ -165,6 +166,15 @@ package org.flowplayer.viralvideos.config {
         public function set shareWindow(value:String):void
         {
             _shareWindow = value;
+        }
+
+        public function get labels():ShareViewLabels {
+            return _labels;
+        }
+
+        public function setLabels(value:Object):void {
+            if (! value) return;
+            new PropertyBinder(_labels).copyProperties(value);
         }
     }
 

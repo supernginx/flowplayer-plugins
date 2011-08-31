@@ -17,7 +17,7 @@ package org.flowplayer.viralvideos.config {
         private var _token:String;
         private var _required:Array = ["to"];
 //        private var _required:Array = ["name","email","to","message","subject"];
-        private var _texts:EmailTexts = new EmailTexts();
+        private var _labels:EmailViewLabels = new EmailViewLabels();
         
         public function get script():String {
             return _script;
@@ -55,13 +55,13 @@ package org.flowplayer.viralvideos.config {
             return _required.indexOf(field) >= 0;
         }
 
-        public function get texts():EmailTexts {
-            return _texts;
+        public function get labels():EmailViewLabels {
+            return _labels;
         }
 
-        public function setTexts(value:Object):void {
+        public function setLabels(value:Object):void {
             if (! value) return;
-            new PropertyBinder(_texts).copyProperties(value);
+            new PropertyBinder(_labels).copyProperties(value);
         }
     }
 
