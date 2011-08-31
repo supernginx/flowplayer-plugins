@@ -147,6 +147,13 @@
             self.onLoad(function() {
                 self.setPlaylist(playlist);
             });
+
+            //#368 this is required for the ipad plugin to function.
+            var clip = self.getClip(0);
+
+			if (!clip.url && opts.playOnClick) {
+				clip.update({url: escape(els.eq(0).attr("href"))});
+			}
 		}
 		
 		// onBegin
