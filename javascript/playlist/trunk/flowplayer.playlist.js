@@ -37,10 +37,11 @@
         //use continous play or loop option #361
         opts.loop = opts.continuousPlay || opts.loop;
 
-		wrap = $(wrap);		
-		var manual = (self.getPlaylist().length <= 1) || opts.manual;
-		var els = null;
-        var index = 0;
+		wrap = $(wrap);
+
+        //#368 if we have manual playlist elements configure playlist as manual
+        var els = getEls();
+		var manual = (self.getPlaylist().length <= 1) || opts.manual || els.length > 0;
 
 
 		
@@ -118,9 +119,7 @@
 			
 		// manual playlist
 		} else {
-			
-			els = getEls();			
-			
+
 			// allows dynamic addition of elements
 			if ($.isFunction(els.live)) {
 				var foo = $(wrap.selector + " a");
@@ -137,13 +136,17 @@
 					return play(el, el.attr("href"));
 				});					
 			}
-						 
-					
-            // setup player to play first clip
-			var clip = self.getClip(0);
-			if (!clip.url && opts.playOnClick) {
-				clip.update({url: escape(els.eq(0).attr("href"))});
-			}
+
+            //#368 configure manual playlists as flowplayer playlist items to repeat and transition correctly.
+			var playlist = [];
+
+            $.each(els, function(key, value) {
+                 playlist.push({ url: ($(value).attr("href")) });
+			});
+
+            self.onLoad(function() {
+                self.setPlaylist(playlist);
+            });
 		}
 		
 		// onBegin
@@ -172,16 +175,6 @@
 				if (!clip.isInStream && clip.index < els.length -1) {
 					return false;
 				}
-			}); 
-		}
-		
-		// on manual setups perform looping here
-		if (opts.loop) {
-			self.onBeforeFinish(function(clip) {
-			    //#368 using indexing of elements instead when wrapped inside other elements.
-				index = (index < els.length -1 ? index + 1 : 0);
-                els.eq(index).click();
-				return false;				
 			}); 
 		}
 		
