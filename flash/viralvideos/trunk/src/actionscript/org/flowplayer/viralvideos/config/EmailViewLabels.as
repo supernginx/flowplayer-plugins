@@ -9,7 +9,7 @@
  *    Additional Term, see http://flowplayer.org/license_gpl.html
  */
 package org.flowplayer.viralvideos.config {
-    public class EmailTexts {
+    public class EmailViewLabels {
         private var _title:String = "Email this video";
         private var _to:String = "Type in an email address";
         private var _toSmall:String = "(multiple addresses with commas)";

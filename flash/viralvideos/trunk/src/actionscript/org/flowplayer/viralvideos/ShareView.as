@@ -92,7 +92,7 @@ package org.flowplayer.viralvideos {
 //            _facebookIcon = new FacebookIcon() as Sprite;
 
             _title = createLabelField();
-            _title.htmlText = "<span class=\"title\">" + _config.title + "</span>";
+            _title.htmlText = "<span class=\"title\">" + _config.labels.title + "</span>";
             addChild(_title);
 
             _facebookIcon = AbstractIcon(initIcon(_config.facebook, new FacebookIcon(_config.icons, player.animationEngine), shareFacebook));
@@ -117,22 +117,22 @@ package org.flowplayer.viralvideos {
         }
 
         private function shareFacebook(event:MouseEvent):void {
-            var url:String = formatString(_facebookURL, encodeURIComponent(_config.description), sharedUrl);
+            var url:String = formatString(_facebookURL, encodeURIComponent(_config.title), sharedUrl);
             launchURL(url, _config.popupDimensions.facebook);
         }
 
         private function shareMyspace(event:MouseEvent):void {
-            var url:String = formatString(MYSPACE_URL, encodeURIComponent(_config.description), _embedCode, sharedUrl);
+            var url:String = formatString(MYSPACE_URL, encodeURIComponent(_config.title), _embedCode, sharedUrl);
             launchURL(url, _config.popupDimensions.myspace);
         }
 
         private function shareDigg(event:MouseEvent):void {
-            var url:String = formatString(DIGG_URL, encodeURIComponent(_config.description), sharedUrl, _config.body, _config.category);
+            var url:String = formatString(DIGG_URL, encodeURIComponent(_config.title), sharedUrl, _config.body, _config.category);
             launchURL(url, _config.popupDimensions.digg);
         }
 
         private function shareBebo(event:MouseEvent):void {
-            var url:String = formatString(BEBO_URL, encodeURIComponent(_config.description), sharedUrl);
+            var url:String = formatString(BEBO_URL, encodeURIComponent(_config.title), sharedUrl);
             launchURL(url, _config.popupDimensions.bebo);
         }
 
@@ -142,17 +142,17 @@ package org.flowplayer.viralvideos {
         }
 
         private function shareTwitter(event:MouseEvent):void {
-            var url:String = formatString(TWITTER_URL, encodeURIComponent(_config.description), sharedUrl);
+            var url:String = formatString(TWITTER_URL, encodeURIComponent(_config.title), sharedUrl);
             launchURL(url, _config.popupDimensions.twitter);
         }
 
         private function shareStumbleUpon(event:MouseEvent):void {
-            var url:String = formatString(STUMBLEUPON_URL, encodeURIComponent(_config.description), sharedUrl);
+            var url:String = formatString(STUMBLEUPON_URL, encodeURIComponent(_config.title), sharedUrl);
             launchURL(url, _config.popupDimensions.stumbleupon);
         }
 
         private function shareLiveSpaces(event:MouseEvent):void {
-            var url:String = formatString(LIVESPACES_URL, encodeURIComponent(_config.description), sharedUrl, _embedCode);
+            var url:String = formatString(LIVESPACES_URL, encodeURIComponent(_config.title), sharedUrl, _embedCode);
             launchURL(url, _config.popupDimensions.livespaces);
         }
 

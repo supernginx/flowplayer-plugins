@@ -26,7 +26,7 @@ package org.flowplayer.viralvideos {
     import org.flowplayer.view.AnimationEngine;
     import org.flowplayer.view.Flowplayer;
     import org.flowplayer.viralvideos.config.EmbedConfig;
-    import org.flowplayer.viralvideos.config.EmbedViewTexts;
+    import org.flowplayer.viralvideos.config.EmbedViewLabels;
 
     /**
      * @author danielr
@@ -47,13 +47,11 @@ package org.flowplayer.viralvideos {
         private var _heightTxt:TextField;
         private var _widthTxt:TextField;
         private var _optionsContainer:Sprite;
-        private var _texts:EmbedViewTexts;
         private var _config:EmbedConfig;
         private var _buttonConfig:ButtonConfig;
 
-        public function EmbedView(plugin:DisplayPluginModel, player:Flowplayer, texts:EmbedViewTexts, config:EmbedConfig, buttonConfig:ButtonConfig, style:Object) {
+        public function EmbedView(plugin:DisplayPluginModel, player:Flowplayer, config:EmbedConfig, buttonConfig:ButtonConfig, style:Object) {
             super("viral-embed", plugin, player, style);
-            _texts = texts;
             _config = config;
             _buttonConfig = buttonConfig;
 
@@ -61,12 +59,12 @@ package org.flowplayer.viralvideos {
             createEmbedCode();
             createOptionsContainer();
 
-            _titleLabel = createLabel("<span class=\"title\">" + _texts.title + "</span>");
+            _titleLabel = createLabel("<span class=\"title\">" + _config.labels.title + "</span>");
             _infoLabel = createLabel();
-            _optionsLabel = createLabel("<span class=\"title\">" + _texts.options + "</span>", _optionsContainer);
-            _sizeLabel = createLabel("<span class=\"label\">" + _texts.size + "</span>", _optionsContainer);
-            _bgColorLabel = createLabel("<span class=\"label\">" + _texts.backgroundColor + "</span>", _optionsContainer);
-            _buttonColorLabel = createLabel("<span class=\"label\">" + _texts.buttonColor + "</span>", _optionsContainer);
+            _optionsLabel = createLabel("<span class=\"title\">" + _config.labels.options + "</span>", _optionsContainer);
+            _sizeLabel = createLabel("<span class=\"label\">" + _config.labels.size + "</span>", _optionsContainer);
+            _bgColorLabel = createLabel("<span class=\"label\">" + _config.labels.backgroundColor + "</span>", _optionsContainer);
+            _buttonColorLabel = createLabel("<span class=\"label\">" + _config.labels.buttonColor + "</span>", _optionsContainer);
             _sizeDivLabel = createLabel("<span class=\"label\">x</span>", _optionsContainer);
 
             _widthTxt = createInput(_optionsContainer, 2);
@@ -245,7 +243,7 @@ package org.flowplayer.viralvideos {
         }
 
         private function createCopyButton():void {
-            _copyBtn = new LabelButton(_texts.copy, _buttonConfig, player.animationEngine);
+            _copyBtn = new LabelButton(_config.labels.copy, _buttonConfig, player.animationEngine);
             _copyBtn.tabEnabled = true;
             _copyBtn.tabIndex = 1;
             _copyBtn.addEventListener(MouseEvent.CLICK, onCopyToClipboard);
