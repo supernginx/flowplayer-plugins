@@ -83,7 +83,7 @@ package org.flowplayer.controls.buttons {
             return _tooltipTextFunc(valueFromScrubberPos);
         }
 
-        private function clampPos(val:Number, min:Number = 0, max:Number = 100):Number {
+        protected function clampPos(val:Number, min:Number = 0, max:Number = 100):Number {
             return Math.max(min, Math.min(max, val))
         }
 
