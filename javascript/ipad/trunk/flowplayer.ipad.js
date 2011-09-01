@@ -92,7 +92,8 @@ $f.addPlugin("ipad", function(options) {
 		controlsSizeRatio: 1.5,
 		controls: true,
 		debug: false,
-		validExtensions: /m3u8|mov|m4v|mp4|avi|mp3|m4a|aac/gi
+		validExtensions: /m3u8|mov|m4v|mp4|avi|mp3|m4a|aac/gi,
+        posterExtensions: /png|jpg/gi
 	};
 
 	extend(opts, options);
@@ -284,9 +285,18 @@ $f.addPlugin("ipad", function(options) {
 				var validExtensions = new RegExp(opts.validExtensions.source);
 				if (! validExtensions.test(activePlaylist[activeIndex].extension) ) {
     				if ( activePlaylist.length > 1 && activeIndex < activePlaylist.length - 1) {
+        		        //#359 for images in a playlist check for a valid extension and set as the clip poster.
+                        var posterExtensions = new RegExp(opts.posterExtensions.source);
+                        var poster;
+
+                        if (posterExtensions.test(activePlaylist[activeIndex].extension)) {
+                            poster = activePlaylist[activeIndex].url;
+                        }
+
+                        ++activeIndex;
         				// not the last clip in the playlist
         				console.log("Not last clip in the playlist, moving to next one");
-        				video.fp_play(++activeIndex, false, true);
+        				video.fp_play(activeIndex, false, true, poster);
     				}
     				return;
 				}
@@ -331,6 +341,12 @@ $f.addPlugin("ipad", function(options) {
 			if ( autoBuffering ) {
 				if ( ! actionAllowed('Begin') )
 					return false;
+
+                if (poster) {
+                    autoPlay = false;
+                    video.setAttribute('poster', poster);
+                    video.setAttribute('preload', "none");
+                }
 
 				$f.fireEvent(self.id(), 'onBegin', activeIndex);
 
