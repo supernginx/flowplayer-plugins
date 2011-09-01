@@ -343,7 +343,8 @@ $f.addPlugin("ipad", function(options) {
 					return false;
 
                 if (poster) {
-                    autoPlay = false;
+                    //#359 configure autoPlay from clip property
+                    autoPlay = clip.autoPlay;
                     video.setAttribute('poster', poster);
                     video.setAttribute('preload', "none");
                 }
