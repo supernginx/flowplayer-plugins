@@ -31,6 +31,8 @@ $f.addPlugin("ipad", function(options) {
 	var activeIndex = 0;
 	var activePlaylist = [];
 	var lastSecondTimer;
+    var endTime = null;
+    var startTime = 0;
 	var clipDefaults = {
 		accelerated: 	false,		// unused
 		autoBuffering: 	false,
@@ -663,13 +665,40 @@ $f.addPlugin("ipad", function(options) {
 
 		var onMetaData = function(e) {
 			// update clip
-			video.fp_updateClip({duration: video.duration, metaData: {duration: video.duration}}, activeIndex);
+            var clipDuration;
+
+            startTime = self.getClip().start;
+            //#187 if we have a duration set we want the clip to end at a certain time or else use the video duration.
+            if (self.getClip().duration > 0){
+                clipDuration = self.getClip().duration;
+                endTime = clipDuration + startTime;
+            } else {
+                clipDuration = video.duration;
+                endTime = null;
+            }
+
+			video.fp_updateClip({duration: clipDuration, metaData: { duration: video.duration } }, activeIndex);
 			activePlaylist[activeIndex].duration = video.duration;
+
+            //#187 there is a bug using updateClip to merge properties from objects setting the metaData here for now.
+            activePlaylist[activeIndex].metaData = {duration: video.duration};
 			
 			$f.fireEvent(self.id(), 'onMetaData', activeIndex, activePlaylist[activeIndex]);
 		};
 		video.addEventListener('loadedmetadata', onMetaData, false);
 		video.addEventListener('durationchange', onMetaData, false);
+
+        //if the currentTime has reached the configured duration end the stream and return to the beginning or the start time.
+        var onTimeUpdate = function(e) {
+
+            if (endTime && video.currentTime > endTime) {
+                video.fp_seek(startTime);
+                resetState();
+                return stopEvent(e);
+            }
+        };
+
+        video.addEventListener("timeupdate", onTimeUpdate, false);
 
 		var onStart = function(e) {
 			if ( currentState == STATE_PAUSED ) {
