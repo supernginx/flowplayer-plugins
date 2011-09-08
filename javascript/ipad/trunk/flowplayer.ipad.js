@@ -248,7 +248,7 @@ $f.addPlugin("ipad", function(options) {
 			return extendedClip;
 		}
 
-		video.fp_play = function(clip, inStream, /* private one, handy for playlists */ forcePlay) {
+		video.fp_play = function(clip, inStream, /* private one, handy for playlists */ forcePlay, poster) {
 			var url = null;
 			var autoBuffering 	 = true;
 			var autoPlay 		 = true;
@@ -293,6 +293,9 @@ $f.addPlugin("ipad", function(options) {
 
                         if (posterExtensions.test(activePlaylist[activeIndex].extension)) {
                             poster = activePlaylist[activeIndex].url;
+
+                            //#359 add logging for poster image
+                            console.log("Poster image available with url " + poster);
                         }
 
                         ++activeIndex;
