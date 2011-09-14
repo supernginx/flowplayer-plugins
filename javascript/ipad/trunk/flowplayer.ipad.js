@@ -202,8 +202,8 @@ $f.addPlugin("ipad", function(options) {
 				}
 			}
 		}
-		$f.each(self.getCommonClip()._cuepoints	, 		fireCuePointsIfNeeded);
-		$f.each(activePlaylist[activeIndex]._cuepoints, fireCuePointsIfNeeded);		
+		$f.each(self.getCommonClip().cuepoints	, 		fireCuePointsIfNeeded);
+		$f.each(activePlaylist[activeIndex].cuepoints, fireCuePointsIfNeeded);		
 	}
 
 	function replay() {
@@ -573,7 +573,7 @@ $f.addPlugin("ipad", function(options) {
 		
 		video.fp_addCuepoints = function(points, index, fnId) {
 			var clip = index == -1 ? self.getCommonClip() : activePlaylist[index];
-			clip._cuepoints = clip._cuepoints || {};
+			clip.cuepoints = clip.cuepoints || {};
 			points = points instanceof Array ? points : [points];
 			for ( var i = 0; i < points.length; i++ ) {
 				var time = typeof points[i] == "object" ? (points[i]['time'] || null) : points[i];
@@ -591,8 +591,8 @@ $f.addPlugin("ipad", function(options) {
 					}
 				}				
 				
-				clip._cuepoints[time] = clip._cuepoints[time] || [];
-				clip._cuepoints[time].push({fnId: fnId, lastTimeFired: -1, parameters: parameters});
+				clip.cuepoints[time] = clip.cuepoints[time] || [];
+				clip.cuepoints[time].push({fnId: fnId, lastTimeFired: -1, parameters: parameters});
 			}			
 		}
 
