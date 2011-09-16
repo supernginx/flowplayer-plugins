@@ -101,7 +101,9 @@ package org.flowplayer.cluster
             if (hasMultipleHosts())
             {
                 _liveHosts = currentHosts;
+
                 if (_liveHosts.length == 0) {
+
                     log.error("no live hosts available");
                     if (_failureListener != null) {
                         _failureListener();
@@ -114,11 +116,12 @@ package org.flowplayer.cluster
                     log.debug("Load balanced index " + _hostIndex);
                 }
                 if (_liveHosts.length > _hostIndex) {
-                    log.debug("cluster has multiple hosts");
+                    log.debug("cluster has multiple hosts", _liveHosts[_hostIndex].host);
                     _currentHost = _liveHosts[_hostIndex];
                     return _currentHost.host;
                 }
             }
+
             log.error("no hosts available");
             return null;
         }
@@ -178,7 +181,12 @@ package org.flowplayer.cluster
             _connectCount = count;
         }
 
-        protected function hasMoreHosts():Boolean
+        protected function repeatConnection():void
+        {
+
+        }
+
+        public function hasMoreHosts():Boolean
         {
             if (_failureExpiry == 0)
                 _hostIndex++
@@ -205,6 +213,9 @@ package org.flowplayer.cluster
         {
             var host:String = element.host;
             var server:SharedObject = _getFailedServerSO(host);
+
+            //var server:SharedObject = SharedObject.getLocal("test","/");
+
             // Server is failed, determine if the failure expiry interval has been reached and clear it
             if (server.data.failureTimestamp)
             {
@@ -215,8 +226,9 @@ package org.flowplayer.cluster
 
                 log.debug("Failed Server Remaining Expiry: " + offset + " Start Time: " + server.data.failureTimestamp.getTime() + " Current Time: " + date.getTime());
 
+
                 // Failure offset has reached the failureExpiry setting, clear it from the list to allow a connection
-                if (offset >= _config.failureExpiry)
+                if (offset >= _config.failureExpiry && _reConnectCount < _connectCount)
                 {
                     log.debug("Clearing Failure Period " + _config.failureExpiry);
                     server.clear();
@@ -224,6 +236,8 @@ package org.flowplayer.cluster
                 }
                 return false;
             }
+
+
             return true;
         }
 
