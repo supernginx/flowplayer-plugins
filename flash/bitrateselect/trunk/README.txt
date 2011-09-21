@@ -11,3 +11,5 @@ Version history:
 - to enable the HD/SD splash screen, have 2 bitrate items and mark one of them with a 'hd' property
 - #367 new httpstreaming logic switches automatically on startup, need to check for existence of the manual switch manager.
 - don't initialize the menu if the bitrates list has not been resolved / generated on load.
+- #388 specify splash labels here as they are not specific to display properties so don't get set.
+- set lowercase to embedded fonts on the hd button asset.

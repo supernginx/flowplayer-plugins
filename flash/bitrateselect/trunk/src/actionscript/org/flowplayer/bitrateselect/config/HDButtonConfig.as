@@ -67,6 +67,11 @@ package org.flowplayer.bitrateselect.config {
                 _splash = null;
                 return;
             }
+
+            //#388 specify splash labels here as they are not specific to display properties so don't get set.
+            if (value.onLabel) this.onLabel = value.onLabel;
+            if (value.offLabel) this.offLabel = value.offLabel;
+
             new PropertyBinder(_splash).copyProperties(value);
         }
     }
