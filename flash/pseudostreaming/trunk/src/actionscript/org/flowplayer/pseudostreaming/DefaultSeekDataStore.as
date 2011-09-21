@@ -20,7 +20,6 @@ public class DefaultSeekDataStore {
     protected var _keyFrameTimes:Array;
     protected var _keyFrameFilePositions:Array;
     private var _prevSeekTime:Number = 0;
-    private var _endSeekTime:Number = 0;
 
     private function init(clip:Clip, metaData:Object):void {
         if (! metaData) return;
@@ -84,13 +83,7 @@ public class DefaultSeekDataStore {
     }
 
     public function reset():void {
-        //#321 save the prevseektime on replay to provide the correct time when seeking to start @danielr
-        _endSeekTime = _prevSeekTime;
         _prevSeekTime = 0;
-    }
-
-    public function resetEndSeekTime():void {
-        _endSeekTime = 0;
     }
 
     public function inBufferSeekTarget(target:Number):Number {
@@ -99,10 +92,6 @@ public class DefaultSeekDataStore {
 
     public function currentPlayheadTime(time:Number, start:Number):Number {
         return (time - start) + _prevSeekTime;
-    }
-
-    public function get endSeekTime():Number {
-        return _endSeekTime;
     }
 }
 

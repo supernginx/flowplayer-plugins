@@ -15,6 +15,7 @@ Fixes:
 - #339, possible fixes for switching and seeking failures due to datastore. does not reload, just a direct seek.
 - #321. previous seek time gets cleared on replay seek before time gets updated. Store previous end seek time until playback begins to provide correct replay times.
 - #385 regression issue caused by #365, added old switching code back in, and tested seeking and switching work correctly.
+- #385 when scrubbing to the edge of the buffer seeking sometimes failed, need to reset the seek time to continue playback.
 
 3.2.6
 -----
