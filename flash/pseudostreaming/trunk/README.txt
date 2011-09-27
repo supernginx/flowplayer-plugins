@@ -16,6 +16,9 @@ Fixes:
 - #321. previous seek time gets cleared on replay seek before time gets updated. Store previous end seek time until playback begins to provide correct replay times.
 - #385 regression issue caused by #365, added old switching code back in, and tested seeking and switching work correctly.
 - #385 when scrubbing to the edge of the buffer seeking sometimes failed, need to reset the seek time to continue playback.
+- #363 pause stream after metadata due to refactoring of autobuffering for rtmp streams.
+- #363 silent seek and force to seek to a keyframe or else video frame will not display initially when paused.
+- #363 cleanup for autobuffering after a server seek to pause properly.
 
 3.2.6
 -----
