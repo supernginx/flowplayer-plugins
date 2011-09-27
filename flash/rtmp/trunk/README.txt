@@ -12,6 +12,7 @@ Fixes:
 - Issue #338 don't set clip currentTime when dynamic stream switching.
 - Issue #355, setup targeted options for Flash 10.1 to provide support for 10.0
 - Issue #351, connectionArgs are not passed to RTMPT connections
+- #363 when pausing on startup some clips require seekableOnBegin enabled or else the scrubbar is disabled.
 
 3.2.3
 -----
