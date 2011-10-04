@@ -6,6 +6,7 @@ Fixes
 - does not show "cluster plugin not found in configuration" any more: http://code.google.com/p/flowplayer-core/issues/detail?id=208
 - Made it possible to compile in accepted domains. The plugin prevents the player from initializing if the player
   is not embedded in one of these domains.
+- #391 add message argument required to send message through to the failure callback.
 
 3.2.2
 -----
