@@ -41,6 +41,16 @@ package org.flowplayer.securestreaming {
 		override protected function createConnector(url:String):ParallelRTMPConnector {
 			return new SecureParallelRTMPConnector(url, _sharedSecret, _connectionClient, onConnectorSuccess, onConnectorFailure);
 		}
+
+        //#391 add message argument required to send message through to the failure callback
+        override protected function onConnectorFailure(message:String = null):void {
+            _failureListener(message);
+        }
+
+        private function isFailedOrNotUsed(connector:ParallelRTMPConnector):Boolean {
+            if (! connector) return true;
+            return connector.failed;
+        }
 		
 		override protected function getNetConnectionUrl(clip:Clip):String {
 		   if (isRtmpUrl(clip.completeUrl)) {
