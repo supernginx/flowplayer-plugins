@@ -168,8 +168,11 @@ package org.flowplayer.controls.scrubber {
         }
 
         private function updateDraggerPos(time:Number, clip:Clip):void {
-            //#349 minimize dragging area or else dragger extends stage
-           	_dragger.x = Math.min((time / clip.duration) * maxDrag, maxDrag);
+            //#390 regression issue with updating with maxDrag inside a buffer use full scrubbar dimensions as boundary is contained elsewhere.
+            //using bitwise operation here instead of Math.min.
+            var bounds:int = (width - _dragger.width);
+            var pos:int = (time / clip.duration) * bounds;
+            _dragger.x =  pos > bounds ? bounds :pos;
         }
 
         private function onBeforeSeek(event:ClipEvent):void {

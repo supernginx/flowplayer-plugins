@@ -20,6 +20,7 @@ Fixes:
 - #321 set an maximum end seek limit or else playback completion may fail.
 - #353 if player has ended or in a waiting state do not resize progress bars when going in/out of fullscreen
 - fixed #215
+- #390 regression issue with updating with maxDrag inside a buffer use full scrubbar dimensions as boundary is contained elsewhere.
 
 3.2.5
 -----
