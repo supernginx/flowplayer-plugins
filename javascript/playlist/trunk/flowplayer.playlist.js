@@ -39,9 +39,9 @@
 
 		wrap = $(wrap);
 
-        //#368 if we have manual playlist elements configure playlist as manual
-        var els = getEls();
-		var manual = (self.getPlaylist().length <= 1) || opts.manual || els.length > 0;
+        //#399 Do not try to auto detect manual playlist as element could be an inline playlist template. Specify manual playlist by the config instead.
+        var manual = (self.getPlaylist().length <= 1) || opts.manual;
+        var els = null;
 
 
 		
