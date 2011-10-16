@@ -45,9 +45,8 @@ package org.flowplayer.net {
             _previousBitrateItem = _streamSelectionManager.currentBitrateItem;
             _streamSelectionManager.changeStreamNames(bitrateItem);
 
-            //fixes for #279 now switches correctly when in a paused state for http streams
-            //keep check here for rtmp and httpstreaming provider as play2 method is enabled for http streams
-            if (_netStream && _netStream.hasOwnProperty("play2") && (_player.streamProvider.type == "rtmp" || _player.streamProvider.type == "httpstreaming")) {
+            //#404 allow play2 for http streams, will reset correctly.
+            if (_netStream && _netStream.hasOwnProperty("play2")) {
 
                 var netStreamPlayOptions:NetStreamPlayOptions = new NetStreamPlayOptions();
                 if (_previousBitrateItem) {
