@@ -14,6 +14,7 @@ Fixes:
 - Issue #351, connectionArgs are not passed to RTMPT connections
 - #363 when pausing on startup some clips require seekableOnBegin enabled or else the scrubbar is disabled.
 - #363 overridable pause to frame for different seek functionality on rtmp streams, requires to seek to 0.1 to constistantly start on a frame.
+- #406 don't run version checks here anymore to work with Flash 11
 
 3.2.3
 -----
