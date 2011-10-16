@@ -83,6 +83,9 @@ package org.flowplayer.controls.scrubber {
             // onBegin instead of onStart: http://code.google.com/p/flowplayer-core/issues/detail?id=190
             playlist.onBegin(start);
 
+            //#404 stop/start dragger animation when switching to update correctly.
+            playlist.onSwitch(resume);
+
             playlist.onResume(resume);
 
             playlist.onPause(stop);
@@ -425,8 +428,9 @@ package org.flowplayer.controls.scrubber {
         }
 
         //#321 set an maximum end seek limit or else playback completion may fail
+        //#403 Seeking is a percentage of the seekbar so set a more accurate value.
         private function endSeekLimit(value:Number):Number {
-            return Math.min(value, 99);
+            return Math.min(value, 99.9);
         }
 
         private function seekToScrubberValue(silent:Boolean):void {
