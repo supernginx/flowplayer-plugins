@@ -60,9 +60,10 @@
 		}
 		
 		// assign onClick event for each clip
-		function bindClicks() {			
-			els = getEls().unbind("click.playlist").bind("click.playlist", function() {
-				return play($(this), els.index(this));						
+		function bindClicks() {
+            //#402 use live click handler here for dynamically added elements.
+			els = getEls().unbind("click.playlist").live("click.playlist", function() {
+				return play($(this), els.index(this));
 			});		
 		}
 		
@@ -119,23 +120,8 @@
 			
 		// manual playlist
 		} else {
-
-			// allows dynamic addition of elements
-			if ($.isFunction(els.live)) {
-				var foo = $(wrap.selector + " a");
-				if (!foo.length) { foo = $(wrap.selector + " > *"); }
-				
-				foo.live("click", function() {
-					var el = $(this);
-					return play(el, el.attr("href"));
-				});
-				
-			} else {
-				els.click(function() {
-					var el = $(this);
-					return play(el, el.attr("href"));
-				});					
-			}
+            //#402 bind clicks for manual plalists.
+            bindClicks();
 
             //#368 configure manual playlists as flowplayer playlist items to repeat and transition correctly.
 			var playlist = [];
@@ -171,9 +157,9 @@
 		self.onResume(function(clip) {
 			getEl(clip).removeClass(opts.pausedClass).addClass(opts.playingClass);		
 		});		
-		
+
 		// what happens when clip ends ?
-		if (!opts.loop && !manual) {
+		if (!opts.loop) {
 			
 			// stop the playback exept on the last clip, which is stopped by default
 			self.onBeforeFinish(function(clip) {
@@ -182,8 +168,15 @@
 				if (!clip.isInStream && clip.index < els.length -1) {
 					return false;
 				}
-			}); 
-		}
+			});
+		} else {
+            //#402 regression issue, reimplement looping at end for manual playlists.
+            self.onBeforeFinish(function(clip) {
+				if (!clip.isInStream && clip.index >= els.length -1) {
+					return false;
+				}
+			});
+        }
 		
 		// onUnload
 		self.onUnload(function() {
@@ -198,8 +191,8 @@
 		}
 		
 		// onClipAdd
-		self.onClipAdd(function(clip, index) {	
-			els.eq(index).before(toString(clip));			
+		self.onClipAdd(function(clip, index) {
+            els.eq(index).before(toString(clip));
 			bindClicks(); 
 		});		
 		
