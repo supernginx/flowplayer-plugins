@@ -312,15 +312,18 @@ package org.flowplayer.ui {
 
 
         private function onMouseMove(event:MouseEvent):void {
-            _stage.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-            cancelAnimation();
-            doShow();
+            //#405 move showing check to the beginning to prevent multiple event bubbling / system performance and frame dropping issues.
             if (isShowing() && _hideTimer) {
                 //                log.debug("onMouseMove(): already showing");
                 _hideTimer.stop();
                 _hideTimer.start();
                 return;
             }
+
+            _stage.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+            cancelAnimation();
+            doShow();
+
         }
 
         private function isShowing():Boolean {
@@ -370,7 +373,7 @@ package org.flowplayer.ui {
         }
 
         private function doShow():void {
-if (_model && ! _model.dispatchBeforeEvent(PluginEventType.PLUGIN_EVENT, "onBeforeShowed")) {
+            if (_model && ! _model.dispatchBeforeEvent(PluginEventType.PLUGIN_EVENT, "onBeforeShowed")) {
                 log.debug("doShow() onShowed event was prevented, not showing");
                 return;
             }
