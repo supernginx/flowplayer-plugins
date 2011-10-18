@@ -18,6 +18,7 @@ Version history:
 - Issue #355, disabled targeted Flash 10.1 in rtmp bwcheck to provide support for 10.0, required to be on for httpstreaming support
 - Fixes for# #67 removed depreciated code for httpstreaming.
 - #369 set clip start time for adding to play2 arguments during dynamic stream switching.
+- #408 changed some default qos settings to work better with wowza.
 
 
 3.2.6
