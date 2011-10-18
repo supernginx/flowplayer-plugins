@@ -28,12 +28,12 @@ package org.flowplayer.bwcheck.config {
 		private var _values:Object = new Object();
 		private var _properties:Array = ["bwUp", "bwDown", "frames", "buffer", "screen","ratio"];
         private var _minBufferLength:Number = 2;
-        private var _minDroppedFrames:Number = 2;
-        private var _bitrateSafety:Number = 1.15;
+        private var _minDroppedFrames:Number = 10;
+        private var _bitrateSafety:Number = 1.0;
         private var _framesToLow:Number = 24;
         private var _framesToTwo:Number = 20;
         private var _framesToOne:Number = 10;
-        private var _ruleCheckInterval:Number = 500;
+        private var _ruleCheckInterval:Number = 1000;
         private var _maxUpSwitchesPerStream:int = 3;
         private var _waitDurationAfterDownSwitch:int = 30000;
         private var _clearFailedCountInterval:Number = 1;
