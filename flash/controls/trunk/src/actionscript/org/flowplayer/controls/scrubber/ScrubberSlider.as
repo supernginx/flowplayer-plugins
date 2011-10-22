@@ -413,9 +413,18 @@ package org.flowplayer.controls.scrubber {
 
 		override protected function onMouseUp(event:MouseEvent):void {
             log.debug("onMouseUp()");
-            if (! canDragTo(mouseX)/* && _dragger.x > 0*/) {
+
+            //#403 prevent drag correctly for http streams
+            if (! canDragTo(mouseX)) {
                 doStart(_currentClip);
+                if (_isSeekPaused) {
+                    _player.resume(true);
+                    _isSeekPaused = false;
+                    return;
+                }
+                return;
             }
+
             if (_isSeekPaused) {
                 _player.resume(true);
                 seekToScrubberValue(false);
@@ -428,9 +437,9 @@ package org.flowplayer.controls.scrubber {
         }
 
         //#321 set an maximum end seek limit or else playback completion may fail
-        //#403 Seeking is a percentage of the seekbar so set a more accurate value.
+        //#403 Setting limit back to full range.
         private function endSeekLimit(value:Number):Number {
-            return Math.min(value, 99.9);
+            return Math.min(value, 100);
         }
 
         private function seekToScrubberValue(silent:Boolean):void {
@@ -471,6 +480,11 @@ package org.flowplayer.controls.scrubber {
             log.debug("onDragging()");
             stop(null);
             drawProgressBar(_bufferStart * width);
+
+            //#403 prevent drag for http streams
+            if (! canDragTo(mouseX)/* && _dragger.x > 0*/) {
+                return;
+            }
 
             if (mouseDown) {
                 seekToScrubberValue(true);
