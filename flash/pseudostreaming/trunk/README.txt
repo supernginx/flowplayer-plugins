@@ -20,6 +20,7 @@ Fixes:
 - #363 silent seek and force to seek to a keyframe or else video frame will not display initially when paused.
 - #363 cleanup for autobuffering after a server seek to pause properly.
 - #404 refactoring switchStream to suit changes with http streams and the use of the play2 method for resetting the stream.
+- #403 when seeking to outside the allowed keyframes, stop is called, require to trigger buffer full to complete correctly.
 
 3.2.6
 -----
