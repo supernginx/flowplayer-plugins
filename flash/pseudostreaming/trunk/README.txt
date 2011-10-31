@@ -21,6 +21,9 @@ Fixes:
 - #363 cleanup for autobuffering after a server seek to pause properly.
 - #404 refactoring switchStream to suit changes with http streams and the use of the play2 method for resetting the stream.
 - #403 when seeking to outside the allowed keyframes, stop is called, require to trigger buffer full to complete correctly.
+- #409 version check for byte range seeking was not working with Flash 11
+- #409 preventing seeking during silent seeking as is unstable with byte range seeking.
+- #409 cleanup reuse http client.
 
 3.2.6
 -----
