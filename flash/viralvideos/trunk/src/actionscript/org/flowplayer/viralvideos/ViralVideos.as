@@ -320,10 +320,16 @@ package org.flowplayer.viralvideos {
             }
 
             if (newTab == "Email" && _emailView) {
+                //#410 toggle out of fullscreen due to flash user input restrictions.
+                if (_player.isFullscreen()) _player.toggleFullscreen();
+
                 _emailMask.height = TAB_HEIGHT;
                 _emailTab.css(_tabCSSProperties);
             }
             if (newTab == "Embed" && _embedView) {
+                //#410 toggle out of fullscreen due to flash user input restrictions.
+                if (_player.isFullscreen()) _player.toggleFullscreen();
+
                 _embedMask.height = TAB_HEIGHT;
                 _embedTab.css(_tabCSSProperties);
             }
