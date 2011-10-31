@@ -77,9 +77,9 @@ package org.flowplayer.pseudostreaming.net
 		
 		private function streamComplete():void {
 			_seekTime = _seekTime + 1;
-			dispatchEvent(new NetStatusEvent(NetStatusEvent.NET_STATUS,false,false, {code:"NetStream.Play.Stop", level:"status"})); 
 			_ended = true;
 			this.appendBytesAction(NetStreamAppendBytesAction.END_SEQUENCE);
+            dispatchEvent(new NetStatusEvent(NetStatusEvent.NET_STATUS,false,false, {code:"NetStream.Play.Stop", level:"status"}));
 		}
 		
 		private function onClose(event:Event):void {
@@ -129,14 +129,9 @@ package org.flowplayer.pseudostreaming.net
 		override public function play(...parameters):void {
 			
 			super.play(null);
-		
-			try {
-				_client.close();
-				_client = null;
-			} catch (e:Error) {
-				
-			}
-            
+
+            //#409 cleanup reuse http client
+            if (!_client) {
 			_client = new HttpClient();
 			var httplistener:HttpListener = new HttpListener();
 			_client.listener = httplistener;
@@ -149,9 +144,10 @@ package org.flowplayer.pseudostreaming.net
 			_client.addEventListener(HttpErrorEvent.ERROR, onError);
 			_client.addEventListener(HttpErrorEvent.TIMEOUT_ERROR, onTimeoutError);
 			_client.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
-			
-		
-			dispatchEvent(new NetStatusEvent(NetStatusEvent.NET_STATUS,false,false, {code:"NetStream.Play.Start", level:"status"})); 
+            } else {
+                _client.cancel();
+            }
+
 		
 			var uri:URI = new URI(parameters[0]);
 			_currentURL = parameters[0];
@@ -159,29 +155,30 @@ package org.flowplayer.pseudostreaming.net
 			
 			_ended = false;
 			if (Number(parameters[1]) && DefaultSeekDataStore(parameters[2]) && _serverAcceptsBytes) {
-				
 				_seekTime = Number(parameters[1]);
 				_seekDataStore = DefaultSeekDataStore(parameters[2]);
 
 				_bytesLoaded = getByteRange(_seekTime);
 				
-				request.addHeader("If-Range", _eTag);	
-				request.addHeader("Range", "bytes="+_bytesLoaded+"-");	
-				
+				request.addHeader("If-Range", _eTag);
+
+				request.addHeader("Range", "bytes="+_bytesLoaded+"-");
+				super.seek(0);
 				this.appendBytesAction(NetStreamAppendBytesAction.RESET_SEEK);
 				
 				var bytes:ByteArray = new ByteArray();
 				appendBytes(bytes);
 
-				dispatchEvent(new NetStatusEvent(NetStatusEvent.NET_STATUS,false,false, {code:"NetStream.Play.Seek", level:"status"})); 
+				dispatchEvent(new NetStatusEvent(NetStatusEvent.NET_STATUS,false,false, {code:"NetStream.Play.Seek", level:"status"}));
 				
 			} else {
+
 				//reset seek, bytes loaded and send bytes reset actions
 				_seekTime = 0;
 				_bytesLoaded = 0;
 				//this.appendBytesAction(NetStreamAppendBytesAction.END_SEQUENCE);
-				//this.appendBytesAction(NetStreamAppendBytesAction.RESET_BEGIN);
-				
+				this.appendBytesAction(NetStreamAppendBytesAction.RESET_BEGIN);
+				dispatchEvent(new NetStatusEvent(NetStatusEvent.NET_STATUS,false,false, {code:"NetStream.Play.Start", level:"status"}));
 				
 			}
 			
