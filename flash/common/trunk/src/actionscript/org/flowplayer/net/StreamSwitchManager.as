@@ -42,7 +42,9 @@ package org.flowplayer.net {
 
 
         public function switchStream(bitrateItem:BitrateItem):void {
+
             _previousBitrateItem = _streamSelectionManager.currentBitrateItem;
+
             _streamSelectionManager.changeStreamNames(bitrateItem);
 
             //#404 allow play2 for http streams, will reset correctly.
@@ -61,7 +63,8 @@ package org.flowplayer.net {
 
                 netStreamPlayOptions.streamName = bitrateItem.url;
 
-                log.debug("calling switchStream with dynamic stream switch support, stream name is " + netStreamPlayOptions.streamName);
+                //#417 provide previous item name in the logs.
+                log.debug("calling switchStream with dynamic stream switch support, stream name is " + netStreamPlayOptions.streamName + ", previous stream name: " + _previousBitrateItem.streamName);
 
                 _player.switchStream(_player.currentClip, netStreamPlayOptions);
             } else {
