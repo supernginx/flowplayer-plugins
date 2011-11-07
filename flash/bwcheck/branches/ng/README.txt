@@ -19,7 +19,8 @@ Version history:
 - Fixes for# #67 removed depreciated code for httpstreaming.
 - #369 set clip start time for adding to play2 arguments during dynamic stream switching.
 - #408 changed some default qos settings to work better with wowza.
-
+- #417 disable setting the index with a screen size rule and manual switch with dynamic also enabled as it resets the index and causes issues obtaining the previous item.
+- #417 if screen size rule is disabled do not do screen size checks for the index.
 
 3.2.6
 -----

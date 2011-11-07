@@ -45,6 +45,10 @@ public class BWStreamSelectionManager extends StreamSelectionManager {
         }
 
         override public function getStreamIndex(bandwidth:Number):Number {
+
+            //#417 if screen size rule is disabled do not do screen size checks for the index.
+            if (!_config.qos.screen) return super.getStreamIndex(bandwidth);
+
             for (var i:Number = streamItems.length - 1; i >= 0; i--) {
 
                 var item:BitrateItem = streamItems[i];
@@ -57,7 +61,8 @@ public class BWStreamSelectionManager extends StreamSelectionManager {
 
                 if (fitsScreen(item, _player, _config) && enoughBw && bitrateSpecified) {
                     bwSelectLog.debug("selecting bitrate with width " + item.width + " and bitrate " + item.bitrate);
-                    currentIndex = i;
+                    //#417 disable setting the index with a screen size rule and manual switch with dynamic also enabled as it resets the index and causes issues obtaining the previous item.
+                    //currentIndex = i;
                     return i;
                     break;
                 }
