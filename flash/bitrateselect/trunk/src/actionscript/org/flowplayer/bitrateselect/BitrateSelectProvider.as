@@ -101,6 +101,7 @@ package org.flowplayer.bitrateselect {
                 _model.dispatch(PluginEventType.PLUGIN_EVENT, "onStreamSwitch", _streamSelectionManager.currentBitrateItem);
             });
 
+            //#418 add a filter for clip start events when bitrateselect is not configured as a resolver.
             _player.playlist.onStart(function(event:ClipEvent):void {
                 var clip:Clip = event.target as Clip;
                 init(clip.getNetStream(), clip);
@@ -119,7 +120,7 @@ package org.flowplayer.bitrateselect {
                     }
                 }
 
-            });
+            },applyForClip);
 
             if (_config.hdButton.docked) {
                 createIconDock();	// we need to create the controller pretty early else it won't receive the HD_AVAILABILITY event
