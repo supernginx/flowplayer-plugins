@@ -75,7 +75,8 @@ package org.flowplayer.sharing {
                 });
             };
 
-            addIcon(_config.email, EmailIcon, function():void { return; _config.email.execute(); });
+            //#419 email linking was disabled.
+            addIcon(_config.email, EmailIcon, function():void { _config.email.execute(); });
             addIcon(_config.embed, EmbedIcon, function():void { _config.getEmbedCode().execute(); });
             addIcon(_config.twitter, TwitterIcon, function():void { _config.twitter.execute(); });
             addIcon(_config.facebook, FacebookIcon, function():void { _config.facebook.execute(); });
