@@ -123,9 +123,10 @@
                         bindClicks(); // also returns els
 
                         //#368 configure manual playlists as flowplayer playlist items to repeat and transition correctly.
+                        //#402 use encodeURI instead of escape to format urls correctly for playback.
                         var playlist = [];
                         $.each(els, function(key, value) {
-                                playlist.push({url: escape($(value).attr("href"))});
+                                playlist.push({url: encodeURI($(value).attr("href"))});
                         });
 
                         self.onLoad(function() {
@@ -136,7 +137,7 @@
                         var clip = self.getClip(0);
 
                         if (!clip.url && opts.playOnClick) {
-                                clip.update({url: escape(els.eq(0).attr("href"))});
+                                clip.update({url: encodeURI(els.eq(0).attr("href"))});
                         }
                 }
 
@@ -157,17 +158,25 @@
                 });
 
                 // what happens when clip ends ?
-                if (!opts.loop && !manual) {
+				if (!opts.loop) {
+					
+					// stop the playback exept on the last clip, which is stopped by default
+					self.onBeforeFinish(function(clip) {
+						getEl(clip).removeClass(opts.playingClass);
+						getEl(clip).addClass(opts.stoppedClass);
+						if (!clip.isInStream && clip.index < els.length -1) {
+							return false;
+						}
+					});
+				} else {
+		            //#402 regression issue, reimplement looping at end for manual playlists.
+		            self.onBeforeFinish(function(clip) {
+						if (!clip.isInStream && clip.index >= els.length -1) {
+							return false;
+						}
+					});
+		        }
 
-                        // stop the playback exept on the last clip, which is stopped by default
-                        self.onBeforeFinish(function(clip) {
-                                getEl(clip).removeClass(opts.playingClass);
-                                getEl(clip).addClass(opts.stoppedClass);
-                                if (!clip.isInStream && clip.index < els.length -1) {
-                                        return false;
-                                }
-                        });
-                }
 
                 // onUnload
                 self.onUnload(function() {
@@ -183,8 +192,9 @@
 
                 // onClipAdd
                 self.onClipAdd(function(clip, index) {
-                        els.eq(index).before(toString(clip));
-                        bindClicks();
+	                bindClicks();
+                    //#402 this seems not required, disable for now to work with dynamic appending with manual playlists.
+            		//els.eq(index).before(toString(clip));;
                 });
 
                 return self;
