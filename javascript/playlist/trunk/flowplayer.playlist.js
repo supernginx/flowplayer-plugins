@@ -122,26 +122,10 @@
 
                         bindClicks(); // also returns els
 
-                        // allows dynamic addition of elements
-                        // ??? what is the intention of this
-                        // click action must be similar to bindClicks()
-                        // play(href) prevents continuousPlay and is a nono in 3.2.7
-                        if ($.isFunction(els.live)) {
-                                var foo = $(wrap.selector + " a");
-                                if (!foo.length) { foo = $(wrap.selector + " > *"); }
-
-                                foo.live("click", function() {
-                                        var el = $(this);
-                                        return play(el, el.attr("href"));
-                                });
-
-                        }
-
                         //#368 configure manual playlists as flowplayer playlist items to repeat and transition correctly.
-
                         var playlist = [];
                         $.each(els, function(key, value) {
-                                playlist.push({ url: ($(value).attr("href")) });
+                                playlist.push({url: escape($(value).attr("href"))});
                         });
 
                         self.onLoad(function() {
