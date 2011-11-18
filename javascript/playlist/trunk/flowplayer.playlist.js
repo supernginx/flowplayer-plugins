@@ -35,7 +35,7 @@
 
 
         //use continous play or loop option #361
-        opts.loop = opts.continuousPlay || opts.loop;
+        //opts.loop = opts.continuousPlay || opts.loop;
 
         wrap = $(wrap);
 
@@ -129,6 +129,7 @@
                                 playlist.push({url: encodeURI($(value).attr("href"))});
                         });
 
+
                         self.onLoad(function() {
                                 self.setPlaylist(playlist);
                         });
@@ -157,25 +158,32 @@
                         getEl(clip).removeClass(opts.pausedClass).addClass(opts.playingClass);
                 });
 
-                // what happens when clip ends ?
-				if (!opts.loop) {
-					
-					// stop the playback exept on the last clip, which is stopped by default
-					self.onBeforeFinish(function(clip) {
-						getEl(clip).removeClass(opts.playingClass);
-						getEl(clip).addClass(opts.stoppedClass);
-						if (!clip.isInStream && clip.index < els.length -1) {
-							return false;
-						}
-					});
-				} else {
-		            //#402 regression issue, reimplement looping at end for manual playlists.
-		            self.onBeforeFinish(function(clip) {
-						if (!clip.isInStream && clip.index >= els.length -1) {
-							return false;
-						}
-					});
-		        }
+                function stopPlaylist(clip) {
+                    self.onBeforeFinish(function(clip) {
+                        getEl(clip).removeClass(opts.playingClass);
+                        getEl(clip).addClass(opts.stoppedClass);
+                        if (!clip.isInStream && clip.index < els.length -1) {
+                            return false;
+                        }
+				    });
+                }
+
+                function loopPlaylist(clip) {
+                    self.onBeforeFinish(function(clip) {
+                        if (!clip.isInStream && clip.index >= els.length -1) {
+					        return false;
+					    }
+				    });
+                }
+
+                //402 if looping is off and continuous play is off stop the playlist.
+                // if looping is enabled return to the start on playlist completion.
+                // if looping is disabled but continuous play is enabled it will let the playlist complete to the end.
+                if (!opts.loop && !opts.continuousPlay) {
+                    stopPlaylist(clip);
+                } else if (opts.loop) {
+                    loopPlaylist(clip);
+                }
 
 
                 // onUnload
