@@ -16,6 +16,7 @@ Fixes:
 - #363 overridable pause to frame for different seek functionality on rtmp streams, requires to seek to 0.1 to constistantly start on a frame.
 - #406 don't run version checks here anymore to work with Flash 11
 - #403 when seeking to the duration the buffer will flush and needs to end correctly
+- #424 regression with #403, force an end seek buffer to allow some playback and prevent hanging when seeking to the duration. buffer flush causes issues with playlists.
 
 3.2.3
 -----
