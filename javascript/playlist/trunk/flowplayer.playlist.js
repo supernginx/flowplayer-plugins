@@ -40,7 +40,8 @@
         wrap = $(wrap);
 
         //#399 Do not try to auto detect manual playlist as element could be an inline playlist template. Specify manual playlist by the config instead.
-        var manual = (self.getPlaylist().length <= 1) || opts.manual;
+        //#425 Check for empty playlist to configure manual playlist to allow dynamic playlists with one clip.
+        var manual = (self.getPlaylist().length < 1) || opts.manual;
         var els = null;
 
 
