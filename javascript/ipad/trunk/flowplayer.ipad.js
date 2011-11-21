@@ -670,10 +670,11 @@ $f.addPlugin("ipad", function(options) {
 			// update clip
             var clipDuration;
 
-            startTime = self.getClip().start;
+            //regression issue with #187 self.getClip() is inaccessible.
+            startTime = activePlaylist[activeIndex].start;
             //#187 if we have a duration set we want the clip to end at a certain time or else use the video duration.
-            if (self.getClip().duration > 0){
-                clipDuration = self.getClip().duration;
+            if (activePlaylist[activeIndex].duration > 0){
+                clipDuration = activePlaylist[activeIndex].duration;
                 endTime = clipDuration + startTime;
             } else {
                 clipDuration = video.duration;
