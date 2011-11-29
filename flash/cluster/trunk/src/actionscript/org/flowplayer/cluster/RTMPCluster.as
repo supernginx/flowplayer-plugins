@@ -38,6 +38,7 @@ package org.flowplayer.cluster
         protected var _liveRandomServers:Array = [];
         private var _startAfterConnect:Boolean;
         protected var _failureExpiry:int = 0;
+        protected var _reconnectFailureExpiry:int = 0;
         private var _config:*;
         private var _dispatcher:PluginModelImpl;
         private var log:Log = new Log(this);
@@ -197,13 +198,19 @@ package org.flowplayer.cluster
 
             if (_hostIndex >= _liveHosts.length)
             {
-                //
                 _reConnectCount++;
                 if (_reConnectCount < _connectCount)
                 {
                     log.debug("Restarting Connection Attempts");
                     _hostIndex = 0;
+                    //#427 when reconnecting to the max reconnect count, clear the failure expiry and reset the live hosts to enable to try again ?
+                    _reconnectFailureExpiry = 0;
+                    _liveHosts = currentHosts;
+
                 }
+            } else {
+                //#427 set the normal failure expiry during retries.
+                _reconnectFailureExpiry = _failureExpiry;
             }
             log.debug("Host Index: " + _hostIndex + " LiveServers: " + _liveHosts.length);
             return (_hostIndex <= _liveHosts.length && _liveHosts[_hostIndex]);
@@ -213,8 +220,6 @@ package org.flowplayer.cluster
         {
             var host:String = element.host;
             var server:SharedObject = _getFailedServerSO(host);
-
-            //var server:SharedObject = SharedObject.getLocal("test","/");
 
             // Server is failed, determine if the failure expiry interval has been reached and clear it
             if (server.data.failureTimestamp)
@@ -228,7 +233,8 @@ package org.flowplayer.cluster
 
 
                 // Failure offset has reached the failureExpiry setting, clear it from the list to allow a connection
-                if (offset >= _config.failureExpiry && _reConnectCount < _connectCount)
+                //#427 failure expiry was not being reset to honour connect retry.
+                if (offset >= _reconnectFailureExpiry && _reConnectCount < _connectCount)
                 {
                     log.debug("Clearing Failure Period " + _config.failureExpiry);
                     server.clear();
