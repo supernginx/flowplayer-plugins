@@ -167,7 +167,13 @@ package org.flowplayer.ui {
             }
 
             log.debug("animating to hidden position");
-            _player.animationEngine.animate(_disp, hiddenPos, _config.hideDuration, onHidden);
+
+            //#426 use fadeIn/fadeOut for fade mode to improve animation engine performance as only alpha is required.
+            if (useFadeOut)
+                _player.animationEngine.fadeOut(_disp, _config.hideDuration, onHidden);
+            else
+                _player.animationEngine.animate(_disp, hiddenPos, _config.hideDuration, onHidden);
+
             if (_hideTimer) {
                 _hideTimer.stop();
             }
@@ -194,36 +200,28 @@ package org.flowplayer.ui {
         }
 
         private function get showingPos():Object {
+            //#426 only set these for the move style.
             var showingProps:Object = getDisplayProperties();
-
-            if (useFadeOut) {
-                showingProps.alpha = _originalPos.alpha;
-            } else {
-                // restore top or bottom from our pre-hide position
-                if (_originalPos is DisplayProperties) {
-                    if (_originalPos.position.top.hasValue()) {
-                        log.debug("restoring to top " + _originalPos.position.top);
-                        showingProps.top = _originalPos.position.top;
-                    }
-                    if (_originalPos.position.bottom.hasValue()) {
-                        log.debug("restoring to bottom " + _originalPos.position.bottom);
-                        showingProps.bottom = _originalPos.position.bottom;
-                    }
-                } else {
-                    log.debug("restoring to y " + _originalPos.y);
-                    showingProps.y = _originalPos.y;
+            if (_originalPos is DisplayProperties) {
+                if (_originalPos.position.top.hasValue()) {
+                    log.debug("restoring to top " + _originalPos.position.top);
+                    showingProps.top = _originalPos.position.top;
                 }
+                if (_originalPos.position.bottom.hasValue()) {
+                    log.debug("restoring to bottom " + _originalPos.position.bottom);
+                    showingProps.bottom = _originalPos.position.bottom;
+                }
+            } else {
+                log.debug("restoring to y " + _originalPos.y);
+                showingProps.y = _originalPos.y;
             }
             return showingProps;
         }
 
         private function get hiddenPos():Object {
+            //#426 only set these for the move style.
             var hiddenPos:Object = getDisplayProperties();
-            if (useFadeOut) {
-                hiddenPos.alpha = 0;
-            } else {
-                hiddenPos.top = getHiddenPosition();
-            }
+            hiddenPos.top = getHiddenPosition();
             return hiddenPos;
         }
 
@@ -382,8 +380,12 @@ package org.flowplayer.ui {
                 log.debug("showListener returned false, will not show");
                 return;
             }
-//            _disp.visible = true;
-            _player.animationEngine.animate(_disp, showingPos, 400, onShowed);
+
+            //#426 use fadeIn/fadeOut for fade mode to improve animation engine performance as only alpha is required.
+            if (useFadeOut)
+                _player.animationEngine.fadeIn(_disp, 400, onShowed);
+            else
+                _player.animationEngine.animate(_disp, showingPos, 400, onShowed);
         }
 
         private function dispatchEvent(string:String):void {
