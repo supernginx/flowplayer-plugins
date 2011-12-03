@@ -8,6 +8,8 @@ Fixes:
 - audio duration was estimated to be too long, issue #323
 - duration not available in the onMetaData event, issue #278
 - now dispatches error 200 when the mp3 URL does not respond, issue #334
+- #428 regression issue calculating the initial duration, was returning too small for the duration tracker.
+- #428 when fully downloaded ID3 is resent and update the duration.
 
 3.2.3
 -----
