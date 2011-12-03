@@ -17,6 +17,8 @@ Fixes:
 - #406 don't run version checks here anymore to work with Flash 11
 - #403 when seeking to the duration the buffer will flush and needs to end correctly
 - #424 regression with #403, force an end seek buffer to allow some playback and prevent hanging when seeking to the duration. buffer flush causes issues with playlists.
+- #430 on intermittent client connection failures, attempt a reconnect, or wait until connection is active again for rtmp connections.
+- #430 if there is a client connection failure reconnect to the specified time for rtmp streams after metadata.
 
 3.2.3
 -----
