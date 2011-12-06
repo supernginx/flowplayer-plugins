@@ -19,6 +19,7 @@ Fixes:
 - #424 regression with #403, force an end seek buffer to allow some playback and prevent hanging when seeking to the duration. buffer flush causes issues with playlists.
 - #430 on intermittent client connection failures, attempt a reconnect, or wait until connection is active again for rtmp connections.
 - #430 if there is a client connection failure reconnect to the specified time for rtmp streams after metadata.
+- #430 Do not attempt to re-connect in the plugin, this may be done in the connection providers and doing so resets the connection providers.
 
 3.2.3
 -----
