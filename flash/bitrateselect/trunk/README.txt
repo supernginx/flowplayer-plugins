@@ -13,4 +13,3 @@ Version history:
 - don't initialize the menu if the bitrates list has not been resolved / generated on load.
 - #388 specify splash labels here as they are not specific to display properties so don't get set.
 - set lowercase to embedded fonts on the hd button asset.
-- #418 add a filter for clip start events when bitrateselect is not configured as a resolver.
