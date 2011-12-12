@@ -70,15 +70,6 @@ package org.flowplayer.bitrateselect {
             _config = new PropertyBinder(new Config(), null).copyProperties(model.config) as Config;
         }
 
-        private function applyForClip(clip:Clip):Boolean {
-            log.debug("applyForClip(), clip.urlResolvers == " + clip.urlResolvers);
-            if (clip.urlResolvers == null) return false;
-            var apply:Boolean = clip.urlResolvers.indexOf(_model.name) >= 0;
-            log.debug("applyForClip? " + apply);
-            return apply;
-        }
-
-    
         public function onLoad(player:Flowplayer):void {
             log.info("onLoad()");
 
@@ -110,7 +101,9 @@ package org.flowplayer.bitrateselect {
                 log.debug("onStart() hd available? " + hasHD);
 
                 dispatchEvent(new HDEvent(HDEvent.HD_AVAILABILITY, hasHD));
-                toggleSplashDefault(_streamSelectionManager.currentBitrateItem);
+                if (hasHD) {
+                    toggleSplashDefault(_streamSelectionManager.currentBitrateItem);
+                }
                 Clip(event.target).setCustomProperty("bitrate", _streamSelectionManager.currentBitrateItem.bitrate);
 
                 if (_config.menu) {
@@ -120,7 +113,7 @@ package org.flowplayer.bitrateselect {
                     }
                 }
 
-            },applyForClip);
+            });
 
             if (_config.hdButton.docked) {
                 createIconDock();	// we need to create the controller pretty early else it won't receive the HD_AVAILABILITY event
@@ -171,6 +164,7 @@ package org.flowplayer.bitrateselect {
         private function initBitrateMenu(clip:Clip):void {
             // is the menu already showing the bitrates for this clip
             if (_menuShowsBitratesFor == clip) {
+                log.debug("initBitrateMenu(), already showing bitrates for this clip, returning");
                 return;
             }
 
@@ -306,7 +300,7 @@ package org.flowplayer.bitrateselect {
         }
 
         private function toggleSplashDefault(mappedBitrate:BitrateItem):void {
-            log.debug("toggleSplashDefault(), mappedBitrate " + mappedBitrate.bitrate + ", is default? " + mappedBitrate.isDefault + ", is HD? " + mappedBitrate.hd);
+            log.debug("toggleSplashDefault(), mappedBitrate " + mappedBitrate);
             if (mappedBitrate.isDefault) toggleSplash(mappedBitrate);
         }
 
