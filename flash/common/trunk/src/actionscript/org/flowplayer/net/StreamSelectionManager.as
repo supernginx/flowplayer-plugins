@@ -19,11 +19,11 @@ package org.flowplayer.net {
 
         protected var log:Log = new Log(this);
         protected var _streamItems:Vector.<BitrateItem>;
+        protected var _defaultIndex:Number = -1;
         protected var _currentIndex:Number = -1;
         protected var _player:Flowplayer;
         protected var _resolver:ClipURLResolver;
         protected var _previousStreamName:String;
-        protected var _currentBitrateItem:BitrateItem;
         protected var _bitrateResource:BitrateResource;
 
         public function StreamSelectionManager(bitrateResource:BitrateResource, player:Flowplayer, resolver:ClipURLResolver) {
@@ -31,6 +31,8 @@ package org.flowplayer.net {
             _streamItems = _bitrateResource.addBitratesToClip(player.currentClip);
             _player = player;
             _resolver = resolver;
+            findDefaultStream();
+            _currentIndex = _defaultIndex;
         }
 
         public function get bitrates():Vector.<BitrateItem> {
@@ -41,25 +43,26 @@ package org.flowplayer.net {
             return _bitrateResource;
         }
 
-        public function getDefaultStream():BitrateItem {
-            log.debug("getDefaultStream()");
-            var item:BitrateItem;
+        private function findDefaultStream():void {
+            _defaultIndex = -1;
             for (var i:Number = 0; i < _streamItems.length; i++) {
                 if (_streamItems[i]["isDefault"]) {
-                    item = _streamItems[i];
-                    _currentIndex = i;
+                    _defaultIndex = i;
                     break;
                 }
             }
-            if (! item) {
+            if (_defaultIndex == -1) {
                 //fix for #241 lowest item is the first index not the last once ordered.
-                item = _streamItems[0];
-                _currentIndex = 0;
-                log.debug("getDefaultStream(), did not find a default stream -> using the one with lowest bitrate " + item);
+                _defaultIndex = 0;
+                log.debug("findDefaultStream(), did not find a default stream -> using the one with lowest bitrate ");
             } else {
-                log.debug("getDefaultStream(), found default item " + item);
+                log.debug("findDefaultStream(), found default item " + getDefaultStream());
             }
-            return item;
+        }
+
+        public function getDefaultStream():BitrateItem {
+            log.debug("getDefaultStream()");
+            return _streamItems[_defaultIndex];
         }
 
         public function getStreamIndex(bitrate:Number):Number {
@@ -98,11 +101,11 @@ package org.flowplayer.net {
         }
 
         public function get currentBitrateItem():BitrateItem {
-            return _currentBitrateItem;
+            return _streamItems[_currentIndex];
         }
 
         public function set currentBitrateItem(value:BitrateItem):void {
-            _currentBitrateItem = value;
+            _currentIndex = _streamItems.indexOf(value);
         }
 
         public function get streamItems():Vector.<BitrateItem> {

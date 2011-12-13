@@ -27,7 +27,7 @@ package org.flowplayer.net {
         }
 
         public function toString():String {
-            return url + ", " + bitrate;
+            return url + ", " + bitrate + ", is default? " + isDefault;
         }
 
         override public function get streamName():String {
