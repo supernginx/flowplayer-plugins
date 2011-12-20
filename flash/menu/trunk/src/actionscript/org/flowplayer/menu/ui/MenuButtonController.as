@@ -20,7 +20,8 @@ package org.flowplayer.menu.ui {
 
     import org.flowplayer.ui.buttons.ButtonEvent;
     import org.flowplayer.ui.controllers.AbstractButtonController;
-    import org.flowplayer.view.Flowplayer;
+import org.flowplayer.view.AnimationEngine;
+import org.flowplayer.view.Flowplayer;
 
     public class MenuButtonController extends AbstractButtonController {
         private var _menu:Menu;
@@ -53,7 +54,7 @@ package org.flowplayer.menu.ui {
 		override protected function onButtonClicked(event:ButtonEvent):void {
             var model:DisplayPluginModel = DisplayPluginModel(_player.pluginRegistry.getPlugin(_model.name));
 
-            var show:Boolean = ! model.visible;
+            var show:Boolean = _menu.alpha == 0 || ! _menu.visible || ! _menu.parent;
             if (show) {
                 _menu.updateModelProp("display", "block");
                 log.debug("showing menu");

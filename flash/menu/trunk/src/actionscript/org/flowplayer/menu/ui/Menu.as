@@ -122,6 +122,7 @@ package org.flowplayer.menu.ui {
          */
         [External]
         public function enableItems(enabled:Boolean,  indexes:Array = null):void {
+            log.debug("enableItems()");
             iterateViews(function(item:MenuItem, index:int):void {
                 item.enabled = enabled;
             }, indexes);
@@ -289,6 +290,7 @@ package org.flowplayer.menu.ui {
             var menu:Menu = this;
             item.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void {
                 if (! item.enabled) return;
+                if (menu.alpha == 0) return;
                 _player.animationEngine.fadeOut(menu);
                 itemConfig.fireCallback(model);
                 deselectOtherItemsInGroup(itemConfig);
