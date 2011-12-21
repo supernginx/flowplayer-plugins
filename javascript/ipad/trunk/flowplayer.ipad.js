@@ -76,7 +76,7 @@ $f.addPlugin("ipad", function(options) {
 				if (key) {
 					if ( from[key] && typeof from[key] == "function" && ! includeFuncs )
 						continue;
-					if ( from[key] && typeof from[key] == "object" && from[key].length == undefined) {
+                    if ( from[key] && typeof from[key] == "object" && from[key].length === undefined) {
 						var cp = {};
 						extend(cp, from[key]);
 						to[key] = cp;
@@ -584,8 +584,8 @@ $f.addPlugin("ipad", function(options) {
 				var parameters = time;
 				if ( typeof points[i] == "object" ) {
 					parameters = extend({}, points[i], false);
-					if ( parameters['time'] != undefined ) delete parameters['time'];
-					if ( parameters['parameters'] != undefined ) {
+                    if ( parameters['time'] !== undefined ) delete parameters['time'];
+                    if ( parameters['parameters'] !== undefined ) {
 						extend(parameters, parameters['parameters'], false);
 						delete parameters['parameters'];
 					}
@@ -850,7 +850,7 @@ $f.addPlugin("ipad", function(options) {
 	function installControlbar() {
 		// if we're on an iDevice, try to load the js controlbar if needed
 		/*
-		if ( self['controls'] == undefined )
+		if ( self['controls'] === undefined )
 			return;	// js controlbar not loaded
 
 		var controlsConf = {};
@@ -900,9 +900,6 @@ $f.addPlugin("ipad", function(options) {
 				var api = document.createElement('video');
 				container.appendChild(api);
 				root.appendChild(container);
-				
-				//var hasBuiltinControls = conf.config['plugins'] == undefined || (conf.config['plugins'] && conf.config['plugins']['controls'] && conf.config['plugins']['controls'] != null
-				//						&& self['controls'] == undefined);	// we make a careful use of "self", as we're looking in the prototype
 				
 				// styling  container
 				container.style.height = height+'px';
