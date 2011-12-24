@@ -41,7 +41,9 @@
 
         //#399 Do not try to auto detect manual playlist as element could be an inline playlist template. Specify manual playlist by the config instead.
         //#425 Check for empty playlist to configure manual playlist to allow dynamic playlists with one clip.
-        var manual = (self.getPlaylist().length < 1) || opts.manual;
+        //var manual = (self.getPlaylist().length <= 1) || opts.manual;
+        //#444 force to specify a manual playlist option to circumvent any issues with playlist lengths.
+        var manual = opts.manual;
         var els = null;
 
 
