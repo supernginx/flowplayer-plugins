@@ -181,7 +181,7 @@ public class RTMPCluster {
         _connectCount = count;
     }
 
-    protected function hasMoreHosts():Boolean
+    internal function hasMoreHosts():Boolean
     {
         if (_failureExpiry == 0)
             _hostIndex++
