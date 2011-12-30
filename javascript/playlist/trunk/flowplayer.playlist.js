@@ -42,7 +42,7 @@
         //#444 detect a manual playlist by first checking there is elements available, and the first element may not be a dynamic template.
         //Allow the option for only one configured playlist clip for both manual and dynamic playlists.
         var els = getEls();
-        var manual = opts.manual || (els.length > 0 && !wrap.html().match(/$/));
+        var manual = opts.manual || (els.length > 0 && !wrap.html().match(/\$/));
 
 
 //{{{ "private" functions
