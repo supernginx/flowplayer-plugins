@@ -94,7 +94,7 @@ $f.addPlugin("ipad", function(options) {
 		controlsSizeRatio: 1.5,
 		controls: true,
 		debug: false,
-		validExtensions: /m3u8|mov|m4v|mp4|avi|mp3|m4a|aac/gi,
+		validExtensions: /m3u8|pls|mov|m4v|mp4|avi|mp3|m4a|aac/gi,
         posterExtensions: /png|jpg/gi
 	};
 
@@ -219,7 +219,7 @@ $f.addPlugin("ipad", function(options) {
 	// internal func, maps flowplayer's API
 	function addAPI() {
 
-		
+		console.log(video);
 		function fixClip(clip) {
 			var extendedClip = {};
 			extend(extendedClip, clipDefaults);
