@@ -203,10 +203,12 @@ package org.flowplayer.captions {
 
             if (clip.customProperties && clip.customProperties.hasOwnProperty("captionUrl")) {
                 var cue:Object = event.info;
-                if (! cue.hasOwnProperty("captionType") || cue["captionType"] != "external") {
+                if (! cue.hasOwnProperty("captionType") ||  cue["captionType"] != "external") {
                     // we are using a captions file and this cuepoint is not from the file,
                     // it is propably and embedded cuepoint
-                    log.debug("ignoring cuepoint with captionType " + cue["captionType"]);
+                    //#449 check for empty captionType property here for manual or embedded cuepoints.
+                    var captionType:String = cue.hasOwnProperty("captionType") ? cue["captionType"] : "";
+                    log.debug("ignoring cuepoint with captionType " + captionType);
                     return;
                 }
             }
