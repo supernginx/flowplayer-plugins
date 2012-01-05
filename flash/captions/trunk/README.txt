@@ -11,6 +11,7 @@ Version history:
   based on the caption data.
 - fixed issue #330
 - #449 check for empty captionType property here for manual or embedded cuepoints.
+- #449 for manually created cuepoints without text do not create a caption.
 
 3.2.3
 -----
