@@ -144,6 +144,7 @@ package org.flowplayer.captions {
                 clearCaption();
             });
             _player.playlist.onCuepoint(onCuepoint);
+
             _player.playlist.commonClip.onNetStreamEvent(onNetStreamCaption);
 
         }
@@ -195,6 +196,9 @@ package org.flowplayer.captions {
         protected function onCuepoint(event:ClipEvent):void {
             log.debug("onCuepoint", event.info.parameters);
 
+            //#449 for manually created cuepoints without text do not create a caption.
+            if (!event.info.parameters.text) return;
+
             var clip:Clip = event.target as Clip;
             if (captionsDisabledForClip(clip)) {
                 log.debug("captions disabled for clip " + clip);
@@ -213,6 +217,8 @@ package org.flowplayer.captions {
                 }
             }
 
+
+
             clearCaption(false);
             _currentCaption = event.info.parameters is Caption ? event.info.parameters : createCaption(event.info,  event.info.parameters);
             setViewStyleForCaption();
@@ -223,6 +229,8 @@ package org.flowplayer.captions {
         }
 
         private function createCaption(cue:Object,  cueInfo:Object):Caption {
+            log.error("FUCK");
+           // var cueText:String = cueInfo.hasOwnProperty("text") ? cueInfo.text : "";
             return new Caption(_config.template, cue.time, cueInfo.duration, cueInfo.text, null);
         }
 
