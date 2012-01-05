@@ -10,6 +10,7 @@ Version history:
   Can be used to explicitly set the format of the caption data. If not specified the plugin tries to infer the format
   based on the caption data.
 - fixed issue #330
+- #449 check for empty captionType property here for manual or embedded cuepoints.
 
 3.2.3
 -----
