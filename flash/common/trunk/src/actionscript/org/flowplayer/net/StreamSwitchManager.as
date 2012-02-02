@@ -60,10 +60,8 @@ package org.flowplayer.net {
 
                 //#370 set the clip start time or else dynamic switching doesn't function correctly.
                 netStreamPlayOptions.start = _player.currentClip.start;
+                netStreamPlayOptions.streamName = bitrateItem.url;
 
-                //netStreamPlayOptions.streamName = bitrateItem.url;
-                //#461 when we have a clip base url set, we need the complete clip url sent to play2 for http streams.
-                netStreamPlayOptions.streamName = _player.currentClip.completeUrl;
                 //#417 provide previous item name in the logs.
                 log.debug("calling switchStream with dynamic stream switch support, stream name is " + netStreamPlayOptions.streamName + ", previous stream name: " + _previousBitrateItem.streamName);
 
