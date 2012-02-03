@@ -47,6 +47,12 @@ package org.flowplayer.net {
 
             _streamSelectionManager.changeStreamNames(bitrateItem);
 
+            //#463 Adding switch prevention if the mapped bitrate has not changed.
+            if (bitrateItem.bitrate == _previousBitrateItem.bitrate) {
+                log.debug("Mapped bitrate " + bitrateItem.bitrate + " has not changed will not switch");
+                return;
+            }
+
             //#404 allow play2 for http streams, will reset correctly.
             if (_netStream && _netStream.hasOwnProperty("play2")) {
 
