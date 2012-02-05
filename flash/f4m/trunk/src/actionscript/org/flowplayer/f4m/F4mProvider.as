@@ -45,6 +45,7 @@ package org.flowplayer.f4m {
         import org.osmf.net.DynamicStreamingResource;
         import org.osmf.net.DynamicStreamingItem;
         import org.osmf.net.StreamingURLResource;
+        import org.osmf.net.StreamType;
 
 
         public class F4mProvider implements ClipURLResolver, Plugin {
@@ -60,7 +61,8 @@ package org.flowplayer.f4m {
             private var netResource:MediaResourceBase;
             private var dynResource:DynamicStreamingResource;
             private var streamResource:StreamingURLResource;
-            private var unfinishedDRMHeaders:Number = 0;
+            private var _isDynamicStreamResource:Boolean = false;
+
     
 
             public function resolve(provider:StreamProvider, clip:Clip, successListener:Function):void {
@@ -141,6 +143,38 @@ package org.flowplayer.f4m {
                 return bitrateItems;
             }
 
+            private function setClipTypeAndBuffer():void
+            {
+                if (_isDynamicStreamResource) {
+                    switch (manifest.streamType) {
+                        case StreamType.DVR:
+                            _clip.live = true;
+                            _clip.stopLiveOnPause = false;
+                            _clip.bufferLength = _config.dvrDynamicBufferTime;
+                            break;
+                        case StreamType.LIVE:
+                            _clip.live = true;
+                            _clip.bufferLength = _config.liveDynamicBufferTime;
+                            break;
+                        default:
+                            _clip.bufferLength = _config.dynamicBufferTime;
+                            break;
+                    }
+                } else {
+                    switch (manifest.streamType) {
+                        case StreamType.DVR:
+                            _clip.live = true;
+                            _clip.stopLiveOnPause = false;
+                            _clip.bufferLength = _config.dvrBufferTime;
+                        break;
+                        case StreamType.LIVE:
+                            _clip.live = true;
+                            _clip.bufferLength = _config.liveBufferTime;
+                        break;
+                    }
+                }
+            }
+
             private function onF4MFinished():void
             {
                 log.debug("F4M Manifest Finished");
@@ -154,6 +188,7 @@ package org.flowplayer.f4m {
                         //formats the stream items to be ready for the bwcheck plugin
                         dynResource.streamItems = formatStreamItems(dynResource.streamItems);
 
+                        _isDynamicStreamResource = true;
                         _clip.setCustomProperty("bitrateItems", dynResource.streamItems);
                         _clip.setCustomProperty("urlResource", dynResource);
 
@@ -170,6 +205,8 @@ package org.flowplayer.f4m {
                         _clip.setCustomProperty("netConnectionUrl", manifest.baseURL);
                     }
 
+                    //set the clip buffer and live clip property
+                    setClipTypeAndBuffer();
 
                     _clip.setCustomProperty("manifestInfo",manifest);
 
