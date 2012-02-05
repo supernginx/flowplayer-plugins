@@ -79,8 +79,6 @@ package org.flowplayer.httpstreaming {
             _bufferStart = clip.currentTime;
             _startSeekDone = false;
 
-            log.error("time:",netStream.bufferTime);
-
             netStream.client = new NetStreamClient(clip, _player.config, streamCallbacks);
             netStream.play(clip.url, clip.start);
         }
