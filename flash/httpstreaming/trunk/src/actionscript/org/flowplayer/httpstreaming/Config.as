@@ -11,32 +11,9 @@
 package org.flowplayer.httpstreaming {
 
     public class Config {
-        
-        private var _dvrBufferTime:int = 4;
-        private var _liveBufferTime:int = 2;
+
         private var _dvrSnapToLiveClockOffset:int = 4;
         private var _startLivePosition:Boolean = true;
-
-        
-        public function set dvrBufferTime(value:int):void
-        {
-            _dvrBufferTime = value;
-        }
-
-        public function get dvrBufferTime():int
-        {
-            return _dvrBufferTime;
-        }
-
-        public function set liveBufferTime(value:int):void
-        {
-            _liveBufferTime = value;
-        }
-
-        public function get liveBufferTime():int
-        {
-            return _liveBufferTime;
-        }
 
         public function set dvrSnapToLiveClockOffset(value:int):void
         {
