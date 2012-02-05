@@ -79,7 +79,7 @@ package org.flowplayer.httpstreaming {
             _bufferStart = clip.currentTime;
             _startSeekDone = false;
 
-            setBufferTime();
+            log.error("time:",netStream.bufferTime);
 
             netStream.client = new NetStreamClient(clip, _player.config, streamCallbacks);
             netStream.play(clip.url, clip.start);
@@ -152,7 +152,6 @@ package org.flowplayer.httpstreaming {
 
             clip.duration = _dvrDuration;
             clip.setCustomProperty("dvrInfo", dvrInfo);
-            clip.stopLiveOnPause = false;
 
             //start at dvr not live position
             if (!_config.startLivePosition) return;
@@ -162,20 +161,23 @@ package org.flowplayer.httpstreaming {
             this.netStream.seek(livePosition);
         }
 
-        private function setBufferTime():void
+        /*private function setBufferTime():void
         {
             //determine the buffer time between live and dvr streams.
+            //also set the clip as a live stream if the stream type is live or dvr.
             switch (Object(clip.getCustomProperty("manifestInfo")).streamType) {
                 case StreamType.DVR:
+                    //clip.live = true;
                     clip.bufferLength = _config.dvrBufferTime;
                     break;
                 case StreamType.LIVE:
+                    //clip.live = true;
                     clip.bufferLength = _config.liveBufferTime;
                     break;
             }
 
             this.netStream.bufferTime = clip.bufferLength;
-        }
+        } */
         
         override protected function createNetStream(connection:NetConnection):NetStream {
 
