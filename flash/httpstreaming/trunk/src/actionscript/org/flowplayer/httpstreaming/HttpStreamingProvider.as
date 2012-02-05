@@ -159,24 +159,6 @@ package org.flowplayer.httpstreaming {
             this.netStream.seek(livePosition);
         }
 
-        /*private function setBufferTime():void
-        {
-            //determine the buffer time between live and dvr streams.
-            //also set the clip as a live stream if the stream type is live or dvr.
-            switch (Object(clip.getCustomProperty("manifestInfo")).streamType) {
-                case StreamType.DVR:
-                    //clip.live = true;
-                    clip.bufferLength = _config.dvrBufferTime;
-                    break;
-                case StreamType.LIVE:
-                    //clip.live = true;
-                    clip.bufferLength = _config.liveBufferTime;
-                    break;
-            }
-
-            this.netStream.bufferTime = clip.bufferLength;
-        } */
-        
         override protected function createNetStream(connection:NetConnection):NetStream {
 
 
