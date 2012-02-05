@@ -152,6 +152,7 @@ package org.flowplayer.httpstreaming {
 
             clip.duration = _dvrDuration;
             clip.setCustomProperty("dvrInfo", dvrInfo);
+            clip.stopLiveOnPause = false;
 
             //start at dvr not live position
             if (!_config.startLivePosition) return;
