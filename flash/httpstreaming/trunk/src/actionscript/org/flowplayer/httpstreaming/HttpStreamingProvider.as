@@ -28,16 +28,17 @@ package org.flowplayer.httpstreaming {
     import org.flowplayer.view.Flowplayer;
 
     import org.osmf.logging.Log;
-
     import org.osmf.net.httpstreaming.HTTPNetStream;
     import org.osmf.net.httpstreaming.f4f.HTTPStreamingF4FFactory;
-
-
-
+    import org.osmf.net.httpstreaming.dvr.DVRInfo;
+    import org.osmf.net.StreamType;
+    import org.osmf.metadata.Metadata;
+    import org.osmf.metadata.MetadataNamespaces;
     import org.osmf.media.URLResource;
+    import org.osmf.events.DVRStreamInfoEvent;
+
 
     import org.flowplayer.bwcheck.net.OsmfLoggerFactory;
-
     import org.flowplayer.httpstreaming.Config;
 
     public class HttpStreamingProvider extends NetStreamControllingStreamProvider implements Plugin {
@@ -49,6 +50,7 @@ package org.flowplayer.httpstreaming {
         private var _currentClip:Clip;
         private var _player:Flowplayer;
         private var netResource:URLResource;
+        private var _dvrDuration:int;
         
         override public function onConfig(model:PluginModel):void {
             _model = model;
@@ -74,9 +76,11 @@ package org.flowplayer.httpstreaming {
             if (!netResource) return;
 
             clip.onPlayStatus(onPlayStatus);
-
             _bufferStart = clip.currentTime;
             _startSeekDone = false;
+
+            setBufferTime();
+
             netStream.client = new NetStreamClient(clip, _player.config, streamCallbacks);
             netStream.play(clip.url, clip.start);
         }
@@ -93,7 +97,7 @@ package org.flowplayer.httpstreaming {
             log.info("onNetStatus(), code: " + event.info.code + ", paused? " + paused + ", seeking? " + seeking);
             switch(event.info.code){
                 case "NetStream.Play.Transition":
-                    log.error("Stream Transition -- " + event.info.details);
+                    log.debug("Stream Transition -- " + event.info.details);
                     dispatchEvent(new ClipEvent(ClipEventType.SWITCH, event.info.details));
                     break;
             }
@@ -139,6 +143,38 @@ package org.flowplayer.httpstreaming {
         override public function get type():String {
             return "httpstreaming";    
         }
+
+        private function onDVRStreamInfo(event:DVRStreamInfoEvent):void
+        {
+            this.netStream.removeEventListener(DVRStreamInfoEvent.DVRSTREAMINFO, onDVRStreamInfo);
+            var dvrInfo:DVRInfo = event.info as DVRInfo;
+            _dvrDuration = dvrInfo.curLength;
+
+            clip.duration = _dvrDuration;
+            clip.setCustomProperty("dvrInfo", dvrInfo);
+
+            //start at dvr not live position
+            if (!_config.startLivePosition) return;
+
+            //seek to the closest offset to the live position determined by the current dvr duration, buffertime and live snap offset.
+            var livePosition:Number = Math.max(0, _dvrDuration - netStream.bufferTime - _config.dvrSnapToLiveClockOffset);
+            this.netStream.seek(livePosition);
+        }
+
+        private function setBufferTime():void
+        {
+            //determine the buffer time between live and dvr streams.
+            switch (Object(clip.getCustomProperty("manifestInfo")).streamType) {
+                case StreamType.DVR:
+                    clip.bufferLength = _config.dvrBufferTime;
+                    break;
+                case StreamType.LIVE:
+                    clip.bufferLength = _config.liveBufferTime;
+                    break;
+            }
+
+            this.netStream.bufferTime = clip.bufferLength;
+        }
         
         override protected function createNetStream(connection:NetConnection):NetStream {
 
@@ -150,6 +186,14 @@ package org.flowplayer.httpstreaming {
             netResource = clip.getCustomProperty("urlResource") as URLResource;
 
             var httpNetStream:HTTPNetStream = new HTTPNetStream(connection, new HTTPStreamingF4FFactory(), netResource);
+
+            //#452 dvr integration
+            var metadata:Metadata = netResource.getMetadataValue(MetadataNamespaces.DVR_METADATA) as Metadata;
+            if (metadata) {
+                clip.setCustomProperty("dvr", true);
+                httpNetStream.addEventListener(DVRStreamInfoEvent.DVRSTREAMINFO, onDVRStreamInfo);
+            }
+
             return httpNetStream;
         }
     }
