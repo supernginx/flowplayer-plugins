@@ -10,3 +10,6 @@ Version history:
 - #367 fixes for dynamic switching and hd toggling features.
 - #452 provide dvr live stream integration. seeks to the current dvr duration with an offset to obtain the live stream.
 live and stopLiveOnPause clip properties are set in f4m.
+- #452 adding in custom PlayStatus events with type properties of live and / or dvr.
+TODO: Need to figure out the best way
+to update the status of the live / dvr position when seeking after integration is in the controlbar.
