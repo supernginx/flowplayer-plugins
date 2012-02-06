@@ -13,3 +13,4 @@ live and stopLiveOnPause clip properties are set in f4m.
 - #452 adding in custom PlayStatus events with type properties of live and / or dvr.
 TODO: Need to figure out the best way
 to update the status of the live / dvr position when seeking after integration is in the controlbar.
+- #452 updates to dvr functionality, will now update the dvr event regularly which allows to determine what position is being seeked to.
