@@ -31,7 +31,6 @@ package org.flowplayer.httpstreaming {
     import org.osmf.net.httpstreaming.HTTPNetStream;
     import org.osmf.net.httpstreaming.f4f.HTTPStreamingF4FFactory;
     import org.osmf.net.httpstreaming.dvr.DVRInfo;
-    import org.osmf.net.StreamType;
     import org.osmf.metadata.Metadata;
     import org.osmf.metadata.MetadataNamespaces;
     import org.osmf.media.URLResource;
@@ -47,11 +46,10 @@ package org.flowplayer.httpstreaming {
         private var _startSeekDone:Boolean;
         private var _model:PluginModel;
         private var _previousClip:Clip;
-        private var _currentClip:Clip;
         private var _player:Flowplayer;
         private var netResource:URLResource;
-        private var _dvrEventDispatch:Boolean = false;
         private var _dvrInfo:DVRInfo;
+        private var _dvrIsRecording:Boolean;
         
         override public function onConfig(model:PluginModel):void {
             _model = model;
@@ -67,7 +65,15 @@ package org.flowplayer.httpstreaming {
             _player = player;
             
             _player.playlist.current.onSeek(function(event:ClipEvent):void {
-                _dvrEventDispatch = false;
+
+                //if we have dvr info determine if its a dvr or live position.
+                if (_dvrInfo) {
+                    if (event.info <= dvrSeekOffset) {
+                        dispatchDVREvent(_dvrInfo);
+                    } else {
+                        dispatchLiveEvent(Number(event.info));
+                    }
+                }
             });
 
             _model.dispatchOnLoad();
@@ -83,26 +89,12 @@ package org.flowplayer.httpstreaming {
             clip.onPlayStatus(onPlayStatus);
             _bufferStart = clip.currentTime;
             _startSeekDone = false;
+            //reset dvr info
+            _dvrInfo = null;
+            _dvrIsRecording = false;
 
             netStream.client = new NetStreamClient(clip, _player.config, streamCallbacks);
             netStream.play(clip.url, clip.start);
-        }
-
-        override protected function doSeek(event:ClipEvent, netStream:NetStream, seconds:Number):void
-        {
-            log.debug("doSeek()");
-            var target:Number = clip.start + seconds;
-
-            if (!_dvrEventDispatch && _dvrInfo) {
-                _dvrEventDispatch = true;
-                if (target <= dvrSeekOffset) {
-                    dispatchDVREvent(_dvrInfo);
-                } else {
-                    dispatchLiveEvent(target);
-                }
-            }
-
-            super.doSeek(event, netStream, seconds);
         }
 
         private function onPlayStatus(event:ClipEvent) : void {
@@ -119,6 +111,9 @@ package org.flowplayer.httpstreaming {
                 case "NetStream.Play.Transition":
                     log.debug("Stream Transition -- " + event.info.details);
                     dispatchEvent(new ClipEvent(ClipEventType.SWITCH, event.info.details));
+                    break;
+                case "NetStream.Play.UnpublishNotify":
+                    dispatchEvent(new ClipEvent(ClipEventType.FINISH));
                     break;
             }
             return;
@@ -144,6 +139,21 @@ package org.flowplayer.httpstreaming {
 			}
         }
 
+        override protected function onMetaData(event:ClipEvent):void {
+            log.info("in NetStreamControllingStremProvider.onMetaData: " + event.target);
+
+            //if we are not dvr recording dispatch start
+            if (! clip.startDispatched && !_dvrIsRecording) {
+                clip.dispatch(ClipEventType.START, pauseAfterStart);
+                clip.startDispatched = true;
+            }
+
+            if (pauseAfterStart) {
+                pauseToFrame();
+            }
+            switching = false;
+        }
+
         override public function get allowRandomSeek():Boolean {
            return true;
         }
@@ -166,16 +176,28 @@ package org.flowplayer.httpstreaming {
 
         private function onDVRStreamInfo(event:DVRStreamInfoEvent):void
         {
-            this.netStream.removeEventListener(DVRStreamInfoEvent.DVRSTREAMINFO, onDVRStreamInfo);
+            //this.netStream.removeEventListener(DVRStreamInfoEvent.DVRSTREAMINFO, onDVRStreamInfo);
+
             _dvrInfo = event.info as DVRInfo;
+
+            _dvrIsRecording = _dvrInfo.isRecording;
+
+            //don't update unless we are dvr recording
+            if (!_dvrIsRecording) return;
 
             clip.duration = _dvrInfo.curLength;
             clip.setCustomProperty("dvrInfo", _dvrInfo);
 
+            //start at dvr not live position
+            //if clip start has not been dispatch seek to the live position and dispatch start
+            if (!_config.startLivePosition || clip.startDispatched) return;
+
+            //dispatch the dvr event
             dispatchDVREvent(_dvrInfo);
 
-            //start at dvr not live position
-            if (!_config.startLivePosition) return;
+            //dispatch clip start
+            clip.dispatch(ClipEventType.START, false);
+            clip.startDispatched = true;
 
             //seek to the closest offset to the live position determined by the current dvr duration, buffertime and live snap offset.
             var livePosition:Number = Math.max(0, dvrSeekOffset);
@@ -187,8 +209,7 @@ package org.flowplayer.httpstreaming {
 
         private function dispatchDVREvent(dvrInfo:DVRInfo):void
         {
-            log.error("Seeking to DVR position");
-
+            log.debug("Seeking to DVR position");
             clip.dispatch(ClipEventType.PLAY_STATUS, {
                 type: "dvr",
                 info: dvrInfo
@@ -197,7 +218,7 @@ package org.flowplayer.httpstreaming {
 
         private function dispatchLiveEvent(livePosition:Number):void
         {
-            log.error("Seeking to Live position");
+            log.debug("Seeking to Live position");
             clip.dispatch(ClipEventType.PLAY_STATUS, {
                 type: "live",
                 info: livePosition
