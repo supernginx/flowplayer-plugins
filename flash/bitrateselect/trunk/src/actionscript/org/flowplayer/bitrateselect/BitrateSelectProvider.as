@@ -124,7 +124,10 @@ package org.flowplayer.bitrateselect {
 
             var firstClip:Clip = _player.playlist.getClip(0);
             //don't initialize the menu if the bitrates list has not been resolved / generated on load.
-            if (firstClip && firstClip.getCustomProperty("bitrates")) {
+            //#452 make sure the first bitrate item has a url configured or else it will be generated while resolving.
+            if (firstClip &&
+                firstClip.getCustomProperty("bitrates") &&
+                firstClip.getCustomProperty("bitrates")[0].hasOwnProperty("url")) {
                 _player.onLoad(function(event:PlayerEvent):void {
                     if (! firstClip) return;
                     initStreamSelectionManager(firstClip);
@@ -258,6 +261,7 @@ package org.flowplayer.bitrateselect {
                 successListener(clip);
                 return;
             }
+
 
             if (alreadyResolved(clip)) {
                 log.debug("resolve(): bitrate already resolved for clip " + clip + ", will not detect again");

@@ -13,3 +13,4 @@ Version history:
 - don't initialize the menu if the bitrates list has not been resolved / generated on load.
 - #388 specify splash labels here as they are not specific to display properties so don't get set.
 - set lowercase to embedded fonts on the hd button asset.
+- #452 make sure the first bitrate item has a url configured when initialising the menu or else it will be generated while resolving.
