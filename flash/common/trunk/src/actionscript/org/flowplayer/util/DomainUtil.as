@@ -20,10 +20,34 @@ package org.flowplayer.util {
         public static function parseDomain(url:String, stripSubdomains:Boolean):String {
             var domain:String = getDomain(url);
             if (stripSubdomains || domain.indexOf("www.") == 0) {
+                if (hasAllNumbers(domain)) {
+                    return parseIPAddressDomain(domain);
+                }
+
                 domain = stripSubdomain(domain);
                 trace("stripping out subdomain, resulted in " + domain);
             }
             return domain.toLowerCase();
+        }
+
+        private static function parseIPAddressDomain(domain:String):String {
+            var parts:Array = domain.split(".");
+            if (parts.length <= 2) return domain;
+            return parts[parts.length - 2] + "." + parts[parts.length - 1];
+        }
+
+        private static function hasAllNumbers(domain:String):Boolean {
+            var parts:Array = domain.split(".");
+            for (var i:int = 0; i < parts.length; i++) {
+                if (! isNumber(parts[i])) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private static function isNumber(n:String):Boolean {
+            return !isNaN(parseFloat(n)) && isFinite(n as Number);
         }
 
         /**

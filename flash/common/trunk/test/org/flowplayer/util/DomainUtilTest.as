@@ -114,5 +114,22 @@ package org.flowplayer.util {
         public function testParseDomain():void {
             assertEquals("amexinsite.com", DomainUtil.parseDomain('https://home.amexinsite.com/insite_video.htm', true));
         }
+
+        public function testIPAddressDomain():void {
+            trace(DomainUtil.parseDomain('123.123.123.64', true));
+            assertEquals("123.64", DomainUtil.parseDomain('123.123.123.64', true));
+        }
+
+        public function testIPAddressDomain2():void {
+            assertEquals("123.64", DomainUtil.parseDomain('123.123.64', true));
+        }
+
+        public function testIPAddressDomain3():void {
+            assertEquals("123.64", DomainUtil.parseDomain('123.64', true));
+        }
+
+        public function testInternalDomain():void {
+            assertEquals("foobar", DomainUtil.parseDomain('foobar', true));
+        }
     }
 }
