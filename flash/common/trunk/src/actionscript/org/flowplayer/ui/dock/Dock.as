@@ -55,6 +55,7 @@ package org.flowplayer.ui.dock {
                     var dockConfigObj:Object = player.config.configObject["plugins"][pluginName];
                     _config = new PropertyBinder(config || new DockConfig()).copyProperties(dockConfigObj, true) as DockConfig;
                     new PropertyBinder(_config.model).copyProperties(dockConfigObj);
+                    
                 } else {
                     _config = config || new DockConfig();
                 }
