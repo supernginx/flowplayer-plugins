@@ -43,6 +43,7 @@
         //Allow the option for only one configured playlist clip for both manual and dynamic playlists.
         var els = getEls();
         var manual = opts.manual || (els.length > 0 && !wrap.html().match(/\$/));
+        var template = null;
 
 
 //{{{ "private" functions
@@ -112,13 +113,14 @@
                 // internal playlist
                 if (!manual) {
 
-                        var template = wrap.is(":empty") ? opts.template : wrap.html();
+                        template = wrap.is(":empty") ? opts.template : wrap.html();
                         buildPlaylist();
 
 
                 // manual playlist
                 } else {
-
+                        //#468 when adding new playlist items via the api with manual setups, requires a template to generate the items.
+                        template = opts.template;
                         bindClicks(); // also returns els
 
                         //#368 configure manual playlists as flowplayer playlist items to repeat and transition correctly.
@@ -213,9 +215,16 @@
 
                 // onClipAdd
                 self.onClipAdd(function(clip, index) {
-	                bindClicks();
-                    //#402 this seems not required, disable for now to work with dynamic appending with manual playlists.
-            		//els.eq(index).before(toString(clip));;
+                    //#468 enable prepending playlist items again but append if not setting a custom index.
+                    //if we have a template specified generate the playlist item
+                    if (template) {
+                        if (index < els.length) {
+                            els.eq(index).before(toString(clip));
+                        } else {
+                            els.eq(index - 1).after(toString(clip));
+                        }
+                    }
+                    bindClicks();
                 });
 
                 return self;
