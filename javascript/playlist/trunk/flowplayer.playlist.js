@@ -219,9 +219,9 @@
                     //if we have a template specified generate the playlist item
                     if (template) {
                         if (index < els.length) {
-                            els.eq(index).before(toString(clip));
+                            getEls().eq(index).before(toString(clip));
                         } else {
-                            els.eq(index - 1).after(toString(clip));
+                            getEls().eq(index - 1).after(toString(clip));
                         }
                     }
                     bindClicks();
