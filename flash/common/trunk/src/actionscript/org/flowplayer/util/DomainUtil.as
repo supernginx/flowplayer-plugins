@@ -21,11 +21,12 @@ package org.flowplayer.util {
             var domain:String = getDomain(url);
             if (stripSubdomains || domain.indexOf("www.") == 0) {
                 if (hasAllNumbers(domain)) {
+                    trace("IP address in URL");
                     return parseIPAddressDomain(domain);
                 }
 
                 domain = stripSubdomain(domain);
-                trace("stripping out subdomain, resulted in " + domain);
+                trace("stripped out subdomain, resulted in " + domain);
             }
             return domain.toLowerCase();
         }
