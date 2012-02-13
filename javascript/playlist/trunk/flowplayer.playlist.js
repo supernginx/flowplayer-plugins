@@ -100,7 +100,7 @@
                 function getEl(clip) {
                         //fix for #366 need double quotes for selector
                         return (manual) ? els.filter("[href=\"" + clip.originalUrl + "\"]") : els.eq(clip.index);
-                }
+                }                                                               g
 
                 function getEls() {
                         var els = wrap.find("a");
@@ -112,8 +112,8 @@
 
                 // internal playlist
                 if (!manual) {
-
-                        template = wrap.is(":empty") ? opts.template : wrap.html();
+                        //#472 - check empty container with children rather than :empty if there is whitespace
+                        template = wrap.children().length <= 0 ? opts.template : wrap.html();
                         buildPlaylist();
 
 
