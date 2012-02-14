@@ -1,6 +1,6 @@
 Version history:
 
-3.2.6
+3.2.8
 -----
 - Seek preview: When dragging using the scrubber the player now pauses and shows the video frame corresponding to the
   dragger position in the screen. Note that this is the closest keyframe corresponding to the dragger position.
