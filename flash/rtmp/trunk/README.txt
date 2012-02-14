@@ -1,6 +1,6 @@
 Version history:
 
-3.2.4
+3.2.8
 -----
 - FMS smart seeking (in buffer seeking): http://blogs.adobe.com/actionscriptdocs/2010/06/flash_media_server_stream_reco.html
   There is a new clip property backBufferLength, that can be used to control the buffer size for backward seeking and rewind.
