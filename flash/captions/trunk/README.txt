@@ -1,6 +1,6 @@
 Version history:
 
-3.2.4
+3.2.8
 -----
 - addCaptions() takes in a JSON array of caption objects. The format of these JSON caption objects is now:
   { text: 'this is a caption text', time: 10, duration: 3 }. The time and duration are given as seconds.
