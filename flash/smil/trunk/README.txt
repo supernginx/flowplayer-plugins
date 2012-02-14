@@ -1,6 +1,6 @@
 Version history:
 
-3.2.3
+3.2.8
 -----
 - Fixed: the system-bitrate value in a SMIL file is specified in bps not in kbps
 - Fixed: refactor normal to sd to suit changes with bwcheck , issue #240
