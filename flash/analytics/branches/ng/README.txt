@@ -1,13 +1,13 @@
 Version history:
 
-3.2.3
+3.2.8
 -----
 - Bridge mode now removed from code also
 - Added new configuration variable "clipTypes" that defaults to [ "video", "audio" ]. To track also images use value [ "video", "audio", "image" ].
 
 3.2.2
 -----
-- Now tracks the total time users spend viewing the videis. Total time gets accumulated if the user seeks backwards and repeatedly views parts of the video.
+- Now tracks the total time users spend viewing the videos. Total time gets accumulated if the user seeks backwards and repeatedly views parts of the video.
 - improved error handling
 - fixed a problem with playlists
 - The Bridge mode is no longer supported
