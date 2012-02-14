@@ -1,6 +1,6 @@
 Version history:
 
-3.2.4
+3.2.8
 -----
 Fixes:
 - fixed to dispatch onStart only once
