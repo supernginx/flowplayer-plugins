@@ -1,6 +1,6 @@
 Version history:
 
-3.2.7
+3.2.8
 -----
 - Refactored HD button feature to bitrateselect plugin.
 - Refactored bwcheck with common bitrate selection and switching #292
