@@ -1,6 +1,6 @@
 Version history:
 
-3.2.6
+3.2.8
 -----
 - The 'shareUrl' configuration option was removed and replaced by clip.pageUrl.
 - updated Twitter sharing URL according to their new sharing API
