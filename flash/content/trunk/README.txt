@@ -1,6 +1,6 @@
 Version history:
 
-3.2.1
+3.2.8
 -----
 - Added a drop shadow, can be enabled by setting dropShadow: true in the configuration
 
