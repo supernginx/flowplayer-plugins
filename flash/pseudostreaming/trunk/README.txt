@@ -1,17 +1,9 @@
 Version history:
 
-3.2.7
+3.2.8
 -----
-- The plugin now comes with two versions, the byte-range enabled version is now in a different SWF to reduce the size
-of the standard version that does not have the byte range request powered seeking support.
-- The queryString config option value by default is now "?start=${start}". Contains the ? character there again, so
-  that it can be changed by users.
-- #385 added dispatching of switch begin and completion events.
-
 Fixes:
-- #214 , need to reset the datastore on completion or else time won't reset when seeking mp4 clips
-- #314, inconsistent seeking behavior between in-buffer seeks and server seeks
-- #315, server seek to position zero was failing
+- #385 added dispatching of switch begin and completion events.
 - #339, possible fixes for switching and seeking failures due to datastore. does not reload, just a direct seek.
 - #321. previous seek time gets cleared on replay seek before time gets updated. Store previous end seek time until playback begins to provide correct replay times.
 - #385 regression issue caused by #365, added old switching code back in, and tested seeking and switching work correctly.
@@ -24,6 +16,18 @@ Fixes:
 - #409 version check for byte range seeking was not working with Flash 11
 - #409 preventing seeking during silent seeking as is unstable with byte range seeking.
 - #409 cleanup reuse http client.
+
+3.2.7
+-----
+- The plugin now comes with two versions, the byte-range enabled version is now in a different SWF to reduce the size
+of the standard version that does not have the byte range request powered seeking support.
+- The queryString config option value by default is now "?start=${start}". Contains the ? character there again, so
+  that it can be changed by users.
+
+Fixes:
+- #214 , need to reset the datastore on completion or else time won't reset when seeking mp4 clips
+- #314, inconsistent seeking behavior between in-buffer seeks and server seeks
+- #315, server seek to position zero was failing
 
 3.2.6
 -----
