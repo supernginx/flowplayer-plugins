@@ -97,7 +97,6 @@
 				<arg line="-keep-as3-metadata=Value,External" />
 				<arg line="'${src-as}/@{plugin-main-class}'" />
 				<arg line="-output '${build-dir}/@{out}'" />
-                <arg line="-target-player '${flash.target.player}'" />
                 <arg line="-incremental=true"/>
 			</exec>
 		</sequential>
