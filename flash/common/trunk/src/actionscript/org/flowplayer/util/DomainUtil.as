@@ -51,7 +51,7 @@ package org.flowplayer.util {
             return !isNaN(parseFloat(n)) && isFinite(n as Number);
         }
 
-        public static function stripSubdomain(domain:String) {
+        public static function stripSubdomain(domain:String):String {
             trace("stripSubdomain()");
             var tlds:Array = new Array('.com','.net','.org','.biz','.ws','.in','.me','.co','.co.uk','.org.uk','.ltd.uk',
                     '.plc.uk','.me.uk','.edu','.mil','.br.com','.cn.com','.eu.com','.hu.com','.no.com','.qc.com',
