@@ -18,7 +18,18 @@
     <property name="compiler-define" value="CONFIG::skin,'false' -define=CONFIG::hasSlowMotion,'false'" />
     <property name="extra-sources" value="../common/src/actionscript" />
 
-    <target name="release-remote">
+    <target name="release-remote" depends="release-swfs">
+        <echo message="release-remote: releasing to ${releasedir}" />
+        <remotecopy bucketname="flowplayer-releases/${releasedir}" keyfile="${keyfile}" pass="${pass}">
+            <releasefiles>
+                <fileset dir="${dist-dir}">
+                    <include name="${plugin-binary-versioned}" />
+                </fileset>
+                <fileset dir="${build-dir}">
+                    <include name="${plugin-binary-versioned}" />
+                </fileset>
+            </releasefiles>
+        </remotecopy>
     </target>
 
 </project>

@@ -47,6 +47,8 @@
                 <include name="flowplayer.pseudostreaming-byterange-${version}.swf" />
             </zipfileset>
         </zip>
+        <echo message="copying to ${dist-dir}/${basename}.zip" />
+        <copy file="${dist-dir}/${basename}-${version}.zip" tofile="${dist-dir}/${basename}.zip" overwrite="true" />
     </target>
 
 </project>

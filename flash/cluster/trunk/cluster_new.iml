@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module type="Flex" version="4">
+<module version="4">
   <component name="Flex.Build.Configuration">
     <option name="DO_BUILD" value="true" />
-    <option name="OUTPUT_FILE_NAME" value="f4m.swf" />
+    <option name="OUTPUT_FILE_NAME" value="cluster.swf" />
     <option name="TARGET_PLAYER_VERSION" value="10.2.0" />
     <option name="VERSION" value="3" />
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
-    <content url="file://$MODULE_DIR$">
+    <content url="file://$MODULE_DIR$/../cluster_new">
       <sourceFolder url="file://$MODULE_DIR$/src/actionscript" isTestSource="false" />
     </content>
     <orderEntry type="jdk" jdkName="flex_sdk_4.5.0.19786 (player 10.2)" jdkType="Flex SDK Type" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="core" />
-    <orderEntry type="module" module-name="flowplayer.bwcheck" />
     <orderEntry type="module" module-name="common" />
+    <orderEntry type="module" module-name="core" />
   </component>
 </module>
 
