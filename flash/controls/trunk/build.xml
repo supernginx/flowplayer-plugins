@@ -55,5 +55,5 @@
         </zip>
         <copy file="${dist-dir}/${basename}-${version}.zip" tofile="${dist-dir}/${basename}.zip" overwrite="true" />
     </target>
-    
+
 </project>

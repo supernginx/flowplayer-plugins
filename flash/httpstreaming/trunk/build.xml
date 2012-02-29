@@ -17,7 +17,8 @@
 	<property name="plugin-binary" value="${basename}.swf" />
 	<property name="plugin-swc" value="${basename}.swc" />
 	<property name="plugin-binary-versioned" value="${basename}-${version}.swf" />
-	
+    <property name="extra-sources" value="../bwcheck/src/actionscript ../common/src/actionscript ${osmf-dir}"/>
+
 	<property name="plugin-main-class" value="org/flowplayer/httpstreaming/HttpStreamingPlugin.as" />
 
 	<target name="release" description="makes a release" depends="build">
