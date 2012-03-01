@@ -24,6 +24,7 @@ Fixes:
 - #403 Seeking is a percentage of the seekbar so set a more accurate value.
 - #404 stop/start dragger animation when switching to update correctly.
 - #403 prevent drag correctly for http streams, and reset seek limit to full range.
+- #481 regression issue caused by previous fix for scrubber resizing on stream completion.
 
 3.2.5
 -----
