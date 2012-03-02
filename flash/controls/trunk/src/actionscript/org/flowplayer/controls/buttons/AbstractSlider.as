@@ -183,6 +183,8 @@ package org.flowplayer.controls.buttons {
 		
 		private function onAddedToStage(event:Event):void {
 			enabled = true;
+            //#483 only run the stage event once to prevent re-enabling unnecessarily.
+            removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
 
 		private function toggleClickListeners(add:Boolean):void {
