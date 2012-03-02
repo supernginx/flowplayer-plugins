@@ -145,7 +145,7 @@ package org.flowplayer.controls.buttons {
 		}
 
 		override public function set enabled(value:Boolean) :void {
-		//	log.error("setting enabled to " + value);
+			log.debug("setting enabled to " + value);
 			var func:String = value ? "addEventListener" : "removeEventListener";
 
 			this[func](MouseEvent.MOUSE_UP, _onMouseUp);
@@ -161,11 +161,15 @@ package org.flowplayer.controls.buttons {
 			
 			toggleClickListeners(value);
 
+            //#483 move up button mode config to detect enabled state, toggle slider enabled / disabled colour correctly.
+            _dragger.buttonMode = value;
             if (! enabled) {
                 GraphicsUtil.transformColor(this, _config.disabledRGBA);
+            } else {
+                GraphicsUtil.transformColor(this, _config.colorRGBA);
             }
 
-			_dragger.buttonMode = value;
+
 		}
 
         protected function enableDragging(value:Boolean):void {

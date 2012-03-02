@@ -25,6 +25,7 @@ Fixes:
 - #404 stop/start dragger animation when switching to update correctly.
 - #403 prevent drag correctly for http streams, and reset seek limit to full range.
 - #481 regression issue caused by previous fix for scrubber resizing on stream completion.
+- #483 move up button mode config to detect enabled state, toggle slider enabled / disabled colour correctly.
 
 3.2.5
 -----
