@@ -120,7 +120,8 @@ package org.flowplayer.ui.dock {
             log.debug("addToPanel()");
             _player.panel.addView(this, null, _config.model);
 
-            if (_autoHide || ! _config.autoHide.enabled) return;
+            //#479 check if autoHide is configured as false as well as an object.
+            if (_autoHide || !_config.autoHide || !_config.autoHide.enabled) return;
 
             log.debug("addToPanel(), creating autoHide with config", _config.autoHide);
             createAutoHide();
@@ -218,10 +219,12 @@ package org.flowplayer.ui.dock {
         }
 
         public function onShow(callback:Function):void {
+            if (!_autoHide) return;
             _autoHide.onShow(callback);
         }
 
         public function onHide(callback:Function):void {
+            //#479 check if autoHide is enabled
             if (! _autoHide) return;
             _autoHide.onHide(callback);
         }
