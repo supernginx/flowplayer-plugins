@@ -27,6 +27,7 @@ Fixes:
 - #481 regression issue caused by previous fix for scrubber resizing on stream completion.
 - #483 move up button mode config to detect enabled state, toggle slider enabled / disabled colour correctly.
 - #483 only run the stage event once to prevent re-enabling unnecessarily.
+- cleanup redundant reference to the controlbar.
 
 3.2.5
 -----
