@@ -16,8 +16,6 @@ package org.flowplayer.controls.controllers {
 	import org.flowplayer.ui.buttons.ConfigurableWidget;
 	import org.flowplayer.ui.controllers.AbstractWidgetController;
 	
-	import org.flowplayer.controls.Controlbar;
-	
 	import flash.utils.Timer;
 	import flash.events.TimerEvent;
 	import flash.display.DisplayObjectContainer;
