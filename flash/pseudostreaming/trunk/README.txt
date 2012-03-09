@@ -16,6 +16,7 @@ Fixes:
 - #409 version check for byte range seeking was not working with Flash 11
 - #409 preventing seeking during silent seeking as is unstable with byte range seeking.
 - #409 cleanup reuse http client.
+- #486 implement pauseToFrame to unmute audio when autoBuffering.
 
 3.2.7
 -----
