@@ -28,6 +28,7 @@ Fixes:
 - #483 move up button mode config to detect enabled state, toggle slider enabled / disabled colour correctly.
 - #483 only run the stage event once to prevent re-enabling unnecessarily.
 - cleanup redundant reference to the controlbar.
+- #485 initialise autohide config with fullscreenOnly disabled or else causes issues when configuring as enabled.
 
 3.2.5
 -----

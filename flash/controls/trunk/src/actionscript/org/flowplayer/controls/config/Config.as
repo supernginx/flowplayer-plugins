@@ -33,41 +33,46 @@ package org.flowplayer.controls.config {
 		private var _skin:String;
 		private var _style:Object = {};
 		private var _bgStyle:Object = {};
-        private var _autoHide:AutoHideConfig = new AutoHideConfig();
-		
+        private var _autoHide:AutoHideConfig;
+
 		private var _availableWidgets:Array = [];
-		
+
 		private var _enabled:WidgetsEnabledStates = null;
 		private var _visible:WidgetsVisibility = null;
 		private var _tooltips:ToolTipsConfig = null;
         private var _spacing:WidgetsSpacing = null;
 
+        //#485 initialise autohide config with fullscreenOnly disabled or else causes issues when configuring as enabled.
+        public function Config() {
+            _autoHide = new AutoHideConfig();
+            _autoHide.fullscreenOnly = false;
+        }
 		// base guy
 		public function get style():Object {
 			return _style;
 		}
-		
+
 		public function clone():Config {
 			var conf:Config = new Config();
 			conf.setNewProps(_style);
 			conf.availableWidgets = _availableWidgets;
-			
+
 			return conf;
 		}
-		
+
 		public function set availableWidgets(widgetControllers:Array):void {
 			_availableWidgets = widgetControllers;
-						
+
 			_visible  = new WidgetsVisibility(_style, widgetControllers);
 			_tooltips = new ToolTipsConfig(_style['tooltips'], widgetControllers);
 			_enabled  = new WidgetsEnabledStates(_style['enabled'], widgetControllers);
 			_spacing  = new WidgetsSpacing(_style['spacing'], widgetControllers);
 		}
-		
+
 		public function setNewProps(props:Object):void {
 			log.info("settin new props", props);
 			handleAllProperty(props);
-			
+
 			_style = _setNewProps(props, _style);
 			
 			availableWidgets = _availableWidgets;
