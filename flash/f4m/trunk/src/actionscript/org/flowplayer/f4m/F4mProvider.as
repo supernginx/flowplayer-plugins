@@ -96,6 +96,11 @@ package org.flowplayer.f4m {
                 parseF4MManifest(f4mContent);
             }
 
+            private function formatUrl(url:String):String
+            {
+                //return url.substring(url.indexOf("/"), url.length);
+                return url.replace("/","");
+            }
 
             protected function formatStreamItems(streamItems:Vector.<DynamicStreamingItem>):Vector.<DynamicStreamingItem> {
                 var bitrateItems:Vector.<DynamicStreamingItem> = new Vector.<DynamicStreamingItem>();
@@ -111,9 +116,12 @@ package org.flowplayer.f4m {
                     var item:DynamicStreamingItem = streamItems[index];
 
                     var bitrateItem:BitrateItem = new BitrateItem();
+                    //bitrateItem.url = formatUrl(item.streamName);
                     bitrateItem.url = item.streamName;
                     bitrateItem.bitrate = item.bitrate;
                     bitrateItem.index = index;
+                    
+                    log.error(bitrateItem.url);
 
                     if (item.width) {
                         bitrateItem.width = item.width;
@@ -187,6 +195,9 @@ package org.flowplayer.f4m {
                         dynResource = netResource as DynamicStreamingResource;
                         //formats the stream items to be ready for the bwcheck plugin
                         dynResource.streamItems = formatStreamItems(dynResource.streamItems);
+                        //log.error(dynResource.host);
+
+                        //dynResource.host = dynResource.host.substring(0, dynResource.host.lastIndexOf("/"));
 
                         _isDynamicStreamResource = true;
                         _clip.setCustomProperty("bitrateItems", dynResource.streamItems);
@@ -222,6 +233,13 @@ package org.flowplayer.f4m {
                 }
             }
 
+            private function getRootUrl(url:String):String
+            {
+                var path:String = url.substr(0, url.lastIndexOf("/"));
+
+                return path;
+            }
+
             private function parseF4MManifest(f4mContent:String):void {
                // log.debug("F4M Content: " + f4mContent);
                 log.debug("Parsing F4M Manifest");
@@ -232,7 +250,8 @@ package org.flowplayer.f4m {
 
                 try
                 {
-                    parser.parse(f4mContent, _clip.url.lastIndexOf("/") > 0  ? URLUtil.baseUrl(_clip.url) : "");
+                    //#489 create base url from the clip complete url, issue causing multiple forward slashes.
+                    parser.parse(f4mContent, URLUtil.baseUrl(_clip.completeUrl));
                 }
                 catch (parseError:Error)
                 {
