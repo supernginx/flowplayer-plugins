@@ -113,7 +113,7 @@ package org.flowplayer.bitrateselect {
                     }
                 }
 
-            });
+            }, applyForClip);
 
             if (_config.hdButton.docked) {
                 createIconDock();	// we need to create the controller pretty early else it won't receive the HD_AVAILABILITY event
@@ -144,6 +144,15 @@ package org.flowplayer.bitrateselect {
             }
 
             _model.dispatchOnLoad();
+        }
+
+        //#488 regression with #r1764 filter onStart events to only work with bitrateselect configured clips. Problem when autobuffering with playlst splash images.
+        private function applyForClip(clip:Clip):Boolean {
+            log.debug("applyForClip(), clip.urlResolvers == " + clip.urlResolvers);
+            if (clip.urlResolvers == null) return false;
+            var apply:Boolean = clip.urlResolvers.indexOf(_model.name) >= 0;
+            log.debug("applyForClip? " + apply);
+            return apply;
         }
 
         private function addHDButton(event:WidgetContainerEvent):void {
