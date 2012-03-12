@@ -3,3 +3,4 @@
 
 - First release!
 - #489 create base url from the clip complete url, issue causing multiple forward slashes.
+- #493 add option to include application instance for rtmp base urls.
