@@ -14,3 +14,4 @@ Version history:
 - #388 specify splash labels here as they are not specific to display properties so don't get set.
 - set lowercase to embedded fonts on the hd button asset.
 - #452 make sure the first bitrate item has a url configured when initialising the menu or else it will be generated while resolving.
+- #488 regression with #r1764 filter onStart events to only work with bitrateselect configured clips. Problem when autobuffering with playlst splash images.
