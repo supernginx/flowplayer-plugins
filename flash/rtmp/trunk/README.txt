@@ -21,6 +21,7 @@ Fixes:
 - #430 if there is a client connection failure reconnect to the specified time for rtmp streams after metadata.
 - #430 Do not attempt to re-connect in the plugin, this may be done in the connection providers and doing so resets the connection providers.
 - #439 just check for an rtmp complete url when parsing complete urls to allow other complete urls used for re-streaming to pass through.
+- #486 unmute when auto buffering and pausing to a frame.
 
 3.2.3
 -----
