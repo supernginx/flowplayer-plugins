@@ -19,6 +19,7 @@ package org.flowplayer.f4m.config {
         private var _dynamicBufferTime:int = 4;
         private var _dvrDynamicBufferTime:int = 4;
         private var _liveDynamicBufferTime:int = 4;
+        private var _includeApplicationInstance:Boolean = false;
 
         public function get version():Number {
             return _version;
@@ -76,6 +77,16 @@ package org.flowplayer.f4m.config {
         public function get liveDynamicBufferTime():int
         {
             return _liveDynamicBufferTime;
+        }
+
+        public function set includeApplicationInstance(value:Boolean):void
+        {
+            _includeApplicationInstance = value;
+        }
+
+        public function get includeApplicationInstance():Boolean
+        {
+            return _includeApplicationInstance;
         }
 
 

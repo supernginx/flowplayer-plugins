@@ -96,12 +96,6 @@ package org.flowplayer.f4m {
                 parseF4MManifest(f4mContent);
             }
 
-            private function formatUrl(url:String):String
-            {
-                //return url.substring(url.indexOf("/"), url.length);
-                return url.replace("/","");
-            }
-
             protected function formatStreamItems(streamItems:Vector.<DynamicStreamingItem>):Vector.<DynamicStreamingItem> {
                 var bitrateItems:Vector.<DynamicStreamingItem> = new Vector.<DynamicStreamingItem>();
 
@@ -116,12 +110,9 @@ package org.flowplayer.f4m {
                     var item:DynamicStreamingItem = streamItems[index];
 
                     var bitrateItem:BitrateItem = new BitrateItem();
-                    //bitrateItem.url = formatUrl(item.streamName);
                     bitrateItem.url = item.streamName;
                     bitrateItem.bitrate = item.bitrate;
                     bitrateItem.index = index;
-                    
-                    log.error(bitrateItem.url);
 
                     if (item.width) {
                         bitrateItem.width = item.width;
@@ -186,19 +177,19 @@ package org.flowplayer.f4m {
             private function onF4MFinished():void
             {
                 log.debug("F4M Manifest Finished");
+
                 try
                 {
-                    netResource = parser.createResource(manifest, new URLResource(_clip.completeUrl));
+                    //#493 add option to include application instance for rtmp base urls.
+                    if (!manifest.urlIncludesFMSApplicationInstance && manifest.baseURL)
+                        manifest.urlIncludesFMSApplicationInstance = _config.includeApplicationInstance;
 
+                    netResource = parser.createResource(manifest, new URLResource(_clip.completeUrl));
 
                     if (netResource is DynamicStreamingResource) {
                         dynResource = netResource as DynamicStreamingResource;
                         //formats the stream items to be ready for the bwcheck plugin
                         dynResource.streamItems = formatStreamItems(dynResource.streamItems);
-                        //log.error(dynResource.host);
-
-                        //dynResource.host = dynResource.host.substring(0, dynResource.host.lastIndexOf("/"));
-
                         _isDynamicStreamResource = true;
                         _clip.setCustomProperty("bitrateItems", dynResource.streamItems);
                         _clip.setCustomProperty("urlResource", dynResource);
@@ -248,10 +239,11 @@ package org.flowplayer.f4m {
                 parser.addEventListener(ParseEvent.PARSE_COMPLETE, onParserLoadComplete);
 				parser.addEventListener(ParseEvent.PARSE_ERROR, onParserLoadError);
 
+
                 try
                 {
                     //#489 create base url from the clip complete url, issue causing multiple forward slashes.
-                    parser.parse(f4mContent, URLUtil.baseUrl(_clip.completeUrl));
+                    parser.parse(f4mContent, _clip.baseUrl ? URLUtil.baseUrl(_clip.completeUrl) : "");
                 }
                 catch (parseError:Error)
                 {
