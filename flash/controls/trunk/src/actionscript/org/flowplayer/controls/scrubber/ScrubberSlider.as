@@ -454,6 +454,11 @@ package org.flowplayer.controls.scrubber {
 			_seekInProgress = true;
 		}
 
+        override protected function drawSlider():void {
+            drawBufferBar();
+            doDrawBufferBar(0, 0);
+        }
+
         private function drawBufferBar():void {
             if (_dragger.x + _dragger.width / 2 > _bufferStart * width) {
                 doDrawBufferBar(_bufferStart * width, _bufferEnd * width);

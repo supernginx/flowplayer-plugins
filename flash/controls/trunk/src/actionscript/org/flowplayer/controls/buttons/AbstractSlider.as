@@ -164,13 +164,16 @@ package org.flowplayer.controls.buttons {
             //#483 move up button mode config to detect enabled state, toggle slider enabled / disabled colour correctly.
             _dragger.buttonMode = value;
             if (! enabled) {
-                GraphicsUtil.transformColor(this, _config.disabledRGBA);
+                GraphicsUtil.transformColor(_dragger, _config.disabledRGBA);
             } else {
-                GraphicsUtil.transformColor(this, _config.colorRGBA);
+                // #
+                GraphicsUtil.transformColor(_dragger, _config.colorRGBA);
             }
-
-
 		}
+
+        protected function drawSlider():void {
+                 // overridden in subclasses
+        }
 
         protected function enableDragging(value:Boolean):void {
             var func:String = value ? "addEventListener" : "removeEventListener";
