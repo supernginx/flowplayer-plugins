@@ -22,6 +22,7 @@ Fixes:
 - #430 Do not attempt to re-connect in the plugin, this may be done in the connection providers and doing so resets the connection providers.
 - #439 just check for an rtmp complete url when parsing complete urls to allow other complete urls used for re-streaming to pass through.
 - #486 unmute when auto buffering and pausing to a frame.
+- #494 generate the complete url only if a base url is set. regression caused by #412.
 
 3.2.3
 -----
