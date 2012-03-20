@@ -164,10 +164,11 @@ package org.flowplayer.controls.buttons {
             //#483 move up button mode config to detect enabled state, toggle slider enabled / disabled colour correctly.
             _dragger.buttonMode = value;
             if (! enabled) {
-                GraphicsUtil.transformColor(_dragger, _config.disabledRGBA);
+                _dragger.alpha = 0.5;
             } else {
                 // #
-                GraphicsUtil.transformColor(_dragger, _config.colorRGBA);
+                removeChild(_dragger);
+                createDragger();
             }
 		}
 
