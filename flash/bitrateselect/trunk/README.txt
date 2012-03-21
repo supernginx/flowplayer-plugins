@@ -1,5 +1,9 @@
 Version history:
 
+3.2.9
+-----
+- http://code.google.com/p/flowplayer-core/issues/detail?id=488
+
 3.2.8
 -----
 
