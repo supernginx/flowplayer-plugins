@@ -85,14 +85,15 @@ package org.flowplayer.util {
 
             var bits:Array = domain.split('.');
 
-//            $sResult = array_search('.'.$bits[count($bits)-1], $tlds);
             if (bits.length >= 3 && tlds.indexOf("." + bits[bits.length - 2] + "." + bits[bits.length - 1]) >= 0) {
                 return bits[bits.length - 3] + "." +  bits[bits.length - 2] + "." + bits[bits.length - 1];
             }
             if (tlds.indexOf("." + bits[bits.length - 1]) >= 0) {
                 return bits[bits.length - 2] + "." + bits[bits.length - 1];
             }
-
+            if (bits.length > 2) {
+                return bits[bits.length - 2] + "." + bits[bits.length - 1];
+            }
             return domain;
         }
 
