@@ -243,7 +243,7 @@ package org.flowplayer.viralvideos {
                             '    data="' + _player.config.playerSwfUrl + '"  type="application/x-shockwave-flash">' +
                             '    <param value="true" name="allowfullscreen"/>' +
                             '    <param value="always" name="allowscriptaccess"/>' +
-                            '    <param value="transparent" name="wmode"/>' +
+                            '    <param value="' + _embedConfig.wmode + '" name="wmode"/>' +
                             '    <param value="high" name="quality"/>' +
                             '    <param name="movie" value="' + _player.config.playerSwfUrl + '" />' +
                             '    <param value="config=' + configStr + '" name="flashvars"/>';
