@@ -27,6 +27,7 @@ package org.flowplayer.viralvideos.config {
         private var _anchorText:String = null;
         private var _shareCurrentPlaylistItem:Boolean;
         private var _labels:EmbedViewLabels = new EmbedViewLabels();
+        private var _wmode:String = "transparent";
 
         public function get shareCurrentPlaylistItem():Boolean {
             return _shareCurrentPlaylistItem;
@@ -122,6 +123,15 @@ package org.flowplayer.viralvideos.config {
         public function setLabels(value:Object):void {
             if (! value) return;
             new PropertyBinder(_labels).copyProperties(value);
+        }
+
+        [Value]
+        public function get wmode():String {
+            return _wmode;
+        }
+
+        public function set wmode(value:String):void {
+            _wmode = value;
         }
 
     }
