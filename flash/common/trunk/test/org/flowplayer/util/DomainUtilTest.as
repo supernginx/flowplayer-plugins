@@ -17,6 +17,10 @@ package org.flowplayer.util {
             assertEquals("foo.on.ca", DomainUtil.stripSubdomain("foo.on.ca"));
         }
 
+        public function test2():void {
+            assertEquals("xx.foobar", DomainUtil.stripSubdomain("jee.xx.foobar"));
+        }
+
         public function testStripSubdomain():void {
             assertEquals("foobar", DomainUtil.stripSubdomain("foobar"));
             assertEquals("foobar.com", DomainUtil.stripSubdomain("foobar.com"));
@@ -37,9 +41,9 @@ package org.flowplayer.util {
 //# Unlisted TLD.
             checkPublicSuffix('example', 'example');
             checkPublicSuffix('example.example', 'example.example');
-            checkPublicSuffix('b.example.example', 'b.example.example');
-            checkPublicSuffix('a.b.example.example', 'a.b.example.example');
-            checkPublicSuffix('194.215.0.128', '194.215.0.128');
+            checkPublicSuffix('b.example.example', 'example.example');
+            checkPublicSuffix('a.b.example.example', 'example.example');
+            checkPublicSuffix('194.215.0.128', '0.128');
 //# TLD with only 1 rule.
 //            checkPublicSuffix('biz', null);
             checkPublicSuffix('domain.biz', 'domain.biz');
