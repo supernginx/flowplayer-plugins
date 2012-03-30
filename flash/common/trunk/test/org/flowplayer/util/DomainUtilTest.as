@@ -36,29 +36,29 @@ package org.flowplayer.util {
 //            checkPublicSuffix(null, null);
 //# Mixed case.
 //            checkPublicSuffix('COM', null);
-            checkPublicSuffix('example.com', 'example.com');
+            assertEquals('example.com', DomainUtil.stripSubdomain('example.com'));
 //            checkPublicSuffix('WwW.example.COM', 'example.com');
 //# Unlisted TLD.
-            checkPublicSuffix('example', 'example');
-            checkPublicSuffix('example.example', 'example.example');
-            checkPublicSuffix('b.example.example', 'example.example');
-            checkPublicSuffix('a.b.example.example', 'example.example');
-            checkPublicSuffix('194.215.0.128', '0.128');
+            assertEquals('example', DomainUtil.stripSubdomain('example'));
+            assertEquals('example.example', DomainUtil.stripSubdomain('example.example'));
+            assertEquals('example.example', DomainUtil.stripSubdomain('b.example.example'));
+            assertEquals('example.example', DomainUtil.stripSubdomain('a.b.example.example'));
+            assertEquals('0.128', DomainUtil.stripSubdomain('194.215.0.128'));
 //# TLD with only 1 rule.
 //            checkPublicSuffix('biz', null);
-            checkPublicSuffix('domain.biz', 'domain.biz');
-            checkPublicSuffix('b.domain.biz', 'domain.biz');
-            checkPublicSuffix('a.b.domain.biz', 'domain.biz');
+            assertEquals('domain.biz', DomainUtil.stripSubdomain('domain.biz'));
+            assertEquals('domain.biz', DomainUtil.stripSubdomain('b.domain.biz'));
+            assertEquals('domain.biz', DomainUtil.stripSubdomain('a.b.domain.biz'));
 //# TLD with some 2-level rules.
 //            checkPublicSuffix('com', null);
-            checkPublicSuffix('example.com', 'example.com');
-            checkPublicSuffix('b.example.com', 'example.com');
-            checkPublicSuffix('a.b.example.com', 'example.com');
+            assertEquals('example.com', DomainUtil.stripSubdomain('example.com'));
+            assertEquals('example.com', DomainUtil.stripSubdomain('b.example.com'));
+            assertEquals('example.com', DomainUtil.stripSubdomain('a.b.example.com'));
 //            checkPublicSuffix('uk.com', null);
-            checkPublicSuffix('example.uk.com', 'example.uk.com');
-            checkPublicSuffix('b.example.uk.com', 'example.uk.com');
-            checkPublicSuffix('a.b.example.uk.com', 'example.uk.com');
-            checkPublicSuffix('test.ac', 'test.ac');
+            assertEquals('example.uk.com', DomainUtil.stripSubdomain('example.uk.com'));
+            assertEquals('example.uk.com', DomainUtil.stripSubdomain('b.example.uk.com'));
+            assertEquals('example.uk.com', DomainUtil.stripSubdomain('a.b.example.uk.com'));
+            assertEquals('test.ac', DomainUtil.stripSubdomain('test.ac'));
 //# TLD with only 1 (wildcard) rule.
 //            checkPublicSuffix('cy', null);
 //            checkPublicSuffix('c.cy', null);
@@ -110,12 +110,8 @@ package org.flowplayer.util {
         }
 
         public function testMisc():void {
-            checkPublicSuffix(' www.pss3.home.pl', 'home.pl');
-            checkPublicSuffix(' xxx.ais5.pl', 'ais5.pl');
-        }
-
-        private function checkPublicSuffix(domain:String, expected:String):void {
-            assertEquals(expected, DomainUtil.stripSubdomain(domain));
+            assertEquals('home.pl', DomainUtil.stripSubdomain(' www.pss3.home.pl'));
+            assertEquals('ais5.pl', DomainUtil.stripSubdomain(' xxx.ais5.pl'));
         }
 
         public function testParseDomain():void {
