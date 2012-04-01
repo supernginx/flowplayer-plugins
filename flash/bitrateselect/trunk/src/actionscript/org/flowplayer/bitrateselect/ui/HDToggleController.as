@@ -75,16 +75,18 @@ package org.flowplayer.bitrateselect.ui {
 			log.debug("HD button clicked");
 			_provider.hd = ! isDown;
 		}
-		
+
 		private function onHD(event:HDEvent):void {
 			log.debug("Stream switched to HD? "+ event.hasHD);
 			(_widget as ToggleButton).isDown = event.hasHD;
             (_widget as ToggleButton).setToggledColor(event.hasHD);
 		}
-		
+
 		private function onHDAvailable(event:HDEvent):void {
-			log.debug("HD Available ? "+ event.hasHD);
-			_widget.enabled = event.hasHD;
+			log.debug("HD Available ? "+ event.hasHD)
+
+            //#502 use new widget enabling api method to update the controls widget enable configs also.
+            enableWidget =  event.hasHD;
 		}
 	}
 }
