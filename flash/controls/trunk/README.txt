@@ -29,6 +29,7 @@ Fixes:
 - #483 only run the stage event once to prevent re-enabling unnecessarily.
 - cleanup redundant reference to the controlbar.
 - #485 initialise autohide config with fullscreenOnly disabled or else causes issues when configuring as enabled.
+- #505 if new properties does not contain a widget unset it, problem when overriding control settings via clip configs due to the all property.
 
 3.2.5
 -----
