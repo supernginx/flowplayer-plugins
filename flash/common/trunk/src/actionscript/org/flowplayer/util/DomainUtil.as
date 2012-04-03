@@ -51,7 +51,7 @@ package org.flowplayer.util {
             return !isNaN(parseFloat(n)) && isFinite(n as Number);
         }
 
-        public static function stripSubdomain(domain:String) {
+        public static function stripSubdomain(domain:String):String {
             if (! domain) return domain;
             domain = domain.toLocaleLowerCase();
             trace("stripSubdomain()");
