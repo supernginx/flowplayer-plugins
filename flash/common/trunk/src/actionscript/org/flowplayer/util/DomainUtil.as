@@ -52,6 +52,8 @@ package org.flowplayer.util {
         }
 
         public static function stripSubdomain(domain:String) {
+            if (! domain) return domain;
+            domain = domain.toLocaleLowerCase();
             trace("stripSubdomain()");
             var tlds:Array = new Array('.com','.net','.org','.biz','.ws','.in','.me','.co','.co.uk','.org.uk','.ltd.uk',
                     '.plc.uk','.me.uk','.edu','.mil','.br.com','.cn.com','.eu.com','.hu.com','.no.com','.qc.com',
@@ -120,7 +122,7 @@ package org.flowplayer.util {
             var schemeEnd:int = getSchemeEnd(url);
             var domain:String = url.substr(schemeEnd);
             var endPos:int = getDomainEnd(domain);
-            return domain.substr(0, endPos);
+            return domain.substr(0, endPos).toLowerCase();
         }
 
         internal static function getSchemeEnd(url:String):int {
