@@ -74,7 +74,7 @@ package org.flowplayer.controls.config {
 			handleAllProperty(props);
 
 			_style = _setNewProps(props, _style);
-			
+
 			availableWidgets = _availableWidgets;
 			_bgStyle = _style;
 			
@@ -92,8 +92,13 @@ package org.flowplayer.controls.config {
 			if ( ! props ) return;
 				
 			for ( var i:int = 0; i < _availableWidgets.length; i++ ) {
-				log.debug("deleting "+_availableWidgets[i]['name']);
-				delete props[_availableWidgets[i]['name']];
+
+                //#505 if new properties does not contain a widget unset it.
+                if (newProps[_availableWidgets[i]['name']] == undefined) {
+				    log.debug("deleting "+_availableWidgets[i]['name']);
+				    delete props[_availableWidgets[i]['name']];
+                }
+
 				
 				if ( _availableWidgets[i]['groupName'] ) {
 					log.debug("deleting group "+_availableWidgets[i]['groupName']);
