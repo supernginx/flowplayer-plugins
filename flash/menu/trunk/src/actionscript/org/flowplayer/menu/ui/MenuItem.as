@@ -38,6 +38,8 @@ package org.flowplayer.menu.ui {
         private var _image:DisplayObject;
         private var _player:Flowplayer;
 
+        private var _buffer:int = 10;
+
         public function MenuItem(player:Flowplayer, config:MenuItemConfig, animationEngine:AnimationEngine) {
             _player = player;
             super(config, animationEngine);
@@ -116,7 +118,9 @@ package org.flowplayer.menu.ui {
             log.debug("onResize() " + width + " x " + height);
             face.width = width;
             face.height = height;
-            _text.width = _text.textWidth + 10;
+            //_text.width = _text.textWidth + 10;
+            //#498 set initial text width to the max item width
+            _text.width = face.width - _buffer;
             _text.height = _text.textHeight + 6;
 
             if (_image) {
@@ -124,6 +128,8 @@ package org.flowplayer.menu.ui {
                 _image.y = 5;
                 _image.height = height - 10;
                 _image.scaleX = _image.scaleY;
+                //#498 resize the label text if an image is set.
+                _text.width = _text.width - _image.width - _buffer;
             }
 
             if (itemConfig.toggle) {
@@ -131,12 +137,14 @@ package org.flowplayer.menu.ui {
                 _tickMark.scaleX = _tickMark.scaleY;
                 Arrange.center(_tickMark, 0, height);
                 _tickMark.y = _tickMark.y - 2; // adjust it a bit
-                _tickMark.x = _image ? (_image.x + _image.width) : 10;
+                _tickMark.x = _image ? (_image.x + _image.width) : _buffer;
+                //#498 resize the label text if a tickmark is configured.
+                _text.width = _text.width - _tickMark.width;
                 _text.x = _tickMark.x + _tickMark.width + 7;
                 Arrange.center(_text, 0, height);
             } else {
 
-                _text.x = _image ? (_image.x + _image.width + 10) : 10;
+                _text.x = _image ? (_image.x + _image.width + _buffer) : _buffer;
                 Arrange.center(_text,  0, height);
             }
         }
