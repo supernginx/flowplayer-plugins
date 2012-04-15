@@ -6,7 +6,7 @@
 	
 	<property name="flowplayer_lib" value="${devkit-dir}/flowplayer.swc" />
     <property name="extra-sources" value="../bwcheck/src/actionscript ../common/src/actionscript ${osmf-dir}"/>
-	<property name="compiler-defines" value="-define+=CONFIG::LOGGING,'true' -define+=CONFIG::FLASH_10_1,'true'"/>
+	<property name="compiler-defines" value="-define+=CONFIG::LOGGING,'false' -define+=CONFIG::FLASH_10_1,'true'"/>
 
 	<property file="${devkit-dir}/plugin-build.properties" />
 	<import file="${devkit-dir}/plugin-build.xml"/>
