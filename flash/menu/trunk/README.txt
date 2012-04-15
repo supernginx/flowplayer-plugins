@@ -4,3 +4,5 @@ Version history:
 -----
 
 - First release!
+
+- #498 fixes to resize the label text to the menu item width.
