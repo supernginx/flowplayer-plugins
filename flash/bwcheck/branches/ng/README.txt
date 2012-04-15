@@ -21,6 +21,7 @@ Version history:
 - #408 changed some default qos settings to work better with wowza.
 - #417 disable setting the index with a screen size rule and manual switch with dynamic also enabled as it resets the index and causes issues obtaining the previous item.
 - #417 if screen size rule is disabled do not do screen size checks for the index.
+- #500 fix for netstream metrics, do not set to the clip properties as it causes errors with event callbacks, small refactoring of NetStreamSwitchManager to reflect osmf1.6.
 
 3.2.6
 -----
