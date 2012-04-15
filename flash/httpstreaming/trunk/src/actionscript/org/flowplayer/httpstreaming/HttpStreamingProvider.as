@@ -12,9 +12,9 @@ package org.flowplayer.httpstreaming {
 
 
     import flash.events.NetStatusEvent;
-
     import flash.net.NetStream;
     import flash.net.NetConnection;
+    import flash.utils.setTimeout;
 
     import org.flowplayer.model.Clip;
     import org.flowplayer.model.ClipEvent;
@@ -24,6 +24,7 @@ package org.flowplayer.httpstreaming {
     import org.flowplayer.model.ClipType;
     import org.flowplayer.model.Plugin;
     import org.flowplayer.model.PluginModel;
+    import org.flowplayer.util.NumberUtil;
     import org.flowplayer.util.PropertyBinder;
     import org.flowplayer.view.Flowplayer;
 
@@ -50,6 +51,7 @@ package org.flowplayer.httpstreaming {
         private var netResource:URLResource;
         private var _dvrInfo:DVRInfo;
         private var _dvrIsRecording:Boolean;
+        private var _initialSeekTime:Number;
         
         override public function onConfig(model:PluginModel):void {
             _model = model;
@@ -93,7 +95,7 @@ package org.flowplayer.httpstreaming {
             _dvrInfo = null;
             _dvrIsRecording = false;
 
-            netStream.client = new NetStreamClient(clip, _player.config, streamCallbacks);
+            //netStream.client = new NetStreamClient(clip, _player.config, streamCallbacks);
             netStream.play(clip.url, clip.start);
         }
 
@@ -106,7 +108,7 @@ package org.flowplayer.httpstreaming {
         }
 
         override protected function onNetStatus(event:NetStatusEvent) : void {
-            log.info("onNetStatus(), code: " + event.info.code + ", paused? " + paused + ", seeking? " + seeking);
+            log.debug("onNetStatus(), code: " + event.info.code + ", paused? " + paused + ", seeking? " + seeking);
             switch(event.info.code){
                 case "NetStream.Play.Transition":
                     log.debug("Stream Transition -- " + event.info.details);
@@ -117,6 +119,22 @@ package org.flowplayer.httpstreaming {
                     break;
             }
             return;
+        }
+
+        override protected function doSeek(event : ClipEvent, netStream : NetStream, seconds : Number) : void {
+            var seekTime:int = int(seconds);
+            _bufferStart = seekTime;
+            log.debug("calling netStream.seek(" + seekTime + ")");
+            seeking = true;
+
+            //#515 when seeking on startup set a delay or else the initial time is treated as the clip start time.
+            if (time <= 0 ) {
+                setTimeout(function():void {
+                    netStream.seek(seconds);
+                }, 250);
+                return;
+            }
+            netStream.seek(seekTime);
         }
 
         override protected function doSwitchStream(event:ClipEvent, netStream:NetStream, clip:Clip, netStreamPlayOptions:Object = null):void {      
@@ -140,7 +158,7 @@ package org.flowplayer.httpstreaming {
         }
 
         override protected function onMetaData(event:ClipEvent):void {
-            log.info("in NetStreamControllingStremProvider.onMetaData: " + event.target);
+            log.debug("in NetStreamControllingStremProvider.onMetaData: " + event.target);
 
             //if we are not dvr recording dispatch start
             if (! clip.startDispatched && !_dvrIsRecording) {
@@ -249,6 +267,18 @@ package org.flowplayer.httpstreaming {
             }
 
             return httpNetStream;
+        }
+
+        override public function get bufferStart() : Number {
+            if (!clip) return 0;
+            if (!netStream) return 0;
+            return Math.max(0, getCurrentPlayheadTime(netStream));
+        }
+
+        override public function get bufferEnd() : Number {
+            if (!clip) return 0;
+            if (!netStream) return 0;
+            return getCurrentPlayheadTime(netStream) + netStream.bufferLength;
         }
     }
 }

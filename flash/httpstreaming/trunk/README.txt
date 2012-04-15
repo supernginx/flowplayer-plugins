@@ -4,3 +4,5 @@ Version history:
 -----
 
 - First release!
+
+- #515 when seeking on startup set a delay or else the initial time is treated as the clip start time.
