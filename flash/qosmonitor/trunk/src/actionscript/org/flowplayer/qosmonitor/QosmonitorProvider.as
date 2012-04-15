@@ -16,6 +16,7 @@ package org.flowplayer.qosmonitor {
     import org.flowplayer.util.PropertyBinder;
     import org.flowplayer.view.Flowplayer;
     import org.flowplayer.model.Clip;
+    import org.flowplayer.model.DisplayProperties;
     import org.flowplayer.view.StyleableSprite;
 
     import org.flowplayer.net.BitrateItem;
@@ -44,6 +45,7 @@ package org.flowplayer.qosmonitor {
         private var _clip:Clip;
 
         private var _metrics:Object;
+        private var _bwcheck:Object;
 
         private var _bandwidthLabel:TextField;
         private var _bandwidthStats:TextField;
@@ -92,6 +94,10 @@ package org.flowplayer.qosmonitor {
         public function onLoad(player:Flowplayer):void {
             _player = player;
             log.info("onLoad()");
+
+            //#500 get the metrics from the bwcheck plugin.
+            var plugin:DisplayProperties = _player.pluginRegistry.getPlugin("bwcheck") as DisplayProperties;
+            _bwcheck = Object(plugin.getDisplayObject());
 
             createStatsView();
 
@@ -170,8 +176,9 @@ package org.flowplayer.qosmonitor {
 
         private function updateMetrics():void {
             if (!_config.stats.metrics) return;
-            if (!_metrics && !_clip.getCustomProperty("metrics")) return;
-            if (!_metrics) _metrics = _clip.getCustomProperty("metrics");
+            //#500 get the metrics from the bwcheck plugin.
+            if (!_metrics && !_bwcheck) return;
+            if (!_metrics) _metrics = _bwcheck.netStreamMetrics;
 
             updateStatsText(_avgBandwidthStats, formatBytes(_metrics.averageMaxBytesPerSecond) + "");
             updateStatsText(_avgDroppedFramesStats, Math.round(_metrics.averageDroppedFPS) + "");
