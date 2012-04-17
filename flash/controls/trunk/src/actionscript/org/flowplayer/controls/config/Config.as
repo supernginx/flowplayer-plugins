@@ -70,10 +70,11 @@ package org.flowplayer.controls.config {
 		}
 
 		public function setNewProps(props:Object):void {
-			log.info("settin new props", props);
+			log.debug("settin new props", props);
 			handleAllProperty(props);
 
 			_style = _setNewProps(props, _style);
+
 
 			availableWidgets = _availableWidgets;
 			_bgStyle = _style;
@@ -99,8 +100,8 @@ package org.flowplayer.controls.config {
 				    delete props[_availableWidgets[i]['name']];
                 }
 
-				
-				if ( _availableWidgets[i]['groupName'] ) {
+                //#505 if new properties does not contain a group widget, ie playlist group is next and previous buttons,  unset it.
+				if ( _availableWidgets[i]['groupName'] && newProps[_availableWidgets[i]['groupName']] == undefined) {
 					log.debug("deleting group "+_availableWidgets[i]['groupName']);
 					delete props[_availableWidgets[i]['groupName']];
 				}
