@@ -4,6 +4,7 @@ Version history:
 ------
 - #505 if new properties does not contain a widget unset it, problem when overriding control settings via clip configs due to the all property.
 - #505 if new properties does not contain a group widget, ie playlist group is next and previous buttons,  unset it.
+- #514 fixed scrubbing
 
 3.2.9
 -----

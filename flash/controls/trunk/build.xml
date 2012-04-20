@@ -39,9 +39,9 @@
 
     <target name="build-all" depends="build, build-skinless, build-tube, build-air" />
 
-    <target name="zip" depends="prepare, build-all">
+    <target name="zip">
         <echo message="zipping controls" />
-        <zip destfile="${dist-dir}/${basename}-${version}.zip">
+        <zip destfile="${dist-dir}/${basename}-${version}.zip" update="true">
             <zipfileset prefix="${basename}" dir=".">
                 <include name="LICENSE.txt" />
                 <include name="README.txt" />
