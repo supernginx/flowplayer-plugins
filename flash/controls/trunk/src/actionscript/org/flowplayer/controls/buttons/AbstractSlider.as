@@ -149,9 +149,6 @@ package org.flowplayer.controls.buttons {
 			var func:String = value ? "addEventListener" : "removeEventListener";
 
 			this[func](MouseEvent.MOUSE_UP, _onMouseUp);
-            _dragger[func](MouseEvent.MOUSE_UP, _onMouseUp);
-
-            _dragger[func](MouseEvent.MOUSE_DOWN, _onMouseDown);
 
 			// we might not already been added to stage when this is called
 			if ( stage ) {
@@ -170,7 +167,9 @@ package org.flowplayer.controls.buttons {
                 removeChild(_dragger);
                 createDragger();
             }
-		}
+            _dragger[func](MouseEvent.MOUSE_UP, _onMouseUp);
+            _dragger[func](MouseEvent.MOUSE_DOWN, _onMouseDown);
+        }
 
         protected function drawSlider():void {
                  // overridden in subclasses
