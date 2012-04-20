@@ -1,5 +1,9 @@
 Version history:
 
+3.2.9
+-----
+- Made it possible to specify share/title directly in the configuration's 'share' object.
+
 3.2.8
 -----
 - The 'shareUrl' configuration option was removed and replaced by clip.pageUrl.

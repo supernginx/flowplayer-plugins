@@ -13,7 +13,6 @@ package org.flowplayer.viralvideos.config {
     import org.flowplayer.util.PropertyBinder;
 
     public class ShareConfig {
-        private var _title:String = "A cool video";
         private var _description:String = "A cool video";
 		private var _body:String = "";
         private var _category:String = "";
@@ -55,11 +54,11 @@ package org.flowplayer.viralvideos.config {
         }
 
         public function get title():String {
-            return _title;
+            return _labels.title;
         }
 
         public function set title(value:String):void {
-            _title = value;
+            _labels.title = value;
         }
 
         public function get popupDimensions():Object {
