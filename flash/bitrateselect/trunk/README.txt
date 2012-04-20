@@ -2,7 +2,8 @@ Version history:
 
 3.2.9
 -----
-- http://code.google.com/p/flowplayer-core/issues/detail?id=488
+Fixes:
+- #488 does not work with playlist base splash image (regression)
 - #502 use new widget enabling api method to update the controls widget enable configs also.
 
 3.2.8
