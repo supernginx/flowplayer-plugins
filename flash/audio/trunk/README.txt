@@ -1,5 +1,10 @@
 Version history:
 
+3.2.9
+-----
+- #501 fixes to dispatch start state correctly.
+- #501 use the sound channel to listen for a complete event to finish correctly.
+
 3.2.8
 -----
 Fixes:
@@ -11,8 +16,6 @@ Fixes:
 - #428 regression issue calculating the initial duration, was returning too small for the duration tracker.
 - #428 when fully downloaded ID3 is resent and update the duration.
 - #475 if we have a clip duration set, dispatch start or else wait until the duration is estimated. Start required for beginning duration tracker.
-- #501 fixes to dispatch start state correctly.
-- #501 use the sound channel to listen for a complete event to finish correctly.
 
 3.2.3
 -----
