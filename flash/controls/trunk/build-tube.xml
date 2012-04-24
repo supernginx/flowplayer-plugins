@@ -23,18 +23,4 @@
     <property name="plugin-main-class" value="org/flowplayer/controls/Controls.as" />
     <property name="compiler-define" value="CONFIG::skin,'true' -define=CONFIG::hasSlowMotion,'false'" />
 
-    <target name="release-remote" depends="release-swfs">
-        <echo message="release-remote: releasing to ${releasedir}" />
-        <remotecopy bucketname="flowplayer-releases/${releasedir}" keyfile="${keyfile}" pass="${pass}">
-            <releasefiles>
-                <fileset dir="${dist-dir}">
-                    <include name="${plugin-binary-versioned}" />
-                </fileset>
-                <fileset dir="${build-dir}">
-                    <include name="${plugin-binary-versioned}" />
-                </fileset>
-            </releasefiles>
-        </remotecopy>
-    </target>
-    
 </project>

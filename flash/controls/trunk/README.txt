@@ -2,9 +2,9 @@ Version history:
 
 3.2.10
 ------
-- #505 if new properties does not contain a widget unset it, problem when overriding control settings via clip configs due to the all property.
-- #505 if new properties does not contain a group widget, ie playlist group is next and previous buttons,  unset it.
+- #505 Fixed a regression in configuring controls in the clip object
 - #514 fixed scrubbing
+- new flowplayer.js version 3.2.9
 
 3.2.9
 -----
