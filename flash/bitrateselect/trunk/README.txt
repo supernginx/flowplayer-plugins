@@ -3,7 +3,7 @@ Version history:
 3.2.9
 -----
 Fixes:
-- #488 does not work with playlist base splash image (regression)
+- #488 does not work with playlist based splash image (regression)
 - #502 use new widget enabling api method to update the controls widget enable configs also.
 
 3.2.8
