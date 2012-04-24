@@ -97,7 +97,7 @@
 				<arg line="-keep-as3-metadata=Value,External" />
 				<arg line="'${src-as}/@{plugin-main-class}'" />
 				<arg line="-output '${build-dir}/@{out}'" />
-                <arg line="-incremental=true"/>
+                <arg line="-incremental=false"/>
 			</exec>
 		</sequential>
 	</macrodef>
@@ -238,8 +238,14 @@
 		<echo message="Copying dist zip to ${deploy-dir}" />
 		<copy file="${dist-dir}/${basename}-${version}.zip" todir="${deploy_dir}/${dist-dir}" overwrite="true" />
 		<copy file="${dist-dir}/${basename}-${version}-src.zip" todir="${deploy_dir}/${dist-dir}" overwrite="true" />
-		<copy file="${build-dir}/${plugin-binary-versioned}" todir="${deploy_dir}/${dist-dir}" overwrite="true" />
-	</target>
+
+        <delete dir="${dist-dir}/${basename}"/>
+        <unzip src="${dist-dir}/${basename}-${version}.zip" dest="${dist-dir}" />
+
+        <echo message="Copying swfs to ${deploy-dir}" />
+        <copy file="${dist-dir}/${basename}/${plugin-binary-versioned}" todir="${deploy_dir}/${dist-dir}" overwrite="true" failonerror="false" />
+        <copy file="${dist-dir}/${basename}/${plugin-binary-versioned}" todir="${deploy_dir}/build" overwrite="true"  failonerror="false" />
+    </target>
 
 
 	<target name="prepare" unless="pluginproxy">
@@ -253,7 +259,7 @@
 		</unzip>
 	</target>
 
-	<target name="zip" depends="prepare, build" unless="pluginproxy">
+	<target name="zip" unless="pluginproxy">
 		<zip destfile="${dist-dir}/${basename}-${version}.zip">
 			<zipfileset prefix="${basename}" dir=".">
 				<include name="LICENSE.txt" />
@@ -268,7 +274,7 @@
         <copy file="${dist-dir}/${basename}-${version}.zip" tofile="${dist-dir}/${basename}-${version}-${flash.target.player}.zip" overwrite="true" />
 	</target>
 	
-	<target name="zip-swc" depends="prepare, library">
+	<target name="zip-swc">
         <zip destfile="${dist-dir}/${basename}-${version}.swc.zip">
             <zipfileset prefix="${basename}" dir=".">
                 <include name="LICENSE.txt" />
@@ -280,7 +286,7 @@
         </zip>
     </target>
 	
-	<target name="zip-with-examples" depends="prepare, build">
+	<target name="zip-with-examples">
 		<zip destfile="${dist-dir}/${basename}-${version}.zip">
 			<zipfileset prefix="${basename}" dir=".">
 				<include name="LICENSE.txt" />
@@ -330,8 +336,12 @@
         <copy file="${dist-dir}/${basename}-${version}-src.zip" tofile="${dist-dir}/${basename}-src.zip" />
 	</target>
 
-    <target name="release-remote" depends="release-swfs">
+    <target name="release-remote">
         <echo message="release-remote: releasing to ${releasedir}" />
+
+        <delete dir="${dist-dir}/${basename}"/>
+        <unzip src="${dist-dir}/${basename}-${version}.zip" dest="${dist-dir}" />
+
         <remotecopy bucketname="flowplayer-releases/${releasedir}" keyfile="${keyfile}" pass="${pass}">
             <releasefiles>
                 <fileset dir="${dist-dir}">
@@ -339,8 +349,17 @@
                     <include name="${basename}-${version}-src.zip" />
                     <include name="${plugin-binary-versioned}" />
                 </fileset>
-                <fileset dir="${build-dir}">
+                <fileset dir="${dist-dir}/${basename}">
                     <include name="${plugin-binary-versioned}" />
+                </fileset>
+            </releasefiles>
+        </remotecopy>
+
+        <echo message="release-remote: uploading to swf" />
+        <remotecopy bucketname="flowplayer-releases/swf" keyfile="${keyfile}" pass="${pass}">
+            <releasefiles>
+                <fileset dir="${dist-dir}/${basename}">
+                    <include name="*.swf" />
                 </fileset>
             </releasefiles>
         </remotecopy>
@@ -371,17 +390,6 @@
                 </fileset>
             </releasefiles>
         </remotecopy-dev>
-    </target>
-
-    <target name="release-swfs">
-        <remotecopy bucketname="flowplayer-releases/swf" keyfile="${keyfile}" pass="${pass}">
-            <releasefiles>
-                <fileset dir="${build-dir}">
-                    <include name="${plugin-binary-versioned}" />
-                    <include name="${plugin-binary}" />
-                </fileset>
-            </releasefiles>
-        </remotecopy>
     </target>
 
     <target name="upload-dev-swfs">
