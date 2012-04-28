@@ -19,7 +19,8 @@ package org.flowplayer.viralvideos {
     import org.flowplayer.model.PluginModel;
     import org.flowplayer.ui.dock.Dock;
     import org.flowplayer.ui.buttons.CloseButton;
-    import org.flowplayer.util.PropertyBinder;
+import org.flowplayer.util.ObjectConverter;
+import org.flowplayer.util.PropertyBinder;
     import org.flowplayer.view.AbstractSprite;
     import org.flowplayer.view.FlowStyleSheet;
     import org.flowplayer.view.Flowplayer;
@@ -55,6 +56,8 @@ package org.flowplayer.viralvideos {
 
         private var _closeButton:CloseButton;
         private var _tabCSSProperties:Object;
+
+        private var _controls:Object;
 
         public function onConfig(plugin:PluginModel):void {
             log.debug("onConfig()", plugin.config);
@@ -120,6 +123,8 @@ package org.flowplayer.viralvideos {
             
             this.visible = false;
             _player = player;
+
+            _controls = _player.pluginRegistry.getPlugin("controls").getDisplayObject();
 
             createPanelContainer();
             createIconDock();
@@ -283,22 +288,54 @@ package org.flowplayer.viralvideos {
         public function showView(panel:String):void {
             displayButtons(false);
             hideViews();
-            if (panel == "Email" && _emailView) _emailView.show();
-            if (panel == "Embed" && _embedView) _embedView.show();
+
+            if (panel == "Email" && _emailView) {
+                //#410 disable fullscreen for email tab
+                enableFullscreen(false);
+                _emailView.show();
+            }
+
+            if (panel == "Embed" && _embedView) {
+                 //#410 disable fullscreen for email tab
+                enableFullscreen(false);
+                _embedView.show();
+            }
+
             if (panel == "Share" && _shareView) _shareView.show();
         }
 
+        //#410 enable / disable fullscreen
+        private function enableFullscreen(enable:Boolean):void
+        {
+            _controls.setEnabled({fullscreen: enable});
+        }
+
+        //#410 toggle fullscreen and hide dock buttons for email and embed tabs
+        private function toggleFullscreen():void
+        {
+            if (_player.isFullscreen()) {
+                _player.toggleFullscreen();
+                _iconDock.visible = false;
+                displayButtons(false);
+
+            }
+        }
 
         public function close(event:MouseEvent = null):void {
+            _iconDock.visible = true;
             _player.animationEngine.fadeOut(this, 500, onFadeOut);
         }
 
         private function onFadeOut():void {
+
             displayButtons(true);
             _player.setKeyboardShortcutsEnabled(true);
 
             //fix for #221 now pause / resume video when showing / hiding overlays
             if (_config.pauseVideo) _player.resume();
+
+            //#410 re-enable fullscreen if disabled
+            enableFullscreen(true);
 
             _model.dispatch(PluginEventType.PLUGIN_EVENT, "onClose");
         }
@@ -321,14 +358,14 @@ package org.flowplayer.viralvideos {
 
             if (newTab == "Email" && _emailView) {
                 //#410 toggle out of fullscreen due to flash user input restrictions.
-                if (_player.isFullscreen()) _player.toggleFullscreen();
+                toggleFullscreen();
 
                 _emailMask.height = TAB_HEIGHT;
                 _emailTab.css(_tabCSSProperties);
             }
             if (newTab == "Embed" && _embedView) {
                 //#410 toggle out of fullscreen due to flash user input restrictions.
-                if (_player.isFullscreen()) _player.toggleFullscreen();
+                toggleFullscreen();
 
                 _embedMask.height = TAB_HEIGHT;
                 _embedTab.css(_tabCSSProperties);
@@ -362,7 +399,6 @@ package org.flowplayer.viralvideos {
             this.visible = true;
             this.alpha = 1;
             _player.setKeyboardShortcutsEnabled(false);
-
             createViewIfNotExists(liveTab, "Email", _emailView, createEmailView);
             createViewIfNotExists(liveTab, "Embed", _embedView, createEmbedView);
             createViewIfNotExists(liveTab, "Share", _shareView, createShareView);
@@ -421,7 +457,7 @@ package org.flowplayer.viralvideos {
             if (display) {
                 _iconDock.startAutoHide();
             } else {
-                log.debug("stopping auto hide and hiding buttons");
+                log.error("stopping auto hide and hiding buttons");
                 _iconDock.stopAutoHide(false);
             }
         }
