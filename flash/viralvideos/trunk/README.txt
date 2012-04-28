@@ -3,6 +3,7 @@ Version history:
 3.2.9
 -----
 - Made it possible to specify share/title directly in the configuration's 'share' object.
+- #410 fixes to disable fullscreen for email and embed tab.
 
 3.2.8
 -----
