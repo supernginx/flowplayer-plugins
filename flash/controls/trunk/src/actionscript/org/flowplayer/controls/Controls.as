@@ -260,6 +260,18 @@ package org.flowplayer.controls {
             return _config.enabled;
         }
 
+		public function getWidget(name:String):AbstractWidgetController {
+			return _controlbar.getWidget(name);
+		}
+		
+		public function set centeredWidget(value:String):void {
+			_controlbar.centeredWidget = value;
+		}
+		
+		public function get centeredWidget():String {
+			return _controlbar.centeredWidget;
+		}
+
 		
 		
 		/* Resize stuff */

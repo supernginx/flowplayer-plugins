@@ -52,7 +52,8 @@ package org.flowplayer.controls {
 		
 		
 		private var _widgetsOrder:Array = [];
-		private const SCRUBBER:String = "scrubber";
+		// private const SCRUBBER:String = "scrubber";
+		private var _centeredWidget:String = "scrubber";
 		
 		
         public function Controlbar(player:Flowplayer, config:Config) {
@@ -101,6 +102,10 @@ package org.flowplayer.controls {
 															SkinClasses.getDisplayObject("fp.ButtonBottomEdge"), 
 															SkinClasses.getDisplayObject("fp.ButtonLeftEdge"));
 
+		}
+		
+		public function getWidget(name:String):AbstractWidgetController {
+			return _widgetControllers[name];
 		}
 
         private function createChildren():void {
@@ -257,14 +262,15 @@ package org.flowplayer.controls {
 		
 		private function rearrangeWidgets():void {
 			
-			var leftWidgets:Array = _widgetsOrder.slice(0, _widgetsOrder.indexOf(SCRUBBER));
-			var rightWidgets:Array = _widgetsOrder.slice(_widgetsOrder.indexOf(SCRUBBER) + 1);
+			var leftWidgets:Array = _widgetsOrder.slice(0, _widgetsOrder.indexOf(_centeredWidget));
+			var rightWidgets:Array = _widgetsOrder.slice(_widgetsOrder.indexOf(_centeredWidget) + 1);
 			
-			if ( _config.visible.scrubber ) {
+			if ( _config.visible[_centeredWidget] ) {
 				var leftEdge:Number  = arrangeWidgets(leftWidgets);
 				var rightEdge:Number = arrangeWidgets(rightWidgets, true);
 				
-				arrangeScrubber(leftEdge, rightEdge);
+			//	arrangeScrubber(leftEdge, rightEdge);
+				arrangeWidget(leftEdge, rightEdge);
 			} else {
 				arrangeWidgets(_widgetsOrder);
 			}
@@ -310,10 +316,10 @@ package org.flowplayer.controls {
             return _config.margins;
         }
 		
-		private function arrangeScrubber(leftEdge:Number, rightEdge:Number):Number {
-			var view:WidgetDecorator = _widgetControllers[SCRUBBER].view as WidgetDecorator;
+		private function arrangeWidget(leftEdge:Number, rightEdge:Number):Number {
+			var view:WidgetDecorator = _widgetControllers[_centeredWidget].view as WidgetDecorator;
 			
-			view.spaceAfterWidget = getScrubberRightEdgeWidth(nextVisibleWidget(SCRUBBER)) + getSpaceAfterWidget(SCRUBBER);
+			view.spaceAfterWidget = getScrubberRightEdgeWidth(nextVisibleWidget(_centeredWidget)) + getSpaceAfterWidget(_centeredWidget);
 			
 		//	log.error("Space after scrubber = "+view.spaceAfterWidget);
 			
@@ -374,7 +380,14 @@ package org.flowplayer.controls {
             _player.animationEngine.animateProperty(clip, "x", pos);
         }
 
-      
+      	public function set centeredWidget(value:String):void {
+			_centeredWidget = value;
+			rearrangeWidgets();
+		}
+		
+		public function get centeredWidget():String {
+			return _centeredWidget;
+		}
 
 		private function arrangeYCentered(view:AbstractSprite):void {
 			view.y = margins[0];
