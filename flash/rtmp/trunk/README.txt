@@ -1,5 +1,9 @@
 Version history:
 
+3.2.9
+-----
+- #534 don't round seek times for frame accurate seeking.
+
 3.2.8
 -----
 - FMS smart seeking (in buffer seeking): http://blogs.adobe.com/actionscriptdocs/2010/06/flash_media_server_stream_reco.html
@@ -23,7 +27,6 @@ Fixes:
 - #439 just check for an rtmp complete url when parsing complete urls to allow other complete urls used for re-streaming to pass through.
 - #486 unmute when auto buffering and pausing to a frame.
 - #494 generate the complete url only if a base url is set. regression caused by #412.
-- #534 don't round seek times for frame accurate seeking.
 
 3.2.3
 -----
