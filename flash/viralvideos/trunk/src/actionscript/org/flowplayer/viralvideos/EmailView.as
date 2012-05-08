@@ -172,9 +172,6 @@ package org.flowplayer.viralvideos {
 
             _formContainer.addChild(_sendBtn);
 
-            //set the video url to the current page
-            _videoURL = getPageUrl();
-
             //arrange the form elements
             arrangeForm();
 
@@ -199,6 +196,7 @@ package org.flowplayer.viralvideos {
         }
 
         private function sendServerEmail():void {
+
             var loader:URLLoader = new URLLoader();
             var request:URLRequest = new URLRequest(_config.script);
             request.method = URLRequestMethod.POST;
@@ -269,6 +267,9 @@ package org.flowplayer.viralvideos {
                 formError("Please fill required fields!");
                 return;
             }
+
+            //#543 set the per clip page url on form submission to get the individual configs.
+            _videoURL = getPageUrl();
 
             if (_config.script) {
                 //email token is already set , post the form

@@ -457,7 +457,7 @@ import org.flowplayer.util.PropertyBinder;
             if (display) {
                 _iconDock.startAutoHide();
             } else {
-                log.error("stopping auto hide and hiding buttons");
+                log.debug("stopping auto hide and hiding buttons");
                 _iconDock.stopAutoHide(false);
             }
         }
