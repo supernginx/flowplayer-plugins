@@ -7,7 +7,7 @@
  *   Daniel Rossi, danielr@electroteque.org
  *   Anssi Piirainen, api@iki.fi
  *
- * Copyright (c) 2011 Flowplayer Ltd
+ * Copyright (c) 2011-2012 Flowplayer Ltd
  *
  * Released under the MIT License:
  * http://www.opensource.org/licenses/mit-license.php

@@ -1,6 +1,10 @@
 Version history
 
-3.2.3
+3.2.9
+-----
+- fixed issue #381, cuepoint.time was left undefined
+
+3.2.8
 -----
 - Fixed play of first clip in a playlist (#227)
 - added ipadBaseUrl
