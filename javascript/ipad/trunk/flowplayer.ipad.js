@@ -1,17 +1,13 @@
 /**
- * ipad.js 3.2.2. The Flowplayer ipad/iphone fallback.
+ * ipad.js The Flowplayer iOS fallback.
  *
- * Copyright 2010, 2011 Flowplayer Oy
+ * Copyright 2010-2012 Flowplayer Oy
  * By Thomas Dubois <thomas@flowplayer.org>
  *
  * Released under the MIT License:
  * http://www.opensource.org/licenses/mit-license.php
  *
- * Date: 2011-01-10 07:50:57 -0500 (Mon, 13 Jun 2011)
- * Revision: 1559
  */
-
-
 $f.addPlugin("ipad", function(options) {
 	var STATE_UNLOADED = -1;
 	var STATE_LOADED    = 0;
