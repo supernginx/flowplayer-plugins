@@ -1,10 +1,13 @@
 Version history:
 
+3.2.10
+------
+- #410 fixes to disable fullscreen for email and embed tab.
+- #543 set the per clip page url on form submission to get the individual configs.
+
 3.2.9
 -----
 - Made it possible to specify share/title directly in the configuration's 'share' object.
-- #410 fixes to disable fullscreen for email and embed tab.
-- #543 set the per clip page url on form submission to get the individual configs.
 
 3.2.8
 -----
