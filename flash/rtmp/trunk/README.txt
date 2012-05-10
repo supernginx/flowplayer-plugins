@@ -3,6 +3,7 @@ Version history:
 3.2.9
 -----
 - #534 don't round seek times for frame accurate seeking.
+- #545 for mp3 streams, we need to call the file with an id3 prefix on the server to obtain the metadata.
 
 3.2.8
 -----
