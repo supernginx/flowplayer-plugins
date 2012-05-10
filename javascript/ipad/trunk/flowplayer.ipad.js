@@ -580,7 +580,7 @@ $f.addPlugin("ipad", function(options) {
 				var parameters = time;
 				if ( typeof points[i] == "object" ) {
 					parameters = extend({}, points[i], false);
-                    if ( parameters['time'] == undefined ) delete parameters['time']; // Fixes issue 381
+                    if ( parameters['time'] === undefined ) delete parameters['time']; // Fixes issue 381
                     if ( parameters['parameters'] !== undefined ) {
 						extend(parameters, parameters['parameters'], false);
 						delete parameters['parameters'];
