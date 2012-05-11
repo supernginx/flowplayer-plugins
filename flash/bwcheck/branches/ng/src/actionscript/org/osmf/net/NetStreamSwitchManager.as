@@ -325,7 +325,8 @@ package org.osmf.net {
 
             var playArgs:Object = NetStreamUtils.getPlayArgsForResource(dsResource);
 
-            nso.start = playArgs.start;
+            //#547 don't set the start property unless set, causes problems for live streams.
+            if (playArgs.start) nso.start = playArgs.start;
             nso.len = playArgs.len;
 
             nso.streamName = dsResource.streamItems[targetIndex].streamName;
