@@ -28,7 +28,7 @@ package org.flowplayer.net {
 
         public function StreamSelectionManager(bitrateResource:BitrateResource, player:Flowplayer, resolver:ClipURLResolver) {
             _bitrateResource = bitrateResource;
-            _streamItems = _bitrateResource.addBitratesToClip(player.currentClip);
+            _streamItems = _bitrateResource.addBitratesToClip(player.playlist.current);
             _player = player;
             _resolver = resolver;
             findDefaultStream();
