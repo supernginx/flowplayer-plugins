@@ -65,12 +65,14 @@ package org.flowplayer.net {
                 }
 
                 //#370 set the clip start time or else dynamic switching doesn't function correctly.
-                netStreamPlayOptions.start = _player.currentClip.start;
+                //#547 don't set the start property unless set, causes problems for live streams.
+                if (_player.currentClip.start) netStreamPlayOptions.start = _player.currentClip.start;
                 netStreamPlayOptions.streamName = bitrateItem.url;
 
                 //#417 provide previous item name in the logs.
                 log.debug("calling switchStream with dynamic stream switch support, stream name is " + netStreamPlayOptions.streamName + ", previous stream name: " + _previousBitrateItem.streamName);
 
+                //_player.streamProvider.netStream.play2(netStreamPlayOptions);
                 _player.switchStream(_player.currentClip, netStreamPlayOptions);
             } else {
                 log.debug("calling switchStream, stream name is " + bitrateItem.url);
