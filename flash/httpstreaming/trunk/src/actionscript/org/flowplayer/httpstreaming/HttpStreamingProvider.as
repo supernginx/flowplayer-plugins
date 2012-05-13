@@ -78,6 +78,8 @@ package org.flowplayer.httpstreaming {
                 }
             });
 
+
+
             _model.dispatchOnLoad();
         }
     
@@ -100,7 +102,7 @@ package org.flowplayer.httpstreaming {
         }
 
         private function onPlayStatus(event:ClipEvent) : void {
-            log.debug("onPlayStatus() -- " + event.info.code);
+            log.error("onPlayStatus() -- " + event.info.code);
             if (event.info.code == "NetStream.Play.TransitionComplete"){
                 dispatchEvent(new ClipEvent(ClipEventType.SWITCH_COMPLETE));
             }
@@ -115,7 +117,9 @@ package org.flowplayer.httpstreaming {
                     dispatchEvent(new ClipEvent(ClipEventType.SWITCH, event.info.details));
                     break;
                 case "NetStream.Play.UnpublishNotify":
-                    dispatchEvent(new ClipEvent(ClipEventType.FINISH));
+                case "NetStream.Play.Stop":
+                    //#550 for live streams once unpublished,  stop the player to prevent streamnotfound errors reconnecting.
+                   _player.stop();
                     break;
             }
             return;
