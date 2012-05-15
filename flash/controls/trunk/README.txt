@@ -1,10 +1,13 @@
 Version history:
 
+3.2.11
+------
+- New public methods to be used from ActionScript.
+
 3.2.10
 ------
 - #505 Fixed a regression in configuring controls in the clip object
 - #514 fixed scrubbing
-- new flowplayer.js version 3.2.9
 
 3.2.9
 -----
