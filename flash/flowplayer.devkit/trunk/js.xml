@@ -5,17 +5,18 @@
 
 	<property name="shortname" value="${ant.project.name}"/>
 
-    <condition property="baseName" value="${shortname}" else="flowplayer.${shortname}">
+    <condition property="basename" value="${shortname}" else="flowplayer.${shortname}">
         <equals arg1="${shortname}" arg2="flowplayer"/>
     </condition>
 
-	<property name="source.file" value="${basedir}/${baseName}.js"/>
+	<property name="source.file" value="${basedir}/${basename}.js"/>
 	<property name="rhino" value="${DEVKIT_HOME}/lib/rhino.jar"/>
 	<property name="yui.path" value="${DEVKIT_HOME}/lib/yuicompressor-2.4.2.jar"/>
 	<property file="//Users/api/code/setup/etc/version.properties" prefix="v"/>
+    <property file="../release/build.properties" />
 
 
-	<!-- target dir is dynamic -->
+    <!-- target dir is dynamic -->
 	<var name="target.dir" value="${basedir}"/>
 
 	<if>
@@ -29,7 +30,7 @@
    <target name="lint">
 		<java jar="${rhino}" fork="true">
 			<arg value="${DEVKIT_HOME}/lib/jslint.js" />
-			<arg value="${baseName}.js" />
+			<arg value="${basename}.js" />
 		</java>
 	</target>
 
@@ -37,11 +38,11 @@
 	<!-- copy source file & update tokens -->
 	<target name="source">
 
-		<property name="target.file" value="${target.dir}/${baseName}-${version}.js"/>
+		<property name="target.file" value="${target.dir}/${basename}-${version}.js"/>
 		<copy file="${source.file}" tofile="${target.file}"/>
 		<echo message="${source.file} --> ${target.file} copied" />
 
-		<exec executable="/opt/local/bin/svn" outputproperty="svnlog.out" >
+		<exec executable="svn" outputproperty="svnlog.out" >
 		<arg line="info ."/>
 		</exec>
 
@@ -66,7 +67,7 @@
 	<!-- yuicompress: http://www.julienlecomte.net/blog/2007/09/16/ -->
 	<target name="min" depends="source">
 
-		<property name="target.file" value="${target.dir}/${baseName}-${version}.min.js"/>
+		<property name="target.file" value="${target.dir}/${basename}-${version}.min.js"/>
 
 		<apply executable="/usr/bin/java" parallel="false">
 			<fileset file="${target.file}"/>
@@ -90,16 +91,67 @@
     </target>
 
     <target name="write-filesize">
-        <length property="filesize" file="${target.dir}/${baseName}-${version}.js" />
-        <echo file="${yaml-file}" append="true" message="        ${baseName}.js: ${filesize}${line.separator}" />
+        <length property="filesize" file="${target.dir}/${basename}-${version}.js" />
+        <echo file="${yaml-file}" append="true" message="        ${basename}.js: ${filesize}${line.separator}" />
     </target>
 
     <target name="deploy" if="js.deploy.dir">
-        <property name="target.file" value="${target.dir}/${baseName}-${version}.min.js"/>
+        <property name="target.file" value="${target.dir}/${basename}-${version}.min.js"/>
         <echo message="copying ${target.file}" />
         <copy file="${target.file}" todir="${js.deploy.dir}" />
-        <copy file="${target.dir}/${baseName}.js" todir="${js.deploy.dir}" />
+        <copy file="${target.dir}/${basename}.js" todir="${js.deploy.dir}" />
     </target>
 
+    <target name="release-remote">
+        <echo message="release-remote: releasing to js" />
+
+        <remotecopy bucketname="flowplayer-releases/js" keyfile="${keyfile}" pass="${pass}">
+            <releasefiles>
+                <fileset dir=".">
+                    <include name="${basename}-${version}.js" />
+                    <include name="${basename}-${version}.min.js" />
+                </fileset>
+            </releasefiles>
+        </remotecopy>
+
+        <echo message="release-remote: uploading to ${basename}" />
+        <remotecopy bucketname="flowplayer-releases/${basename}" keyfile="${keyfile}" pass="${pass}">
+            <releasefiles>
+                <fileset dir="${basename}">
+                    <include name="${basename}-${version}.js" />
+                    <include name="${basename}-${version}.min.js" />
+                </fileset>
+            </releasefiles>
+        </remotecopy>
+    </target>
+
+    <path id="classpath-release">
+        <fileset dir="../../../flowplayer.devkit/releasejars">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <taskdef name="S3Upload" classname="dak.ant.taskdefs.S3Upload">
+        <classpath refid="classpath-release"/>
+    </taskdef>
+
+    <macrodef name="remotecopy">
+        <attribute name="bucketname" default="flowplayer-releases" />
+        <attribute name="keyfile" />
+        <attribute name="pass" />
+        <element name="releasefiles" />
+
+        <sequential>
+            <echo message="bucketname @{bucketname}" />
+
+            <S3Upload verbose="true"
+                      accessId="${aws-accessId}"
+                      secretKey="${aws-secretKey}"
+                      bucket="@{bucketname}"
+                      publicRead="true">
+                <releasefiles />
+            </S3Upload>
+        </sequential>
+    </macrodef>
 
 </project>
