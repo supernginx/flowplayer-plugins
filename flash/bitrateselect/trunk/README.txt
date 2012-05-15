@@ -1,5 +1,10 @@
 Version history:
 
+3.2.10
+------
+Fixes:
+- #547 Live dynamic stream switching not working on internap CDN
+
 3.2.9
 -----
 Fixes:
