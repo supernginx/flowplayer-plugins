@@ -215,6 +215,14 @@ package org.flowplayer.menu.ui {
             }
         }
 
+        /**
+         * Get the menu button controller
+         */
+        public function get menuButtonController():MenuButtonController
+        {
+            return _menuButtonController;
+        }
+
         private function addControlsMenuButton(event:WidgetContainerEvent):void {
             log.debug("addControlsMenuButton()");
             _menuButtonContainer = event.container;
@@ -307,6 +315,20 @@ package org.flowplayer.menu.ui {
                 if (relatedItem != itemConfig) {
                     relatedItem.view.selected = false;
                 }
+            }
+        }
+
+        /**
+         * Dynamically select the menu item in a group
+         *
+         * @param index
+         * @param group
+         */
+        public function selectItemInGroup(index:int, group:String):void {
+            var itemsInGroup:Array = _config.itemsIn(group);
+            for (var i:int; i < itemsInGroup.length; i++) {
+                var menuItem:MenuItemConfig = itemsInGroup[i] as MenuItemConfig;
+                menuItem.view.selected = (i == index ? true : false);
             }
         }
 
