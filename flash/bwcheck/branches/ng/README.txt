@@ -3,11 +3,14 @@ Version history:
 3.2.10
 ------
 - #547 Live dynamic stream switching not working on Internap CDN
+- #563 fixes for resolving bitrates with the bitrateselect and menu plugin.
 
 3.2.9
 -----
 - #500 fix for netstream metrics, do not set to the clip properties as it causes errors with event callbacks, small refactoring of NetStreamSwitchManager to reflect osmf1.6.
 - #547 don't set the start property for dynamic switching unless set, causes problems for live streams, issue is also caused inside the OSMF switch manager.
+
+
 
 3.2.8
 -----
