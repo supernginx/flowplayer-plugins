@@ -64,7 +64,7 @@ package org.flowplayer.bitrateselect {
         private var _menuPlugin:Object;
         private var _menuItems:Array;
         private var _menuShowsBitratesFor:Clip;
-        
+
         public function onConfig(model:PluginModel):void {
             _model = model;
             _config = new PropertyBinder(new Config(), null).copyProperties(model.config) as Config;
@@ -122,29 +122,26 @@ package org.flowplayer.bitrateselect {
                 });
             }
 
-            var firstClip:Clip = _player.playlist.getClip(0);
-            //don't initialize the menu if the bitrates list has not been resolved / generated on load.
-            //#452 make sure the first bitrate item has a url configured or else it will be generated while resolving.
-            if (firstClip &&
-                firstClip.getCustomProperty("bitrates") &&
-                firstClip.getCustomProperty("bitrates")[0].hasOwnProperty("url")) {
-                _player.onLoad(function(event:PlayerEvent):void {
-                    if (! firstClip) return;
-                    initStreamSelectionManager(firstClip);
 
-                    if (_config.menu) {
-                        initBitrateMenu(firstClip);
-                    }
-                });
+            var controlbar:*;
+            if (_config.hdButton.controls) {
+                controlbar = player.pluginRegistry.plugins['controls'];
+                controlbar.pluginObject.addEventListener(WidgetContainerEvent.CONTAINER_READY, addHDButton);
             }
 
-            if (_config.hdButton.controls) {
-                var controlbar:* = player.pluginRegistry.plugins['controls'];
-                controlbar.pluginObject.addEventListener(WidgetContainerEvent.CONTAINER_READY, addHDButton);
+            //#563 if the menu plugin is configured disable the menu button on startup.
+            if (_config.menu) {
+                controlbar = player.pluginRegistry.plugins['controls'];
+                controlbar.pluginObject.addEventListener(WidgetContainerEvent.CONTAINER_READY, function(event:WidgetContainerEvent):void {
+                    _menuPlugin = lookupMenu();
+                    //disable the menu button widget
+                    if (_menuPlugin) _menuPlugin.menuButtonController.view.enabled = false;
+                });
             }
 
             _model.dispatchOnLoad();
         }
+
 
         //#488 regression with #r1764 filter onStart events to only work with bitrateselect configured clips. Problem when autobuffering with playlst splash images.
         private function applyForClip(clip:Clip):Boolean {
@@ -197,7 +194,9 @@ package org.flowplayer.bitrateselect {
             }
 
             _menuItems = [];
+
             for each (var item:BitrateItem in items) {
+
                 _menuItems.push(_menuPlugin["addItem"](
                         {
                             selectedCallback: function(menuItem:Object):void {
@@ -207,13 +206,16 @@ package org.flowplayer.bitrateselect {
                             label: item.label,
                             enabled: false,
                             toggle: true,
-                            selected: item.isDefault,
+                            //get the resolved mapped bitrate and set the selected item
+                            selected: _streamSelectionManager.currentBitrateItem.bitrate == item.bitrate,
                             bitrateItem: item,
                             group: "bitrate"
                         }, items.indexOf(item) == items.length-1));
             }
             log.debug("initBitrateMenu(), new menu item indexes: " + _menuItems.toString() + ", the menu has " + _menuPlugin["length"] + " items");
             _menuShowsBitratesFor = clip;
+
+            _menuPlugin.menuButtonController.view.enabled = true;
         }
 
         private function lookupMenu():Object {
@@ -227,7 +229,10 @@ package org.flowplayer.bitrateselect {
         }
 
         public function get hasHD():Boolean {
-            return (HDBitrateResource(_streamSelectionManager.bitrateResource).hasHD);
+            //#563 fix when using bitrateselect with the bwcheck plugin
+            return (_streamSelectionManager.bitrateResource is HDBitrateResource
+                    && HDBitrateResource(_streamSelectionManager.bitrateResource).hasHD
+            );
         }
 
         public function set hd(enable:Boolean):void {
@@ -300,6 +305,8 @@ package org.flowplayer.bitrateselect {
 
         private function initStreamSelectionManager(clip:Clip):void {
             log.debug("initStreamSelectionManager()");
+
+
             if (! clip.getCustomProperty("streamSelectionManager")) {
                 _streamSelectionManager = new StreamSelectionManager(new HDBitrateResource(), _player, this);
                 clip.setCustomProperty("streamSelectionManager", _streamSelectionManager);
@@ -341,11 +348,20 @@ package org.flowplayer.bitrateselect {
 
         [External]
         public function setBitrate(bitrate:Number):void {
-            log.debug("set bitrate()");
+            log.debug("set bitrate()", bitrate);
             if (! checkCurrentClip()) return;
 
             if (_player.isPlaying() || _player.isPaused() && _streamSwitchManager) {
-                _streamSwitchManager.switchStream(_streamSelectionManager.getStream(bitrate) as BitrateItem);
+
+                var bitrateItem:BitrateItem = _streamSelectionManager.getStream(bitrate) as BitrateItem;
+
+                //#563 if the menu plugin is set, select the item in the list
+                if (_menuPlugin) {
+                    _menuPlugin.selectItemInGroup(bitrateItem.index, "bitrate");
+                    _menuPlugin.visible = false;
+                }
+
+                _streamSwitchManager.switchStream(bitrateItem);
             }
         }
 
