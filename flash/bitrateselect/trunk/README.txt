@@ -4,6 +4,8 @@ Version history:
 ------
 Fixes:
 - #547 Live dynamic stream switching not working on internap CDN
+- #563 Fixes for menu and bitrateselect with bwcheck resolving. Do not set the menu list on load, disable the menu plugin until the bitrate resolving is complete.
+Enable the selected menu item when setting the selected bitrate dynamically.
 
 3.2.9
 -----
