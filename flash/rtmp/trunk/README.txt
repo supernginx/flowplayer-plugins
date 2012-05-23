@@ -5,6 +5,7 @@ Version history:
 - #534 don't round seek times for frame accurate seeking.
 - #545 for mp3 streams, we need to call the file with an id3 prefix on the server to obtain the metadata.
 - #551 when using subscribing live streams with bitrates set, subscribe to all streams to allow for switching.
+- #567 fixes with typo in autobuffering / pause to frame feature.
 
 3.2.8
 -----
