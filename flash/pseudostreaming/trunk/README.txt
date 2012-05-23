@@ -17,6 +17,7 @@ Fixes:
 - #409 preventing seeking during silent seeking as is unstable with byte range seeking.
 - #409 cleanup reuse http client.
 - #486 implement pauseToFrame to unmute audio when autoBuffering.
+- #565 append the url params to the generated start param.
 
 3.2.7
 -----
