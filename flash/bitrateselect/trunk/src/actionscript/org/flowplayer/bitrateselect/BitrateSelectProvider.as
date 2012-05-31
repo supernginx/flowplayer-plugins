@@ -101,9 +101,12 @@ package org.flowplayer.bitrateselect {
                 log.debug("onStart() hd available? " + hasHD);
 
                 dispatchEvent(new HDEvent(HDEvent.HD_AVAILABILITY, hasHD));
-                if (hasHD) {
-                    toggleSplashDefault(_streamSelectionManager.currentBitrateItem);
+
+                //#577 toggle splash on all hd notifications not just defaults and when the menu is not set.
+                if (hasHD && !_config.menu) {
+                    toggleSplash(_streamSelectionManager.currentBitrateItem);
                 }
+
                 Clip(event.target).setCustomProperty("bitrate", _streamSelectionManager.currentBitrateItem.bitrate);
 
                 if (_config.menu) {
@@ -195,7 +198,9 @@ package org.flowplayer.bitrateselect {
 
             _menuItems = [];
 
-            for each (var item:BitrateItem in items) {
+
+            for (var i:Number = items.length - 1; i >= 0; i--) {
+                var item:BitrateItem = items[i];
 
                 _menuItems.push(_menuPlugin["addItem"](
                         {
@@ -210,7 +215,7 @@ package org.flowplayer.bitrateselect {
                             selected: _streamSelectionManager.currentBitrateItem.bitrate == item.bitrate,
                             bitrateItem: item,
                             group: "bitrate"
-                        }, items.indexOf(item) == items.length-1));
+                         }, items.indexOf(item) == 0));
             }
             log.debug("initBitrateMenu(), new menu item indexes: " + _menuItems.toString() + ", the menu has " + _menuPlugin["length"] + " items");
             _menuShowsBitratesFor = clip;
@@ -319,15 +324,8 @@ package org.flowplayer.bitrateselect {
             _streamSwitchManager = new StreamSwitchManager(_netStream, _streamSelectionManager, _player);
         }
 
-        private function toggleSplashDefault(mappedBitrate:BitrateItem):void {
-            log.debug("toggleSplashDefault(), mappedBitrate " + mappedBitrate);
-            if (mappedBitrate.isDefault) toggleSplash(mappedBitrate);
-        }
-
         private function toggleSplash(mappedBitrate:BitrateItem):void {
-            if (hasHD) {
-                setHDNotification(mappedBitrate.hd);
-            }
+            setHDNotification(mappedBitrate.hd);
         }
 
         [External]
