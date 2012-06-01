@@ -10,22 +10,15 @@
 package org.flowplayer.ui.controllers {
     
 	import org.flowplayer.view.Flowplayer;
-	import org.flowplayer.view.AbstractSprite;
-	import org.flowplayer.model.Clip;
 	import org.flowplayer.model.ClipEvent;
-	import org.flowplayer.model.Status;
 		
 	import org.flowplayer.ui.buttons.ConfigurableWidget;
 	import org.flowplayer.ui.buttons.WidgetDecorator;
-	
-	import flash.utils.*;
-	import flash.events.TimerEvent;
+    import flash.display.DisplayObjectContainer;
 
-	import org.flowplayer.util.PropertyBinder;
 	import org.flowplayer.util.Log;
-	
-	import flash.display.DisplayObjectContainer;
-	
+
+    import org.flowplayer.util.AccessibilityUtil;
 
 	public class AbstractWidgetController {
 
@@ -45,7 +38,6 @@ package org.flowplayer.ui.controllers {
 			_player 	= player;
 			_controlbar = controlbar;
 			_config 	= defaultConfig;
-
 			addPlayerListeners();
 			
 			createWidget();
@@ -88,7 +80,7 @@ package org.flowplayer.ui.controllers {
 		}
 		
 		protected function createDecorator():void {
-			_decoratedView = _widget
+			_decoratedView = _widget;
 		}
 		
 		public function get name():String {
@@ -140,6 +132,26 @@ package org.flowplayer.ui.controllers {
 
 		protected function onPlayStopped(event:ClipEvent):void {
 
+        }
+
+        /**
+         * Enable accessibility on the widget
+         * @param display
+         * @param name
+         */
+        protected function setAccessible(display:DisplayObjectContainer, name:String):void
+        {
+            AccessibilityUtil.setAccessible(display,  name);
+        }
+
+        /**
+         * Disable the tabbing on the widget for accessibility options.
+         * @param display
+         */
+        protected function setInaccessible(display:DisplayObjectContainer):void
+        {
+            display.tabEnabled = false;
+            display.tabChildren = false;
         }
 
 		

@@ -8,22 +8,8 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 package org.flowplayer.ui.controllers {
-    
-	import org.flowplayer.view.Flowplayer;
-	import org.flowplayer.view.AbstractSprite;
-	import org.flowplayer.model.Clip;
-	import org.flowplayer.model.ClipEvent;
-	import org.flowplayer.model.Status;
-	
-	import org.flowplayer.ui.buttons.GenericTooltipButton;
-	import org.flowplayer.ui.buttons.TooltipButtonConfig;
-	import org.flowplayer.ui.buttons.ButtonEvent;
-	
-	import flash.utils.Timer;
-	import flash.events.TimerEvent;
 
-	import flash.display.DisplayObjectContainer;
-	
+	import org.flowplayer.ui.buttons.ButtonEvent;
 
 	public class GenericButtonController extends AbstractButtonController {
 		
