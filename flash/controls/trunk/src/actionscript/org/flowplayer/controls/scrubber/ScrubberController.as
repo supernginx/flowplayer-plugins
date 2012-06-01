@@ -42,6 +42,8 @@ package org.flowplayer.controls.scrubber {
 		override protected function createWidget():void {
 			log.debug("Creating scrubber with ", _config)
 			_widget = new ScrubberSlider(_config as ScrubberConfig, _player, _controlbar);
+            //#443 disabling tabbing for accessibility options
+            setInaccessible(_widget);
 //            enableScrubber(true);
         }
 

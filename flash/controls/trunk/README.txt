@@ -3,6 +3,7 @@ Version history:
 3.2.11
 ------
 - New public methods to be used from ActionScript.
+- #443 Adding in new accessibility options for button widgets.
 
 3.2.10
 ------

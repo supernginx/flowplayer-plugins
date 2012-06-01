@@ -62,6 +62,8 @@ package org.flowplayer.controls.volume {
 		
 		override protected function createWidget():void {
 			_widget = new VolumeSlider(_config as SliderConfig, _player, _controlbar);
+            //#443 disabling tabbing for accessibility options
+            setInaccessible(_widget);
         }
 
 
