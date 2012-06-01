@@ -10,20 +10,14 @@
 package org.flowplayer.ui.controllers {
     
 	import org.flowplayer.view.Flowplayer;
-	import org.flowplayer.view.AbstractSprite;
-	import org.flowplayer.model.Clip;
-	import org.flowplayer.model.ClipEvent;
-	import org.flowplayer.model.Status;
 	
 	import org.flowplayer.ui.buttons.ConfigurableWidget;
 	import org.flowplayer.ui.buttons.GenericTooltipButton;
 	import org.flowplayer.ui.buttons.TooltipButtonConfig;
 	import org.flowplayer.ui.buttons.ButtonEvent;
-	
-	import flash.utils.Timer;
-	import flash.events.TimerEvent;
 
 	import flash.display.DisplayObjectContainer;
+
 	
 
 	public class AbstractButtonController extends AbstractWidgetController {
@@ -41,6 +35,8 @@ package org.flowplayer.ui.controllers {
 				
 		override protected function createWidget():void {
 			_widget = new GenericTooltipButton(new faceClass(), _config as TooltipButtonConfig, _player.animationEngine);
+            //#443 set accessibility options for button widget
+            setAccessible(_widget, name);
 		}
 		
 		protected function addWidgetListeners():void {

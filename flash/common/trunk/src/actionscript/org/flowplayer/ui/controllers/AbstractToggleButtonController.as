@@ -10,23 +10,13 @@
 package org.flowplayer.ui.controllers {
     
 	import org.flowplayer.view.Flowplayer;
-	import org.flowplayer.view.AbstractSprite;
-	import org.flowplayer.model.Clip;
-	import org.flowplayer.model.ClipEvent;
-	import org.flowplayer.model.Status;
-	
 	import org.flowplayer.ui.buttons.ConfigurableWidget;	
 	import org.flowplayer.ui.buttons.TooltipButtonConfig;
 	import org.flowplayer.ui.buttons.GenericTooltipButton;
-	import org.flowplayer.ui.buttons.ButtonConfig;
 	import org.flowplayer.ui.buttons.ToggleButton;
 	import org.flowplayer.ui.buttons.ToggleButtonConfig;
-	
-	import flash.utils.Timer;
-	import flash.events.TimerEvent;
 
 	import flash.display.DisplayObjectContainer;
-	
 
 	public class AbstractToggleButtonController extends AbstractButtonController {
 			
@@ -46,11 +36,17 @@ package org.flowplayer.ui.controllers {
 												new faceClass(), 
 												((_config as ToggleButtonConfig).config as TooltipButtonConfig), 
 												_player.animationEngine);
+
+             //#443 set accessibility options for button widget
+            setAccessible(button, name);
 												
 			var downButton:GenericTooltipButton = new GenericTooltipButton(
 												new downFaceClass(), 
 												((_config as ToggleButtonConfig).downConfig as TooltipButtonConfig), 
 												_player.animationEngine);
+
+             //#443 set accessibility options for button widget
+            setAccessible(downButton,  downName);
 			
 			_widget = new ToggleButton(button, downButton);
 		}
