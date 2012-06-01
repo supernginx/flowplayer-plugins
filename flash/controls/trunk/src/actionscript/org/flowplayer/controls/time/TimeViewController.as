@@ -44,7 +44,8 @@ package org.flowplayer.controls.time {
 	
 		override protected function createWidget():void {			
 			_widget = new TimeView(_config as TimeViewConfig, _player);
-			
+            //#443 disabling tabbing for accessibility options
+            setInaccessible(_widget);
 			_widget.addEventListener(TimeView.EVENT_REARRANGE, function(event:Event):void {
 				(_controlbar as Controlbar).configure((_controlbar as Controlbar).config);
 			});
