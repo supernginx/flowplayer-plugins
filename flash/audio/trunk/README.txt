@@ -5,7 +5,7 @@ Version history:
 - #501 fixes to dispatch start state correctly.
 - #501 use the sound channel to listen for a complete event to finish correctly.
 - #575 send the start event after begin
-- #443 if playing a new clip that is already buffered the difference will be 0 so just check if the duration is set.
+- #569 if the playlist has been reset but the audio has been already buffered, set the duration and start event.
 
 3.2.8
 -----
