@@ -4,6 +4,8 @@ Version history:
 -----
 - #501 fixes to dispatch start state correctly.
 - #501 use the sound channel to listen for a complete event to finish correctly.
+- #575 send the start event after begin
+- #443 if playing a new clip that is already buffered the difference will be 0 so just check if the duration is set.
 
 3.2.8
 -----
