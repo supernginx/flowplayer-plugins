@@ -96,6 +96,9 @@ $f.addPlugin("ipad", function(options) {
 
 	extend(opts, options);
 
+	var validExtensions = new RegExp(opts.validExtensions.source);
+	var posterExtensions = new RegExp(opts.posterExtensions.source);
+
 	// some util funcs
 	function log() {
 		if ( opts.debug ) {
@@ -286,11 +289,9 @@ $f.addPlugin("ipad", function(options) {
 				}
 				
 				
-				var validExtensions = new RegExp(opts.validExtensions.source);
 				if (! validExtensions.test(activePlaylist[activeIndex].extension) ) {
     				if ( activePlaylist.length > 1 && activeIndex < activePlaylist.length - 1) {
         		        //#359 for images in a playlist check for a valid extension and set as the clip poster.
-                        var posterExtensions = new RegExp(opts.posterExtensions.source);
                         var poster;
 
                         if (posterExtensions.test(activePlaylist[activeIndex].extension)) {
