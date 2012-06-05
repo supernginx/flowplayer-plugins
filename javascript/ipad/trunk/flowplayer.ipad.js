@@ -234,7 +234,13 @@ $f.addPlugin("ipad", function(options) {
 				
 			extendedClip.originalUrl = extendedClip.url;
 			extendedClip.completeUrl = url;
+			// format of Flash clip.extension differs: no preceding dot (e.g. 'mp4')
 			extendedClip.extension = extendedClip.completeUrl.substr(extendedClip.completeUrl.lastIndexOf('.'));
+			// issue18: strip query
+			var queryIndex = extendedClip.extension.indexOf('?');
+			if (queryIndex > -1)
+				extendedClip.extension = extendedClip.extension.substr(0, queryIndex);
+
 			extendedClip.type = 'video';
 			
 			// remove this
