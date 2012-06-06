@@ -4,6 +4,7 @@ Version history:
 ------
 - New public methods to be used from ActionScript.
 - #443 Adding in new accessibility options for button widgets.
+- #443 Disable autohide for accessibility support.
 
 3.2.10
 ------

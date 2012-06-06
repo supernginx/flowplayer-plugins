@@ -41,6 +41,8 @@ package org.flowplayer.controls {
 	
 	import flash.utils.*;
 
+    import flash.accessibility.Accessibility;
+
     /**
      * @author anssi
      */
@@ -76,7 +78,8 @@ package org.flowplayer.controls {
             var result:Config = new PropertyBinder(new Config()).copyProperties(config) as Config;
             new PropertyBinder(result.autoHide).copyProperties(config.autoHide);
             result.setNewProps(config);
-
+            //#443 disable autohide for accessibility support
+            if (Accessibility.active) result.autoHide.enabled = false;
             return result;
         }
 
@@ -192,6 +195,8 @@ package org.flowplayer.controls {
             if (_controlBarMover) 
                 _controlBarMover.stop();
 
+            //#443 disable autohide for accessibility support
+            if (Accessibility.active) _config.autoHide.enabled = false;
 
             createControlBarMover();
             _controlBarMover.start();
