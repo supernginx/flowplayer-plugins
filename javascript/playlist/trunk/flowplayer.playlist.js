@@ -177,15 +177,15 @@
 				    });
                 }
 
-                function continuePlaylist(clip) {
-                    self.onBeforeFinish(function(clip) {
-                        if (!clip.isInStream && clip.index < els.length -1 && !self.getClip(clip.index + 1).autoPlay) {
-                            self.play(clip.index + 1);
-                            return false;
-                        }
-
-				    });
-                }
+		function stopOnLast(clip) {
+		    self.onFinish(function(clip) {
+			// reset css at end of last clip
+			if (!clip.isInStream && clip.index == els.length -1) {
+			    getEl(clip).removeClass(opts.playingClass);
+			    getEl(clip).addClass(opts.stoppedClass);
+			}
+		    });
+		}
 
                 //402 if looping is off and continuous play is off stop the playlist.
                 // if looping is enabled return to the start on playlist completion.
@@ -194,12 +194,9 @@
                     stopPlaylist(clip);
                 } else if (opts.loop) {
                     loopPlaylist(clip);
-                } else {
-                    // if looping is disabled but continuous play is enabled it will let the playlist complete to the end.
-                    //#402 if autoPlay is set to false continuous play will force to play the next clip, still an issue with replay button.
-                    continuePlaylist(clip);
-                }
-
+		} else { // continuousPlay
+		    stopOnLast(clip);
+		}
 
                 // onUnload
                 self.onUnload(function() {
