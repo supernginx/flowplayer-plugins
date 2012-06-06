@@ -11,6 +11,7 @@ Fixes:
 - the embed code now includes "wmode" with value "transparent". Issue #306
 - #419 email link was disabled.
 - #420 required to make the background assets for the share buttons the same as the included viral videos assets or else the alpha was not the same.
+- #443 fixes for twitter button label for accessibility support.
 
 
 3.2.1
