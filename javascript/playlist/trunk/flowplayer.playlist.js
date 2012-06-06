@@ -165,8 +165,20 @@
                         getEl(clip).addClass(opts.stoppedClass);
                         if (!clip.isInStream && clip.index < els.length -1) {
                             return false;
+			} else if (!clip.isInStream) {
+			    // pause on last frame to mimic single clip behavior
+			    // see onResume below
+			    this.pause();
                         }
-				    });
+		    });
+
+		    self.onResume(function(clip) {
+			 // work around non-standard onBeforeFinish behavior
+			 // for last clip in a playlist
+			 if (!clip.isInStream && clip.index == els.length -1 && self.getTime() > clip.duration -1) {
+			     self.play(clip.index);
+			 }
+		    });
                 }
 
                 function loopPlaylist(clip) {
