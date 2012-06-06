@@ -18,10 +18,11 @@ package org.flowplayer.ui.dock {
     import org.flowplayer.model.DisplayProperties;
     import org.flowplayer.ui.*;
     import org.flowplayer.util.Arrange;
-    import org.flowplayer.util.Log;
     import org.flowplayer.util.PropertyBinder;
     import org.flowplayer.view.AbstractSprite;
     import org.flowplayer.view.Flowplayer;
+
+    import flash.accessibility.Accessibility;
 
     public class Dock extends AbstractSprite {
         private static const SCROLLBUTTON_HEIGHT:Number = 20;
@@ -134,6 +135,8 @@ package org.flowplayer.ui.dock {
 
         private function createAutoHide():void {
             if (! _autoHide) {
+                //#443 disable autohide for accessibility support
+                if (Accessibility.active) _config.autoHide.enabled = false;
                 _autoHide = new AutoHide(_config.model, _config.autoHide, _player, stage, this);
             }
         }

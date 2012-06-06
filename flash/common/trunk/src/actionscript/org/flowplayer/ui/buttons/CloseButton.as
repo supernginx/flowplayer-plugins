@@ -9,11 +9,9 @@
 package org.flowplayer.ui.buttons {
     import flash.display.DisplayObject;
     import flash.display.DisplayObjectContainer;
-
-    import org.flowplayer.ui.buttons.AbstractButton;
-    import org.flowplayer.ui.buttons.ButtonConfig;
     import org.flowplayer.ui.assets.CloseButton;
     import org.flowplayer.view.AnimationEngine;
+    import org.flowplayer.util.AccessibilityUtil;
 
     /**
      * @author api
@@ -26,6 +24,9 @@ package org.flowplayer.ui.buttons {
         }
 
         override protected function createFace():DisplayObjectContainer {
+            name = "close";
+             //#443 enable accessibility support close button
+            AccessibilityUtil.setAccessible(this, name);
             return new org.flowplayer.ui.assets.CloseButton();
         }
     }
