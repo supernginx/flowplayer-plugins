@@ -10,8 +10,6 @@
  */
 package org.flowplayer.ui {
 
-    import flash.accessibility.Accessibility;
-
     public class AutoHideConfig {
         private var _enabled:Boolean = true;
         private var _fullscreenOnly:Boolean = true;
@@ -29,8 +27,7 @@ package org.flowplayer.ui {
          * @return 'always' | 'fullscreen' | 'never'
          */
         public function get state():String {
-            //#443 disable autohide for accessibility
-            if (! _enabled || Accessibility.active) return 'never';
+            if (! _enabled) return 'never';
             return _fullscreenOnly ? 'fullscreen' : 'always';
         }
 
