@@ -16,6 +16,7 @@ package org.flowplayer.viralvideos.icons {
     import org.flowplayer.ui.buttons.ButtonConfig;
     import org.flowplayer.util.Arrange;
     import org.flowplayer.util.TextUtil;
+    import org.flowplayer.util.AccessibilityUtil;
     import org.flowplayer.view.AnimationEngine;
 
     public class AbstractIcon extends AbstractButton {
@@ -24,6 +25,7 @@ package org.flowplayer.viralvideos.icons {
 
         public function AbstractIcon(config:ButtonConfig, animationEngine:AnimationEngine, label:String = null) {
             _labelText = label;
+            name = label;
             super(config, animationEngine);
         }
 
@@ -46,6 +48,8 @@ package org.flowplayer.viralvideos.icons {
             if (_label) {
                 createLabel(icon, _labelText);
             }
+            //#443 enable accessibility support icons
+            AccessibilityUtil.setAccessible(this, name);
             return icon;
         }
 

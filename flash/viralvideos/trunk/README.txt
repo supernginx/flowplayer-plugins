@@ -5,6 +5,7 @@ sVersion history:
 - #410 fixes to disable fullscreen for email and embed tab.
 - #543 set the per clip page url on form submission to get the individual configs.
 - #564 fixes for email template, 2nd index not required, usage: {0} \n\n Video Link: <a href=\"{1}\">{1}</a>
+- #443 add accessibility support to dock buttons and share icons.
 
 3.2.9
 -----

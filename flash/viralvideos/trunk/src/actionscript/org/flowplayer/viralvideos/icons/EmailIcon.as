@@ -15,6 +15,8 @@ package org.flowplayer.viralvideos.icons {
     import org.flowplayer.ui.buttons.ButtonConfig;
     import org.flowplayer.view.AnimationEngine;
 
+    import org.flowplayer.util.AccessibilityUtil;
+
     public class EmailIcon extends AbstractButton {
 
         public function EmailIcon(config:ButtonConfig, animationEngine:AnimationEngine) {
@@ -22,6 +24,8 @@ package org.flowplayer.viralvideos.icons {
         }
 
         override protected function createFace():DisplayObjectContainer {
+            name = "email";
+            AccessibilityUtil.setAccessible(this, name);
             return new org.flowplayer.viral.assets.EmailIcon();
         }
     }

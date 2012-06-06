@@ -14,14 +14,18 @@ package org.flowplayer.viralvideos.icons {
     import org.flowplayer.ui.buttons.AbstractButton;
     import org.flowplayer.ui.buttons.ButtonConfig;
     import org.flowplayer.view.AnimationEngine;
+    import org.flowplayer.util.AccessibilityUtil;
 
     public class EmbedIcon extends AbstractButton {
 
         public function EmbedIcon(config:ButtonConfig, animationEngine:AnimationEngine) {
+
             super(config, animationEngine);
         }
 
         override protected function createFace():DisplayObjectContainer {
+            name = "embed";
+            AccessibilityUtil.setAccessible(this, name);
             return new org.flowplayer.viral.assets.EmbedIcon();
         }
     }
