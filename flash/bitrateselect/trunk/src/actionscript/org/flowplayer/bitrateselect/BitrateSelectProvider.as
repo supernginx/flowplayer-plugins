@@ -12,7 +12,6 @@ package org.flowplayer.bitrateselect {
     import flash.events.EventDispatcher;
     import flash.net.NetStream;
     import flash.events.NetStatusEvent;
-    import flash.utils.Dictionary;
 
     import org.flowplayer.controller.ClipURLResolver;
     import org.flowplayer.controller.StreamProvider;
@@ -208,7 +207,8 @@ package org.flowplayer.bitrateselect {
                                 log.debug("switching to bitrate " + menuItem.getCustomProperty("bitrateItem").bitrate);
                                 _streamSwitchManager.switchStream(menuItem.getCustomProperty("bitrateItem"));
                             },
-                            label: item.label,
+                            //#586 set a default menu label to the bitrate with a k postfix if the bitrate label is not set.
+                            label: item.label ? item.label : item.bitrate + "k",
                             enabled: false,
                             toggle: true,
                             //get the resolved mapped bitrate and set the selected item
