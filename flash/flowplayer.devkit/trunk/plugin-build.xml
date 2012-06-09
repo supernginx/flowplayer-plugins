@@ -11,7 +11,7 @@
 	<property name="example-dir" value="example" />
 	<property name="dist-dir" value="dist" />
 	<property name="lib-dir" value="lib" />
-	<property name="flex-libs-path" value="${flex3libsdir}" />
+	<property name="flex-libs-path" value="${flexlibsdir}" />
 	<property name="flowplayer-js-version-info" value="3.1.4" />
 	<property name="src-flowplayer" value="../core" />
     <property name="plugin-swc" value="${basename}.swc" />
@@ -144,7 +144,7 @@
                             <arg line="${libs}" />
                     		<arg line="${compc-define}" />
 							<arg line="${compc-defines}" />
-                            <arg line="-library-path ${flex3dir}/frameworks/locale/en_US ${flex-libs-path} ${flowplayer_lib} ${compc-library-path}" />
+                            <arg line="-library-path ${flexdir}/frameworks/locale/en_US ${flex-libs-path} ${flowplayer_lib} ${compc-library-path}" />
                             <arg line="-include-sources @{src}" />
             
                             <arg line="-strict=true" />
