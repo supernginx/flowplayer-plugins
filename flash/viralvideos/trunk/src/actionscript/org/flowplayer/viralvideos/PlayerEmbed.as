@@ -266,12 +266,12 @@ package org.flowplayer.viralvideos {
 
         public function get width():int {
             if (_width > 0) return _width;
-            return _stage.stageWidth;
+            return _embedConfig.width ? _embedConfig.width :_stage.stageWidth;
         }
 
         public function get height():int {
             if (_height > 0) return _height;
-            return _stage.stageHeight;
+            return _embedConfig.height ? _embedConfig.height : _stage.stageHeight;
         }
 
         public function get controls():StyleableSprite {

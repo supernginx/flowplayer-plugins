@@ -28,6 +28,8 @@ package org.flowplayer.viralvideos.config {
         private var _shareCurrentPlaylistItem:Boolean;
         private var _labels:EmbedViewLabels = new EmbedViewLabels();
         private var _wmode:String = "transparent";
+        private var _width:Number;
+        private var _height:Number;
 
         public function get shareCurrentPlaylistItem():Boolean {
             return _shareCurrentPlaylistItem;
@@ -132,6 +134,22 @@ package org.flowplayer.viralvideos.config {
 
         public function set wmode(value:String):void {
             _wmode = value;
+        }
+
+        public function get width():Number {
+            return _width;
+        }
+
+        public function set width(value:Number):void {
+            _width = value;
+        }
+
+        public function get height():Number {
+            return _height;
+        }
+
+        public function set height(value:Number):void {
+            _height = value;
         }
 
     }
