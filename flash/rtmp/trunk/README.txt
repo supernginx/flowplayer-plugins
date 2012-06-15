@@ -7,6 +7,7 @@ Version history:
 - #551 when using subscribing live streams with bitrates set, subscribe to all streams to allow for switching.
 - #567 fixes with typo in autobuffering / pause to frame feature.
 - #594 when pausing to a frame, set a 100ms timeout to pause instead of a seek which was causing some streams to hang.
+- #593 if this clip has a stream group, prevent onbegin from dispatching during playback.
 
 3.2.8
 -----
