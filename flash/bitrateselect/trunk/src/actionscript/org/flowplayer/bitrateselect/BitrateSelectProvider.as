@@ -124,16 +124,16 @@ package org.flowplayer.bitrateselect {
                 });
             }
 
-
+            //#584 make the controls plugin name configurable.
             var controlbar:*;
             if (_config.hdButton.controls) {
-                controlbar = player.pluginRegistry.plugins['controls'];
+                controlbar = player.pluginRegistry.plugins[_config.controlsPlugin];
                 controlbar.pluginObject.addEventListener(WidgetContainerEvent.CONTAINER_READY, addHDButton);
             }
 
             //#563 if the menu plugin is configured disable the menu button on startup.
             if (_config.menu) {
-                controlbar = player.pluginRegistry.plugins['controls'];
+                controlbar = player.pluginRegistry.plugins[_config.controlsPlugin];
                 controlbar.pluginObject.addEventListener(WidgetContainerEvent.CONTAINER_READY, function(event:WidgetContainerEvent):void {
                     _menuPlugin = lookupMenu();
                     //disable the menu button widget

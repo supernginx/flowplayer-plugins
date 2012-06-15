@@ -8,6 +8,7 @@ Fixes:
 Enable the selected menu item when setting the selected bitrate dynamically.
 - #577 toggle splash on all hd notifications not just defaults and when the menu is not set.
 - #586 set a default menu label to the bitrate with a k postfix if the bitrate label is not set.
+- #584 make the controls plugin name configurable.
 
 3.2.9
 -----
