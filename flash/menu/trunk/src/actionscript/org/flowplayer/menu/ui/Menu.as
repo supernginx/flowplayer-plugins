@@ -208,7 +208,8 @@ package org.flowplayer.menu.ui {
 
             if (_config.button.controls) {
                 log.debug("onLoad() adding menu button to controls");
-                var controlbar:* = player.pluginRegistry.plugins['controls'];
+                //#584 make the controls plugin name configurable.
+                var controlbar:* = player.pluginRegistry.plugins[_config.controlsPlugin];
 
                 // TODO: Container events should follow the same pattern as player, clip and plugin events
                 controlbar.pluginObject.addEventListener(WidgetContainerEvent.CONTAINER_READY, addControlsMenuButton);
