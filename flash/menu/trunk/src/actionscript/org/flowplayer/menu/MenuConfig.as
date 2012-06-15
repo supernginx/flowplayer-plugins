@@ -20,6 +20,7 @@ package org.flowplayer.menu {
         private var _scrollable:Boolean;
         private var _scrollButtons:Object;
         private var _itemsUrl:String;
+        private var _controlsPlugin:String = "controls";
 
         public function MenuConfig() {
             _items = new Array();
@@ -139,6 +140,14 @@ package org.flowplayer.menu {
 
         public function get itemsUrl():String {
             return _itemsUrl;
+        }
+
+        public function set controlsPlugin(value:String):void {
+            _controlsPlugin = value;
+        }
+
+        public function get controlsPlugin():String {
+            return _controlsPlugin;
         }
     }
 }
