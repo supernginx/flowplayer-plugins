@@ -11,12 +11,14 @@
 package org.flowplayer.f4m {
 
         import flash.events.NetStatusEvent;
-
-        import flash.utils.ByteArray;
+import flash.events.TimerEvent;
+import flash.utils.Timer;
 
         import org.flowplayer.model.Plugin;
         import org.flowplayer.model.PluginModel;
         import org.flowplayer.model.Clip;
+        import org.flowplayer.model.ClipError;
+        import org.flowplayer.model.ErrorCode;
 
         import org.flowplayer.controller.ResourceLoader;
         import org.flowplayer.controller.StreamProvider;
@@ -26,7 +28,9 @@ package org.flowplayer.f4m {
         import org.flowplayer.util.Log;
         import org.flowplayer.util.URLUtil;
 
+        import org.flowplayer.view.ErrorHandler;
         import org.flowplayer.view.Flowplayer;
+
 
         import org.flowplayer.net.BitrateItem;
 
@@ -48,7 +52,7 @@ package org.flowplayer.f4m {
         import org.osmf.net.StreamType;
 
 
-        public class F4mProvider implements ClipURLResolver, Plugin {
+        public class F4mProvider implements ClipURLResolver, ErrorHandler, Plugin {
             private var _config:Config;
             private var _model:PluginModel;
             private var log:Log = new Log(this);
@@ -62,7 +66,8 @@ package org.flowplayer.f4m {
             private var dynResource:DynamicStreamingResource;
             private var streamResource:StreamingURLResource;
             private var _isDynamicStreamResource:Boolean = false;
-
+            private var _retryTimer:Timer;
+            private var _retryCount:int;
     
 
             public function resolve(provider:StreamProvider, clip:Clip, successListener:Function):void {
@@ -72,13 +77,9 @@ package org.flowplayer.f4m {
             }
 
             [External]
-            public function resolveF4M(f4mUrl:String, callback:Function):void {
+            public function resolveF4M(f4mUrl:String):void {
                 log.debug("resolveF4M()");
-                loadF4M(f4mUrl, function(f4mContent:String):void {
-                    //var result:Array = parseSmil(smilContent);
-                    //log.debug("resolveSmil(), resolved to netConnectionUrl " + result[0] + " streamName " + result[1]);
-                    //callback(result[0], result[1]);
-                });
+                loadF4M(f4mUrl, onF4MLoaded);
             }
 
             private function loadF4M(f4mUrl:String, loadedCallback:Function):void {
@@ -86,13 +87,31 @@ package org.flowplayer.f4m {
                 log.debug("connect(), loading F4M file from " + f4mUrl);
 
                 var loader:ResourceLoader = _player.createLoader();
+                loader.errorHandler = this;
                 loader.load(f4mUrl, function(loader:ResourceLoader):void {
                     log.debug("F4M file received");
                     loadedCallback(String(loader.getContent()));
                 }, true);
             }
 
+            public function showError(message:String):void
+            {
+
+            }
+
+            /**
+             * Handle stream not found errors for missing f4m feeds
+             * @param error
+             * @param info
+             * @param throwError
+             */
+		    public function handleError(error:ErrorCode, info:Object = null, throwError:Boolean = true):void
+            {
+                handleStreamNotFound(error.message);
+            }
+
             private function onF4MLoaded(f4mContent:String):void {
+                stopF4MReload();
                 parseF4MManifest(f4mContent);
             }
 
@@ -220,8 +239,67 @@ package org.flowplayer.f4m {
                 }
                 catch (error:Error)
                 {
-                    log.error(error.getStackTrace());
+                    handleStreamNotFound(error.message);
                 }
+            }
+
+            /**
+             * Handle stream not found errors, for live streams use connection reattempts until it becomes available.
+             * @param message
+             */
+            private function handleStreamNotFound(message:String):void
+            {
+                log.error(message);
+
+                if (_clip.live) {
+                    retryF4mLoad();
+                    return;
+                }
+
+                _clip.dispatchError(ClipError.STREAM_NOT_FOUND, message);
+            }
+
+            /**
+             * Stop the connection reattempts
+             */
+            private function stopF4MReload():void
+            {
+                if (_retryTimer) {
+                    _retryTimer.stop();
+                    _retryTimer.removeEventListener(TimerEvent.TIMER, onF4MLoadRetry);
+                    _retryTimer.reset();
+                    _retryTimer = null;
+                }
+            }
+
+            /**
+             * Attempt to reconnect or stop if the retry count has reached it's limit.
+             */
+            private function retryF4mLoad():void
+            {
+                if (!_retryTimer) {
+                    _retryTimer = new Timer(_config.retryInterval);
+                    _retryTimer.addEventListener(TimerEvent.TIMER, onF4MLoadRetry);
+                    _retryTimer.start();
+                    log.error("Reattempting to load media from F4m manifest " + _clip.completeUrl);
+                }
+
+                _retryCount++;
+
+                if (_retryCount > _config.maxRetries) {
+                    _retryCount = 0;
+                    stopF4MReload();
+                }
+            }
+
+            /**
+             * Reload the f4m feed after a set interval.
+             * @param event
+             */
+            private function onF4MLoadRetry(event:TimerEvent):void
+            {
+                log.error("Reattempting to load media from F4m manifest " + _clip.completeUrl);
+                loadF4M(_clip.completeUrl, onF4MLoaded);
             }
 
             private function getRootUrl(url:String):String
