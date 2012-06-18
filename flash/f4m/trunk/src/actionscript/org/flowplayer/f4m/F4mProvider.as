@@ -269,6 +269,7 @@ import flash.utils.Timer;
                     _retryTimer.removeEventListener(TimerEvent.TIMER, onF4MLoadRetry);
                     _retryTimer.reset();
                     _retryTimer = null;
+                    _retryCount = 0;
                 }
             }
 
@@ -287,7 +288,6 @@ import flash.utils.Timer;
                 _retryCount++;
 
                 if (_retryCount > _config.maxRetries) {
-                    _retryCount = 0;
                     stopF4MReload();
                 }
             }
