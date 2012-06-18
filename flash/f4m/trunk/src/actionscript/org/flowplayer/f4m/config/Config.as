@@ -20,6 +20,8 @@ package org.flowplayer.f4m.config {
         private var _dvrDynamicBufferTime:int = 4;
         private var _liveDynamicBufferTime:int = 4;
         private var _includeApplicationInstance:Boolean = false;
+        private var _retryInterval:int = 10;
+        private var _maxRetries:int = 100;
 
         public function get version():Number {
             return _version;
@@ -87,6 +89,26 @@ package org.flowplayer.f4m.config {
         public function get includeApplicationInstance():Boolean
         {
             return _includeApplicationInstance;
+        }
+
+        public function set retryInterval(value:int):void
+        {
+            _retryInterval = value;
+        }
+
+        public function get retryInterval():int
+        {
+            return _retryInterval * 1000;
+        }
+
+        public function set maxRetries(value:int):void
+        {
+            _maxRetries = value;
+        }
+
+        public function get maxRetries():int
+        {
+            return _maxRetries;
         }
 
 
