@@ -90,14 +90,14 @@ $f.addPlugin("ipad", function(options) {
 		controlsSizeRatio: 1.5,
 		controls: true,
 		debug: false,
-		validExtensions: /m3u8|pls|mov|m4v|mp4|avi|mp3|m4a|aac|m3u/gi,
-        posterExtensions: /png|jpg/gi
+		validExtensions: 'mov|m4v|mp4|avi|mp3|m4a|aac|m3u8|m3u|pls',
+                posterExtensions: 'png|jpg'
 	};
 
 	extend(opts, options);
 
-	var validExtensions = new RegExp(opts.validExtensions.source);
-	var posterExtensions = new RegExp(opts.posterExtensions.source);
+	var validExtensions = new RegExp('^\.(' + opts.validExtensions + ')$', 'i');
+	var posterExtensions = new RegExp('^\.(' + opts.posterExtensions + ')$', 'i');
 
 	// some util funcs
 	function log() {
@@ -243,6 +243,8 @@ $f.addPlugin("ipad", function(options) {
 			var queryIndex = extendedClip.extension.indexOf('?');
 			if (queryIndex > -1)
 				extendedClip.extension = extendedClip.extension.substr(0, queryIndex);
+
+			console.log(extendedClip.extension);
 
 			extendedClip.type = 'video';
 			
