@@ -91,7 +91,7 @@ $f.addPlugin("ipad", function(options) {
 		controls: true,
 		debug: false,
 		validExtensions: 'mov|m4v|mp4|avi|mp3|m4a|aac|m3u8|m3u|pls',
-                posterExtensions: 'png|jpg'
+		posterExtensions: 'png|jpg'
 	};
 
 	extend(opts, options);
@@ -243,8 +243,6 @@ $f.addPlugin("ipad", function(options) {
 			var queryIndex = extendedClip.extension.indexOf('?');
 			if (queryIndex > -1)
 				extendedClip.extension = extendedClip.extension.substr(0, queryIndex);
-
-			console.log(extendedClip.extension);
 
 			extendedClip.type = 'video';
 			
