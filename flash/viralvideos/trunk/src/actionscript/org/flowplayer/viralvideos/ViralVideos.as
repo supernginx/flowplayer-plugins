@@ -59,6 +59,8 @@ import org.flowplayer.util.PropertyBinder;
 
         private var _controls:Object;
 
+        private var _closeViewSilently:Boolean;
+
         public function onConfig(plugin:PluginModel):void {
             log.debug("onConfig()", plugin.config);
             _model = plugin;
@@ -332,10 +334,12 @@ import org.flowplayer.util.PropertyBinder;
             _player.setKeyboardShortcutsEnabled(true);
 
             //fix for #221 now pause / resume video when showing / hiding overlays
-            if (_config.pauseVideo) _player.resume();
+            if (_config.pauseVideo && !_closeViewSilently) _player.resume();
 
             //#410 re-enable fullscreen if disabled
             enableFullscreen(true);
+
+            _closeViewSilently = false;
 
             _model.dispatch(PluginEventType.PLUGIN_EVENT, "onClose");
         }
@@ -362,6 +366,12 @@ import org.flowplayer.util.PropertyBinder;
 
                 _emailMask.height = TAB_HEIGHT;
                 _emailTab.css(_tabCSSProperties);
+
+                //#596 if no email script is set, launch local email directly on show.
+                if (!_config.email.script && show) {
+                    _closeViewSilently = true;
+                    _emailView.launchLocalEmail();
+                }
             }
             if (newTab == "Embed" && _embedView) {
                 //#410 toggle out of fullscreen due to flash user input restrictions.
