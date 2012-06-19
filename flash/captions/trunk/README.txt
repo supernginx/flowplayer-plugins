@@ -12,6 +12,8 @@ Version history:
 - fixed issue #330
 - #449 check for empty captionType property here for manual or embedded cuepoints.
 - #449 for manually created cuepoints without text do not create a caption.
+- #574 reload caption file for current clip only when using the api method.
+
 
 3.2.3
 -----
