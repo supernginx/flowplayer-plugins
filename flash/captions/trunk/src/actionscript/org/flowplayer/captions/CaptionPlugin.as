@@ -111,6 +111,22 @@ package org.flowplayer.captions {
             }
         }
 
+        [External]
+        public function loadCaptions(clipIndex:int, captions:*):void {
+            if (! captions) return;
+            log.info("loading captions from " + captions);
+
+            Clip(_player.playlist.clips[clipIndex]).setCustomProperty("captionUrl", captions);
+
+            //#574 re-load captions for the clip not the entire playlist.
+            _loader.loadClipCaption(Clip(_player.playlist.clips[clipIndex]),function():void {
+                    parseIfLoadedAndViewAvailable();
+
+            });
+        }
+
+
+
         private function parseIfLoadedAndViewAvailable():void {
             log.debug("parseIfLoadedAndViewAvailable(), loaded? " + (_loader && _loader.loaded) + ", view available? " + (_captionView as Boolean));
             if (_captionView && _loader && _loader.loaded) {
@@ -229,7 +245,6 @@ package org.flowplayer.captions {
         }
 
         private function createCaption(cue:Object,  cueInfo:Object):Caption {
-            log.error("FUCK");
            // var cueText:String = cueInfo.hasOwnProperty("text") ? cueInfo.text : "";
             return new Caption(_config.template, cue.time, cueInfo.duration, cueInfo.text, null);
         }

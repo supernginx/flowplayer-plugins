@@ -10,9 +10,11 @@
  */
 package org.flowplayer.captions {
     import org.flowplayer.view.FlowStyleSheet;
+    import org.flowplayer.model.Clip;
 
     internal interface CaptionLoading {
 
+         function loadClipCaption(clip:Clip, loadedCallback:Function):void;
         /**
          * Loads all required caption files and keeps the loaded data.
          */

@@ -54,6 +54,23 @@ package org.flowplayer.captions {
             }
         }
 
+        /**
+         * Load captions for an individual clip
+         * @param clip
+         * @param loadedCallback
+         */
+        public function loadClipCaption(clip:Clip, loadedCallback:Function):void {
+            _loadedCallback = loadedCallback;
+
+            //reset to allow for callback completion
+            _allLoaded = false;
+            _numCaptionsLoaded--;
+
+            log.debug("Reloading captions for clip " + clip);
+
+            loadCaptionFile(clip, clip.getCustomProperty("captionUrl") as String);
+        }
+
         public function load(loadedCallback:Function):void {
             _loadedCallback = loadedCallback;
             _numCaptionsLoaded = 0;
@@ -131,7 +148,7 @@ package org.flowplayer.captions {
         private function checkAllLoaded():void {
             _numCaptionsLoaded++;
             log.debug(_numCaptionsLoaded + " captions files out of " + _totalCaptions + " loaded");
-            if (_numCaptionsLoaded == _totalCaptions && ! _allLoaded) {
+            if (_numCaptionsLoaded >= _totalCaptions && ! _allLoaded) {
                 log.debug("all captions loaded, dispatching onLoad()");
                 _allLoaded = true;
                 _loadedCallback();
