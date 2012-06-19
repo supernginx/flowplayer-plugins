@@ -227,6 +227,12 @@ package org.flowplayer.viralvideos {
             createCloseTimer();
         }
 
+        public function launchLocalEmail():void
+        {
+            _videoURL = getPageUrl();
+            sendLocalEmail();
+        }
+
         private function setStatus(msg:String):void {
             _statusLabel.htmlText = msg;
             createLabelReset(_statusLabel);

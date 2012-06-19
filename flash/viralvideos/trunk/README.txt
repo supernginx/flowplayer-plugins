@@ -7,6 +7,7 @@ sVersion history:
 - #564 fixes for email template, 2nd index not required, usage: {0} \n\n Video Link: <a href=\"{1}\">{1}</a>
 - #443 add accessibility support to dock buttons and share icons.
 - #589 add custom width and height properties to embed config. This will be used to override the default stage width and height.
+- #596 if no email script is set, launch local email directly on show.
 
 3.2.9
 -----
