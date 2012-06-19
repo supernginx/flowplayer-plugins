@@ -169,7 +169,8 @@ import org.flowplayer.util.PropertyBinder;
             hideViews();
 
             // show first view
-            if ( _emailView ) {
+            //I don't think this is required
+            /*if ( _emailView ) {
                 setActiveTab("Email", false);
             	_emailView.show();
 			} else if ( _embedView ) {
@@ -178,7 +179,7 @@ import org.flowplayer.util.PropertyBinder;
 			} else if ( _shareView ) {
 				setActiveTab("Share", false);
             	_shareView.show();
-			}
+			}*/
         }
 
         private function onDockShow():Boolean {
