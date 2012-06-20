@@ -42,10 +42,8 @@ package org.flowplayer.controls.config {
 		private var _tooltips:ToolTipsConfig = null;
         private var _spacing:WidgetsSpacing = null;
 
-        //#485 initialise autohide config with fullscreenOnly disabled or else causes issues when configuring as enabled.
         public function Config() {
             _autoHide = new AutoHideConfig();
-            _autoHide.fullscreenOnly = false;
         }
 		// base guy
 		public function get style():Object {
