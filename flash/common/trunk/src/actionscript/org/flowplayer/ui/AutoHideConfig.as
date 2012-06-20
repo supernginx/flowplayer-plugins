@@ -20,7 +20,7 @@ package org.flowplayer.ui {
 
         public function set state(autoHide:String):void {
             _enabled = (autoHide && autoHide != "never") as Boolean;
-            _fullscreenOnly = autoHide == "fullscreen";
+            if (autoHide == "fullscreen") _fullscreenOnly = true;
         }
 
         /**
@@ -92,6 +92,7 @@ package org.flowplayer.ui {
 
         public function set enabled(value:Boolean):void {
             _enabled = value;
+            _fullscreenOnly = !value;
         }
 
         [Value]
