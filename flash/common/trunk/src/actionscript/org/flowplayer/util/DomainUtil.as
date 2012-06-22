@@ -84,7 +84,8 @@ package org.flowplayer.util {
                     '.la','.md','.sc','.sg','.vc','.tw','.travel','.my','.se','.tv','.pt','.com.pt','.edu.pt',
                     '.asia','.fi','.com.ve','.net.ve','.fi','.org.ve','.web.ve','.info.ve','.co.ve','.tel','.im',
                     '.gr','.ru','.net.ru','.org.ru','.hr','.com.hr','.tv.tr','.aero', '.cat', '.coop', '.int',
-                    '.jobs', '.museum', '.xxx');
+                    '.jobs', '.museum', '.xxx','.com.qa','.edu.qa','.gov.qa',
+                    '.gov.au','.com.my','.edu.my','.gov.my');
 
             var bits:Array = domain.split('.');
 
