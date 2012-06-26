@@ -5,7 +5,7 @@ Version history:
 - fixed to work when there is a RTMP plugin in player config, and it does not contain any configuration. durationFunc lookup was failing in this case.
 - fix for #377, run host checks and increment indexes here to trigger reconnections of the next host or else recurssion occurs or last host is null.
 - #427 issues with reconnecting rtmp connection attempts, required hosts checks to validate last hosts is not null.
-- #601 dispatch stream not found error on the clip on resolving errors.
+- #601 dispatch resolver failure correctly.
 
 
 3.2.2
