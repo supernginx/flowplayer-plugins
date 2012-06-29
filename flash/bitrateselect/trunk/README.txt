@@ -1,5 +1,9 @@
 Version history:
 
+3.2.11
+------
+- #583 Fixes for configuring the autoHide of the HD button
+
 3.2.10
 ------
 Fixes:

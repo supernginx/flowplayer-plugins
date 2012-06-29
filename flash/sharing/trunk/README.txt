@@ -1,5 +1,9 @@
 Version history:
 
+3.2.9
+-----
+- #583 Fixes for configuring the autoHide of the HD button
+
 3.2.8
 -----
 - made it possible to configure the 'Embed code is copied to clipboard...' text, issue 262
