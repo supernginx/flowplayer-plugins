@@ -1,5 +1,9 @@
 sVersion history:
 
+3.2.11
+------
+- #583 Fixes for configuring the autoHide
+
 3.2.10
 ------
 - #410 fixes to disable fullscreen for email and embed tab.
