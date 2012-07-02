@@ -34,7 +34,10 @@ package org.flowplayer.slowmotion {
 	
 	import org.flowplayer.ui.controllers.GenericButtonController;
 	
-	import fp.*;
+	import org.flowplayer.slowmotion.ui.SlowMotionFwdController;
+    import org.flowplayer.slowmotion.ui.SlowMotionFfwdController;
+    import org.flowplayer.slowmotion.ui.SlowMotionFbwdController;
+    import org.flowplayer.slowmotion.ui.SlowMotionBwdController;
 
     public class SlowMotionPlugin implements Plugin {
         private var log:Log = new Log(this);
@@ -140,46 +143,12 @@ package org.flowplayer.slowmotion {
 
 		private function addButtons(event:WidgetContainerEvent):void {
 			var container:WidgetContainer = event.container;
-			
-			var FBwdButtonController:GenericButtonController = new GenericButtonController("fastBackward", fp.SlowMotionFBwdButton, {
-				enabled: false,
-				visible: true,
-				tooltipEnabled : true,
-				tooltipLabel: 'Fast Backward'
-			}, function():void {
-				log.info("Fast backward clicked");
-				onSlowMotionClicked(true, false);
-			}, "slowmotion");
-			
-			var bwdButtonController:GenericButtonController = new GenericButtonController("slowBackward", fp.SlowMotionBwdButton, {
-				enabled: false,
-				visible: true,
-				tooltipEnabled : true,
-				tooltipLabel: 'Slow Backward'
-			}, function():void {
-				log.info("Slow backward clicked");
-				onSlowMotionClicked(false, false);
-			}, "slowmotion");
-			
-			var fwdButtonController:GenericButtonController = new GenericButtonController("slowForward", fp.SlowMotionFwdButton, {
-				enabled: false,
-				visible: true,
-				tooltipEnabled : true,
-				tooltipLabel: 'Slow Forward'
-			}, function():void {
-				log.info("Slow Forward clicked");
-				onSlowMotionClicked(false, true);
-			}, "slowmotion");
-			
-			var FFwdButtonController:GenericButtonController = new GenericButtonController("fastForward", fp.SlowMotionFFwdButton, {
-				enabled: false,
-				visible: true,
-				tooltipEnabled : true,
-				tooltipLabel: 'Fast Forward'
-			}, function():void {
-				log.info("Fast Forward clicked");
-				onSlowMotionClicked(true, true);
-			}, "slowmotion");
+
+            var FBwdButtonController:SlowMotionFbwdController = new SlowMotionFbwdController(this);
+            var bwdButtonController:SlowMotionBwdController = new SlowMotionBwdController(this);
+            var fwdButtonController:SlowMotionFwdController = new SlowMotionFwdController(this);
+            var FFwdButtonController:SlowMotionFfwdController = new SlowMotionFfwdController(this);
+
 
 			container.addWidget(FBwdButtonController, "stop", false);
 			container.addWidget(bwdButtonController, "fastBackward", false);
@@ -187,7 +156,7 @@ package org.flowplayer.slowmotion {
 			container.addWidget(FFwdButtonController, "slowForward", false);
 		}
 		
-		private function onSlowMotionClicked(fast:Boolean, goForward:Boolean):void
+		public function onSlowMotionClicked(fast:Boolean, goForward:Boolean):void
 		{
 			var nextSpeed:Number = getNextSpeed(fast, goForward);
 				
@@ -229,6 +198,7 @@ package org.flowplayer.slowmotion {
         [External]
         public function normal():void {
             log.debug("normal()");
+            if (!_controller.info.isTrickPlay) return;
             if (_player.isPaused()) {
                 _player.resume();
             }
