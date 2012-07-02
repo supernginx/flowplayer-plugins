@@ -1,5 +1,12 @@
 Version history:
 
+3.2.8
+-----
+
+- #494 fixes for general fastplay stability with FMS servers. Returns to normal play on InvalidArg errors return from the server.
+When going too close to the buffer slow down the stepping for the buffer to catch up when in fast forward mode. Refactoring of controls to provide slowmotion and fastworward on demand
+to allow it top stop due to issues with inability to return to normal playback, and possible crashes.
+
 3.2.1
 -----
 - Added FMS trick modes

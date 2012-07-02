@@ -30,6 +30,8 @@ package org.flowplayer.slowmotion {
         private var _clipFPS:int;
         private var _info:SlowMotionInfo;
         private var _playlist:Playlist;
+        private var _maxPauseBuffer:Number;
+        private var _isPaused:Boolean;
 
         public function FMSSlowMotion(model:PluginModel, playlist:Playlist, provider:StreamProvider, providerName:String) {
             super(model, playlist, provider, providerName);
@@ -64,10 +66,16 @@ package org.flowplayer.slowmotion {
             }
         }
 
-        private function startTimer(interval:int):void {
+        private function stopTimer():void {
             if (_stepTimer) {
                 _stepTimer.stop();
+                _stepTimer.removeEventListener(TimerEvent.TIMER, onStepTimer);
+                _stepTimer = null;
             }
+        }
+
+        private function startTimer(interval:int):void {
+            stopTimer();
             _stepTimer = new Timer(interval);
             _stepTimer.addEventListener(TimerEvent.TIMER, onStepTimer);
             _stepTimer.start();
@@ -80,22 +88,32 @@ package org.flowplayer.slowmotion {
             _clipFPS = clip.metaData ? clip.metaData.framerate : 0;
             log.debug("frameRate from metadata == " + _clipFPS);
             netStream.inBufferSeek = true;
+
+            netStream.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
         }
 
         override protected function normalSpeed():void {
             log.info("normalSpeed()");
-            if (_stepTimer) {
-                _stepTimer.stop();
-            }
+            stopTimer();
             if (netStream) {
+                netStream.maxPauseBufferTime = _maxPauseBuffer;
                 netStream.resume();
+                _isPaused = false;
             }
             _info = SlowMotionInfo.createForNormalSpeed(_playlist.current);
         }
 
         override protected function trickSpeed(multiplier:Number, forward:Boolean):void {
             log.info("trickSpeed() multiplier == " + multiplier + ", " + (forward ? "forward" : "backward"));
-            netStream.pause();
+
+            if (!_isPaused) {
+                _isPaused = true;
+                netStream.pause();
+            }
+
+            //#598 fill a large pause buffer length
+            _maxPauseBuffer = netStream.maxPauseBufferTime;
+            netStream.maxPauseBufferTime = 3600;
 
             if (netStream.currentFPS > 0 && netStream.currentFPS > _clipFPS) {
                 _clipFPS = netStream.currentFPS;
@@ -128,11 +146,34 @@ package org.flowplayer.slowmotion {
 
         private function onStepTimer(event:TimerEvent):void {
             if (! netStream) return;
+
+            //#598 if the stepping is too close to the buffer slow it down for it to catch up.
+            if (netStream.bufferLength < 0.1 || netStream.backBufferLength < 0.1)
+			{
+               log.debug("Stepping too close to the buffer stepping 1 frame");
+               netStream.step(1);
+               return;
+			}
+
             netStream.step(_frameStep);
         }
 
         override public function getInfo(event:NetStatusEvent):SlowMotionInfo {
             return _info;
+        }
+
+        /**
+         * #598 Return to normal playback if stepping FMS servers fail due to passing the buffer regions.
+         * @param event
+         */
+        private function onNetStatus(event:NetStatusEvent):void
+        {
+            switch (event.info.code) {
+                case "NetStream.InvalidArg":
+                    log.error("Problem stepping frames possibly outside the buffer, setting to normal speed");
+                    normalSpeed();
+                break;
+            }
         }
     }
 }
