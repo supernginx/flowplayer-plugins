@@ -12,7 +12,8 @@ package org.flowplayer.ui {
 
     public class AutoHideConfig {
         private var _enabled:Boolean = true;
-        private var _fullscreenOnly:Boolean = true;
+        //#605 set fullscreen to disabled by default
+        private var _fullscreenOnly:Boolean = false;
         private var _hideDelay:Number = 4000;
         private var _hideDuration:Number = 800;
         private var _hideStyle:String = "move";
