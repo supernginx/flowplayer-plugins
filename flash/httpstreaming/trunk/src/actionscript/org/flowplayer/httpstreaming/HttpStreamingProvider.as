@@ -102,7 +102,7 @@ package org.flowplayer.httpstreaming {
         }
 
         private function onPlayStatus(event:ClipEvent) : void {
-            log.error("onPlayStatus() -- " + event.info.code);
+            log.debug("onPlayStatus() -- " + event.info.code);
             if (event.info.code == "NetStream.Play.TransitionComplete"){
                 dispatchEvent(new ClipEvent(ClipEventType.SWITCH_COMPLETE));
             }
