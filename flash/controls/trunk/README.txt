@@ -5,6 +5,7 @@ Version history:
 - #443 Adding in new accessibility options for button widgets.
 - #443 Disable autohide for accessibility support.
 - #583 fixes for handling autoHide fullscreenOnly property required for screen positioning.
+- #605 fixes for autohide method when currently disabled.
 
 3.2.11
 ------
