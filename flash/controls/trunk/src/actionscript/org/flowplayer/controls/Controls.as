@@ -190,6 +190,8 @@ package org.flowplayer.controls {
             if (props) {
                 new PropertyBinder(_config.autoHide).copyProperties(props);
             }
+
+
             _pluginModel.config.autoHide = _config.autoHide.state;
 
             if (_controlBarMover) 
@@ -199,7 +201,6 @@ package org.flowplayer.controls {
             if (Accessibility.active) _config.autoHide.enabled = false;
 
             createControlBarMover();
-            _controlBarMover.start();
         }
 
         [External(convert="true")]
