@@ -310,6 +310,8 @@ import org.flowplayer.util.PropertyBinder;
         //#410 enable / disable fullscreen
         private function enableFullscreen(enable:Boolean):void
         {
+            //#606 check for controls first if disabled.
+            if (!_controls) return;
             _controls.setEnabled({fullscreen: enable});
         }
 
