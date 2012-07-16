@@ -126,7 +126,7 @@ import org.flowplayer.util.PropertyBinder;
             this.visible = false;
             _player = player;
 
-            _controls = _player.pluginRegistry.getPlugin("controls").getDisplayObject();
+            _controls = _player.pluginRegistry.getPlugin("controls");
 
             createPanelContainer();
             createIconDock();
@@ -312,7 +312,7 @@ import org.flowplayer.util.PropertyBinder;
         {
             //#606 check for controls first if disabled.
             if (!_controls) return;
-            _controls.setEnabled({fullscreen: enable});
+            _controls.pluginObject.setEnabled({fullscreen: enable});
         }
 
         //#410 toggle fullscreen and hide dock buttons for email and embed tabs

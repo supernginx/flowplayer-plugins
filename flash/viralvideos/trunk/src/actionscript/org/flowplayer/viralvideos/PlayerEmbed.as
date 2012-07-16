@@ -61,6 +61,7 @@ package org.flowplayer.viralvideos {
         }
 
         public function set backgroundColor(color:String):void {
+            if (!_controls) return;
             log.debug("set backgroundColor " + color);
             createOptions();
             _controlsOptions.backgroundColor = color;
@@ -73,6 +74,7 @@ package org.flowplayer.viralvideos {
         }
 
         public function set buttonColor(color:String):void {
+            if (!_controls) return;
             log.debug("set buttonColor " + color);
             createOptions();
             _controlsOptions.buttonColor = color;
@@ -86,6 +88,7 @@ package org.flowplayer.viralvideos {
         }
 
         public function applyControlsOptions(value:Boolean = true):void {
+            if (!_controls) return;
             _controls.css(value ? _controlsOptions : _controlsOriginalOptions);
             if (_autoHide) {
                 _controls["setAutoHide"](! value);
