@@ -1,7 +1,7 @@
 /*
  *
  * By: Daniel Rossi, <electroteque@gmail.com>
- * Copyright (c) 2009 Electroteque Multimedia
+ * Copyright (c) 2012 Electroteque Multimedia
  *
  * The Initial Developer of the Apple-OSMF feature is Matthew Kaufman http://code.google.com/p/apple-http-osmf/
  *
