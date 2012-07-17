@@ -3,6 +3,8 @@
  * By: Daniel Rossi, <electroteque@gmail.com>
  * Copyright (c) 2009 Electroteque Multimedia
  *
+ * The Initial Developer of the Apple-OSMF feature is Matthew Kaufman http://code.google.com/p/apple-http-osmf/
+ *
  * Released under the MIT License:
  * http://www.opensource.org/licenses/mit-license.php
  */
