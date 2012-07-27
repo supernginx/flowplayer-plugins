@@ -1,6 +1,6 @@
 Version history:
 
-3.2.9
+3.2.10
 -----
 - #568 fix for bitrate switching in paused mode, pause the stream only during seeking while paused. now dispatched seek events while paused.
 - #602 don't seek to frame when start is set.
@@ -23,7 +23,6 @@ Fixes:
 - #409 cleanup reuse http client.
 - #486 implement pauseToFrame to unmute audio when autoBuffering.
 - #565 append the url params to the generated start param.
-- #568 fix for start param replacement, need to check for undefined query strings.
 
 
 3.2.7
