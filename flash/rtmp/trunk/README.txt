@@ -1,5 +1,9 @@
 Version history:
 
+3.2.10
+------
+- fixes to stepping functions.
+
 3.2.9
 -----
 - #534 don't round seek times for frame accurate seeking.
