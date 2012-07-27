@@ -1,9 +1,12 @@
 sVersion history:
 
+3.2.12
+------
+- #606 check for controls first if disabled.
+
 3.2.11
 ------
 - #583 Fixes for configuring the autoHide
-- #606 check for controls first if disabled.
 
 3.2.10
 ------
