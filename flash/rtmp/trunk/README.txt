@@ -3,6 +3,8 @@ Version history:
 3.2.10
 ------
 - fixes to stepping functions.
+- added new configuration variable 'inBufferSeek' that can be used to disable "Smart Seek" that became available
+  in Adobe FMS 3.5.3. Use this if you are running a RTMP server that does not support this in buffer seeking (smart seek).
 
 3.2.9
 -----
