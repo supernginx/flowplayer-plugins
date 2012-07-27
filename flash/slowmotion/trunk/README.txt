@@ -1,6 +1,6 @@
 Version history:
 
-3.2.8
+3.2.9
 -----
 
 - #494 fixes for general fastplay stability with FMS servers. Returns to normal play on InvalidArg errors return from the server.
