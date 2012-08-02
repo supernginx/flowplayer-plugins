@@ -96,7 +96,7 @@ $f.addPlugin("ipad", function(options) {
 
 	extend(opts, options);
 
-	var validExtensions = new RegExp('^\.(' + opts.validExtensions + ')$', 'i');
+	var validExtensions = validExtensions ? new RegExp('^\.(' + opts.validExtensions + ')$', 'i') : null;
 	var posterExtensions = new RegExp('^\.(' + opts.posterExtensions + ')$', 'i');
 
 	// some util funcs
@@ -289,7 +289,7 @@ $f.addPlugin("ipad", function(options) {
 				}
 				
 				
-				if (! validExtensions.test(activePlaylist[activeIndex].extension) ) {
+				if (validExtensions && ! validExtensions.test(activePlaylist[activeIndex].extension) ) {
     				if ( activePlaylist.length > 1 && activeIndex < activePlaylist.length - 1) {
         		        //#359 for images in a playlist check for a valid extension and set as the clip poster.
                         var poster;
