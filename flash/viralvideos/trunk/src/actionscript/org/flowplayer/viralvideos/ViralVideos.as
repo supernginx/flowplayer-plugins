@@ -19,8 +19,7 @@ package org.flowplayer.viralvideos {
     import org.flowplayer.model.PluginModel;
     import org.flowplayer.ui.dock.Dock;
     import org.flowplayer.ui.buttons.CloseButton;
-import org.flowplayer.util.ObjectConverter;
-import org.flowplayer.util.PropertyBinder;
+    import org.flowplayer.util.PropertyBinder;
     import org.flowplayer.view.AbstractSprite;
     import org.flowplayer.view.FlowStyleSheet;
     import org.flowplayer.view.Flowplayer;
@@ -64,7 +63,6 @@ import org.flowplayer.util.PropertyBinder;
         public function onConfig(plugin:PluginModel):void {
             log.debug("onConfig()", plugin.config);
             _model = plugin;
-            //_config = new PropertyBinder(new Config(), null).copyProperties(plugin.config) as Config;
             _config = new PropertyBinder(new Config(), null).copyProperties(_model.config) as Config;
         }
 
@@ -169,8 +167,7 @@ import org.flowplayer.util.PropertyBinder;
             hideViews();
 
             // show first view
-            //I don't think this is required
-            /*if ( _emailView ) {
+            if ( _emailView ) {
                 setActiveTab("Email", false);
             	_emailView.show();
 			} else if ( _embedView ) {
@@ -179,7 +176,7 @@ import org.flowplayer.util.PropertyBinder;
 			} else if ( _shareView ) {
 				setActiveTab("Share", false);
             	_shareView.show();
-			}*/
+			}
         }
 
         private function onDockShow():Boolean {
