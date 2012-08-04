@@ -3,6 +3,7 @@ sVersion history:
 3.2.12
 ------
 - #606 check for controls first if disabled.
+- #616 re-enable default tab view, fullscreen button cannot be disabled here.
 
 3.2.11
 ------
