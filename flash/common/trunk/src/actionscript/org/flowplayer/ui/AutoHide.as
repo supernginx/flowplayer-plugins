@@ -215,6 +215,8 @@ package org.flowplayer.ui {
                 log.debug("restoring to y " + _originalPos.y);
                 showingProps.y = _originalPos.y;
             }
+            showingProps.alpha = _originalPos.alpha;
+            log.debug("showing alpha " + showingProps.alpha);
             return showingProps;
         }
 
@@ -371,6 +373,10 @@ package org.flowplayer.ui {
         }
 
         private function doShow():void {
+            if (_config.state == "never") {
+                return;
+            }
+
             if (_model && ! _model.dispatchBeforeEvent(PluginEventType.PLUGIN_EVENT, "onBeforeShowed")) {
                 log.debug("doShow() onShowed event was prevented, not showing");
                 return;
@@ -383,10 +389,11 @@ package org.flowplayer.ui {
 
             //#426 use fadeIn/fadeOut for fade mode to improve animation engine performance as only alpha is required.
             if (useFadeOut)
-                _player.animationEngine.fadeIn(_disp, 400, onShowed);
+                _player.animationEngine.fadeTo(_disp, showingPos.alpha, 400, onShowed);
             else
                 _player.animationEngine.animate(_disp, showingPos, 400, onShowed);
         }
+
 
         private function dispatchEvent(string:String):void {
             if (! _model) return;

@@ -18,7 +18,7 @@ package org.flowplayer.util {
         }
 
         public function test2():void {
-            assertEquals("xx.foobar", DomainUtil.stripSubdomain("jee.xx.foobar"));
+            assertEquals("xx.foobar", DomainUtil.stripSubdomain("jee.xx.FOOBAR"));
         }
 
         public function testStripSubdomain():void {
