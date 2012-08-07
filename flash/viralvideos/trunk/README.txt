@@ -4,6 +4,10 @@ sVersion history:
 ------
 - #606 check for controls first if disabled.
 - #616 re-enable default tab view, fullscreen button cannot be disabled here.
+- #410 do not expect the cgi email script to return JSON, makes this work better with "standard" email cgi scripts
+- email template now has a third placeholder that shows the sender name
+- reverted local email sending back to it's original behavior, the user can supply subject, message etc. in the plugin and
+  those are then forwarded to the local email client correctly. Originally changed with bug
 
 3.2.11
 ------

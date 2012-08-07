@@ -16,7 +16,7 @@ package org.flowplayer.viralvideos.config {
         private var _message:String = "Personal message";
         private var _optional:String = "(optional)";
         private var _subject:String = "Video you might be interested in";
-        private var _template:String = "{0} \n\n Video Link: <a href=\"{1}\">{1}</a>";
+        private var _template:String = "{0}\n\nVideo Link: <a href=\"{1}\">{1}</a>\n\n{2}";
         private var _from:String = "Your name";
         private var _fromAddress:String = "Your email address";
         private var _send:String = "Send email";
