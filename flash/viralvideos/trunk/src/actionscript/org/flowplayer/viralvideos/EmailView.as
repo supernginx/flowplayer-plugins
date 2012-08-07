@@ -221,16 +221,9 @@ package org.flowplayer.viralvideos {
         }
 
         private function sendLocalEmail():void {
-            log.debug("sendLocalEmail(), videoURL " + _videoURL);
-            var request:URLRequest = new URLRequest(formatString("mailto:{0}?subject={1}&body={2}", _emailToInput.text, escape(_config.labels.subject), escape(formatString(_config.labels.template, _messageInput.text, _videoURL, _videoURL))));
+            var request:URLRequest = new URLRequest(formatString("mailto:{0}?subject={1}&body={2}", _emailToInput.text, encodeURIComponent(_config.labels.subject), encodeURIComponent(formatString(_config.labels.template, _messageInput.text, _videoURL, _nameFromInput.text))));
             navigateToURL(request, "_self");
             createCloseTimer();
-        }
-
-        public function launchLocalEmail():void
-        {
-            _videoURL = getPageUrl();
-            sendLocalEmail();
         }
 
         private function setStatus(msg:String):void {
@@ -316,14 +309,17 @@ package org.flowplayer.viralvideos {
             log.debug(loader.data.toString());
             var message:Object = null;
 
+            loader.close();
+            loader = null;
+
             try {
                 message = JSON.decode(loader.data.toString());
             } catch(e:Error) {
-                formError("Error sending mail");
+                // do not expect the script to return JSON
+                // see issue #401
+                message = { success: 'Email sent' };
             }
 
-            loader.close();
-            loader = null;
 
             if (message != null)
             {

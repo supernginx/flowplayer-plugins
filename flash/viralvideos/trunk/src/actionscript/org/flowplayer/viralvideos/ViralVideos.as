@@ -14,7 +14,8 @@ package org.flowplayer.viralvideos {
 
     import org.flowplayer.model.DisplayPluginModel;
     import org.flowplayer.model.PlayerEvent;
-    import org.flowplayer.model.Plugin;
+import org.flowplayer.model.PlayerEventType;
+import org.flowplayer.model.Plugin;
     import org.flowplayer.model.PluginEventType;
     import org.flowplayer.model.PluginModel;
     import org.flowplayer.ui.dock.Dock;
@@ -57,8 +58,6 @@ package org.flowplayer.viralvideos {
         private var _tabCSSProperties:Object;
 
         private var _controls:Object;
-
-        private var _closeViewSilently:Boolean;
 
         public function onConfig(plugin:PluginModel):void {
             log.debug("onConfig()", plugin.config);
@@ -304,9 +303,21 @@ package org.flowplayer.viralvideos {
             if (panel == "Share" && _shareView) _shareView.show();
         }
 
+        private function onFullscreen(event:PlayerEvent):void {
+            log.debug("preventing fullscreen");
+            event.preventDefault();
+        }
+
         //#410 enable / disable fullscreen
         private function enableFullscreen(enable:Boolean):void
         {
+            // prevent fullscreen (disables fullscreen entry by screen doubleclick also)
+            if (enable) {
+                _player.unbind(onFullscreen, null, true);
+            } else {
+                _player.onBeforeFullscreen(onFullscreen);
+            }
+
             //#606 check for controls first if disabled.
             if (!_controls) return;
             _controls.pluginObject.setEnabled({fullscreen: enable});
@@ -334,12 +345,10 @@ package org.flowplayer.viralvideos {
             _player.setKeyboardShortcutsEnabled(true);
 
             //fix for #221 now pause / resume video when showing / hiding overlays
-            if (_config.pauseVideo && !_closeViewSilently) _player.resume();
+            if (_config.pauseVideo) _player.resume();
 
             //#410 re-enable fullscreen if disabled
             enableFullscreen(true);
-
-            _closeViewSilently = false;
 
             _model.dispatch(PluginEventType.PLUGIN_EVENT, "onClose");
         }
@@ -366,12 +375,6 @@ package org.flowplayer.viralvideos {
 
                 _emailMask.height = TAB_HEIGHT;
                 _emailTab.css(_tabCSSProperties);
-
-                //#596 if no email script is set, launch local email directly on show.
-                if (!_config.email.script && show) {
-                    _closeViewSilently = true;
-                    _emailView.launchLocalEmail();
-                }
             }
             if (newTab == "Embed" && _embedView) {
                 //#410 toggle out of fullscreen due to flash user input restrictions.
