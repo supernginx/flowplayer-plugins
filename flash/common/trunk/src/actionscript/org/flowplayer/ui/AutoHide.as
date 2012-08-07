@@ -368,12 +368,17 @@ package org.flowplayer.ui {
 
         private function onHidden():void {
             log.debug("onHidden()");
-            _disp.visible = false;
             dispatchEvent("onHidden");
         }
 
         private function doShow():void {
             if (_config.state == "never") {
+                return;
+            }
+
+            var showPos:Object = showingPos;
+            if (showPos.display == "none") {
+                log.debug("display is 'none', will not show this!");
                 return;
             }
 
