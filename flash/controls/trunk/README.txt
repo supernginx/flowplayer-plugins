@@ -4,6 +4,8 @@ Version history:
 ------
 - #583 fixes for handling autoHide fullscreenOnly property required for screen positioning.
 - #605 fixes for autohide method when currently disabled.
+- #492 hiding controlbar onStart fails (regression)
+- calling $f().getControls().setAutoHide({ enabled: false }) leaves controls visible
 
 3.2.12
 ------

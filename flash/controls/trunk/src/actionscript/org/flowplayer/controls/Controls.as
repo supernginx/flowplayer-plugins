@@ -187,17 +187,13 @@ package org.flowplayer.controls {
         [External]
         public function setAutoHide(props:Object = null):void {
             log.debug("autoHide()");
+            if (_controlBarMover)
+                _controlBarMover.stop();
+
             if (props) {
                 new PropertyBinder(_config.autoHide).copyProperties(props);
             }
-
-
             _pluginModel.config.autoHide = _config.autoHide.state;
-
-            log.error(_config.autoHide.state);
-
-            if (_controlBarMover)
-                _controlBarMover.stop();
 
             //#443 disable autohide for accessibility support
             if (Accessibility.active) _config.autoHide.enabled = false;
