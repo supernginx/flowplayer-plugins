@@ -89,7 +89,7 @@ package org.flowplayer.ui {
          */
         public function stop(leaveVisible:Boolean = true):void {
             log.debug("stop(), leaveVisible? " + leaveVisible);
-            if (! isShowing() && leaveVisible) {
+            if (leaveVisible) {
                 doShow();
             }
             if (! leaveVisible) {
