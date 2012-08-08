@@ -8,6 +8,7 @@ sVersion history:
 - email template now has a third placeholder that shows the sender name
 - reverted local email sending back to it's original behavior, the user can supply subject, message etc. in the plugin and
   those are then forwarded to the local email client correctly. Originally changed with bug
+- #618 if we have output from the request either parse as json or if the script returns html it is success. If we have no output the send is successful.
 
 3.2.11
 ------

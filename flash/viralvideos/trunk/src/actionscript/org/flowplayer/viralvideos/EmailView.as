@@ -300,25 +300,36 @@ package org.flowplayer.viralvideos {
         }
 
         private function onSendSuccess(event:Event):void {
+
             var loader:URLLoader = event.target as URLLoader;
 
             loader.removeEventListener(Event.COMPLETE, onSendSuccess);
             loader.removeEventListener(IOErrorEvent.IO_ERROR, onSendError);
 
+            var body:String = loader.data.toString();
 
-            log.debug(loader.data.toString());
+            log.debug(body);
             var message:Object = null;
 
             loader.close();
             loader = null;
 
-            try {
-                message = JSON.decode(loader.data.toString());
-            } catch(e:Error) {
-                // do not expect the script to return JSON
-                // see issue #401
-                message = { success: 'Email sent' };
+            //#618 if we have output from the request either parse as json or if the script returns html it is success.
+            //If we have no output the send is successful.
+            if (body) {
+                try {
+                    message = JSON.decode(body);
+                } catch(e:Error) {
+                    // do not expect the script to return JSON
+                    // see issue #401
+                    log.debug("script returned incorrectly with an error or html");
+                    message = { success: 'Email Sent' };
+                }
+            } else {
+                message = { success: 'Email Sent' };
             }
+
+
 
 
             if (message != null)
