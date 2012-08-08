@@ -1,6 +1,6 @@
 Version history:
 
-3.2.10
+3.2.11
 ------
 - fixes to stepping functions.
 - added new configuration variable 'inBufferSeek' that can be used to disable "Smart Seek" that became available
