@@ -9,6 +9,8 @@ sVersion history:
 - reverted local email sending back to it's original behavior, the user can supply subject, message etc. in the plugin and
   those are then forwarded to the local email client correctly. Originally changed with bug
 - #618 if we have output from the request either parse as json or if the script returns html it is success. If we have no output the send is successful.
+- #618 refactored server return to not require json output anymore and return success. Return success on all request errors with logging, return success on token error with logging. Added 3 new configurable email labels,
+"success", "required", "sending"
 
 3.2.11
 ------
