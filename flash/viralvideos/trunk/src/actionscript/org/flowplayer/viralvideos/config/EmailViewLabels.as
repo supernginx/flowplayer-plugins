@@ -20,6 +20,10 @@ package org.flowplayer.viralvideos.config {
         private var _from:String = "Your name";
         private var _fromAddress:String = "Your email address";
         private var _send:String = "Send email";
+        private var _success:String = "Email Sent";
+        private var _required:String = "Please fill required fields!";
+        private var _sending:String = "Sending email ..";
+
 
         public function get title():String {
             return _title;
@@ -99,6 +103,30 @@ package org.flowplayer.viralvideos.config {
 
         public function set send(value:String):void {
             _send = value;
+        }
+
+        public function get success():String {
+            return _success;
+        }
+
+        public function set success(value:String):void {
+            _success = value;
+        }
+
+        public function get required():String {
+            return _required;
+        }
+
+        public function set required(value:String):void {
+            _required = value;
+        }
+
+        public function get sending():String {
+            return _sending;
+        }
+
+        public function set sending(value:String):void {
+            _sending = value;
         }
     }
 }

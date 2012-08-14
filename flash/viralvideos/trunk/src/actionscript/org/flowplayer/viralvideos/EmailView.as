@@ -263,7 +263,7 @@ package org.flowplayer.viralvideos {
 
         private function onSubmit(event:MouseEvent):void {
             if (! checkRequiredFields()) {
-                formError("Please fill required fields!");
+                formError(_config.labels.required);
                 return;
             }
 
@@ -274,21 +274,21 @@ package org.flowplayer.viralvideos {
                 //email token is already set , post the form
                 if (_config.token && !_config.tokenUrl)
                 {
-                    formSuccess("Sending email ..");
+                    formSuccess(_config.labels.sending);
                     sendServerEmail();
                 } else if (_config.tokenUrl) {
                     //request the email script token to be able to post the form
-                    formSuccess("Sending email ..");
+                    formSuccess(_config.labels.sending);
                     getEmailToken();
                 } else {
                     //email script token url is not enabled just post the form
-                    formSuccess("Sending email ..");
+                    formSuccess(_config.labels.sending);
                     sendServerEmail();
                 }
 
             } else {
                 //send a local email instead
-                formSuccess("Sending email ..");
+                formSuccess(_config.labels.sending);
                 sendLocalEmail();
             }
         }
@@ -296,65 +296,47 @@ package org.flowplayer.viralvideos {
         private function onSendError(event:IOErrorEvent):void {
             log.debug("Error: " + event.text);
 
-            formError(event.text);
-        }
-
-        private function onSendSuccess(event:Event):void {
-
             var loader:URLLoader = event.target as URLLoader;
 
             loader.removeEventListener(Event.COMPLETE, onSendSuccess);
             loader.removeEventListener(IOErrorEvent.IO_ERROR, onSendError);
+            loader.close();
+            loader = null;
 
-            var body:String = loader.data.toString();
+            closeViewWithSuccess();
+        }
 
-            log.debug(body);
-            var message:Object = null;
+        private function onSendSuccess(event:Event):void {
+            var loader:URLLoader = event.target as URLLoader;
+
+            log.debug("Server returned with output: " + loader.data.toString());
+
+            loader.removeEventListener(Event.COMPLETE, onSendSuccess);
+            loader.removeEventListener(IOErrorEvent.IO_ERROR, onSendError);
 
             loader.close();
             loader = null;
 
-            //#618 if we have output from the request either parse as json or if the script returns html it is success.
-            //If we have no output the send is successful.
-            if (body) {
-                try {
-                    message = JSON.decode(body);
-                } catch(e:Error) {
-                    // do not expect the script to return JSON
-                    // see issue #401
-                    log.debug("script returned incorrectly with an error or html");
-                    message = { success: 'Email Sent' };
-                }
-            } else {
-                message = { success: 'Email Sent' };
-            }
-
-
-
-
-            if (message != null)
-            {
-                //if we have a error json object key returned
-                if (message.error)
-                {
-                    log.debug(message.error);
-                    formError(message.error);
-                }
-
-                //if we have a success json object key returned
-                if (message.success)
-                {
-                    log.debug(message.success);
-                    formSuccess(message.success);
-                }
-            }
-            createCloseTimer();
+            closeViewWithSuccess();
         }
 
         private function onTokenError(event:IOErrorEvent):void {
             log.debug("Error: " + event.text);
 
-            formError(event.text);
+            var loader:URLLoader = event.target as URLLoader;
+
+            loader.removeEventListener(Event.COMPLETE, onTokenSuccess);
+            loader.removeEventListener(IOErrorEvent.IO_ERROR, onTokenError);
+            loader.close();
+            loader = null;
+
+            closeViewWithSuccess();
+        }
+
+        private function closeViewWithSuccess():void
+        {
+            formSuccess(_config.labels.success);
+            createCloseTimer();
         }
 
         private function onTokenSuccess(event:Event):void {
@@ -363,16 +345,17 @@ package org.flowplayer.viralvideos {
             loader.removeEventListener(Event.COMPLETE, onTokenSuccess);
             loader.removeEventListener(IOErrorEvent.IO_ERROR, onTokenError);
 
-            log.debug("Loading Token");
+            log.debug("Loading Token " + loader.data.toString());
 
-            log.debug(loader.data.toString());
+            loader.close();
+            loader = null;
 
             var data:Object = null;
 
             try {
                 data = JSON.decode(loader.data.toString());
             } catch(e:Error) {
-                formError("Error requesting token");
+
             }
 
             loader.close();
@@ -383,7 +366,8 @@ package org.flowplayer.viralvideos {
                 //if a json object key is error an error is returned
                 if (data.error)
                 {
-                    formError(data.error);
+                    log.debug("Server returned with error: " + data.error);
+                    closeViewWithSuccess();
                 } else {
                     //we have a token, set the email script token and post the form
                     _config.token = data.token;
