@@ -20,7 +20,7 @@ package org.flowplayer.viralvideos.config {
         private var _from:String = "Your name";
         private var _fromAddress:String = "Your email address";
         private var _send:String = "Send email";
-        private var _success:String = "Email Sent";
+        private var _success:String = "Email sent";
         private var _required:String = "Please fill required fields!";
         private var _sending:String = "Sending email ..";
 
