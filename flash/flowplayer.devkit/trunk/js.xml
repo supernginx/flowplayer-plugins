@@ -39,7 +39,7 @@
 	<target name="source">
 
 		<property name="target.file" value="${target.dir}/${basename}-${version}.js"/>
-		<copy file="${source.file}" tofile="${target.file}"/>
+		<copy file="${source.file}" tofile="${target.file}" overwrite="true"/>
 		<echo message="${source.file} --> ${target.file} copied" />
 
 		<exec executable="svn" outputproperty="svnlog.out" >
@@ -67,19 +67,20 @@
 	<!-- yuicompress: http://www.julienlecomte.net/blog/2007/09/16/ -->
 	<target name="min" depends="source">
 
-		<property name="target.file" value="${target.dir}/${basename}-${version}.min.js"/>
+        <!--<property name="target.file" value="${target.dir}/${basename}-${version}.min.js"/>-->
+        <!--<property name="minified.file" value="${target.dir}/${basename}-tmp.min.js"/>-->
 
-		<apply executable="/usr/bin/java" parallel="false">
+        <apply executable="/usr/bin/java" parallel="false">
 			<fileset file="${target.file}"/>
-			<arg line="-jar"/>
-			<arg path="${yui.path}"/>
-			<srcfile/>
-			<arg line="-o"/>
-			<mapper type="glob" from="*.js" to="${target.dir}/*.min.js"/>
-			<targetfile/>
-		</apply>
+            <arg line="-jar"/>
+            <arg path="${yui.path}"/>
+            <srcfile/>
+            <arg line="-o"/>
+            <mapper type="glob" from="*.js" to="${target.dir}/*.min.js"/>
+            <targetfile/>
+        </apply>
 
-		<replaceregexp match="/\*!" replace="/\*\*" file="${target.file}" />
+        <replaceregexp match="/\*!" replace="/\*\*" file="${target.file}" />
 		<echo message="${target.file} minified"/>
 
 	</target>
@@ -126,7 +127,7 @@
     </target>
 
     <path id="classpath-release">
-        <fileset dir="../../../flowplayer.devkit/releasejars">
+        <fileset dir="${devkit-dir}/releasejars">
             <include name="*.jar"/>
         </fileset>
     </path>
