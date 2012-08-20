@@ -59,12 +59,22 @@ package org.flowplayer.ui {
             _player = player;
             _stage = stage;
             _disp = displayObject;
-            _originalPos = getDisplayProperties();
+
+            updateDisplayProperties();
+
 
             if (_config.state != "fullscreen" && config.enabled) {
                 startTimerAndInitializeListeners();
             }
             _stage.addEventListener(FullScreenEvent.FULL_SCREEN, onFullScreen);
+        }
+
+        /**
+         * #624 Update the original display properties if these have changed.
+         */
+        public function updateDisplayProperties():void
+        {
+            _originalPos = getDisplayProperties();
         }
 
         /**
