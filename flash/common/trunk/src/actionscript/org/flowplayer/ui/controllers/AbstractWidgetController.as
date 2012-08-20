@@ -39,6 +39,7 @@ package org.flowplayer.ui.controllers {
 			_controlbar = controlbar;
 			_config 	= defaultConfig;
 			addPlayerListeners();
+
 			
 			createWidget();
 			initWidget();
@@ -50,10 +51,6 @@ package org.flowplayer.ui.controllers {
 
         public function set enableWidget(value:Boolean):void {
             _widget.enabled = value;
-
-            //#502 fix enabling widget configs on the controlbar if disabled by default.
-            if (Object(_controlbar).config.hasOwnProperty("enabled"))
-                Object(_controlbar).config.enabled[name] = true;
         }
 		
 		public function configure(config:Object):void {
