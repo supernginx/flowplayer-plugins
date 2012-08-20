@@ -92,7 +92,7 @@ package org.flowplayer.bitrateselect.ui {
            //#623 update the main controls config correctly to configure the widget enabled as it gets reset on the controlbar.
            if (Object(_controlbar).parent && Object(_controlbar).parent.hasOwnProperty("config")) {
                var enabledConf:Object = {};
-               enabledConf[name] = true;
+               enabledConf[name] = event.hasHD;
                Object(_controlbar).parent.config.setNewProps({enabled: enabledConf});
            }
 		}
