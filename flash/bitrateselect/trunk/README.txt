@@ -3,6 +3,7 @@ Version history:
 3.2.12
 ------
 - #605 Fixes for autoHide configuration
+- #623 Fixes for widget enabled state. Require to also update the main controls config correctly as the controlbar config gets reset on updates.
 
 3.2.11
 ------
