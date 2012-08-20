@@ -297,8 +297,13 @@ package org.flowplayer.controls {
         override public function css(styleProps:Object = null):Object {
             var result:Object = super.css(styleProps);
 
-			if ( _controlBarMover )
+			if ( _controlBarMover ) {
+                //#624 if there are alpha or opacity changes update the autohide original display properties.
+                if (styleProps.alpha || styleProps.opacity) {
+                    _controlBarMover.updateDisplayProperties();
+                }
 				_controlBarMover.show();
+            }
 	
 		//	log.info("Result : ", result);
             var newStyleProps:Object = _config.completeStyleProps(result);
