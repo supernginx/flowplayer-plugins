@@ -6,6 +6,7 @@ Version history:
 - #605 fixes for autohide method when currently disabled.
 - #492 hiding controlbar onStart fails (regression)
 - calling $f().getControls().setAutoHide({ enabled: false }) leaves controls visible
+- #624 if there are alpha or opacity changes in a css call update the autohide original display properties.
 
 3.2.12
 ------
