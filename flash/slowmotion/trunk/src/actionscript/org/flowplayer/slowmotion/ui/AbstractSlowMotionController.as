@@ -34,15 +34,10 @@ import org.flowplayer.ui.controllers.AbstractButtonController;
         protected function onAddedToStage(event:Event):void
         {
             _widget.removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
-            _widget.stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
         }
 
         protected function onMouseDown(event:MouseEvent):void {
 
-        }
-
-        protected function onMouseUp(event:MouseEvent):void {
-            _provider.normal();
         }
     }
 }
